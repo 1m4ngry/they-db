@@ -6,11 +6,11 @@ dtmp    = debian/$(package)
 
 export DH_COMPAT=3
 
-ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-CFLAGS = -O2 -Wall
-LDFLAGS = 
-else
+ifeq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS = -O2 -g -Wall
+LDFLAGS = -g
+else
+CFLAGS = -g -Wall
 LDFLAGS = -g
 endif
 

@@ -1,3 +1,12 @@
+man-db (2.4.0-10) unstable; urgency=low
+
+  * datum.dsize needs to be size_t, not int. This broke s390x, which is
+    64-bit and big-endian (thanks, Bastian Blank).
+  * Policy version 3.5.7:
+    - Drop DEB_BUILD_OPTIONS=debug, and support noopt instead.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 16 Sep 2002 21:32:30 +0100
+
 man-db (2.4.0-9) unstable; urgency=low
 
   * Don't fail whatis parse upon encountering EOF in the NAME section of a
