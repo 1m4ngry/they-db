@@ -6,6 +6,7 @@ man-db (2.4.2-17) UNRELEASED; urgency=low
     between config and postinst (closes: #246545).
   * Don't fail to configure if mandb doesn't create any databases for
     whatever reason when running in the foreground (closes: #252425).
+  * Policy version 3.6.1: no changes required.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 28 Jun 2004 01:10:10 +0100
 
