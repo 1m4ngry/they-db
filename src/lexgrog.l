@@ -3,12 +3,24 @@
 /*
  * lexgrog.l: extract 'whatis' info from nroff man / formatted cat pages.
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
- * Copyright (c) 2001, 2002 Colin Watson.
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Wed Oct 12 18:46:11 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  * 
@@ -22,6 +34,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <sys/stat.h>
 #include <errno.h>
 
 #ifndef STDC_HEADERS
@@ -44,6 +57,7 @@ extern int errno;
 #include "manconfig.h"
 #include "lib/error.h"
 #include "security.h"
+#include "ult_src.h"
 
 #define YY_READ_BUF_SIZE	1024
 #define MAX_NAME		2048
@@ -133,11 +147,12 @@ fr_name		N[Oo][Mm]
 hu_name		N[…ÈEe][Vv]
  /* NOME also works for gl, pt */
 it_name		N[Oo][Mm][Ee]
+ja_name		\314\276\301\260
 latin_name	N[Oo][Mm][Ee][Nn]
 nl_name		N[Aa][Aa][Mm]
 pl_name		N[Aa][Zz][Ww][Aa]
 sv_name		N[Aa][Mm][Nn]
-name		({cs_name}|{de_name}|{en_name}|{es_name}|{fi_name}|{fr_name}|{hu_name}|{it_name}|{latin_name}|{nl_name}|{pl_name}|{sv_name})
+name		({cs_name}|{de_name}|{en_name}|{es_name}|{fi_name}|{fr_name}|{hu_name}|{it_name}|{ja_name}|{latin_name}|{nl_name}|{pl_name}|{sv_name})
 name_sec	{dbl_quote}?{style_change}?{name}{style_change}?({blank}*{dbl_quote})?
 
  /* eptgrv : eqn, pic, tbl, grap, refer, vgrind */
@@ -352,7 +367,7 @@ static void newline_found (void)
 	}
 }
 
-int find_name (char *file, char *filename, lexgrog *p_lg)
+int find_name (const char *file, char *filename, lexgrog *p_lg)
 {
 	int ret;
 
@@ -362,8 +377,11 @@ int find_name (char *file, char *filename, lexgrog *p_lg)
 #ifdef COMP_SRC
 		/* See if we need to decompress the file(s) first. */
 		struct compression *comp = comp_info (file);
-		if (comp)
+		if (comp) {
 			file = decompress (file, comp);
+			if (!file)
+				return 0;
+		}
 #endif
 		drop_effective_privs ();
 		yyin = fopen (file, "r");
@@ -493,8 +511,46 @@ int main (int argc, char **argv)
 
 	while (optind != argc) {
 		lexgrog lg;
+		char *file;
+
 		lg.type = type;
-		if (find_name (argv[optind], "-", &lg)) {
+
+		if (STREQ (argv[optind], "-"))
+			file = argv[optind];
+		else {
+			char *path, *pathend;
+			struct stat statbuf;
+
+			path = xstrdup (argv[optind]);
+			pathend = strrchr (path, '/');
+			if (pathend) {
+				*pathend = '\0';
+				pathend = strrchr (path, '/');
+				if (pathend && STRNEQ (pathend + 1, "man", 3))
+					*pathend = '\0';
+				else {
+					free (path);
+					path = NULL;
+				}
+			} else {
+				free (path);
+				path = NULL;
+			}
+
+			file = ult_src (argv[optind], path ? path : ".",
+					&statbuf, SO_LINK);
+			if (path)
+				free (path);
+#ifdef COMP_SRC
+			if (file) {
+				char *ztemp = get_ztemp ();
+				if (ztemp)
+					file = ztemp;
+			}
+#endif
+		}
+
+		if (file && find_name (file, "-", &lg)) {
 			printf ("%s", argv[optind]);
 			if (show_filters)
 				printf (" (%s)", lg.filters);

@@ -10,6 +10,7 @@
 .\"
 .\" Sat Oct 29 13:09:31 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
 .\"
+.pc
 .TH %man% 1 "%date%" "%version%" "Manual pager utils"
 .SH NAME
 %man% \- an interface to the on-line reference manuals
@@ -107,7 +108,10 @@ l l.
 4@Special files (usually found in \fI/dev\fR)
 5@File formats and conventions eg \fI/etc/passwd\fR
 6@Games
-7@Macro packages and conventions eg \fBman\fR(7), \fBgroff\fR(7).
+7@T{
+Miscellaneous (including macro packages and conventions),
+e.g. \fBman\fR(7), \fBgroff\fR(7)
+T}
 8@System administration commands (usually only for root)
 9@Kernel routines [\|Non standard\|]
 .TE
@@ -594,7 +598,7 @@ tab (@);
 l c c c.
 Description@Octal@latin1@ascii
 _
-continuation hyphen@255@\[char173]@-
+continuation hyphen@255@\[shc]@-
 bullet (middle dot)@267@\(bu@o
 acute accent@264@\(aa@'
 multiplication sign@327@\(mu@x
@@ -839,8 +843,12 @@ device such as
 .TP
 .B \-w, \-\-where, \-\-location
 Don't actually display the manual pages, but do print the location(s) of
-the files that would be formatted or displayed.
-If the file is a cat file, also show the location of its source nroff file.
+the source nroff files that would be formatted.
+.TP
+.B \-W, \-\-where\-cat, \-\-location\-cat
+Don't actually display the manual pages, but do print the location(s) of
+the cat files that would be displayed.
+If \-w and \-W are both specified, print both separated by a space.
 .TP
 .B \-V, \-\-version
 Display version information.

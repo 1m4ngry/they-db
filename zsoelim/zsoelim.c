@@ -678,11 +678,25 @@ char *yytext;
 /*
  * soelim.l: eliminate .so includes within *roff source
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1997 Fabrizio Polacco.
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Added functionality over gsoelim to allow for compressed .so includes.
  *
@@ -769,6 +783,7 @@ extern int optind;
 
 #define lfname 5
 
+#define YY_NO_UNPUT 1
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -933,7 +948,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 97 "zsoelim.l"
+#line 113 "zsoelim.l"
 
 
 
@@ -1009,7 +1024,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 99 "zsoelim.l"
+#line 115 "zsoelim.l"
 {	
 			no_newline = 1;
 			ECHO;
@@ -1018,7 +1033,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 105 "zsoelim.l"
+#line 121 "zsoelim.l"
 {	
 			no_newline = 1;
 			BEGIN(so);	/* Now we're in the .so environment */
@@ -1026,7 +1041,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 110 "zsoelim.l"
+#line 126 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;		/* Now we're in the .lf environment */
@@ -1034,20 +1049,20 @@ YY_RULE_SETUP
 		}
 	YY_BREAK
 case 4:
-#line 117 "zsoelim.l"
+#line 133 "zsoelim.l"
 case 5:
-#line 118 "zsoelim.l"
+#line 134 "zsoelim.l"
 case 6:
-#line 119 "zsoelim.l"
+#line 135 "zsoelim.l"
 case 7:
-#line 120 "zsoelim.l"
+#line 136 "zsoelim.l"
 case 8:
-#line 121 "zsoelim.l"
+#line 137 "zsoelim.l"
 case 9:
-#line 122 "zsoelim.l"
+#line 138 "zsoelim.l"
 case 10:
 YY_RULE_SETUP
-#line 122 "zsoelim.l"
+#line 138 "zsoelim.l"
 {
 				no_newline = 1;
 				ECHO;
@@ -1055,7 +1070,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 127 "zsoelim.l"
+#line 143 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar('\n');
@@ -1064,7 +1079,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 134 "zsoelim.l"
+#line 150 "zsoelim.l"
 { 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
@@ -1096,7 +1111,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 163 "zsoelim.l"
+#line 179 "zsoelim.l"
 {
 			no_newline = 0;
 			BEGIN(INITIAL);
@@ -1104,7 +1119,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 168 "zsoelim.l"
+#line 184 "zsoelim.l"
 {
 			no_newline = 0;
 			error(OK, 0,
@@ -1117,7 +1132,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 178 "zsoelim.l"
+#line 194 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1126,7 +1141,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 184 "zsoelim.l"
+#line 200 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1134,7 +1149,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 189 "zsoelim.l"
+#line 205 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar('\n');
@@ -1143,7 +1158,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 196 "zsoelim.l"
+#line 212 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1154,7 +1169,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 204 "zsoelim.l"
+#line 220 "zsoelim.l"
 {	/* file names including whitespace ?? */
 			no_newline = 1;
 			ECHO;
@@ -1166,7 +1181,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 213 "zsoelim.l"
+#line 229 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1174,7 +1189,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 218 "zsoelim.l"
+#line 234 "zsoelim.l"
 {
 			no_newline = 1;
 			error(OK, 0,
@@ -1186,7 +1201,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 227 "zsoelim.l"
+#line 243 "zsoelim.l"
 {
 			no_newline = 0;
 			error(OK, 0,
@@ -1203,7 +1218,7 @@ case YY_STATE_EOF(de):
 case YY_STATE_EOF(end_request):
 case YY_STATE_EOF(lfnumber):
 case YY_STATE_EOF(lfname):
-#line 237 "zsoelim.l"
+#line 253 "zsoelim.l"
 {
 		fclose(yyin);
 
@@ -1227,7 +1242,7 @@ case YY_STATE_EOF(lfname):
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 257 "zsoelim.l"
+#line 273 "zsoelim.l"
 ECHO;
 	YY_BREAK
 
@@ -2109,7 +2124,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 257 "zsoelim.l"
+#line 273 "zsoelim.l"
 
 
 #ifdef ACCEPT_QUOTES
@@ -2195,10 +2210,9 @@ static int open_file(char *filename)
 {
 	FILE *oldyyin;
 	char *ext;
-	char *compfile;
 	int is_hpux=0;
 	int is_compr=0;
-	struct compression *comp;
+	struct compression *comp = NULL;
 	struct stat buf;
 
 	oldyyin = yyin;
@@ -2206,7 +2220,6 @@ static int open_file(char *filename)
 /* #ifdef __hpux */
 	ext = strrchr(filename, '.');
 	if (strstr(filename, ".Z/")) { /* The file is in an HPUX directory */
-		compfile = filename;
 		is_hpux = 1;
 		is_compr = 0;
 	} else if (ext) {
@@ -2216,7 +2229,6 @@ static int open_file(char *filename)
 				if (stat(filename, &buf) == 0) {
 					comp->file = --ext;
 					is_compr = 1;
-					compfile = filename;
 					break;
 				}
 			}
@@ -2228,12 +2240,14 @@ static int open_file(char *filename)
 	if( is_hpux || is_compr || !(yyin = fopen( filename, "r" ))) {
 
 #ifdef COMP_SRC
+		char *compfile;
 		size_t len;
 
 		if (is_hpux) {
-			struct compression hpux_comp = {GUNZIP "  -S \"\"", 
+			struct compression hpux_comp = {GUNZIP " -S \"\"", 
 							"", NULL};
 			comp = &hpux_comp;
+			compfile = filename;
 		} else if ( ! is_compr) {
 			compfile = strappend(NULL, filename, ".", NULL);
 			len = strlen(compfile);
@@ -2244,7 +2258,8 @@ static int open_file(char *filename)
 					break;
 				*(compfile + len) = '\0';
 			}
-		}
+		} else
+			compfile = filename;
 
 		if (comp->ext) {
 			char *command;

@@ -1,10 +1,22 @@
 # Master Makefile for the man-db package.
 #
-# Copyright (C) 1994, 1995, Graeme Wilford.
+# Copyright (C) 1994, 1995 Graeme Wilford.
 #
-# You may distribute under the terms of the GNU General Public
-# License as specified in the COPYING file that comes with the man-db 
-# distribution.  
+# This file is part of man-db.
+#
+# man-db is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# man-db is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with man-db; if not, write to the Free Software Foundation,
+# Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 # Sat Aug  6 15:46:44 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk):
 
@@ -44,6 +56,8 @@ INSTALL = src zsoelim man intl po
 
 include include/Defines
 
+export DESTDIR
+
 .PHONY: $(DEFAULT_TARGETS) $(EVERYTHING) dist ID \
 	$(addprefix __, $(DEFAULT_TARGETS)) update default RCS \
 	check deroff
@@ -63,7 +77,7 @@ $(srcdir)/configure: configure.in aclocal.m4
 	-cd $(srcdir) && autoconf
 
 $(srcdir)/include/config.h.in: stamp-h.in
-$(srcdir)/stamp-h.in: configure.in acconfig.h aclocal.m4
+$(srcdir)/stamp-h.in: configure.in aclocal.m4
 	-cd $(srcdir) && autoheader && echo timestamp > stamp-h.in
 
 # Use CONFIG_FILES= CONFIG_HEADERS= to force config.status to only
@@ -165,19 +179,20 @@ ifeq ($(srcdir),.)
 # Sorry folks, can only make a dist from the $(srcdir)
 
 # The files in the distribution
-_subdirs = $(EVERYTHING) tools docs include manual
+_subdirs = $(EVERYTHING) tools docs include manual m4
 
 _all = */README
-_root = ABOUT-NLS README configure *.h *.m4 *.in man-db.*
+_root = ABOUT-NLS README configure *.m4 *.in man-db.*
 _docs = INSTALL.* COPYING ChangeLog NEWS ToDo manpage.example*
 _include = *.in
 _lib = Makefile.in *.[ch]
 _libdb = Makefile.in *.[ch] COPYING.LIB
+_m4 = *.m4
 _man = Makefile.in man?/*.man? */man?/*.man? THANKS
 _manual = Makefile *.me
 _src = Makefile.in README.lexgrog *.[chl] *.l-* lexgrog.l.new man_db.conf.in
-_tools = chconfig checkman config.* install-manpage install-sh \
-	 mandb_\[nt\]fmt-script mkcatdirs mkinstalldirs nroff-script
+_tools = chconfig checkman config.* install-sh \
+	 mandb_\[nt\]fmt-script mkcatdirs mkinstalldirs
 _zsoelim = Makefile.in *.[cl]
 
 FILES = $(_root) $(_all) \
@@ -185,7 +200,7 @@ FILES = $(_root) $(_all) \
 	  $(addprefix $(_subdir)/, $(_$(_subdir))))
 
 message = release $(version), date $(date)
-nls_man = de_DE.88591 de_DE.ascii es_ES.88591 it_IT.88591 ja_JP.eucJP
+nls_man = de_DE.88591 es_ES.88591 it_IT.88591 ja_JP.eucJP
 man_db := man-db-$(version)
 
 # Ensure the flex C files are current
@@ -201,11 +216,15 @@ dist: update
 	        $(foreach dir, . $(nls_man), \
 	          $(dir)/man1 $(dir)/man5 $(dir)/man8))
 	for file in $(FILES); do \
-	  ln $(srcdir)/$$file $(man_db)/$$file; \
+	  cp -p $(srcdir)/$$file $(man_db)/$$file; \
 	done
-	for subdir in intl po; do \
-	  $(MAKE) -C $$subdir dist; \
-	done
+	$(MAKE) -C intl dist
+	# Maintainers may wish to run 'make -C po update-po' beforehand.
+	# This is not done automatically, since the .po files are stored
+	# in revision control.
+	$(MAKE) -C po man-db.pot
+	$(MAKE) -C po update-gmo
+	$(MAKE) -C po dist2
 	chmod -R a+rX $(man_db)
 	tar cvf - $(man_db) | gzip -9 > $(man_db).tar.gz
 	rm -fr $(man_db)

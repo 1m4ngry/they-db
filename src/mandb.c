@@ -1,12 +1,24 @@
 /*
  * mandb.c: used to create and initialise global man database.
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
- * Copyright (c) 2001 Colin Watson.
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Tue Apr 26 12:56:44 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  *
@@ -152,14 +164,14 @@ static void usage (int status)
 {
 	printf (_("usage: %s [-dqspuc|-h|-V] [manpath]\n"), program_name);
 	printf (_(
-		"-d --debug                  produce debugging info.\n"
-		"-q --quiet                  work quietly, except for 'bogus' warning.\n"
-		"-s --no-straycats           don't look for or add stray cats to the dbs.\n"
-		"-p --no-purge               don't purge obsolete entries from the dbs.\n"
-		"-u --user-db                produce user databases only.\n"
-		"-c --create                 create dbs from scratch, rather than updating.\n"
-		"-V --version                show version.\n"
-		"-h --help                   show this usage message.\n")
+		"-d, --debug                 produce debugging info.\n"
+		"-q, --quiet                 work quietly, except for 'bogus' warning.\n"
+		"-s, --no-straycats          don't look for or add stray cats to the dbs.\n"
+		"-p, --no-purge              don't purge obsolete entries from the dbs.\n"
+		"-u, --user-db               produce user databases only.\n"
+		"-c, --create                create dbs from scratch, rather than updating.\n"
+		"-V, --version               show version.\n"
+		"-h, --help                  show this usage message.\n")
 	);
 
 	exit (status);
@@ -304,7 +316,7 @@ static short mandb (const char *catpath, const char *manpath)
 #  ifdef BERKELEY_DB
 	dbfile = strappend (NULL, dbname, ".db", NULL);
 	tmpdbfile = strappend (NULL, database, ".db", NULL);
-	if (create || opt_test) {
+	if (create || force_rescan || opt_test) {
 		xremove (tmpdbfile);
 		amount = create_db (manpath);
 	} else {
@@ -316,7 +328,7 @@ static short mandb (const char *catpath, const char *manpath)
 	pagfile = strappend (NULL, dbname, ".pag", NULL);
 	tmpdirfile = strappend (NULL, database, ".dir", NULL);
 	tmppagfile = strappend (NULL, database, ".pag", NULL);
-	if (create || opt_test) {
+	if (create || force_rescan || opt_test) {
 		xremove (tmpdirfile);
 		xremove (tmppagfile);
 		amount = create_db (manpath);
@@ -329,7 +341,7 @@ static short mandb (const char *catpath, const char *manpath)
 #else /* !NDBM */
 	xfile = dbname;
 	xtmpfile = database;
-	if (create || opt_test) {
+	if (create || force_rescan || opt_test) {
 		xremove (xtmpfile);
 		amount = create_db (manpath);
 	} else {

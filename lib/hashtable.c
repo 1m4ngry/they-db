@@ -1,12 +1,24 @@
 /*
  * hashtable.c: in core hash table routines.
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
- * Copyright (c) 2002 Colin Watson.
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * All of these routines except hash_free() can be found in K&R II.
  *
@@ -60,7 +72,7 @@ static unsigned int hash (const char *s, size_t len)
 #endif
 }
 
-void plain_hash_free (int type, void *defn)
+void plain_hash_free (void *defn)
 {
 	if (defn)
 		free (defn);
@@ -97,14 +109,14 @@ struct nlist *hash_lookup (const struct hashtable *ht,
 
 /* Return struct containing defn, or NULL if unable to store. */
 struct nlist *hash_install (struct hashtable *ht, const char *name, size_t len,
-			    int type, void *defn)
+			    void *defn)
 {
 	struct nlist *np;
 
 	np = hash_lookup (ht, name, len);
 	if (np) {
 		if (np->defn)
-			ht->free_defn (np->type, np->defn);
+			ht->free_defn (np->defn);
 	} else {
 		unsigned int hashval;
 
@@ -127,7 +139,6 @@ struct nlist *hash_install (struct hashtable *ht, const char *name, size_t len,
 		ht->hashtab[hashval] = np;
 	}
 
-	np->type = type;
 	np->defn = defn;
 
 	return np;
@@ -161,7 +172,7 @@ void hash_free (struct hashtable *ht)
 			struct nlist *next;
 
 			if (np->defn)
-				ht->free_defn (np->type, np->defn);
+				ht->free_defn (np->defn);
 			free (np->name);
 			next = np->next;
 			free (np);

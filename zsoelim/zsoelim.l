@@ -3,11 +3,25 @@
 /*
  * soelim.l: eliminate .so includes within *roff source
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1997 Fabrizio Polacco.
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Added functionality over gsoelim to allow for compressed .so includes.
  *
@@ -93,6 +107,8 @@ extern int optind;
 %x lfname
 
 W	[ \t]
+
+%option nounput
 
 %%
 
@@ -339,10 +355,9 @@ static int open_file(char *filename)
 {
 	FILE *oldyyin;
 	char *ext;
-	char *compfile;
 	int is_hpux=0;
 	int is_compr=0;
-	struct compression *comp;
+	struct compression *comp = NULL;
 	struct stat buf;
 
 	oldyyin = yyin;
@@ -350,7 +365,6 @@ static int open_file(char *filename)
 /* #ifdef __hpux */
 	ext = strrchr(filename, '.');
 	if (strstr(filename, ".Z/")) { /* The file is in an HPUX directory */
-		compfile = filename;
 		is_hpux = 1;
 		is_compr = 0;
 	} else if (ext) {
@@ -360,7 +374,6 @@ static int open_file(char *filename)
 				if (stat(filename, &buf) == 0) {
 					comp->file = --ext;
 					is_compr = 1;
-					compfile = filename;
 					break;
 				}
 			}
@@ -372,12 +385,14 @@ static int open_file(char *filename)
 	if( is_hpux || is_compr || !(yyin = fopen( filename, "r" ))) {
 
 #ifdef COMP_SRC
+		char *compfile;
 		size_t len;
 
 		if (is_hpux) {
-			struct compression hpux_comp = {GUNZIP "  -S \"\"", 
+			struct compression hpux_comp = {GUNZIP " -S \"\"", 
 							"", NULL};
 			comp = &hpux_comp;
+			compfile = filename;
 		} else if ( ! is_compr) {
 			compfile = strappend(NULL, filename, ".", NULL);
 			len = strlen(compfile);
@@ -388,7 +403,8 @@ static int open_file(char *filename)
 					break;
 				*(compfile + len) = '\0';
 			}
-		}
+		} else
+			compfile = filename;
 
 		if (comp->ext) {
 			char *command;

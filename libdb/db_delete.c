@@ -1,11 +1,22 @@
 /*
  * db_delete.c: dbdelete(), database delete routine.
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU Library General Public
- * License as specified in the file COPYING.LIB that comes with this
- * distribution.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Mon Aug  8 20:35:30 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -79,7 +90,7 @@ int dbdelete(const char *name, struct mandata *info)
 		MYDBM_DELETE(dbf, key);
 		MYDBM_FREE(cont.dptr);
 	} else {				/* 2+ entries */
-		char *names[ENTRIES], *ext[ENTRIES];
+		char **names, **ext;
 		char *multi_content = NULL;
 		datum multi_key;
 		int refs, i, j;
@@ -87,13 +98,15 @@ int dbdelete(const char *name, struct mandata *info)
 		/* Extract all of the extensions associated with 
 		   this key */
 
-		refs = list_extensions(cont.dptr + 1, names, ext);
+		refs = list_extensions(cont.dptr + 1, &names, &ext);
 
 		for (i = 0; i < refs; ++i)
 			if (STREQ(names[i], name) && STREQ(ext[i], info->ext))
 				break;
 
 		if (i >= refs) {
+			free(names);
+			free(ext);
 			MYDBM_FREE(cont.dptr);
 			free(key.dptr);
 			return NO_ENTRY;
@@ -114,6 +127,8 @@ int dbdelete(const char *name, struct mandata *info)
 		   the key too */
 		   
 		if (refs == 1) {
+			free(names);
+			free(ext);
 			MYDBM_FREE(cont.dptr);
 			MYDBM_DELETE(dbf, key);
 			free(key.dptr);
@@ -138,6 +153,9 @@ int dbdelete(const char *name, struct mandata *info)
 
 		if (MYDBM_REPLACE(dbf, key, cont))
 			gripe_replace_key(key.dptr);
+
+		free(names);
+		free(ext);
 	}
 
 	free(key.dptr);

@@ -1,13 +1,25 @@
 /*
  * man.c: The manual pager
  *
- * Copyright (c) 1990, 1991, John W. Eaton.
- * Copyright (C), 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (c) 2001 Colin Watson.
+ * Copyright (C) 1990, 1991 John W. Eaton.
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * John W. Eaton
  * jwe@che.utexas.edu
@@ -45,7 +57,7 @@ extern char *strchr(), *strcat();
 
 #if defined(HAVE_UNISTD_H)
 #  include <unistd.h>
-#else 
+#else
 extern pid_t vfork();
 #  define R_OK		4
 #  define STDOUT_FILENO	1
@@ -70,8 +82,8 @@ extern pid_t vfork();
 #  endif /* _POSIX_VERSION */
 #endif /* !PATH_MAX */
 
-char wd[PATH_MAX];
-char *cwd = wd;
+static char wd[PATH_MAX];
+static char *cwd = wd;
 
 #ifndef PIPE_BUF
 #  if defined(_POSIX_VERSION) && defined(_POSIX_PIPE_MAX)
@@ -127,7 +139,7 @@ extern int errno;
 #include "libdb/db_storage.h"
 #include "lib/error.h"
 #include "lib/cleanup.h"
-#include "hashtable.h"
+#include "lib/hashtable.h"
 #include "check_mandirs.h"
 #include "globbing.h"
 #include "ult_src.h"
@@ -325,7 +337,6 @@ static char **section_list;
 static const char *section;
 static char *colon_sep_section_list;
 static char *preprocessors;
-static const char *dbfilters;
 static char *pager;
 static char *locale;
 static char *internal_locale;
@@ -334,10 +345,11 @@ static char *less;
 static char *std_sections[] = STD_SECTIONS;
 static char *manp;
 static char *external;
+static struct hashtable *db_hash = NULL;
 
 static int troff;
 static const char *roff_device = NULL;
-static int print_where;
+static int print_where, print_where_cat;
 static int catman;
 static int local_man_file;
 static int findall;
@@ -377,6 +389,8 @@ static const struct option long_options[] =
     {"preprocessor", required_argument,	0, 'p'},
     {"location", no_argument, 		0, 'w'},
     {"where", no_argument,		0, 'w'},
+    {"location-cat", no_argument,	0, 'W'},
+    {"where-cat", no_argument,		0, 'W'},
     {"locale", required_argument,	0, 'L'},
     {"extension", required_argument,	0, 'e'},
     {"update", no_argument, 		0, 'u'},
@@ -399,7 +413,7 @@ static const struct option long_options[] =
     {0, 0, 0, 0}
 };
 
-static const char args[] = "7DlM:P:S:adfhH::kVum:p:tT::we:L:Zcr:X::E:iI";
+static const char args[] = "7DlM:P:S:adfhH::kVum:p:tT::wWe:L:Zcr:X::E:iI";
 
 # ifdef TROFF_IS_GROFF
 static int ditroff;
@@ -413,7 +427,7 @@ static char *html_pager;
     {0, 0, 0, 0}
 };
 
-static const char args[] = "7DlM:P:S:adfhkVum:p:we:L:cr:E:iI";
+static const char args[] = "7DlM:P:S:adfhkVum:p:wWe:L:cr:E:iI";
 
 #endif /* HAS_TROFF */
 
@@ -447,6 +461,8 @@ static void usage (int status)
 		"-f, --whatis                equivalent to whatis.\n"
 		"-k, --apropos               equivalent to apropos.\n"
 		"-w, --where, --location     print physical location of man page(s).\n"
+		"-W, --where-cat,\n"
+		"    --location-cat          print physical location of cat file(s).\n"
 		"-l, --local-file            interpret `page' argument(s) as local filename(s).\n"
 		"-u, --update                force a cache consistency check.\n"
 		"-i, --ignore-case           look for pages case-insensitively (default).\n"
@@ -461,10 +477,10 @@ static void usage (int status)
 		"-T, --troff-device device   use %s with selected device.\n"),
 		formatter, formatter);
 # ifdef TROFF_IS_GROFF
-	puts (_("-H, --html                  use lynx or argument to display html output.\n"));
-	puts (_("-Z, --ditroff               use groff and force it to produce ditroff."));
-	puts (_("-X, --gxditview             use groff and display through gditview (X11):"));
-	puts (_("                            -X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12."));
+	puts (_("-H, --html                  use lynx or argument to display html output.\n"
+		"-Z, --ditroff               use groff and force it to produce ditroff.\n"
+		"-X, --gxditview             use groff and display through gditview (X11):\n"
+		"                            -X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12."));
 # endif /* TROFF_IS_GROFF */
 #endif /* HAS_TROFF */
 
@@ -475,10 +491,9 @@ static void usage (int status)
 		"-S, --sections list         use colon separated section list.\n"
 		"-m, --systems system        search for man pages from other unix system(s).\n"
 		"-L, --locale locale         define the locale for this particular man search.\n"
-		"-p, --preprocessor string   string indicates which preprocessors to run."));
-	puts ("                             e - [n]eqn   p - pic    t - tbl\n"
-              "                             g - grap     r - refer  v - vgrind");
-        puts (_(
+		"-p, --preprocessor string   string indicates which preprocessors to run.\n"
+		"                             e - [n]eqn   p - pic    t - tbl\n"
+		"                             g - grap     r - refer  v - vgrind\n"
 		"-V, --version               show version.\n"
 		"-h, --help                  show this usage message."));
 
@@ -572,9 +587,14 @@ static void store_line_length (void)
 
 static int get_roff_line_length (void)
 {
-	if (!troff && (line_length < 66 || line_length > 80))
-		return line_length * 9 / 10;
-	else
+	/* groff >= 1.18 defaults to 78. */
+	if (!troff && line_length != 80) {
+		int length = line_length * 39 / 40;
+		if (length > line_length - 2)
+			return line_length - 2;
+		else
+			return length;
+	} else
 		return 0;
 }
 
@@ -582,13 +602,12 @@ static char *add_roff_line_length (char *filter, int *save_cat)
 {
 	int length = get_roff_line_length ();
 	if (length) {
-		char ll_option[32], lt_option[32];
+		char options[64];
 		if (debug)
 			fprintf (stderr, "Using %d-character lines\n", length);
 		*save_cat = 0;
-		sprintf (ll_option, " -rLL=%d.%di", length / 10, length % 10);
-		sprintf (lt_option, " -rLT=%d.%di", length / 10, length % 10);
-		return strappend (NULL, filter, ll_option, lt_option, NULL);
+		sprintf (options, " -rLL=%dn -rLT=%dn", length, length);
+		return strappend (NULL, filter, options, NULL);
 	}
 	return filter;
 }
@@ -618,10 +637,11 @@ static __inline__ void gripe_no_man (const char *name, const char *sec)
 	else
 		putc ('\n', stderr);
 
-	/* Debian-specific hack for now */
+#ifdef UNDOC_COMMAND
 	fprintf (stderr,
-		 _("See '%s' for help with undocumented features.\n"),
-		 "man 7 undocumented");
+		 _("See '%s' for help when manual pages are not available.\n"),
+		 UNDOC_COMMAND);
+#endif
 }
 
 /* fire up the appropriate external program */
@@ -751,7 +771,7 @@ static int need_to_rerun (void)
 
 
 /* man issued with `-l' option */
-int local_man_loop (const char *argv)
+static int local_man_loop (const char *argv)
 {
 	int exit_status = OK;
 	int local_mf = local_man_file;
@@ -759,7 +779,7 @@ int local_man_loop (const char *argv)
 	drop_effective_privs ();
 	local_man_file = 1;
 	if (strcmp (argv, "-") == 0)
-		display (NULL, "", NULL, "(stdin)");
+		display (NULL, "", NULL, "(stdin)", NULL);
 	else {
 		struct stat st;
 #ifdef COMP_SRC
@@ -791,13 +811,17 @@ int local_man_loop (const char *argv)
 #ifdef COMP_SRC
 		comp = comp_info (argv);
 		if (comp)
-			(void) decompress(argv, comp);
+			if (!decompress(argv, comp))
+				exit_status = CHILD_FAIL;
 #endif /* COMP_SRC */
-		lang = lang_dir (argv);
-		if (!display (NULL, argv, NULL, basename (argv))) {
-			if (local_mf)
-				error (0, errno, "%s", argv);
-			exit_status = NOT_FOUND;
+		if (exit_status == OK) {
+			lang = lang_dir (argv);
+			if (!display (NULL, argv, NULL, basename (argv),
+				      NULL)) {
+				if (local_mf)
+					error (0, errno, "%s", argv);
+				exit_status = NOT_FOUND;
+			}
 		}
 
 #ifdef COMP_SRC
@@ -814,7 +838,7 @@ int main (int argc, char *argv[])
 	int argc_env, status = 0, exit_status = OK;
 	char **argv_env;
 	const char *tmp;
-	char *multiple_locale;
+	char *multiple_locale = NULL;
 	extern int optind;
 	void (int_handler) (int);
 
@@ -830,13 +854,14 @@ int main (int argc, char *argv[])
 	textdomain (PACKAGE);
 
 	internal_locale = setlocale (LC_MESSAGES, NULL);
-	multiple_locale = getenv ("LANGUAGE");
 	/* Use LANGUAGE only when LC_MESSAGES locale category is
 	 * neither "C" nor "POSIX". */
-	if (multiple_locale)
-		if (internal_locale && strcmp (internal_locale, "C") &&
-		    strcmp (internal_locale, "POSIX"))
+	if (internal_locale && strcmp (internal_locale, "C") &&
+	    strcmp (internal_locale, "POSIX")) {
+		multiple_locale = getenv ("LANGUAGE");
+		if (multiple_locale)
 			internal_locale = multiple_locale;
+	}
 	if (internal_locale != NULL)
 		internal_locale = xstrdup (internal_locale);
 	else
@@ -896,7 +921,7 @@ int main (int argc, char *argv[])
 			 ruid, euid);
 
 #ifdef HAVE_SETLOCALE
-	/* close this locale and reinitialise incase a new locale was 
+	/* close this locale and reinitialise if a new locale was 
 	   issued as an argument or in $MANOPT */
 	if (locale) {
 		internal_locale = setlocale (LC_ALL, locale);
@@ -977,14 +1002,14 @@ int main (int argc, char *argv[])
 		manp = add_nls_manpath (manpath (alt_system_name), 
 					internal_locale);
 		/* Handle multiple :-separated locales in LANGUAGE */
-		idx = strlen (internal_locale);
+		idx = multiple_locale ? strlen (multiple_locale) : 0;
 		while (idx) {
-			while (idx && internal_locale[idx] != ':')
+			while (idx && multiple_locale[idx] != ':')
 				idx--;
-			if (internal_locale[idx] == ':')
+			if (multiple_locale[idx] == ':')
 				idx++;
-			tmp_locale[0] = internal_locale[idx];
-			tmp_locale[1] = internal_locale[idx + 1];
+			tmp_locale[0] = multiple_locale[idx];
+			tmp_locale[1] = multiple_locale[idx + 1];
 			tmp_locale[2] = 0;
 			/* step back over preceding ':' */
 			if (idx) idx--;
@@ -1045,8 +1070,9 @@ int main (int argc, char *argv[])
 		skip = 0;
 		status = man (nextarg);
 
-		/* clean out the memory cache for each man page */
-		free_hashtab ();
+		/* clean out the cache of database lookups for each man page */
+		hash_free (db_hash);
+		db_hash = NULL;
 
 		if (section && maybe_section) {
 			if (!status && !catman) {
@@ -1060,7 +1086,8 @@ int main (int argc, char *argv[])
 				tmp = section;
 				section = NULL;
 				status = man (tmp);
-				free_hashtab ();
+				hash_free (db_hash);
+				db_hash = NULL;
 				/* ... but don't gripe about it if it doesn't
 				 * work!
 				 */
@@ -1230,13 +1257,17 @@ static void man_getopt (int argc, char *argv[])
 		    	case 'w':
 				print_where = 1;
 				break;
+			case 'W':
+				print_where_cat = 1;
+				break;
 			case 'r':
 				prompt_string = optarg;
 				break;
 			case 'D':
 		    		/* discard all preset options */
 		    		local_man_file = findall = update = catman =
-					debug = troff = print_where =
+					debug = troff =
+					print_where = print_where_cat =
 					ascii = different_encoding =
 					match_case = 0;
 #ifdef TROFF_IS_GROFF
@@ -1260,14 +1291,16 @@ static void man_getopt (int argc, char *argv[])
 	}
 
 	/* check for incompatible options */
-	if (troff + whatis + apropos + catman + print_where > 1) {
+	if (troff + whatis + apropos + catman +
+	    (print_where || print_where_cat) > 1) {
 		error (0, 0,
 		       strappend (NULL,
 				  troff ? "-[tTZH] " : "",
 				  whatis ? "-f " : "",
 				  apropos ? "-k " : "",
 				  catman ? "-c " : "",
-				  print_where ? "-w " : "", 
+				  print_where ? "-w " : "",
+				  print_where_cat ? "-W " : "",
 				  _(": incompatible options"), NULL));
 		usage (FAIL);
 	}
@@ -1330,7 +1363,7 @@ static const char *get_preprocessors_from_file (const char *file)
 
 /* Determine pre-processors, set save_cat and return
    (static) string */
-static const char *get_preprocessors (const char *file)
+static const char *get_preprocessors (const char *file, const char *dbfilters)
 {
 	const char *pp_string;
 	const char *pp_source;
@@ -1455,7 +1488,8 @@ static void determine_lang_table (const char *lang)
 }
 
 /* Return command (malloced string) to format file to stdout */
-static __inline__ char *make_roff_command (const char *dir, const char *file)
+static __inline__ char *make_roff_command (const char *dir, const char *file,
+					   const char *dbfilters)
 {
 	const char *pp_string;
 	char *fmt_prog;
@@ -1522,10 +1556,10 @@ static __inline__ char *make_roff_command (const char *dir, const char *file)
 		stdin_tmpfile_fd = -1;
 		signal (SIGPIPE, old_handler);
 
-		pp_string = get_preprocessors (stdin_tmpfile);
+		pp_string = get_preprocessors (stdin_tmpfile, dbfilters);
 		regain_effective_privs ();
 	} else
-		pp_string = get_preprocessors (file);
+		pp_string = get_preprocessors (file, dbfilters);
 
 #ifdef ALT_EXT_FORMAT
 	/* Check both external formatter locations */
@@ -1574,7 +1608,7 @@ static __inline__ char *make_roff_command (const char *dir, const char *file)
 		/* Load the roff_device value dependent on the language dir
 		 * in the path.
 		 */
-		if (!troff && !roff_device)
+		if (!troff && !different_encoding)
 			determine_lang_table (lang);
 
 		/* tell grops to guess the page size */
@@ -1621,9 +1655,8 @@ static __inline__ char *make_roff_command (const char *dir, const char *file)
 					fprintf (stderr,
 						 "Using %d-character lines\n",
 						 roff_line_length);
-				sprintf (ll_macro, ".ll %d.%di",
-					 roff_line_length / 10,
-					 roff_line_length % 10);
+				sprintf (ll_macro, ".ll %dn",
+					 roff_line_length);
 				new_command = strappend (NULL, "(echo '",
 							 ll_macro, "'; ",
 							 command, ")", NULL);
@@ -1818,6 +1851,10 @@ static void setenv_less (const char *title)
 		fprintf (stderr, "Setting LESS to %s\n", less_opts);
 	/* If there isn't enough space in the environment, ignore it. */
 	setenv ("LESS", less_opts, 1);
+
+	if (debug)
+		fprintf (stderr, "Setting MAN_PN to %s\n", esc_title);
+	setenv ("MAN_PN", esc_title, 1);
 
 	free (less_opts);
 }
@@ -2297,7 +2334,8 @@ static void display_catman (const char *cat_file, const char *format_cmd)
  * on standard input.
  */
 static int display (const char *dir, const char *man_file,
-		    const char *cat_file, const char *title)
+		    const char *cat_file, const char *title,
+		    const char *dbfilters)
 {
 	int found;
 	static int pause;
@@ -2329,7 +2367,8 @@ static int display (const char *dir, const char *man_file,
 #endif /* COMP_SRC */
 
 		if (source_file)
-			format_cmd = make_roff_command (dir, source_file);
+			format_cmd = make_roff_command (dir, source_file,
+							dbfilters);
 		else
 			format_cmd = NULL;
 	}
@@ -2350,7 +2389,13 @@ static int display (const char *dir, const char *man_file,
 #endif
 
 	if (display_to_stdout) {
-		found = !access (man_file, R_OK);
+		/* If we're reading stdin via '-l -', man_file is "". See
+		 * below.
+		 */
+		if (*man_file == '\0')
+			found = 1;
+		else
+			found = !access (man_file, R_OK);
 		if (found) {
 			if (pause && do_prompt (title))
 				return 0;
@@ -2449,11 +2494,17 @@ static int display (const char *dir, const char *man_file,
 			return found;
 		}
 
-		if (print_where) {
-			if (man_file)
-				printf ("%s ", man_file);
-			if (cat_file && !format)
-				printf ("%s ", cat_file);
+		if (print_where || print_where_cat) {
+			int printed = 0;
+			if (print_where && man_file) {
+				printf ("%s", man_file);
+				printed = 1;
+			}
+			if (print_where_cat && cat_file && !format) {
+				if (printed)
+					putchar (' ');
+				printf ("%s", cat_file);
+			}
 			putchar ('\n');
 		} else if (catman) {
 			if (format) {
@@ -2779,7 +2830,7 @@ static int display_filesystem (struct candidate *candp)
 	if (candp->cat) {
 		if (troff || different_encoding)
 			return 0;
-		return display (candp->path, NULL, filename, title);
+		return display (candp->path, NULL, filename, title, NULL);
 	} else {
 		char *man_file, *cat_file;
 		int found;
@@ -2799,7 +2850,7 @@ static int display_filesystem (struct candidate *candp)
 		cat_file = find_cat_file (candp->path, man_file);
 		if (debug)
 			fprintf (stderr, "will try cat file %s\n", cat_file);
-		found = display (candp->path, man_file, cat_file, title);
+		found = display (candp->path, man_file, cat_file, title, NULL);
 		free (cat_file);
 		/* Be careful not to free man_file, as it's static. */
 		free (title);
@@ -2858,8 +2909,6 @@ static int display_database (struct candidate *candp)
 		name = in->name;
 	else
 		name = candp->req_name;
-
-	dbfilters = in->filter;
 
 	/* make sure the file we want is the same as the one in the 
 	   filesystem */
@@ -2940,7 +2989,7 @@ static int display_database (struct candidate *candp)
 
 			cat_file = find_cat_file (candp->path, man_file);
 			found += display (candp->path, man_file, cat_file,
-					  title);
+					  title, in->filter);
 			free (cat_file);
 #ifdef COMP_SRC
 			/* if ult_src() produced a ztemp file, we need to 
@@ -3009,7 +3058,7 @@ static int display_database (struct candidate *candp)
 			}
 		}
 
-		found += display (candp->path, NULL, file, title);
+		found += display (candp->path, NULL, file, title, in->filter);
 	}
 	free (title);
 	return found;
@@ -3032,6 +3081,11 @@ static int display_database_check (struct candidate *candp)
 	return exists;
 }
 
+static void db_hash_free (void *defn)
+{
+	free_mandata_struct (defn);
+}
+
 /* Look for a page in the database. If db not accessible, return -1,
    otherwise return number of pages found. */
 static int try_db (const char *manpath, const char *sec, const char *name,
@@ -3051,7 +3105,11 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 	} else
 		database = mkdbname (manpath);
 
-	in_cache = lookup (manpath); /* have we looked here already? */
+	if (!db_hash)
+		db_hash = hash_create (&db_hash_free);
+
+	/* Have we looked here already? */
+	in_cache = hash_lookup (db_hash, manpath, strlen (manpath));
 	
 	if (!in_cache) {
 		dbf = MYDBM_RDOPEN (database);
@@ -3068,12 +3126,12 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 			/* if section is set, only return those that match,
 			   otherwise NULL retrieves all available */
 			data = dblookup_all (name, section, match_case);
-			(void) install_db_ptr (manpath, data); 
+			hash_install (db_hash, manpath, strlen (manpath),
+				      data);
 			MYDBM_CLOSE (dbf);
 #ifdef MAN_DB_CREATES
 		} else if (!global_manpath) {
 			/* create one */
-			free_hashtab ();
 			if (debug)
 				fprintf (stderr, 
 					 "Failed to open %s O_RDONLY\n",
@@ -3083,7 +3141,9 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 				data = infoalloc ();
 				data->next = NULL;
 				data->addr = NULL;
-				(void) install_db_ptr (manpath, data);
+				hash_install (db_hash,
+					      manpath, strlen (manpath),
+					      data);
 				return -1;
 			}
 			return -2;
@@ -3096,7 +3156,8 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 			data = infoalloc ();
 			data->next = (struct mandata *) NULL;
 			data->addr = NULL;
-			(void) install_db_ptr (manpath, data);
+			hash_install (db_hash, manpath, strlen (manpath),
+				      data);
 			return -1; /* indicate failure to open db */
 		}
 	} else
@@ -3220,15 +3281,11 @@ static int man (const char *name)
 	}
 
 	if (found)
-		display_pages (candidates);
+		found = display_pages (candidates);
 
 #ifdef MAN_DB_UPDATES
 	/* check to see if any of the databases need updating */
 	if ((!found || found_a_stray) && update && update_required) {
-		/* must free_hashtab() here in case testmandirs() 
-		   wants to use it */
-		free_hashtab ();
-	
 		if (need_to_rerun ())
 			return man (name);
 	}

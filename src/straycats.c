@@ -1,11 +1,24 @@
 /*
  * straycats.c: find and process stray cat files
  *
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Tue May  3 21:24:51 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk)
  */
@@ -68,14 +81,12 @@ extern char *canonicalize_file_name __P ((__const char *__name));
 #include "lib/error.h"
 #include "manp.h"
 #include "security.h"
+#include "check_mandirs.h"
 
 static char *temp_name;
 static char *catdir, *mandir;
 
-/* prototype here as it uses struct mandata which is defined in db_storage.h */
-extern int splitline (char *raw_whatis, struct mandata *info, char *base_name);
-
-static __inline__ int check_for_stray (void)
+static int check_for_stray (void)
 {
 	DIR *cdir;
 	struct dirent *catlist;
@@ -265,6 +276,10 @@ static __inline__ int check_for_stray (void)
 					remove_with_dropped_privs (temp_name);
 					perror (filter);
 				} else {
+					const char *manbase =
+						basename (mandir);
+					struct page_description *descs;
+
 					strays++;
 
 					lg.type = CATPAGE;
@@ -276,8 +291,14 @@ static __inline__ int check_for_stray (void)
 								basename (mandir),
 								info.sec);
 
-					(void) splitline (lg.whatis, &info,
-							  basename (mandir));
+					descs = parse_descriptions (manbase,
+								    lg.whatis);
+					if (descs) {
+						store_descriptions (descs,
+								    &info,
+								    manbase);
+						free_descriptions (descs);
+					}
 				}
 			}
 

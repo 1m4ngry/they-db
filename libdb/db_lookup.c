@@ -1,11 +1,22 @@
 /*
  * db_lookup.c: low level database interface routines for man.
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU Library General Public
- * License as specified in the file COPYING.LIB that comes with this
- * distribution.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Mon Aug  8 20:35:30 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -303,17 +314,30 @@ datum make_content(struct mandata *in)
 
 /* Extract all of the names/extensions associated with this key. Each case
  * variant of a name will be returned separately.
+ *
+ * names and ext should be pointers to valid memory which will be filled in
+ * with the address of the allocated arrays of names and extensions. The
+ * caller is expected to free these arrays.
  */
-int list_extensions(char *data, char *names[], char *ext[])
+int list_extensions(char *data, char ***names, char ***ext)
 {  
 	int count = 0;
+	int bound = 4;	/* most multi keys will have fewer than this */
 
-	while ((names[count] = strsep(&data, "\t")) != NULL) {
-		ext[count] = strsep(&data, "\t");
-		if (ext[count])
+	*names = xmalloc(bound * sizeof **names);
+	*ext   = xmalloc(bound * sizeof **ext);
+	while (((*names)[count] = strsep(&data, "\t")) != NULL) {
+		(*ext)[count] = strsep(&data, "\t");
+		if ((*ext)[count])
 			++count;
 		else
 			break;
+
+		if (count >= bound) {
+			bound *= 2;
+			*names = xrealloc(*names, bound * sizeof **names);
+			*ext   = xrealloc(*ext,   bound * sizeof **ext);
+		}
 	}
 
 	if (debug)
@@ -363,7 +387,7 @@ static struct mandata *dblookup(const char *page, const char *section,
 		free_mandata_struct(info);
 		return NULL;
 	} else {				/* multiple entries */
-		char *names[ENTRIES], *ext[ENTRIES];
+		char **names, **ext;
 		struct mandata *ret = NULL;
 		int refs, i;
 
@@ -371,7 +395,7 @@ static struct mandata *dblookup(const char *page, const char *section,
 		 * associated with this key.
 		 */
 
-		refs = list_extensions(cont.dptr + 1, names, ext);
+		refs = list_extensions(cont.dptr + 1, &names, &ext);
 
 		/* Make the multi keys and look them up */
 
@@ -414,6 +438,9 @@ static struct mandata *dblookup(const char *page, const char *section,
 			if (!info->name)
 				info->name = xstrdup(names[i]);
 		}
+
+		free(names);
+		free(ext);
 		MYDBM_FREE(cont.dptr);
 		return ret;
 	}

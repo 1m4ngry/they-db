@@ -1,11 +1,24 @@
 /*
  * db_storage.h: define mandata structure, some macros and prototypes
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Sat Oct 29 13:09:31 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -30,7 +43,6 @@
 #define STRAY_CAT	'D'
 #define WHATIS_CAT	'E'
 
-#define ENTRIES 50      /* Max unique extensions per manual page name */
 #define FIELDS  9       /* No of fields in each database page `content' */
 
 #include "sys/time.h"	/* for time_t */
@@ -78,7 +90,7 @@ extern __inline__ struct mandata *infoalloc(void);
 extern char *name_to_key(const char *name);
 extern char **split_data(char *content, char *start[]);
 extern datum make_content(struct mandata *in);
-extern int list_extensions(char *data, char *names[], char *ext[]);
+extern int list_extensions(char *data, char ***names, char ***ext);
 extern void gripe_replace_key(const char *data);
 extern void gripe_bad_multi_key(const char *data);
 extern char *copy_if_set(const char *str);

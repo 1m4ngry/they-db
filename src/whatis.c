@@ -1,12 +1,24 @@
 /*
  * whatis.c: search the index or whatis database(s) for words.
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
- * Copyright (c) 2001 Colin Watson.
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * routines for whatis and apropos programs. Whatis looks up the 
  * keyword for the description, apropos searches the entire database 
@@ -127,14 +139,14 @@ static void usage (int status)
 {
 	printf (_("usage: %s [-d] [-r|-w|-e] [-m systems] [-M manpath] | [-h] | [-V] keyword ...\n"), program_name);
 	printf (_(
-		"-d --debug		produce debugging info.\n"
-		"-r --regex 		interpret each keyword as a regex (default).\n"
-		"-e --exact 		search each keyword for exact match.\n"
-		"-w --wildcard		the keyword(s) contain wildcards.\n"
-		"-m --systems system	include alternate systems man pages.\n"
-		"-M --manpath path	set search path for manual pages to `path'.\n"
-		"-V --version		show version.\n"
-		"-h --help		show this usage message.\n"));
+		"-d, --debug                produce debugging info.\n"
+		"-r, --regex                interpret each keyword as a regex (default).\n"
+		"-e, --exact                search each keyword for exact match.\n"
+		"-w, --wildcard             the keyword(s) contain wildcards.\n"
+		"-m, --systems system       include alternate systems' man pages.\n"
+		"-M, --manpath path         set search path for manual pages to `path'.\n"
+		"-V, --version              show version.\n"
+		"-h, --help                 show this usage message.\n"));
 
 	exit (status);
 }
@@ -143,13 +155,13 @@ static void usage (int status)
 {
 	printf (_("usage: %s [-d] [-r|-w] [-m systems] [-M manpath] | [-h] | [-V] keyword ...\n"), program_name);
 	printf(_(
-	       "-d --debug		produce debugging info.\n"
-	       "-r --regex 		interpret each keyword as a regex.\n"
-	       "-w --wildcard		the keyword(s) contain wildcards.\n"
-	       "-m --systems system	include alternate systems man pages.\n"
-	       "-M --manpath path	set search path for manual pages to `path'.\n"
-	       "-V --version		show version.\n"
-	       "-h --help		show this usage message.\n"));
+		"-d, --debug                produce debugging info.\n"
+		"-r, --regex                interpret each keyword as a regex.\n"
+		"-w, --wildcard             the keyword(s) contain wildcards.\n"
+		"-m, --systems system       include alternate systems' man pages.\n"
+		"-M, --manpath path         set search path for manual pages to `path'.\n"
+		"-V, --version              show version.\n"
+		"-h, --help                 show this usage message.\n"));
 
 	exit (status);
 }
@@ -216,7 +228,7 @@ static char *get_whatis (struct mandata *info, const char *page)
 		if (*(info->pointer) != '-')
 			error (0, 0, _("warning: %s contains a pointer loop"),
 			       page);
-		return xstrdup (_("(unknown)"));
+		return xstrdup (_("(unknown subject)"));
 	}
 
 	/* Now we have to work through pointers. The limit of 10 is fairly
@@ -229,7 +241,7 @@ static char *get_whatis (struct mandata *info, const char *page)
 
 		/* If the pointer lookup fails, do nothing. */
 		if (!info)
-			return xstrdup (_("(unknown)"));
+			return xstrdup (_("(unknown subject)"));
 
 		/* See if we need to fill in the whatis here. */
 		if (*(info->pointer) == '-' ||
@@ -244,7 +256,7 @@ static char *get_whatis (struct mandata *info, const char *page)
 				       _("warning: %s contains a pointer loop"),
 				       page);
 			free_mandata_struct (info);
-			return xstrdup (_("(unknown)"));
+			return xstrdup (_("(unknown subject)"));
 		}
 
 		newinfo = dblookup_exact (info->pointer, info->ext, 1);
@@ -253,7 +265,7 @@ static char *get_whatis (struct mandata *info, const char *page)
 	}
 
 	error (0, 0, _("warning: %s contains a pointer loop"), page);
-	return xstrdup (_("(unknown)"));
+	return xstrdup (_("(unknown subject)"));
 }
 
 /* print out any matches found */

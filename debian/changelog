@@ -1,3 +1,34 @@
+man-db (2.4.1-1) unstable; urgency=low
+
+  * The "no, the apropos segfaults weren't my fault" release.
+  * New upstream release.
+    - Add new -W/--where-cat option and arrange for -w to print out only the
+      location of the nroff page, to make parsing easier (closes: #156558).
+    - Remove some global variable abuse in the detection of preprocessors
+      (closes: #153794).
+    - Export $MAN_PN to the pager (closes: #158658).
+    - Fix character set lookups again (closes: #158752).
+    - Add bzip2 decompression support (closes: #159994). Note that this
+      doesn't mean packages should use it: Debian policy still mandates
+      gzip, and bzip2 is neither Essential: yes nor depended on by man-db.
+    - Print an error message and continue when a decompression command
+      fails, rather than immediately returning CHILD_FAIL (closes: #141981).
+    - Clarify the purpose of section 7 as "Miscellaneous" (closes: #161505).
+    - Rewrite the whatis parsing and storing code in check_mandirs.c so that
+      I can actually understand it, and fix some spurious pointer loops in
+      the process (closes: #163030).
+    - Avoid over-enthusiastic access() check on stdin, so that 'man -X -l -'
+      works (thanks, Peter Muir; closes: #167446).
+    - Escape man page names when globbing, so that [(1) works properly
+      (closes: #168129).
+    - Fix a slightly misfiring check for $LANGUAGE (closes: #171513).
+    - Detect and rebuild databases with the multi key corruption fixed in
+      2.4.0-7 (closes: #165625).
+  * './configure --enable-mandirs=GNU' is no longer necessary; the configure
+    script figures it out automatically.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 22 Dec 2002 19:43:37 +0000
+
 man-db (2.4.0-11) unstable; urgency=low
 
   * Remove weak alias foolishness from lib/strnlen.c, so that man-db can

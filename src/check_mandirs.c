@@ -1,12 +1,24 @@
 /*
  * check_mandirs.c: used to auto-update the database caches
  *
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
- * Copyright (c) 2001 Colin Watson.
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Mon May  2 17:36:33 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
  *
@@ -67,9 +79,9 @@ extern int errno;
 #include "libdb/mydbm.h"
 #include "libdb/db_storage.h"
 #include "lib/error.h"
+#include "lib/hashtable.h"
 #include "globbing.h"
 #include "ult_src.h"
-#include "hashtable.h"
 #include "security.h"
 #include "check_mandirs.h"
 
@@ -77,7 +89,9 @@ int opt_test;		/* don't update db */
 int pages;
 int force_rescan = 0;
 
-static void gripe_bogus_manpage (char *manpage)
+static struct hashtable *whatis_hash = NULL;
+
+static void gripe_bogus_manpage (const char *manpage)
 {
 	if (quiet < 2)
 		error (0, 0, _("warning: %s: ignoring bogus filename"),
@@ -93,7 +107,14 @@ static void gripe_multi_extensions (const char *path, const char *sec,
 		       path, sec, name, ext);
 }
 
-static void gripe_rwopen_failed (char *database)
+static void gripe_bad_store (const char *name, const char *ext)
+{
+	if (quiet < 2)
+		error (0, 0, _("warning: failed to store entry for %s(%s)"),
+		       name, ext);
+}
+
+static void gripe_rwopen_failed (const char *database)
 {
 	if (errno == EACCES || errno == EROFS) {
 		if (debug)
@@ -129,94 +150,152 @@ char *make_filename (const char *path, const char *name,
 	return file;
 }
 
-int splitline (char *raw_whatis, struct mandata *info, char *base_name)
+/* Parse the description in a whatis line returned by find_name() into a
+ * sequence of names and whatis descriptions.
+ */
+struct page_description *parse_descriptions (const char *base_name,
+					     const char *whatis)
 {
-	char *comma;
-	int ret;
+	const char *sep, *nextsep;
+	struct page_description *desc = NULL, *head = NULL;
+	int seen_base_name = 0;
 
-	info->whatis = NULL;	/* default */
-	if (raw_whatis) {
+	if (!whatis)
+		return NULL;
+
+	sep = whatis;
+
+	while (sep) {
+		char *record;
+		size_t length;
+		const char *dash;
+		char *names;
+		const char *token;
+
+		/* Use a while loop so that we skip over things like the
+		 * result of double line breaks.
+		 */
+		while (*sep == 0x11 || *sep == ' ')
+			++sep;
+		nextsep = strchr (sep, 0x11);
+
+		/* Get this record as a null-terminated string. */
+		if (nextsep)
+			length = (size_t) (nextsep - sep);
+		else
+			length = strlen (sep);
+		if (length == 0)
+			break;
+
+		record = xstrndup (sep, length);
 		if (debug)
-			fprintf (stderr, "raw_whatis = %s\n", raw_whatis);
-		info->whatis = strstr (raw_whatis, " - ");
-		if (info->whatis) {
-			/* Deliberate cast in order to modify the whatis.
-			 * Don't change its length!
-			 */
-			char *space = (char *) info->whatis;
-			while (*space == ' ')
-				*space-- = '\0';    /* separate description */
-			info->whatis += 3;
-			/* Now trim trailing spaces off the description. */
-			space = strchr (info->whatis, '\0') - 1;
-			while (*space == ' ')
-				*space = '\0';
-		} else
-			raw_whatis = NULL; /* kill entire whatis line */
+			fprintf (stderr, "record = '%s'\n", record);
+
+		/* Split the record into name and whatis description. */
+		dash = strstr (record, " - ");
+		if (dash)
+			names = xstrndup (record, dash - record);
+		else
+			names = xstrdup (record);
+
+		for (token = strtok (names, ","); token;
+		     token = strtok (NULL, ",")) {
+			/* Allocate new description node. */
+			if (head) {
+				desc->next = malloc (sizeof *desc);
+				desc = desc->next;
+			} else {
+				desc = malloc (sizeof *desc);
+				head = desc;
+			}
+			desc->name   = trim_spaces (token);
+			desc->whatis = dash ? trim_spaces (dash + 3) : NULL;
+			desc->next   = NULL;
+
+			if (STREQ (base_name, desc->name))
+				seen_base_name = 1;
+		}
+
+		free (names);
+
+		sep = nextsep;
 	}
 
-	/* Here we store the direct reference */
+	/* If it isn't there already, add the base_name onto the returned
+	 * list.
+	 */
+	if (!seen_base_name) {
+		if (head) {
+			desc->next = malloc (sizeof *desc);
+			desc = desc->next;
+			desc->whatis = xstrdup (head->whatis);
+		} else {
+			desc = malloc (sizeof *desc);
+			head = desc;
+			desc->whatis = NULL;
+		}
+		desc->name = xstrdup (base_name);
+		desc->next = NULL;
+	}
+
+	return head;
+}
+
+/* Take a list of descriptions returned by parse_descriptions() and store
+ * it into the database.
+ */
+void store_descriptions (const struct page_description *head,
+			 struct mandata *info, const char *base_name)
+{
+	const struct page_description *desc;
+	char save_id = info->id;
+
 	if (debug)
-		fprintf (stderr, "base_name = `%s', id = %c\n",
-			 base_name, info->id);
+		fprintf (stderr, "base_name = '%s'\n", base_name);
 
-	comma = strchr (base_name, ',');
-	if (comma) {
-		*comma = '\0';
+	for (desc = head; desc; desc = desc->next) {
+		/* Either it's the real thing or merely a reference. Get the
+		 * id and pointer right in either case.
+		 */
+		if (STREQ (base_name, desc->name)) {
+			info->id = save_id;
+			info->pointer = NULL;
+			info->whatis = desc->whatis;
+		} else {
+			if (save_id < STRAY_CAT)
+				info->id = WHATIS_MAN;
+			else
+				info->id = WHATIS_CAT;
+			info->pointer = base_name;
+			/* Don't waste space storing the whatis in the db
+			 * more than once.
+			 */
+			info->whatis = NULL;
+		}
+
 		if (debug)
-			fprintf (stderr, "base_name = `%s'\n",
-				 base_name);
-	}
-
-	ret = dbstore (info, base_name);
-	if (ret > 0)
-		return ret;
-
-	/* if there are no indirect references, just go on to the 
-	   next file */
-
-	if (!raw_whatis || strchr (raw_whatis, ',') == NULL)
-		return 0;
-
-	/* If there are...  */
-		
-	if (info->id < STRAY_CAT)
-		info->id = WHATIS_MAN;
-	else
-		info->id = WHATIS_CAT;
-
-	/* don't waste space storing the whatis in the db */
-	info->whatis = NULL;
-	/* This may be used in the next splitline() call. */
-	info->pointer = base_name; 
-	
-	while ((comma = strrchr (raw_whatis, ',')) != NULL) {
-		*comma = '\0';
-		comma += 2;
-
-		/* If we've already dealt with it, ignore */
-		
-		if (strcmp (comma, base_name) != 0) {
-			if (debug)
-				fprintf (stderr, "comma = `%s'\n", comma);
-			ret = dbstore (info, comma);
-			if (ret > 0)
-				return ret;
+			fprintf (stderr, "name = '%s', id = %c\n",
+				 desc->name, info->id);
+		if (dbstore (info, desc->name) > 0) {
+			gripe_bad_store (base_name, info->ext);
+			break;
 		}
 	}
+}
 
-	/* If we've already dealt with it, ignore */
-		
-	if (strcmp (raw_whatis, base_name) == 0)
-		return 0;
+/* Free a description list and all its contents. */
+void free_descriptions (struct page_description *head)
+{
+	struct page_description *desc = head, *prev;
 
-	if (debug)
-		fprintf (stderr, "raw_w = `%s'\n", raw_whatis);
-	ret = dbstore (info, raw_whatis);
-	if (ret > 0)
-		return ret;
-
-	return 0;
+	while (desc) {
+		free (desc->name);
+		if (desc->whatis)
+			free (desc->whatis);
+		prev = desc;
+		desc = desc->next;
+		free (prev);
+	}
 }
 
 /* Fill in a mandata structure with information about a file name.
@@ -233,7 +312,8 @@ int splitline (char *raw_whatis, struct mandata *info, char *base_name)
  * name is only set if it differs from req_name; otherwise it remains at
  * NULL.
  */
-char *filename_info (char *file, struct mandata *info, const char *req_name)
+char *filename_info (const char *file, struct mandata *info,
+		     const char *req_name)
 {
 	char *manpage = xstrdup (file);
 	char *base_name = basename (manpage);
@@ -386,7 +466,10 @@ void test_manfile (char *file, const char *path)
 		return;
 	}
 
-	if (lookup (ult) == NULL) {
+	if (!whatis_hash)
+		whatis_hash = hash_create (&plain_hash_free);
+
+	if (hash_lookup (whatis_hash, ult, strlen (ult)) == NULL) {
 		if (debug && strncmp (ult, file, len) != 0)
 			fprintf (stderr,
 				 "\ntest_manfile(): link not in cache:\n"
@@ -416,12 +499,14 @@ void test_manfile (char *file, const char *path)
 		info.id = SO_MAN;	/* .so, sym or hard linked file */
 
 	/* Ok, here goes: Use a hash tree to store the ult_srcs with
-	   their whatis. Anytime after, check the hash tree, if it's there, 
-	   use it. This saves us a find_name() which is a real hog */
+	 * their whatis. Anytime after, check the hash tree, if it's there, 
+	 * use it. This saves us a find_name() which is a real hog.
+	 *
+	 * Use the full path in ult as the hash key so we don't have to
+	 * clear the hash between calls.
+	 */
 
-	/* could use strrchr(ult, '/') + 1 as hash text, but not worth it */
-
-	in_cache = lookup (ult);
+	in_cache = hash_lookup (whatis_hash, ult, strlen (ult));
 
 	if (in_cache) {		/* cache hit */
 		lg.whatis = in_cache->defn ? xstrdup (in_cache->defn) : NULL;
@@ -447,8 +532,9 @@ void test_manfile (char *file, const char *path)
 #endif /* COMP_SRC */
 			find_name (ult, basename (file), &lg);
 		regain_effective_privs ();
-			
-		install_text (ult, lg.whatis);
+
+		hash_install (whatis_hash, ult, strlen (ult),
+			      lg.whatis ? xstrdup (lg.whatis) : NULL);
 	}
 
 	if (debug)
@@ -458,77 +544,19 @@ void test_manfile (char *file, const char *path)
 	info.pointer = NULL;	/* direct page, so far */
 	info.filter = lg.filters;
 	if (lg.whatis) {
-		int last_name;
-		char save_id;
-		char *othername = xstrdup (lg.whatis);
-
-		last_name = 0;
-		save_id = info.id;
-
-		/* It's easier to run through the names in reverse order. */
-		while (!last_name) {
-			char *sep, *dup_whatis, *end_othername;
-			/* Get the next name, with leading spaces and the
-			 * description removed.
-			 */
-			sep = strrchr (othername, 0x11);
-			if (sep)
-				*(sep++) = '\0';
-			else {
-				sep = othername;
-				last_name = 1;
-			}
-			if (!*sep)
-				/* Probably a double line break or something */
-				continue;
-			sep += strspn (sep, " ");
-			dup_whatis = xstrdup (sep);
-			end_othername = strstr (sep, " - ");
-			if (end_othername) {
-				while (*(end_othername - 1) == ' ')
-					--end_othername;
-				*end_othername = '\0';
-			}
-			if (STREQ (base_name, sep))
-				info.id = save_id;
-			else {
-				info.id = WHATIS_MAN;
-				info.pointer = base_name;
-			}
-			if (!opt_test) {
-				if (splitline (dup_whatis, &info, sep) == 1)
-					gripe_multi_extensions (path, info.sec,
-								base_name,
-								info.ext);
-			}
-			free (dup_whatis);
+		struct page_description *descs =
+			parse_descriptions (base_name, lg.whatis);
+		if (descs) {
+			if (!opt_test)
+				store_descriptions (descs, &info, base_name);
+			free_descriptions (descs);
 		}
-
-		info.id = save_id;
-		info.pointer = NULL;
-		if (!opt_test) {
-			/* Ugh. This whole thing needs to be rearranged. */
-			char *sep = strchr (lg.whatis, 0x11);
-			if (sep)
-				*sep = '\0';
-			if (splitline (lg.whatis,
-				       &info, base_name) == 1)
-				gripe_multi_extensions (path, info.sec,
-							base_name, info.ext);
-		}
-
-		free (othername);
-	} else {
+	} else if (quiet < 2) {
 		(void) stat (ult, &buf);
-		if (buf.st_size == 0) {
-			if (quiet < 2)
-				error (0, 0,
-				       _("warning: %s: ignoring empty file"),
-				       ult);
-			free (manpage);
-			return;
-		}
-		if (quiet < 2)
+		if (buf.st_size == 0)
+			error (0, 0, _("warning: %s: ignoring empty file"),
+			       ult);
+		else
 			error (0, 0,
 			       _("warning: %s: whatis parse for %s(%s) failed"),
 			       ult, base_name, info.ext);
@@ -609,7 +637,7 @@ static short testmandirs (const char *path, time_t last)
 			continue;
 		if (!S_ISDIR(stbuf.st_mode))		/* not a directory */
 			continue;
-		if (!force_rescan && stbuf.st_mtime <= last) {
+		if (stbuf.st_mtime <= last) {
 			/* scanned already */
 			if (debug)
 				fprintf (stderr,
@@ -641,10 +669,6 @@ static short testmandirs (const char *path, time_t last)
 		amount++;
 	}
 	closedir (dir);
-
-	/* clean out the whatis hashtable for new hierarchy */
-	if (amount > 0)
-		free_hashtab ();
 
 	return amount;
 }
@@ -798,13 +822,48 @@ short update_db (const char *manpath)
 	return EOF;
 }
 
+/* Count the number of exact extension matches returned from look_for_file()
+ * (which may return inexact extension matches in some cases). It may turn
+ * out that this is better handled in look_for_file() itself.
+ */
+static int count_glob_matches (const char *name, const char *ext,
+			       char **source)
+{
+	char **walk;
+	int count = 0;
+
+	for (walk = source; walk && *walk; ++walk) {
+		struct mandata info;
+		struct stat statbuf;
+		char *buf;
+
+		if (stat (*walk, &statbuf) == -1) {
+			if (debug)
+				fprintf (stderr,
+					 "count_glob_matches: excluding %s "
+					 "because stat failed\n",
+					 *walk);
+			continue;
+		}
+
+		buf = filename_info (*walk, &info, name);
+		if (buf) {
+			if (STREQ (ext, info.ext))
+				++count;
+			free (buf);
+		}
+	}
+
+	return count;
+}
+
 /* Decide whether to purge a reference to a "normal" (ULT_MAN or SO_MAN)
  * page.
  */
-static __inline__ short purge_normal (char *name, struct mandata *info,
-				      char **found)
+static short purge_normal (const char *name, struct mandata *info,
+			   char **found)
 {
-	if (found)
+	if (count_glob_matches (name, info->ext, found))
 		return 0;
 
 	if (!opt_test)
@@ -817,10 +876,10 @@ static __inline__ short purge_normal (char *name, struct mandata *info,
 }
 
 /* Decide whether to purge a reference to a WHATIS_MAN page. */
-static __inline__ short purge_whatis (const char *manpath, char *name,
-				      struct mandata *info, char **found)
+static short purge_whatis (const char *manpath, const char *name,
+			   struct mandata *info, char **found)
 {
-	if (found) {
+	if (count_glob_matches (name, info->ext, found)) {
 		/* If the page exists and didn't beforehand, then presumably
 		 * we're about to rescan, which will replace the WHATIS_MAN
 		 * entry with something better. However, there have been
@@ -865,7 +924,7 @@ static __inline__ short purge_whatis (const char *manpath, char *name,
 					    info->pointer, 0, 1);
 		debug = save_debug;
 
-		if (real_found)
+		if (count_glob_matches (info->pointer, info->ext, real_found))
 			return 0;
 
 		if (!opt_test)
@@ -877,6 +936,48 @@ static __inline__ short purge_whatis (const char *manpath, char *name,
 				 name, info->ext);
 		return 1;
 	}
+}
+
+/* Check that multi keys are correctly constructed. */
+static short check_multi_key (const char *name, const char *content)
+{
+	const char *walk, *next;
+
+	if (!*content)
+		return 0;
+
+	for (walk = content; walk && *walk; walk = next) {
+		/* The name in the multi key should only differ from the
+		 * name of the key itself in its case, if at all.
+		 */
+		int valid = 1;
+		++walk; /* skip over initial tab */
+		next = strchr (walk, '\t');
+		if (next) {
+			if (strncasecmp (name, walk, next - walk))
+				valid = 0;
+		} else {
+			if (strcasecmp (name, walk))
+				valid = 0;
+		}
+		if (!valid) {
+			if (debug)
+				fprintf (stderr,
+					 "%s: broken multi key \"%s\", "
+					 "forcing a rescan\n",
+					 name, content);
+			force_rescan = 1;
+			return 1;
+		}
+
+		/* If the name was valid, skip over the extension and
+		 * continue the scan.
+		 */
+		walk = next;
+		next = walk ? strchr (walk + 1, '\t') : NULL;
+	}
+
+	return 0;
 }
 
 /* Go through the database and purge references to man pages that no longer
@@ -917,8 +1018,17 @@ short purge_missing (const char *manpath)
 		if (!content.dptr)
 			return count;
 
-		/* Ignore overflow entries. */
+		/* Get just the name. */
+		nicekey = xstrdup (key.dptr);
+		tab = strchr (nicekey, '\t');
+		if (tab)
+			*tab = '\0';
+
+		/* Deal with multi keys. */
 		if (*content.dptr == '\t') {
+			if (check_multi_key (nicekey, content.dptr))
+				MYDBM_DELETE (dbf, key);
+			free (nicekey);
 			MYDBM_FREE (content.dptr);
 			nextkey = MYDBM_NEXTKEY (dbf, key);
 			MYDBM_FREE (key.dptr);
@@ -931,6 +1041,7 @@ short purge_missing (const char *manpath)
 
 		/* We only handle ULT_MAN, SO_MAN, and WHATIS_MAN for now. */
 		if (entry.id > WHATIS_MAN) {
+			free (nicekey);
 			MYDBM_FREE (content.dptr);
 			nextkey = MYDBM_NEXTKEY (dbf, key);
 			MYDBM_FREE (key.dptr);
@@ -938,15 +1049,11 @@ short purge_missing (const char *manpath)
 			continue;
 		}
 
-		/* Get just the name. */
-		nicekey = xstrdup (key.dptr);
-		tab = strchr (nicekey, '\t');
-		if (tab)
-			*tab = '\0';
-
 		save_debug = debug;
 		debug = 0;	/* look_for_file() is quite noisy */
-		found = look_for_file (manpath, entry.ext, nicekey, 0, 1);
+		found = look_for_file (manpath, entry.ext,
+				       entry.name ? entry.name : nicekey,
+				       0, 1);
 		debug = save_debug;
 
 		/* Now actually decide whether to purge, depending on the

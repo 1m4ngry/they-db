@@ -5,6 +5,7 @@
 .\" You may distribute under the terms of the GNU General Public
 .\" License as specified in the file COPYING that comes with the
 .\" man-db distribution.
+.pc
 .TH lexgrog 1 "%date%" "%version%" "Manual pager utils"
 .SH NAME
 lexgrog \- parse header information in man pages
@@ -37,7 +38,7 @@ will print \(lqparse failed\(rq; this may be useful for external
 programs that need to check man pages for correctness.
 If one of
 .BR lexgrog 's
-input files is \(lq-\(rq, it will read from standard input; if any input
+input files is \(lq\-\(rq, it will read from standard input; if any input
 file is compressed, a decompressed version will be read automatically.
 .SH OPTIONS
 .TP
@@ -93,11 +94,11 @@ failed to parse one or more of its input files.
 .SH EXAMPLES
 .nf
   $ lexgrog man.1
-  man.1: "man - an interface to the on-line reference manuals"
-  $ lexgrog -fw man.1
-  man.1 (t): "man - an interface to the on-line reference manuals"
-  $ lexgrog -c whatis.cat1 
-  whatis.cat1: "whatis - display manual page descriptions"
+  man.1: "man \- an interface to the on-line reference manuals"
+  $ lexgrog \-fw man.1
+  man.1 (t): "man \- an interface to the on-line reference manuals"
+  $ lexgrog \-c whatis.cat1 
+  whatis.cat1: "whatis \- display manual page descriptions"
   $ lexgrog broken.1
   broken.1: parse failed
 .fi
@@ -113,18 +114,22 @@ While the parser is quite tolerant, as it has to cope with a number of
 different forms that have historically been used, it may sometimes fail to
 extract the required information.
 .PP
-A correct
+When using the traditional
+.I man
+macro set, a correct
 .B NAME
 section looks something like this:
-.IP
+.PP
+.RS
 .ft CW
 .nf
 \&.SH NAME
-foo \e- program to do something
+foo \e\- program to do something
 .fi
 .ft P
+.RE
 .PP
-Some manual pagers require the `\e-' to be exactly as shown;
+Some manual pagers require the \(oq\e\-\(cq to be exactly as shown;
 .B %mandb%
 is more tolerant, but for compatibility with other systems it is
 nevertheless a good idea to retain the backslash.
@@ -134,26 +139,44 @@ The text on the right-hand side is free-form, and may be spread over
 multiple lines.
 If several features with different descriptions are being documented in the
 same manual page, the following form is therefore used:
-.IP
+.PP
+.RS
 .ft CW
 .nf
 \&.SH NAME
-foo, bar \e- programs to do something
+foo, bar \e\- programs to do something
 \&.br
-baz \e- program to do nothing
+baz \e\- program to do nothing
 .fi
 .ft P
+.RE
 .PP
 (A macro which starts a new paragraph, like \f(CW.PP\fP, may be used instead
 of the break macro \f(CW.br\fP.)
+.PP
+When using the BSD-derived
+.I mdoc
+macro set, a correct
+.B NAME
+section looks something like this:
+.PP
+.RS
+.ft CW
+.nf
+\&.Sh NAME
+\&.Nm foo
+\&.Nd program to do something
+.fi
+.ft P
+.RE
 
 There are several common reasons why whatis parsing fails.
-Sometimes authors of manual pages replace `.SH NAME' with `.SH MYPROGRAM',
-and then
+Sometimes authors of manual pages replace \(oq.SH NAME\(cq with
+\(oq.SH MYPROGRAM\(cq, and then
 .B %mandb%
 cannot find the section from which to extract the information it needs.
 Sometimes authors include a NAME section, but place free-form text there
-rather than `name \e- description'.
+rather than \(oqname \e\- description\(cq.
 However, any syntax resembling the above should be accepted.
 .SH "SEE ALSO"
 .IR man (1),
@@ -162,10 +185,9 @@ However, any syntax resembling the above should be accepted.
 .IR whatis (1).
 .SH NOTES
 .B lexgrog
-cannot parse files containing .so requests.
-These are probably best checked by other programs, as
-.B lexgrog
-often does not have enough context to know what to do with them.
+attempts to parse files containing .so requests, but will only be able
+to do so correctly if the files are properly installed in a manual page
+hierarchy.
 .SH AUTHOR
 The code used by
 .B lexgrog

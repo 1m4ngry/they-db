@@ -1,11 +1,24 @@
 /*
- * ult_src.c
+ * ult_src.c: Find the ultimate source of a page
  *
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * code to seek out the original (ultimate) source man file for
  * any specified man file. Soft and hard links and .so inclusions
@@ -202,7 +215,7 @@ static __inline__ int test_for_include (char *buffer, char *rel)
  * name is full pathname, path is the MANPATH directory (/usr/man)
  * flags is a combination of SO_LINK | SOFT_LINK | HARD_LINK
  */
-char *ult_src (char *name, const char *path, struct stat *buf, int flags)
+char *ult_src (const char *name, const char *path, struct stat *buf, int flags)
 {
 	static char basename[2048];	/* must be static */
 	static short recurse; 		/* must be static */
@@ -281,11 +294,13 @@ char *ult_src (char *name, const char *path, struct stat *buf, int flags)
 
 			comp = comp_file (basename);
 			if (comp) {
-				drop_effective_privs ();
 				filename = decompress (comp->file, comp);
 				free (comp->file);
+				if (!filename)
+					return NULL;
 				(void) strcat (basename, ".");
 				(void) strcat (basename, comp->ext);
+				drop_effective_privs ();
 				fp = fopen (filename, "r");
 				regain_effective_privs ();
 			} else

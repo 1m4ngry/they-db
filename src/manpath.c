@@ -1,11 +1,24 @@
 /*
  * manpath.c: display either the manpath or catpath
  *  
- * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
- * You may distribute under the terms of the GNU General Public
- * License as specified in the file COPYING that comes with this
- * distribution.
+ * This file is part of man-db.
+ *
+ * man-db is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * man-db is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with man-db; if not, write to the Free Software Foundation,
+ * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Thu Nov 17 08:29:39 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -84,13 +97,13 @@ static void usage (int status)
 		"usage: %s [[-gcdq] [-m system]] | [-V] | [-h]\n"),
 		program_name);
 	printf (_(
-		"-c --catpath                show relative catpaths.\n"
-		"-g --global                 show the entire global manpath.\n"
-	        "-d --debug                  produce debugging info.\n"
-	        "-q --quiet                  produce fewer warnings.\n"
-	        "-m --systems system         express which `systems' to use.\n"
-	        "-V --version                show version.\n"
-	        "-h --help                   show this usage message.\n"));
+		"-c, --catpath               show relative catpaths.\n"
+		"-g, --global                show the entire global manpath.\n"
+	        "-d, --debug                 produce debugging info.\n"
+	        "-q, --quiet                 produce fewer warnings.\n"
+	        "-m, --systems system        express which `systems' to use.\n"
+	        "-V, --version               show version.\n"
+	        "-h, --help                  show this usage message.\n"));
 
 	exit (status);
 }
