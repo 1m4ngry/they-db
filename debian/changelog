@@ -1,3 +1,22 @@
+man-db (2.3.17.1-4) unstable; urgency=high
+
+  * Drop privileges in mandb when creating a temporary database in a
+    user-supplied manual hierarchy. Thanks to Ethan Benson for observing
+    this vulnerability.
+  * This was also fixed in 2.3.16-3 in potato; folded in changelog entries
+    from security updates.
+
+  * I noticed a stray /etc/cron.weekly/catman on my system. Although it was
+    definitely from this package, I can't quite work out from the changelog
+    when it was removed. At any rate, it's obsolete, so clean it up.
+  * Removed a spurious space in accessdb's usage output.
+  * whatis/apropos: Complain and exit immediately if a key in the database
+    is missing its value, indicating database corruption. Also disable
+    optimized btree walk for now, as seq() seems to be more tolerant of this
+    than get() for reasons I haven't tracked down yet (closes: #95052).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 30 Apr 2001 23:53:42 +0100
+
 man-db (2.3.17.1-3) unstable; urgency=low
 
   * Move the wrapper from /usr/bin/man-wrapper to /usr/lib/man-db/wrapper,
@@ -231,6 +250,30 @@ man-db (2.3.17-1) unstable; urgency=low
     This rant closes: #63497; be happy!:wq
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Fri,  7 Apr 2000 10:50:45 +0300
+
+man-db (2.3.16-3) stable; urgency=high
+
+  * The last upload regained privileges too early; an attacker could
+    potentially remove execute permissions from files owned by man. My
+    apologies for not detecting this earlier.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 30 Apr 2001 19:53:05 +0000
+
+man-db (2.3.16-2) stable; urgency=high
+
+  * Security upload by new maintainer.
+  * Drop privileges in mandb when creating a temporary database in a
+    user-supplied manual hierarchy. Thanks to Ethan Benson for observing
+    this vulnerability.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 29 Apr 2001 23:10:24 +0100
+
+man-db (2.3.16-1.1) stable; urgency=high
+
+  * Non-maintainer upload by Security Team
+  * Fixed unquoted throughpassing of format strings that could crash man
+
+ -- Martin Schulze <joey@finlandia.infodrom.north.de>  Thu,  8 Feb 2001 23:27:53 +0100
 
 man-db (2.3.16-1) frozen unstable; urgency=high
 

@@ -6,6 +6,12 @@ if [ -e /etc/cron.daily/man ]; then
     mv /etc/cron.daily/man /etc/cron.daily/man.moved-by-preinst
 fi
 
+# Clean up a cron job left around by man-db from some time ago.
+if [ -e /etc/cron.weekly/catman ]; then
+    echo "  Removing obsolete /etc/cron.weekly/catman cron job."
+    mv /etc/cron.weekly/catman /etc/cron.weekly/catman.moved-by-preinst
+fi
+
 # Old postrms removed catpages; we don't necessarily want to. Those postrms
 # didn't do anything else that's useful now, so remove them.
 if [ "$1" = upgrade ] && dpkg --compare-versions "$2" ge 2.3.16; then

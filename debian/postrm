@@ -21,6 +21,10 @@ case $1 in
 	     ! -e /etc/cron.daily/man ]; then
 	    mv /etc/cron.daily/man.moved-by-preinst /etc/cron.daily/man
 	fi
+	if [ -e /etc/cron.weekly/catman.moved-by-preinst -a \
+	     ! -e /etc/cron.weekly/catman ]; then
+	    mv /etc/cron.weekly/catman.moved-by-preinst /etc/cron.weekly/catman
+	fi
 	;;
 esac
 

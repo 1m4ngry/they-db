@@ -13,6 +13,9 @@ catdir=/var/cache/man
 if [ -e /etc/cron.daily/man.moved-by-preinst ]; then
     rm /etc/cron.daily/man.moved-by-preinst
 fi
+if [ -e /etc/cron.weekly/catman.moved-by-preinst ]; then
+    rm /etc/cron.weekly/catman.moved-by-preinst
+fi
 
 if dpkg --compare-versions "$2" lt 2.3.16; then
     # removing all catpages hierarchy
