@@ -1,4 +1,4 @@
-man-db (2.4.2-20) UNRELEASED; urgency=low
+man-db (2.4.2-20) unstable; urgency=low
 
   * Suggest less, since we have special support for it (closes: #280096).
   * Add support for cross-building (closes: #284856).
@@ -9,7 +9,7 @@ man-db (2.4.2-20) UNRELEASED; urgency=low
   * Update debconf translations:
     - Russian (thanks, Yuri Kozlov; part of #268584).
 
- -- Colin Watson <cjwatson@debian.org>  Sun,  7 Nov 2004 14:24:58 +0000
+ -- Colin Watson <cjwatson@debian.org>  Sun, 12 Dec 2004 22:22:17 +0100
 
 man-db (2.4.2-19) unstable; urgency=low
 
