@@ -775,13 +775,22 @@ int local_man_loop (char *argv)
 		/* See if we need to decompress the file(s) first */
 		struct compression *comp;
 
+		if (cwd[0]) {
+			if (debug)
+				fprintf (stderr, "chdir %s\n", cwd);
+			if (chdir (cwd)) {
+				error (0, errno, _( "can't chdir to %s"), cwd);
+				return 0;
+			}
+		}
+
 		if ( (comp = comp_info(argv)) )
 			(void) decompress(argv, comp);
 #endif /* COMP_SRC */
 		lang = lang_dir (argv);
-		if (!display ((cwd[0]?cwd:NULL), argv, NULL, basename(argv))) {
+		if (!display (NULL, argv, NULL, basename(argv))) {
 			if ( local_mf )
-				error (0, errno, argv);
+				error (0, errno, "%s", argv);
 			exit_status = NOT_FOUND;
 		}
 
@@ -804,14 +813,11 @@ int main (int argc, char *argv[])
 
 	umask(022);
 	/* initialise the locale */
-	internal_locale = setlocale( LC_MESSAGES, "");
+	internal_locale = setlocale( LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
 
-	if (internal_locale != NULL
-	|| (internal_locale = getenv ("LC_ALL"))
-	|| (internal_locale = getenv ("LC_MESSAGES"))
-	|| (internal_locale = getenv ("LANG")) )
+	if (internal_locale != NULL)
 		internal_locale = xstrdup (internal_locale);
 	else
 		internal_locale = "C";
@@ -882,7 +888,7 @@ int main (int argc, char *argv[])
 	/* close this locale and reinitialise incase a new locale was 
 	   issued as an argument or in $MANOPT */
 	if (locale) {
-		if ((internal_locale = setlocale(LC_MESSAGES, locale)) == NULL)
+		if ((internal_locale = setlocale(LC_ALL, locale)) == NULL)
 			internal_locale = locale;
 
 		internal_locale = xstrdup (internal_locale);

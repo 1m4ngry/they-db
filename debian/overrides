@@ -1,0 +1,2 @@
+man-db: setuid-binary usr/lib/man-db/man 4755 man/root
+man-db: setuid-binary usr/lib/man-db/mandb 4755 man/root

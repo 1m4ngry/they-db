@@ -1,0 +1,119 @@
+#! /usr/bin/make -f
+
+# The name of the package
+package = man-db
+dtmp    = debian/$(package)
+
+export DH_COMPAT=3
+
+# build flags that need overwrite
+NLS = all
+
+ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+CFLAGS = -O2
+# Enable other features - not just yet.
+# CFLAGS = -O2 -DDEBUG -DENABLE_HTML
+else
+CFLAGS = -g -O2
+endif
+LDFLAGS = 
+
+./configure incl/config.h.in: ./configure.in ./acconfig.h
+	# this creates incl/config.h.in from acconfig.h
+	autoheader
+	# this creates configure from configure.in
+	autoconf
+
+GNUmakefile: ./configure
+# create the makefile needed both from build and clean rules
+	test -x configure || chmod +x configure 
+	./configure --prefix=/usr --enable-setuid \
+	            --with-db=db2 --with-device=latin1
+
+build: build-stamp
+build-stamp: GNUmakefile
+# Builds the binary package.
+	dh_testdir
+	$(MAKE) nls="$(NLS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+	touch build-stamp
+
+clean: GNUmakefile
+	dh_testdir
+	cp -fp configure configure.safe
+	cp -fp GNUmakefile GNUmakefile.safe
+	-$(MAKE) -i distclean
+	mv -f GNUmakefile.safe makefile
+	mv -f configure.safe configure
+	-rm -f build-stamp install-stamp man/index.*
+	-rm -f */*.i
+	dh_clean
+	-cd po && rm -f stamp-cat-id cat-id-tbl.c man-db.pot
+
+install: install-stamp
+install-stamp: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	# On clock-skewed machines, 'make install' in src might end up
+	# rebuilding the binaries with the wrong prefix, and hardwiring bad
+	# paths into those binaries. Do the install ourselves to avoid this
+	# until such time as it can be fixed.
+	install -m755 src/man		$(dtmp)/usr/lib/man-db
+	install -m755 src/mandb		$(dtmp)/usr/lib/man-db
+	install -m755 src/manpath	$(dtmp)/usr/bin
+	install -m755 src/catman	$(dtmp)/usr/bin
+	install -m755 src/whatis	$(dtmp)/usr/bin
+	install -m755 src/apropos	$(dtmp)/usr/bin
+	install -m755 src/wrapper	$(dtmp)/usr/bin/man-wrapper
+	ln -sf man-wrapper		$(dtmp)/usr/bin/man
+	ln -sf man-wrapper		$(dtmp)/usr/bin/mandb
+	install -m755 src/accessdb	$(dtmp)/usr/sbin
+	# Do safe directories.
+	for x in zsoelim man intl po; do \
+		$(MAKE) -C $$x install prefix=../$(dtmp)/usr; \
+	done
+	install -m755 tools/chconfig	$(dtmp)/usr/share/$(package)
+	# now do manual changes needed by debian
+	# change locale names
+	mv $(dtmp)/usr/share/man/de_DE.88591 $(dtmp)/usr/share/man/de
+	mv $(dtmp)/usr/share/man/es_ES.88591 $(dtmp)/usr/share/man/es
+	mv $(dtmp)/usr/share/man/it_IT.88591 $(dtmp)/usr/share/man/it
+	mv $(dtmp)/usr/share/man/ja_JP.ujis  $(dtmp)/usr/share/man/ja
+	rm -rf $(dtmp)/usr/share/man/de_DE.ascii
+	touch install-stamp
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installman debian/man-wrapper.1
+	dh_installexamples debian/manpage.example
+	install -m644 src/man_db.config	\
+		$(dtmp)/usr/share/doc/$(package)/examples/manpath.config
+	# calculates md5 of manpath.config, and add to config_md5.
+	sed 's/\#.*$$//' \
+		  $(dtmp)/usr/share/doc/$(package)/examples/manpath.config |\
+		tr -s '\t ' '  ' | sort -u | md5sum |\
+		cat debian/config_md5 - | sort -u \
+		> $(dtmp)/usr/share/$(package)/config_md5
+	dh_installchangelogs docs/ChangeLog
+	dh_installcron
+	install -m644 debian/overrides \
+		      $(dtmp)/usr/share/lintian/overrides/$(package)
+	dh_strip
+	dh_compress
+	dh_fixperms
+	chown man  $(dtmp)/usr/lib/man-db/man $(dtmp)/usr/lib/man-db/mandb
+	chmod 4755 $(dtmp)/usr/lib/man-db/man $(dtmp)/usr/lib/man-db/mandb
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+
+.PHONY: build clean install binary binary-arch binary-indep

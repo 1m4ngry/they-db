@@ -1,0 +1,68 @@
+#!/bin/sh -e
+#
+# man postinst
+#
+# this script is executed after all the files in the package are
+# installed: it builds the catman hierarchy and then the database.
+
+[ "$1" = configure ] || exit 0
+
+oldcatdir=/var/catman
+catdir=/var/cache/man
+conffile=/etc/manpath.config
+chconfig=/usr/share/man-db/chconfig
+
+if [ ! -s $conffile ]; then
+    cp /usr/share/doc/man-db/examples/manpath.config $conffile
+fi
+
+if [ ! -e /usr/bin/pager ]; then
+    ln -sf /bin/more /usr/sbin/man-pager
+    update-alternatives --install /usr/bin/pager pager /usr/sbin/man-pager 1
+fi
+
+if [ -e /etc/cron.daily/man.moved-by-preinst ]; then
+    rm /etc/cron.daily/man.moved-by-preinst
+fi
+
+if dpkg --compare-versions "$2" lt-nl 2.3.10-69j; then
+    # before running mandb -c  must build correct conffile
+    md5=`sed 's/\#.*$//' $conffile | tr -s '\t ' '  ' | sort -u | md5sum`
+    if `grep -q $md5 /usr/share/man-db/config_md5 `; then
+	cp /usr/share/doc/man-db/examples/manpath.config /etc
+    else
+	if [ -x "$chconfig" ]; then
+	    $chconfig $conffile
+	else
+	    echo "  Cannot update $conffile."
+	    echo "  It is suggested to run command $chconfig ."
+	fi
+    fi
+fi
+
+if dpkg --compare-versions "$2" lt 2.3.16; then
+    # removing all catpages hierarchy
+    if [ -d $oldcatdir ]; then
+	echo "  Removing catpages as well as $oldcatdir hierarchy."
+	rm -rf $oldcatdir 2>/dev/null || true
+    fi
+    if [ -d $catdir ]; then
+	echo "  Removing catpages as well as $catdir hierarchy."
+	rm -rf $catdir 2>/dev/null || true
+    fi
+fi
+
+# Old packages removed catpages on upgrade. The preinst hack should have
+# avoided this, but let's be sure.
+if [ ! -d $catdir ]; then
+    install -d -g root -m 02755 -o man $catdir
+fi
+
+if [ ! -f $catdir/index.bt ] || dpkg --compare-versions "$2" lt 2.3.17; then
+    echo "  Building manual page index in background."
+    nice mandb -c 2>/dev/null >/dev/null &
+fi
+
+#DEBHELPER#
+
+exit 0

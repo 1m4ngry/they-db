@@ -209,7 +209,7 @@ static char *get_whatis(struct mandata *info)
 
 	/* ensure we need to fill in the whatis */
 	if (*(info->pointer) == '-') {
-		if (*(info->whatis))
+		if (info->whatis != NULL && *(info->whatis))
 			return xstrdup(info->whatis);
 		else
 			return xstrdup(_( "(unknown)"));
@@ -500,13 +500,10 @@ int main(int argc, char *argv[])
 	program_name = xstrdup(basename((argv[0])));
 
 	/* initialise the locale */
-	locale = setlocale( LC_MESSAGES, "");
+	locale = setlocale( LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
-	if (locale != NULL
-	|| (locale = getenv ("LC_ALL"))
-	|| (locale = getenv ("LC_MESSAGES"))
-	|| (locale = getenv ("LANG")) )
+	if (locale != NULL)
 		locale = xstrdup (locale);
 	else
 		locale = "C";
@@ -561,7 +558,7 @@ int main(int argc, char *argv[])
 	/* close this locale and reinitialise incase a new locale was 
 	   issued as an argument or in $MANOPT */
 	if (llocale) {
-		setlocale(LC_MESSAGES, llocale);
+		setlocale(LC_ALL, llocale);
 		locale = xstrdup( llocale);
 if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", llocale, locale);
 		if (locale) {
