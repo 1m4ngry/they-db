@@ -1,3 +1,19 @@
+man-db (2.4.0-3) unstable; urgency=low
+
+  * Include a bug/reportbug presubj hook to encourage the inclusion of
+    --debug output in bug reports.
+  * Fix the "9wm problem" for good (I hope). In the default configuration,
+    man will now essentially assume that anything beginning with a digit is
+    a section, but fall back and try it as a name if that doesn't work. So
+    'man 9wm fvwm' will look for fvwm(9wm) and then try 9wm(1) and fvwm(1)
+    when that fails, while 'man 3perl Shell' will display Shell(3perl). This
+    will now work even if man hasn't been explicitly told that 3perl is a
+    valid section (closes: #151283).
+  * Don't list 3tcl and 3tk in /etc/manpath.config any more, as this
+    workaround is now unnecessary (see #115345).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 29 Jun 2002 14:20:18 +0000
+
 man-db (2.4.0-2) unstable; urgency=low
 
   * Don't ask rebuild-database question twice on upgrade (closes: #151131).
