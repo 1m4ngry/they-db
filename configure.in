@@ -248,14 +248,16 @@ test -n "$pic" && pic="$pic -S"
 AC_PATH_PROG(gzip, gzip)
 if test -n "$gzip"
 then
+	AC_DEFINE(HAVE_GZIP, 1, [Define if you have gzip.])
 	gunzip="$gzip -dc"
 	compressor="$gzip -c7"
 	compress_ext="gz"
 	decompressor="$gunzip"
 fi
-AC_PATH_PROG(compress, compress)
+AC_PATH_PROG(compress, compress, /usr/bin/compress)
 if test -n "$compress"
 then
+	AC_DEFINE(HAVE_COMPRESS, 1, [Define if you have compress.])
 	uncompress="$compress -dc"
 	if test -z "$gzip"
 	then
@@ -267,6 +269,7 @@ fi
 AC_PATH_PROG(bzip2, bzip2, /usr/bin/bzip2)
 if test -n "$bzip2"
 then
+	AC_DEFINE(HAVE_BZIP2, 1, [Define if you have bzip2.])
 	bunzip2="$bzip2 -dc"
 fi
 if test -n "$gzip" || test -n "$compress" || test -n "$bzip2"

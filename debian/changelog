@@ -1,3 +1,15 @@
+man-db (2.4.1-9) unstable; urgency=medium
+
+  * Fix detection of decompression programs so that man doesn't attempt to
+    execute man pages (!) when it doesn't have a decompression program
+    (thanks, Paul Slootman; closes: #196097).
+  * Fall back to /usr/bin/compress if compress isn't installed on the build
+    system.
+  * Correct a misplaced free() in decompress() that mangled an error
+    message.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu,  5 Jun 2003 00:30:45 +0100
+
 man-db (2.4.1-8) unstable; urgency=low
 
   * debian/postinst: Remove '>/dev/null 2>/dev/null' from start-stop-daemon
