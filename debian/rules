@@ -8,12 +8,13 @@ export DH_COMPAT=3
 
 ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 CFLAGS = -O2
+LDFLAGS = 
 # Enable other features - not just yet.
-# CFLAGS = -O2 -DDEBUG -DENABLE_HTML
+# CFLAGS = -O2 -DDEBUG
 else
 CFLAGS = -g -O2
+LDFLAGS = -g
 endif
-LDFLAGS = 
 
 GNUmakefile:
 # create the makefile needed both from build and clean rules
@@ -28,8 +29,6 @@ build-stamp: GNUmakefile
 	dh_testdir
 	$(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
 		config_file=/etc/manpath.config
-	$(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
-		config_file=/etc/manpath.config -C src lexgrog
 	$(MAKE) -C manual SOELIM=../zsoelim/zsoelim
 	touch build-stamp
 
@@ -49,32 +48,20 @@ install-stamp: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-	# On clock-skewed machines, 'make install' in src might end up
-	# rebuilding the binaries with the wrong prefix, and hardwiring bad
-	# paths into those binaries. Do the install ourselves to avoid this
-	# until such time as it can be fixed.
-	install -m755 src/man		$(dtmp)/usr/lib/man-db
-	install -m755 src/mandb		$(dtmp)/usr/lib/man-db
-	install -m755 src/wrapper	$(dtmp)/usr/lib/man-db
-	install -m755 src/lexgrog	$(dtmp)/usr/lib/man-db
-	install -m755 src/manpath	$(dtmp)/usr/bin
-	install -m755 src/catman	$(dtmp)/usr/bin
-	install -m755 src/whatis	$(dtmp)/usr/bin
-	install -m755 src/apropos	$(dtmp)/usr/bin
-	install -m755 src/accessdb	$(dtmp)/usr/sbin
-	sed 's/man_db\.config/manpath.config/' \
-		src/man_db.conf		> $(dtmp)/etc/manpath.config
-	# Do safe directories.
-	set -e; for x in zsoelim man intl po; do \
-		$(MAKE) -C $$x install prefix=../$(dtmp)/usr; \
-	done
+	$(MAKE) install prefix=$(CURDIR)/$(dtmp)/usr \
+			config_file=$(CURDIR)/$(dtmp)/etc/manpath.config
+	# Debian man-db puts potentially setuid executables in a private
+	# directory in order to do wrapper magic.
+	mv $(dtmp)/usr/bin/man			$(dtmp)/usr/lib/man-db/man
+	mv $(dtmp)/usr/bin/mandb		$(dtmp)/usr/lib/man-db/mandb
+	install -m755 src/wrapper		$(dtmp)/usr/lib/man-db
 	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)
 	# now do manual changes needed by debian
 	# change locale names
-	mv $(dtmp)/usr/share/man/de_DE.88591 $(dtmp)/usr/share/man/de
-	mv $(dtmp)/usr/share/man/es_ES.88591 $(dtmp)/usr/share/man/es
-	mv $(dtmp)/usr/share/man/it_IT.88591 $(dtmp)/usr/share/man/it
-	mv $(dtmp)/usr/share/man/ja_JP.eucJP $(dtmp)/usr/share/man/ja
+	mv $(dtmp)/usr/share/man/de_DE.88591	$(dtmp)/usr/share/man/de
+	mv $(dtmp)/usr/share/man/es_ES.88591	$(dtmp)/usr/share/man/es
+	mv $(dtmp)/usr/share/man/it_IT.88591	$(dtmp)/usr/share/man/it
+	mv $(dtmp)/usr/share/man/ja_JP.eucJP	$(dtmp)/usr/share/man/ja
 	rm -rf $(dtmp)/usr/share/man/de_DE.ascii
 	touch install-stamp
 

@@ -1340,6 +1340,7 @@ extern int errno;
 
 #include "manconfig.h"
 #include "lib/error.h"
+#include "security.h"
 
 #define YY_READ_BUF_SIZE	1024
 #define MAX_NAME		2048
@@ -1361,8 +1362,30 @@ static char filters[MAX_FILTERS];
 static int fill_mode;
 
 #ifdef TEST
+
 #include <stdio.h>
+#ifdef HAVE_GETOPT_H
+#  include <getopt.h>
+#else /* !HAVE_GETOPT_H */
+#  include "lib/getopt.h"
+#endif /* HAVE_GETOPT_H */
+
 char *program_name = "lexgrog";
+int debug = 0;
+
+static const struct option long_options[] =
+{
+	{"man",		no_argument,	0,	'm'},
+	{"cat",		no_argument,	0,	'c'},
+	{"whatis",	no_argument,	0,	'w'},
+	{"filters",	no_argument,	0,	'f'},
+	{"help",	no_argument,	0,	'h'},
+	{"version",	no_argument,	0,	'V'},
+	{0, 0, 0, 0}
+};
+
+static const char args[] = "mcwfhV";
+
 #endif /* TEST */
 #define YY_NEVER_INTERACTIVE 1
 #define YY_NO_UNPUT 1
@@ -1533,7 +1556,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 126 "lexgrog.l"
+#line 149 "lexgrog.l"
 
 
  /* begin NAME section processing */
@@ -1617,68 +1640,68 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 129 "lexgrog.l"
+#line 152 "lexgrog.l"
 BEGIN (MAN_NAME);
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 130 "lexgrog.l"
+#line 153 "lexgrog.l"
 BEGIN (CAT_NAME);
 	YY_BREAK
 /* general text matching */
 case 3:
-#line 134 "lexgrog.l"
+#line 157 "lexgrog.l"
 case 4:
-#line 135 "lexgrog.l"
+#line 158 "lexgrog.l"
 case 5:
-#line 136 "lexgrog.l"
+#line 159 "lexgrog.l"
 case 6:
-#line 137 "lexgrog.l"
+#line 160 "lexgrog.l"
 case 7:
-#line 138 "lexgrog.l"
+#line 161 "lexgrog.l"
 case 8:
-#line 139 "lexgrog.l"
+#line 162 "lexgrog.l"
 case 9:
 YY_RULE_SETUP
-#line 139 "lexgrog.l"
+#line 162 "lexgrog.l"
 
 	YY_BREAK
 
 case 10:
 YY_RULE_SETUP
-#line 142 "lexgrog.l"
+#line 165 "lexgrog.l"
 filters[TBL_FILTER] = 't';
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 143 "lexgrog.l"
+#line 166 "lexgrog.l"
 filters[EQN_FILTER] = 'e';
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 144 "lexgrog.l"
+#line 167 "lexgrog.l"
 filters[PIC_FILTER] = 'p';
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 145 "lexgrog.l"
+#line 168 "lexgrog.l"
 filters[GRAP_FILTER] = 'g';
 	YY_BREAK
 case 14:
-#line 147 "lexgrog.l"
+#line 170 "lexgrog.l"
 case 15:
 YY_RULE_SETUP
-#line 147 "lexgrog.l"
+#line 170 "lexgrog.l"
 filters[REF_FILTER] = 'r';
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 148 "lexgrog.l"
+#line 171 "lexgrog.l"
 filters[VGRIND_FILTER] = 'v';
 	YY_BREAK
 
 case YY_STATE_EOF(MAN_REST):
-#line 150 "lexgrog.l"
+#line 173 "lexgrog.l"
 {	/* exit */
 					*p_name = '\0'; /* terminate the string */
 					yyterminate ();
@@ -1686,39 +1709,39 @@ case YY_STATE_EOF(MAN_REST):
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 154 "lexgrog.l"
+#line 177 "lexgrog.l"
 
 	YY_BREAK
 /* rules to end NAME section processing */
 case 18:
 YY_RULE_SETUP
-#line 157 "lexgrog.l"
+#line 180 "lexgrog.l"
 {	/* forced exit */
 					*p_name = '\0'; /* terminate the string */
 					yyterminate ();
 				}
 	YY_BREAK
 case 19:
-#line 163 "lexgrog.l"
+#line 186 "lexgrog.l"
 case 20:
-#line 164 "lexgrog.l"
+#line 187 "lexgrog.l"
 case 21:
-#line 165 "lexgrog.l"
+#line 188 "lexgrog.l"
 case 22:
 YY_RULE_SETUP
-#line 165 "lexgrog.l"
+#line 188 "lexgrog.l"
 {	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (MAN_REST);
 				}
 	YY_BREAK
 case 23:
-#line 171 "lexgrog.l"
+#line 194 "lexgrog.l"
 case 24:
-#line 172 "lexgrog.l"
+#line 195 "lexgrog.l"
 case 25:
 YY_RULE_SETUP
-#line 172 "lexgrog.l"
+#line 195 "lexgrog.l"
 {	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (CAT_REST);
@@ -1728,12 +1751,12 @@ YY_RULE_SETUP
 /* ROFF request removal */
 
 case 26:
-#line 181 "lexgrog.l"
+#line 204 "lexgrog.l"
 case 27:
-#line 182 "lexgrog.l"
+#line 205 "lexgrog.l"
 case 28:
 YY_RULE_SETUP
-#line 182 "lexgrog.l"
+#line 205 "lexgrog.l"
 {	/* per line comments */
 						newline_found ();
 					}
@@ -1745,7 +1768,7 @@ case 29:
 yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 188 "lexgrog.l"
+#line 211 "lexgrog.l"
 newline_found ();
 	YY_BREAK
 case 30:
@@ -1753,156 +1776,156 @@ case 30:
 yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 189 "lexgrog.l"
+#line 212 "lexgrog.l"
 newline_found ();
 	YY_BREAK
 /* Toggle fill mode */
 case 31:
 YY_RULE_SETUP
-#line 192 "lexgrog.l"
+#line 215 "lexgrog.l"
 fill_mode = 0;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 193 "lexgrog.l"
+#line 216 "lexgrog.l"
 fill_mode = 1;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 195 "lexgrog.l"
+#line 218 "lexgrog.l"
 /* strip continuations */
 	YY_BREAK
 /* convert to DASH */
 case 34:
-#line 199 "lexgrog.l"
+#line 222 "lexgrog.l"
 case 35:
-#line 200 "lexgrog.l"
+#line 223 "lexgrog.l"
 case 36:
-#line 201 "lexgrog.l"
+#line 224 "lexgrog.l"
 case 37:
-#line 202 "lexgrog.l"
+#line 225 "lexgrog.l"
 case 38:
 YY_RULE_SETUP
-#line 202 "lexgrog.l"
+#line 225 "lexgrog.l"
 add_separator_to_whatis ();
 	YY_BREAK
 /* escape sequences and special characters */
 
 case 39:
 YY_RULE_SETUP
-#line 206 "lexgrog.l"
+#line 229 "lexgrog.l"
 add_char_to_whatis ('\\');
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 207 "lexgrog.l"
+#line 230 "lexgrog.l"
 add_char_to_whatis ('\'');
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 208 "lexgrog.l"
+#line 231 "lexgrog.l"
 add_char_to_whatis ('`');
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 209 "lexgrog.l"
+#line 232 "lexgrog.l"
 add_char_to_whatis ('-');
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 210 "lexgrog.l"
+#line 233 "lexgrog.l"
 add_char_to_whatis ('.');
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 211 "lexgrog.l"
+#line 234 "lexgrog.l"
 add_char_to_whatis (' ');
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 212 "lexgrog.l"
+#line 235 "lexgrog.l"
 add_char_to_whatis ('_');
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 213 "lexgrog.l"
+#line 236 "lexgrog.l"
 add_char_to_whatis ('\t');
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 215 "lexgrog.l"
+#line 238 "lexgrog.l"
 /* various useless control chars */
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 216 "lexgrog.l"
+#line 239 "lexgrog.l"
 /* various inline functions */
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 218 "lexgrog.l"
+#line 241 "lexgrog.l"
 /* interpolate arg */
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 220 "lexgrog.l"
+#line 243 "lexgrog.l"
 /* interpolate string */
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 221 "lexgrog.l"
+#line 244 "lexgrog.l"
 /* special (non printable) character */
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 222 "lexgrog.l"
+#line 245 "lexgrog.l"
 /* comment */
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 224 "lexgrog.l"
+#line 247 "lexgrog.l"
 /* font changes */
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 225 "lexgrog.l"
+#line 248 "lexgrog.l"
 /* mark input place in register */
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 227 "lexgrog.l"
+#line 250 "lexgrog.l"
 /* interpolate number register */
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 228 "lexgrog.l"
+#line 251 "lexgrog.l"
 /* overstrike chars */
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 230 "lexgrog.l"
+#line 253 "lexgrog.l"
 /* size changes */
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 231 "lexgrog.l"
+#line 254 "lexgrog.l"
 /* width of string */
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 233 "lexgrog.l"
+#line 256 "lexgrog.l"
 /* catch all */
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 235 "lexgrog.l"
+#line 258 "lexgrog.l"
 /* function() in hpux */
 	YY_BREAK
 
 /* collapse spaces, escpaed spaces, tabs, newlines to a single space */
 case 61:
 YY_RULE_SETUP
-#line 239 "lexgrog.l"
+#line 262 "lexgrog.l"
 add_char_to_whatis (' ');
 	YY_BREAK
 /* a ROFF break request (.br) or a paragraph request (.LP, .PP, .P)
@@ -1910,20 +1933,20 @@ add_char_to_whatis (' ');
     for later processing */
 
 case 62:
-#line 246 "lexgrog.l"
+#line 269 "lexgrog.l"
 case 63:
-#line 247 "lexgrog.l"
+#line 270 "lexgrog.l"
 case 64:
-#line 248 "lexgrog.l"
+#line 271 "lexgrog.l"
 case 65:
 YY_RULE_SETUP
-#line 248 "lexgrog.l"
+#line 271 "lexgrog.l"
 add_char_to_whatis ((char) 0x11);
 	YY_BREAK
 
 case 66:
 YY_RULE_SETUP
-#line 251 "lexgrog.l"
+#line 274 "lexgrog.l"
 { /* very general roff requests */
 						newline_found ();
 					}
@@ -1931,20 +1954,20 @@ YY_RULE_SETUP
 /* pass words as a chunk. speed optimization */
 case 67:
 YY_RULE_SETUP
-#line 256 "lexgrog.l"
+#line 279 "lexgrog.l"
 add_str_to_whatis (yytext, yyleng);
 	YY_BREAK
 /* normalise the period (,) separators */
 case 68:
-#line 260 "lexgrog.l"
+#line 283 "lexgrog.l"
 case 69:
 YY_RULE_SETUP
-#line 260 "lexgrog.l"
+#line 283 "lexgrog.l"
 add_str_to_whatis (", ", 2);
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 262 "lexgrog.l"
+#line 285 "lexgrog.l"
 {
 					newline_found ();
 					add_char_to_whatis (yytext[yyleng - 1]);
@@ -1952,7 +1975,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 267 "lexgrog.l"
+#line 290 "lexgrog.l"
 add_char_to_whatis (*yytext);
 	YY_BREAK
 /* default EOF rule */
@@ -1963,12 +1986,12 @@ case YY_STATE_EOF(CAT_FILE):
 case YY_STATE_EOF(MAN_FILE):
 case YY_STATE_EOF(CAT_REST):
 case YY_STATE_EOF(FORCE_EXIT):
-#line 270 "lexgrog.l"
+#line 293 "lexgrog.l"
 return 1;
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 272 "lexgrog.l"
+#line 295 "lexgrog.l"
 ECHO;
 	YY_BREAK
 
@@ -2855,7 +2878,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 272 "lexgrog.l"
+#line 295 "lexgrog.l"
 
 
 /* print warning and force scanner to terminate */
@@ -2915,10 +2938,25 @@ int find_name (char *file, char *filename, lexgrog *p_lg)
 {
 	int ret;
 
-	yyin = fopen (file, "r");
-	if (!yyin) {
-		error (0, errno, _("can't open %s"), file);
-		return 0;
+	if (strcmp (file, "-") == 0) {
+		yyin = fdopen (dup (0), "r");
+	} else {
+#ifdef COMP_SRC
+		/* See if we need to decompress the file(s) first. */
+		struct compression *comp = comp_info (file);
+		if (comp)
+			file = decompress (file, comp);
+#endif
+		drop_effective_privs ();
+		yyin = fopen (file, "r");
+		regain_effective_privs ();
+		if (!yyin) {
+			error (0, errno, _("can't open %s"), file);
+#ifdef COMP_SRC
+			remove_ztemp ();
+#endif
+			return 0;
+		}
 	}
 
 	fname = filename;
@@ -2932,9 +2970,17 @@ int find_name (char *file, char *filename, lexgrog *p_lg)
 	else
 		BEGIN (MAN_FILE);
 
+	drop_effective_privs ();
+
 	yyrestart (yyin);
 	ret = yylex ();
 	fclose (yyin);
+
+#ifdef COMP_SRC
+	remove_ztemp ();
+#endif
+
+	regain_effective_privs ();
 
 	if (ret)
 		return 0;
@@ -2956,30 +3002,93 @@ int find_name (char *file, char *filename, lexgrog *p_lg)
 }
 
 #ifdef TEST
+
+static void usage (int status)
+{
+	printf (_("usage: %s [-mcwfhV] file ...\n"), program_name);
+	printf (_(
+		"-m --man                    parse as man page.\n"
+		"-c --cat                    parse as cat page.\n"
+		"-w --whatis                 show whatis information.\n"
+		"-f --filters                show guessed series of "
+					    "preprocessing filters.\n"
+		"-V --version                show version.\n"
+		"-h --help                   show this usage message.\n"
+		"\n"
+		"The defaults are --man and --whatis.\n"));
+	exit (status);
+}
+
 int main (int argc, char **argv)
 {
-	if (argc <= 1)
-		return 0;
-	while (*++argv) {
-		int type;
-		for (type = 0; type <= 1; type++) {
-			lexgrog lg;
-			char *name;
-			lg.type = type;
-			if (find_name (*argv, "-", &lg))
-				printf ("%s:\n"
-					"  whatis:  \"%s\"\n"
-					"  filters: \"%s\"\n",
-					type ? "cat" : "man",
-					lg.whatis, lg.filters);
-			else
-				printf ("%s: parse failed\n",
-					type ? "cat" : "man");
+	int c, option_index;
+	int type = 0;
+	int parse_man = 0, parse_cat = 0, show_whatis = 0, show_filters = 0;
+	int some_failed = 0;
+	while ((c = getopt_long (argc, argv, args,
+				 long_options, &option_index)) != -1) {
+		switch (c) {
+			case 'm':
+				parse_man = 1;
+				break;
+			case 'c':
+				parse_cat = 1;
+				break;
+			case 'w':
+				show_whatis = 1;
+				break;
+			case 'f':
+				show_filters = 1;
+				break;
+			case 'V':
+				ver ();
+				break;
+			case 'h':
+				usage (OK);
+				break;
+			default:
+				usage (FAIL);
+				break;
 		}
 	}
-	return 0;
+	if (parse_man) {
+		if (parse_cat) {
+			error (0, 0, _("-m -c: incompatible options"));
+			usage (FAIL);
+		} else
+			type = 0;
+	} else {
+		if (parse_cat)
+			type = 1;
+		else
+			type = 0;	/* default = man */
+	}
+	if (!show_whatis && !show_filters)
+		show_whatis = 1;
+
+	while (optind != argc) {
+		lexgrog lg;
+		lg.type = type;
+		if (find_name (argv[optind], "-", &lg)) {
+			printf ("%s", argv[optind]);
+			if (show_filters)
+				printf (" (%s)", lg.filters);
+			if (show_whatis)
+				printf (": \"%s\"", lg.whatis);
+			printf ("\n");
+		} else {
+			printf ("%s: parse failed\n", argv[optind]);
+			some_failed = 1;
+		}
+		++optind;
+	}
+
+	if (some_failed)
+		return FATAL;
+	else
+		return OK;
 }
-#endif
+#endif /* TEST */
 
 #ifdef PROFILE
 void rule_profile (void)

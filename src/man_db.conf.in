@@ -1,4 +1,4 @@
-# man_db.config
+# manpath.config
 #
 # This file is used by the man_db package to configure the man and cat paths.
 # It is also used to provide a manpath for those without one by examining

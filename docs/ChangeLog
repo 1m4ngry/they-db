@@ -1,3 +1,357 @@
+Fri Sep  7 19:28:12 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.3.20.
+	* docs/NEWS: Update.
+	* po/cs.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/ja.po:
+	  Update.
+
+Fri Sep  7 00:55:53 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* GNUmakefile.in (dist): Include other manpage.example formats.
+
+	* lib/tempfile.c (create_tempfile): Create with mode 0600.
+	* src/check_mandirs.c (test_manfile): Drop privileges for temporary
+	  file operations.
+	* src/lexgrog.l (find_name): Likewise.
+	* src/man.c (make_roff_command): Likewise.
+	* src/straycats.c (check_for_stray): Likewise.
+	  (straycats): Likewise.
+	* src/ult_src.c (ult_src): Likewise.
+
+Thu Sep  6 21:54:05 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* include/Defines.in: Add lexgrog to list of transformed program
+	  names. Adjust sysconfdir detection.
+	* src/Makefile.in (install): Really install lexgrog by default.
+	  Create the directory config_file is in rather than sysconfdir.
+
+Wed Sep  5 19:55:01 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* GNUmakefile.in (dist): Generate a .tar.gz, not a .tgz.
+	* src/man.c: Korean: roff_device is ascii8, LESSCHARSET is iso8859.
+	* po/cs.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/ja.po:
+	  Update.
+
+Wed Sep  5 03:42:18 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/compression.c (decompress): Constify arguments.
+	* include/manconfig.h.in: Likewise.
+
+	* src/lexgrog.l (find_name): Deal with '-' and compressed files.
+	* man/man1/lexgrog.man1 (DESCRIPTION): Document this.
+	  (BUGS): Remove (optimism ...).
+	  (NOTES): New section. lexgrog can't parse .so requests.
+	* src/Makefile.in: Really build lexgrog by default, and add some
+	  objects.
+
+Wed Sep  5 02:02:20 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Describe recent changes.
+
+	* man/man1/man.man1 (OPTIONS): Document --html.
+	  (ENVIRONMENT): Document $BROWSER.
+	* man/man8/mandb.man8 (OPTIONS): Explain that --create implies
+	  --no-purge.
+
+Tue Sep  4 18:38:23 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display): If $BROWSER contains several elements
+	  separated by colons, try each in turn until one succeeds.
+
+Tue Sep  4 02:09:07 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display): Actually change to the temporary
+	  directory for HTML output.
+	* src/mandb.c (main): --create implies --no-purge.
+
+Sat Sep  1 17:40:06 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* lib/mkdtemp.c, lib/mkstemp.c, lib/tempname.c: New files, taken
+	  from glibc 2.2.4.
+	* lib/Makefile.in, lib/README: Add them.
+	* configure.in: Check for mkdtemp() and mkstemp().
+	* lib/tempfile.c (path_search): New function, split from
+	  create_tempfile(). Now checks $TMP as well as $TMPDIR, and ensures
+	  that neither is checked when privileges are raised.
+	  (create_tempfile): Use it. Fix the umask around the call to
+	  mkstemp() rather than calling fchmod() after the fact.
+	  (create_tempdir): New function.
+	* include/manconfig.h.in: Prototype create_tempdir().
+
+	* src/man.c: --html code needs to be guarded by TROFF_IS_GROFF.
+	  (man_getopt): If -H is given, set troff to 1. Add -H to the
+	  "incompatible options" error message.
+	  (make_roff_command): Revert determine_lang_table() special case.
+	  (format_display): Use a temporary directory for HTML output (groff
+	  tends to output several files, including images). Take an extra
+	  argument, used to set the name of the main output file.
+	  (display): Pass man_file to format_display().
+	* src/util.c (remove_directory): New function.
+	* include/manconfig.h.in: Prototype it.
+
+Fri Aug 31 22:20:08 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	Initial support for ESR's $BROWSER variable. Not complete yet.
+
+	* src/man.c: Remove ENABLE_HTML guards around all the --html code.
+	  Too many #ifdefs clutter the code, and it should at least be
+	  usable to some extent now.
+	  (main): Check $BROWSER before other ways of finding html_pager.
+	  (man_getopt): If -H is given, set roff_device to "html". Reset
+	  htmlout and html_pager with -D.
+	  (make_roff_command): Don't call determine_lang_table() if htmlout
+	  is set.
+	  (make_browser): New function.
+	  (make_display_command): Add case for htmlout being set.
+	  (format_display_and_save): Rename roff_cmd to format_cmd.
+	  (display_catman): Likewise.
+	  (display): Likewise. Add some cases for htmlout being set (always
+	  format, never save a cat page). Split some code out into
+	  format_display().
+	  (format_display): New function.
+
+	* src/man.c (main): Save the value of $LESS for later.
+	  (make_display_command): Use setenv() to change $LESS in the
+	  environment rather than nasty shell code.
+
+	* src/man.c (main): Don't loop if $LANGUAGE is set but empty.
+	  (display_catman): Fix segfaults due to strappend() misuse.
+	* src/manp.c (read_config_file): Print dotmanpath, not home (which
+	  might point to freed memory).
+
+	* src/man.c (main): Tidy up error message.
+	  (store_line_length): Remove duplicate 'int width' declaration.
+
+Wed Aug 29 20:44:27 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* man/man8/mandb.man8 (WHATIS PARSING): Move to ...
+	* man/man1/lexgrog.man1: ... here.
+
+	* po/cs.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/ja.po: Run
+	  msgmerge.
+
+Wed Aug 29 01:48:53 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/apropos.man1 (ENVIRONMENT): Fix grammar error.
+
+Wed Aug 29 01:34:33 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (usage): New function.
+	  (main): Rewrite. Add command-line options, and make the output
+	  more easily parseable by other programs. By default, the lexgrog
+	  program now only attempts to parse its input as a man page and
+	  only displays the whatis line, although this can be changed on the
+	  command line.
+	* src/Makefile.in: Include lexgrog in $(PROGS), so that it gets
+	  built by default and linked against version.o.
+	* man/man1/lexgrog.man1: New man page. Still needs some work.
+	* man/Makefile.in: Install it. Tolerate it being missing in some
+	  languages (ugly hack).
+
+Tue Aug 21 01:57:44 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/Makefile.in: Link non-setuid programs against fake_security.o
+	  rather than security.o.
+	* src/fake_security.c: Add a few stub variables to match recent
+	  security.c changes.
+
+Tue Aug 21 01:34:49 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/Makefile.in (install): Don't depend on all, so that the
+	  package isn't recompiled when running 'make install' on a machine
+	  with a skewed clock.
+	  Don't install the wrapper. Install man and mandb in $(bindir)
+	  rather than $(libdir)/man-db.
+	  If lexgrog and globbing have been built, install them in
+	  $(libdir)/man-db rather than $(sbindir).
+	  Ensure $(sbindir) and $(libdir)/man-db exist.
+
+Tue Aug 21 00:40:47 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (escape_special): Rename to escape_less(). Constify
+	  argument.
+	  (determine_lang_table): Constify argument. Unify some common code.
+	  (make_display_common): Use escape_less() rather than
+	  escape_special().
+	* docs/NEWS: Document shell escaping.
+
+Sun Aug 19 23:56:36 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* configure.in: Compile with -Wall by default.
+	* src/compression.c: Include "security.h".
+	* src/manp.c: Likewise.
+	* src/check_mandirs.c (purge_whatis): Correct return value when
+	  purging a WHATIS_MAN entry with a missing target.
+	* src/whatis.c (get_whatis): Remove unused variables 'pointer' and
+	  'ext'.
+	* src/man.c: Include <time.h> for time().
+	  (local_man_loop): Remove unused variable 'dir'.
+	  (make_roff_command): Remove unused variable 'tmpfile'.
+	  (exist_check): Print 'loc' in pointer format rather than string
+	  format (it's a struct mandata *).
+	* src/wrapper.c: Include <grp.h> for initgroups().
+
+Sun Aug 19 13:16:01 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (iterate_over_list): New function (get_from_list() can
+	  only get the first matching element).
+	  (get_manpath): Use iterate_over_list() to get multiple matching
+	  MANPATH_MAP entries.
+
+Sun Aug 19 13:02:01 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (popen, pclose): Rely on the BROKEN_PCLOSE check in
+	  configure rather than checking architectures here.
+	  (man_getopt): Wrap the remaining code related to --html in '#ifdef
+	  ENABLE_HTML'.
+	  (make_roff_command): Remove HAS_TROFF and NROFF_MISSING asserts; I
+	  think they're unnecessarily unwieldy here.
+	  (tmp_cat_filename): Constify argument.
+	  (commit_tmp_cat): Constify arguments.
+	  (display_catman): New function, split from display().
+	  (display): Use display_catman(). Don't shadow status from an outer
+	  scope.
+	  (try_section): Simplify cat page case.
+
+	* src/util.c (escape_shell): New function.
+	* include/manconfig.h.in: strappend() is no longer in util.c.
+	  Prototype escape_shell().
+	* src/man.c (make_roff_command): Use escape_shell() liberally to
+	  protect against strange characters.
+	  (make_display_command): Likewise. Add special handling for $MAN_PN
+	  in the less prompt string, since the environment variable is no
+	  longer parsed by the shell.
+	  (display_catman): Likewise.
+	  (display): Likewise.
+	* src/whatis.c (use_grep): Likewise.
+
+	* src/catman.c (main): Print a warning if setlocale() fails.
+	* src/man.c (main): Likewise.
+	* src/mandb.c (main): Likewise.
+	* src/manpath.c (main): Likewise.
+	* src/whatis.c (main): Likewise.
+	* src/wrapper.c (main): Explain why this doesn't need to warn if
+	  setlocale() fails.
+
+Thu Aug  9 15:10:26 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* configure.in: Require autoconf 2.50a (for AS_VAR_*).
+	* src/wrapper.c: If DEBUG is defined, allow _man and _mandb as
+	  argv[0] names as well as man and mandb, rather than instead of
+	  them.
+	* docs/NEWS: Document lexgrog improvement. The mkstemp() work was
+	  more an improvement than a fix, as I don't think it was
+	  exploitable.
+
+Mon Aug  6 02:22:38 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: groff requests aren't case-sensitive, so stop the
+	  preprocessor detection thinking they are.
+
+Mon Aug  6 01:26:26 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* lib/tempfile.c (create_tempfile): Use mode 0644 rather than mode
+	  0600 so that it can be read with different privilege levels.
+
+Thu Aug  2 00:12:41 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* lib/tempfile.c: New file. create_tempfile() does sane
+	  mkstemp()-like temporary file creation, while searching through
+	  $TMPDIR, P_tmpdir, and /tmp in the style of tempnam().
+	* include/manconfig.h.in: Prototype create_tempfile().
+	* lib/tempnam.c: Remove, as we no longer use it.
+	* lib/Makefile.in, lib/README: Remove mentions of tempnam.c, and use
+	  tempfile.c instead.
+	* configure.in: Don't replace tempnam().
+
+	* src/compression.c (create_ztemp): Use create_tempfile() rather
+	  than tempnam().
+	* src/man.c (create_stdintmp): Likewise.
+	* zsoelim/zsoelim.l (open_file): Likewise.
+	* src/straycats.c (straycats): Use create_tempfile() rather than
+	  mkstemp().
+
+	* src/compression.c (decompress): Call remove_ztemp() rather than
+	  duplicating code.
+	  (remove_ztemp): Only close the fd if it looks valid.
+	* src/man.c (remove_stdintmp): Remember to free stdin_tmpfile.
+
+	* acinclude.m4: Correct AC_VAR_* to AS_VAR_*.
+	* src/util.c (is_changed): Fix comment.
+
+	* docs/NEWS: Preliminary entries for 2.3.20.
+
+Tue Jul 24 02:17:53 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* docs/manpage.example: Some cleanups. Use more conventional
+	  formatting for references to other man pages.
+	* docs/manpage.example.pod, docs/manpage.example.sgml: New files.
+
+Mon Jul 16 16:42:46 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Restore fr_name to the NAME regex.
+
+Fri Jul 13 11:51:40 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* man/de_DE.ascii: Remove (Latin-1 variant still exists).
+
+Fri Jul 13 02:35:39 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* */.cvsignore: New files.
+
+	* src/man.c (make_roff_command): Look up the correct character set
+	  each time a page is displayed, not just the first time.
+
+Thu Jul 12 01:11:41 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Split out NAME-matching regex into one regex per
+	  language. Add support for cs, fi, hu, nl, and pl, not forgetting
+	  Latin (for Lingua::Romana::Perligata(3pm), of course).
+	  (add_separator_to_whatis): New function, to allow trimming the
+	  first space from the " - " separator.
+	  (main): Rewrite; find_name()'s prototype changed long ago.
+
+Tue Jul 10 14:37:51 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/util.c (is_newer): Rename to ...
+	  (is_changed): ... this. We now check whether the cat page has a
+	  different timestamp from the man page, rather than simply whether
+	  it is newer.
+	  Remove hack for archivers that preserve timestamps: it's no longer
+	  needed.
+	* include/manconfig.h.in: Rename is_newer() prototype to
+	  is_changed().
+
+	* src/man.c (commit_tmp_cat): Set the modification time of a created
+	  cat page to be the same as the corresponding man page.
+	  (display): stat() the man page so that commit_tmp_cat() can get
+	  its modification time.
+	  Use is_changed() rather than is_newer().
+
+Sun Jul  8 16:06:43 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (get_whatis): Allow an entry to point to itself if it
+	  contains a non-empty whatis field. This occasionally happens when
+	  multiple names and descriptions are present, and it's easier to
+	  tolerate this.
+	  (display): If an entry points to itself, don't display the pointer
+	  in square brackets.
+
+	* include/sections.list: Remove; it's no longer needed.
+	* GNUmakefile.in (dist): Don't install it.
+	* include/Defines.in: Don't reference it. Also remove definition of
+	  message_catalogue (obsoleted by gettext).
+
+	* include/manconfig.h.in (LESS_OPTS): Don't include $LESS.
+	* src/man.c (make_display_command): Include $LESS here instead. Put
+	  it after prompt_string rather than before, so that long options in
+	  $LESS work.
+
+Sat Jul  7 16:32:24 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (determine_lang_table): Fix silly bracketing typo that
+	  caused none of the lang_table entries to match.
+
 Thu Jul  5 15:48:42 BST 2001  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.3.19.

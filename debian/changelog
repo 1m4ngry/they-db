@@ -1,3 +1,24 @@
+man-db (2.3.20-1) unstable; urgency=low
+
+  * New upstream release.
+    - Improve lexgrog so that its output is more machine-parseable, give it
+      a man page, and move it to /usr/bin.
+    - mandb's --create option implies --no-purge, to avoid problems when
+      recreating broken databases (closes: #110738, important).
+    - man doesn't segfault if LANGUAGE is set but empty (closes: #110309).
+    - Support 'man --html', with ESR's $BROWSER specification and David A.
+      Wheeler's modifications for improved security (closes: #108143).
+    - Reword part of apropos(1) (thanks, Daniel Patterson; closes: #110468).
+  * Release Manager: we've had most of the code in this release already in
+    the 2.3.19 series. The lexgrog changes here will be very useful for
+    tools like lintian, perhaps in time for woody; the code affected by
+    implementing $BROWSER was previously unsupported.
+  * All translations (both gettext and man pages) are now very out of date.
+    Please contact me if you can help.
+  * debian/rules: Simplify install target; upstream clock-skew bug fixed.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri,  7 Sep 2001 19:30:34 +0100
+
 man-db (2.3.19-6) unstable; urgency=low
 
   * Escape shell arguments properly to cope with spaces in man page names
