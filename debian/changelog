@@ -1,3 +1,23 @@
+man-db (2.3.20-10) unstable; urgency=medium
+
+  * copy_datum() explicitly null-terminates data returned by libdb2, which
+    avoids some rare and hard-to-trace segfaults. Many thanks to Manuel
+    Estrada Sainz for his patience in allowing me to use his system to debug
+    this over a period of several weeks (closes: #115219, #117009).
+  * Keep a private hashtable of keys we've received from the database in the
+    btree code, and return NULL if we get one we've seen already. Although
+    this slows down database access somewhat, I hope it should get rid of
+    problems with looped databases for good (closes: #116785).
+  * Avoid nested calls to strtok() (closes: #119041).
+  * Don't try to strappend() a string to itself while processing a MANPATH
+    containing "::" (closes: #119098).
+  * Display a more useful error message if asked to display a directory
+    (closes: #120047).
+  * Stop a memory leak in decompress().
+  * configure detects that nroff is groff even if /bin/sh is ash.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 19 Nov 2001 01:56:01 +0000
+
 man-db (2.3.20-9) unstable; urgency=low
 
   * Drop privileges when reading temporary file to find the list of

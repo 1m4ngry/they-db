@@ -31,7 +31,10 @@ AC_DEFUN(MAN_PROG_GNU_NROFF,
 [AC_MSG_CHECKING(whether nroff is GNU nroff)
 
 AC_CACHE_VAL(man_cv_prog_gnu_nroff,
-[if test `echo "\\n(.g" | $1 | tr -d '\n'` -eq 1
+[if test `$1 <<EOF | tr -d '\n'
+\\n(.g
+EOF
+` -eq 1
 then
 	man_cv_prog_gnu_nroff=yes
 else
@@ -110,7 +113,7 @@ do
     for lib in $2
     do
       AS_VAR_PUSHDEF([man_tr_bdb], [man_cv_bdb_header_${head}_lib_${lib}])dnl
-      man_saved_LIBS=LIBS
+      man_saved_LIBS="$LIBS"
       LIBS="$LIBS -l$lib"
       AC_CACHE_CHECK([for dbopen from <${head}> in -l${lib}], man_tr_bdb,
          [AC_TRY_LINK([#include <$head>], [dbopen("foo", 0, 0, 0, (void *) 0)],

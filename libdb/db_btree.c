@@ -19,6 +19,16 @@
 
 #include <stdio.h>
 
+#if defined(STDC_HEADERS)
+#  include <string.h>
+#  include <stdlib.h>
+#elif defined(HAVE_STRING_H)
+#  include <string.h>
+#elif defined(HAVE_STRINGS_H)
+#  include <strings.h>
+#else /* no string(s) header */
+#endif /* STDC_HEADERS */
+
 #if HAVE_SYS_FILE_H
 #  include <sys/file.h> /* for flock() */
 #endif
@@ -39,6 +49,83 @@
 #include "lib/flock.h"
 #include "mydbm.h"
 #include "db_storage.h"
+
+/* This is a temporary hack, largely duplicated from src/hashtable.c, to
+ * sanity-check databases for loops. 2.3.21 should have a proper hashtable
+ * library.
+ */
+
+#define HASHSIZE 2001
+
+struct nlist {
+        struct nlist *next;	/* next in the chain */
+        char *name;		/* the _name_ */
+};
+
+static struct nlist *hashtab[HASHSIZE];		/* The storage array */
+
+/* return hash value for string */
+static unsigned int hash (char *s, size_t len)
+{
+	unsigned int hashval = 0;
+	int i;
+	for (i = 0; i < len; i++)
+		hashval = s[i] + 31 * hashval;
+	return hashval % HASHSIZE;
+}
+
+/* return true if we've seen this string before */
+static int lookup (char *name, size_t len)
+{
+	struct nlist *np;
+	
+	for (np = hashtab[hash(name, len)]; np; np = np->next) {
+		if (strncmp (name, np->name, len) == 0)
+			return 1;
+	}
+	return 0;
+}
+
+/* remember that we've seen this string */
+static void install (char *name, size_t len)
+{
+	struct nlist *np;
+	unsigned int hashval;
+
+	if (lookup (name, len))
+		return;
+
+	np = (struct nlist *) xmalloc (sizeof (struct nlist));
+	np->name = xmalloc (len + 1);
+	strncpy (np->name, name, len);
+	np->name[len] = '\0';
+	hashval = hash (name, len);
+
+	/* point to last w/ this hash */
+	np->next = hashtab[hashval];
+
+	/* attach to hashtab array */
+	hashtab[hashval] = np;
+}
+
+/* free up the hash tree (garbage collect) */
+static void free_hashtab (void)
+{
+	int i;
+
+	for (i = 0; i < HASHSIZE; i++) {
+		struct nlist *np = hashtab[i];
+		while (np) {
+			struct nlist *next;
+
+			free (np->name);
+			next = np->next;
+			free (np);
+			np = next;
+		}
+		hashtab[i] = NULL;
+	}
+}
 
 /* the Berkeley database libraries do nothing to arbitrate between concurrent 
    database accesses, so we do a simple flock(). If the db is opened in 
@@ -163,12 +250,30 @@ int btree_exists(DB *dbf, datum key)
 static __inline__ datum btree_findkey(DB *dbf, u_int flags)
 {
 	datum key, data;
-	
+
+	if (flags == R_FIRST)
+		free_hashtab ();
+
 	if (((dbf->seq)(dbf, (DBT *) &key, (DBT *) &data, flags))) {
 		key.dptr = NULL;
 		key.dsize = 0;
 		return key;
 	}
+
+	if (lookup (key.dptr, key.dsize)) {
+		/* We've seen this key already, which is broken. Return NULL
+		 * so the caller doesn't go round in circles.
+		 */
+		if (debug)
+			fprintf (stderr, "Corrupt database! Already seen %*s. "
+					 "Attempting to recover ...\n",
+				 key.dsize, key.dptr);
+		key.dptr = NULL;
+		key.dsize = 0;
+		return key;
+	}
+
+	install (key.dptr, key.dsize);
 
 	return copy_datum(key);
 }

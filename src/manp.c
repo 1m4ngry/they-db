@@ -295,9 +295,13 @@ static char *pathappend (char *oldpath, const char *appendage)
 	if (oldpath) {
 		char *oldpathtok = xstrdup (oldpath), *tok;
 		char *app_dedup = xstrdup (appendage);
-		for (tok = strtok (oldpathtok, ":"); tok;
-		     tok = strtok (NULL, ":")) {
-			char *search = strstr (app_dedup, tok);
+		char *oldpathtok_ptr = oldpathtok;
+		for (tok = strsep (&oldpathtok_ptr, ":"); tok;
+		     tok = strsep (&oldpathtok_ptr, ":")) {
+			char *search;
+			if (!*tok)	    /* ignore empty fields */
+				continue;
+			search = strstr (app_dedup, tok);
 			while (search) {
 				char *terminator = search + strlen (tok);
 				if (!*terminator) {
@@ -360,7 +364,7 @@ char *cat_manpath (char *manp)
 {
 	char *catp = NULL, *path, *catdir;
 
-	for (path = strtok (manp, ":"); path; path = strtok (NULL, ":")) {
+	for (path = strsep (&manp, ":"); path; path = strsep (&manp, ":")) {
 		catdir = get_from_list (path, MANDB_MAP_USER);
 		if (!catdir)
 			catdir = get_from_list (path, MANDB_MAP);
@@ -407,7 +411,8 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 	char *manpath = NULL;
 	char *path;
 	char *temp_locale;
-	char *omanpathlist = strdup (manpathlist);
+	char *omanpathlist = xstrdup (manpathlist);
+	char *manpathlist_ptr = manpathlist;
 
 	if (debug)
 		fprintf (stderr, "add_nls_manpath(): processing %s\n",
@@ -418,8 +423,8 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 
 	temp_locale = xstrdup (locale);
 
-	for (path = strtok (manpathlist, ":"); path;
-	     path = strtok (NULL, ":") ) {
+	for (path = strsep (&manpathlist_ptr, ":"); path;
+	     path = strsep (&manpathlist_ptr, ":") ) {
 
 		static char locale_delims[] = "@,._";
 		char *delim, *tempo;
@@ -594,7 +599,8 @@ char *manpath (char *systems)
 				       _("warning: $MANPATH set, "
 					 "prepending %s"),
 				       CONFIG_FILE);
-			manpathlist = strappend (guess_manpath (systems),
+			manpathlist = strappend (NULL,
+						 guess_manpath (systems),
 						 add_system_manpath
 							(systems, manpathlist),
 						 NULL);
@@ -604,7 +610,8 @@ char *manpath (char *systems)
 				       _("warning: $MANPATH set, "
 					 "appending %s"),
 				       CONFIG_FILE);
-			manpathlist = strappend (add_system_manpath
+			manpathlist = strappend (NULL,
+						 add_system_manpath
 							(systems, manpathlist),
 						 guess_manpath (systems),
 						 NULL);
@@ -615,7 +622,8 @@ char *manpath (char *systems)
 				       _("warning: $MANPATH set, "
 					 "inserting %s"),
 				       CONFIG_FILE);
-			manpathlist = strappend (add_system_manpath
+			manpathlist = strappend (NULL,
+						 add_system_manpath
 							(systems, manpathlist),
 						 ":", guess_manpath (systems),
 						 add_system_manpath
