@@ -1,3 +1,652 @@
+Wed Jun 26 14:47:01 UTC 2002  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.4.0.
+	* README: Update or remove references to "man-db-2.3" and similar.
+	* man-db.gnu: Update and sync with GNU.
+	* man-db.lsm: Update.
+	* manual/man_db.me: Replace "2.3.x" with "2.4.x".
+	* po/ca.po, po/cs.po, po/da.po, po/de.po, po/es.po, po/fr.po,
+	  po/it.po, po/ja.po: Update with msgmerge.
+
+Wed Jun 26 14:09:25 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (name_sec): Allow whitespace before any closing
+	  double quote. (rman(1) uses '.SH "NAME "'.)
+
+Tue Jun 25 00:29:22 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Translation credits are in man/THANKS.
+	* man/THANKS: Update.
+
+	* manual/.cvsignore: New file.
+
+Mon Jun 24 02:53:00 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_store.c (dbstore): Use \t instead of . to separate
+	  case-variant-names and extensions in multi keys.
+	* libdb/db_lookup.c (list_extensions): Take an extra 'names' array
+	  argument, and split alternately into that and 'ext'.
+	  (dblookup): Update and simplify accordingly; we don't need the
+	  awkward '.' handling any more.
+	* libdb/db_delete.c (dbdelete): Likewise.
+	* libdb/db_storage.h (list_extensions): Update prototype.
+
+	* include/manconfig.h.in: Database format version 2.4.1.
+
+	* manual/db.me (Contents of an index database): Document
+	  case-insensitive name storage format. Bring the documentation of
+	  the database entry format up to date.
+	* manual/sec.me (Specifying a section): Mention the SECTION
+	  configuration directive.
+
+Fri Jun 21 10:50:40 UTC 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/check_mandirs.c (make_filename): in->comp may be NULL.
+
+	* po/fr.po: Update from Translation Project.
+
+Mon Jun 17 09:56:15 UTC 2002  Colin Watson  <cjwatson@debian.org>
+
+	* configure.in (ALL_LINGUAS): Add ca.
+	* src/man.c: Update some comments.
+	* src/lexgrog.l: Treat \~ as a space. Treat \# as a comment. Treat
+	  .ig as ending the whatis.
+
+Thu Jun 13 18:16:46 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* po/ca.po: Some updates after review.
+
+Wed Jun 12 18:29:18 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* docs/ToDo: Updates.
+	* po/ca.po: New from Translation Project.
+
+Wed Jun  5 14:23:13 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* po/de.po: Update from Translation Project.
+
+Tue Jun  4 13:15:09 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (compare_candidates): Return 0 when asked to compare two
+	  candidates we can't distinguish, not -1. The latter broke
+	  multilingual support.
+
+Tue Jun  4 01:33:31 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.3.90 (for translators).
+	* docs/NEWS: More updates.
+	* po/cs.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po,
+	  po/ja.po: Update with msgmerge.
+
+Tue May 28 00:36:55 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_lookup.c (dblookup): Check the MATCH_CASE flag in the
+	  case of a single entry as well as multiple entries.
+
+Mon May 27 23:57:26 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* lib/hashtable.c, lib/hashtable.h: New files, containing the
+	  generic parts of src/hashtable.{c,h}.
+	* lib/Makefile.in: Add hashtable.c.
+	* src/hashtable.c (hash, lookup, install): Remove. These functions
+	  have been renamed and moved to lib/hashtable.c.
+	  (free_defn): Rename to man_hash_free and update for new hashtable
+	  API.
+	  (free_hashtab): Update for new hashtable API.
+	* src/hashtable.h: Update prototypes.
+
+	* libdb/db_btree.c (btree_findkey): Check for entries we've seen
+	  before in the current run. These indicate a corrupt database
+	  containing a loop.
+
+Thu May 23 01:50:53 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* lib/cleanup.h: #endif must not be followed by a token on the same
+	  line.
+
+Thu May 23 00:29:24 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/fake_security.c (get_man_owner): New fake function to match
+	  the real one in src/security.c.
+	* src/manp.c (mkcatdirs): Chown newly created cat directories to the
+	  MAN_OWNER when running as root.
+
+	* .cvsignore, intl/.cvsignore, po/.cvsignore: Ignore a few more
+	  files.
+	* src/man_db.conf.in: Correct the heading.
+
+Wed May 22 00:06:18 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_store.c (compare_ids): New function, replacing the
+	  FAVOUR() macro. Without this, the last-but-one commit won't
+	  compile ...
+	  (replace_if_necessary): Use it.
+	* libdb/db_storage.h: Prototype it.
+
+Mon May 20 03:07:24 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (setenv_less): New function to set up $LESS. This
+	  honours the new environment variable $MANLESS, which overrides the
+	  usual processing and is copied directly into $LESS.
+	  (make_display_command): Use it.
+	* man/man1/man.man1 (OPTIONS): Mention $MANLESS alongside the
+	  --prompt option.
+	  (ENVIRONMENT): Document $MANLESS.
+
+Mon May 20 02:16:43 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (compare_candidates): Compare id fields as a last
+	  resort, so that, for example, real pages sort ahead of whatis-only
+	  names.
+	  (try_section): Set the id field based on the output of ult_src().
+
+	* src/man.c (man): When locating pages, don't stop when one is found
+	  in a particular directory and -a wasn't given. That's now the job
+	  of the display code.
+
+Mon May 20 01:16:02 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_lookup.c (free_mandata_elements): New function, to be
+	  used rather than freeing the addr field directly. This frees name
+	  as well.
+	  (free_mandata_struct): Use it.
+	* libdb/db_btree.c (dbstore, dblookup): Likewise.
+	* libdb/db_store.c (dbstore): Likewise.
+	* src/whatis.c (whatis): Likewise.
+	* libdb/db_storage.h: Prototype it.
+
+	* libdb/db_store.c (replace_if_necessary): Rename in and info to
+	  newdata and olddata, which are more comprehensible. Don't check
+	  that the name fields match here - the caller should do that.
+	  (dbstore): Make sure in->name isn't set on entry, and instead set
+	  it to the basename where necessary. Don't set the name field in
+	  multi keys, which use the proper case.
+
+	* src/check_mandirs.c (filename_info): We don't need to examine the
+	  case of base_name here.
+
+Thu May 16 00:47:05 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_btree.c (btree_flopen): If O_CREAT isn't set, check
+	  whether we're trying to open a zero-length database and, if so,
+	  return immediately. This works around some pathological behaviour
+	  in Berkeley DB.
+
+Mon May  6 03:48:17 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_store.c (FAVOUR): Parenthesize macro arguments.
+	  (dbstore): In situation (3), use the old lookup key for the name
+	  of the corresponding multi key, not the basename (which may be in
+	  the wrong case).
+
+Sun May  5 17:49:21 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Accept DOS line-ending conventions.
+
+Sun May  5 15:38:34 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_delete.c (dbdelete): Don't scribble over the list
+	  returned by list_extensions(). We need it shortly afterwards to
+	  construct the new multi key.
+
+Fri May  3 19:43:52 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* include/manconfig.h.in (LESS_OPTS): Add the -R flag, which helps
+	  with displaying the ANSI colour escapes generated by groff 1.18.
+
+Fri May  3 19:27:40 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (add_roff_line_length): New function, adding -rLL and
+	  -rLT to the groff command line (supported in groff >= 1.18).
+	  (make_roff_command): Call add_roff_line_length(). The old code to
+	  set .ll and .lt remains for compatibility purposes.
+
+Wed May  1 02:16:11 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/check_mandirs.c (testmandirs): Include the subdirectory name
+	  in the "Updating index cache" message.
+
+Wed May  1 02:05:02 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_store.c: Make sure the check for whether a replace is
+	  necessary in situation (3) behaves as it did before the multi key
+	  format changes.
+
+	* libdb/db_lookup.c (copy_if_set, dash_if_unset): Constify
+	  arguments.
+	* libdb/db_storage.h: Likewise for prototypes.
+	* src/convert_name.c (gripe_converting_name): name should be const.
+	* src/manp.c (get_catpath): suffix should be const.
+
+Wed May  1 00:14:20 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/globbing.c (match_in_directory): Close the directory after
+	  reading through it.
+
+Wed May  1 00:02:53 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	Case-(in)sensitivity in database lookups should work properly now.
+
+	* libdb/db_lookup.c (gripe_bad_multi_key): New function.
+	  (make_multi_key): Don't lowercase page any more - that happens
+	  elsewhere.
+	  (list_extensions): We now return names/extensions, not just
+	  extensions.
+	  (dblookup): Multi keys are now formed as "RealCase.1" rather than
+	  just "1". Add a new MATCH_CASE flag which, if set, makes sure the
+	  RealCase part matches. Otherwise the database lookup is
+	  case-insensitive.
+	  (dblookup_exact, dblookup_all): Pass through a match_case flag for
+	  the above.
+	* libdb/db_delete.c (dbdelete): Cope with new multi key format.
+	* libdb/db_store.c (dbstore): Construct the multi key from the
+	  original case of the name rather than the lowercased version. Add
+	  the basename to the multi keys created here, as above.
+	* src/man.c (display_database): Pass match_case flag through to the
+	  database lookup.
+	  (try_db): Likewise.
+	* src/check_mandirs.c (test_manfile): Make sure lookups are
+	  case-sensitive.
+	* src/straycats.c (check_for_stray): Likewise.
+	* src/whatis.c (get_whatis): Likewise.
+	  (whatis): Use a case-insensitive lookup.
+
+	* libdb/db_storage.h (struct mandata): name is no longer const; it
+	  should always be freeable if non-NULL. We no longer use "-" to
+	  indicate it being the same as the requested name, except in the
+	  database itself.
+	* libdb/db_lookup.c (copy_if_set, dash_if_unset): New functions.
+	  (infoalloc): Zero the newly allocated structure.
+	  (free_mandata_struct): Free name if it's set.
+	  (dbprintf, split_content, make_content, dblookup): Cope with the
+	  new convention for info->name.
+	* libdb/db_store.c (replace_if_necessary): Likewise.
+	* src/check_mandirs.c (filename_info): Likewise.
+	* src/man.c (compare_candidates, add_candidate, display_database):
+	  Likewise.
+	* src/whatis.c (display): Likewise.
+
+	* libdb/db_storage.h: Update prototypes.
+
+Mon Apr 29 00:13:58 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (display): Display page names in the correct case
+	  using the new info->name field.
+
+Mon Apr 29 00:00:38 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (use_grep): Put a space in the grep command before
+	  the flags!
+
+Sun Apr 28 23:50:22 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	Pass through much of the code adding 'const' where appropriate. This
+	should help me avoid various memory management bugs.
+
+	Noteworthy changes from this:
+
+	* include/manconfig.h.in (struct compression): prog and ext
+	  generally shouldn't be modified directly.
+	* libdb/db_lookup.c (make_content): dash really has to stay
+	  constant, or the various things that point to it statically will
+	  break other things badly.
+	* libdb/db_storage.h (struct mandata): The only pointers here that
+	  should generally be modified directly are next and addr.
+	* libdb/db_store.c (dbstore): Remove debugging code left from
+	  previous checkin.
+	* src/check_mandirs.c (splitline): Note that we're deliberately
+	  modifying info->whatis here.
+	  (filename_info): Modify to be more const-friendly.
+	* src/compression.c (comp_file): Add TODO for comp->file.
+	* src/man.c (find_cat_file): Drop unused sec argument, and update
+	  callers.
+
+	* include/manconfig.h.in, libdb/db_storage.h, src/hashtable.h,
+	  src/man.h, src/manp.h: Update prototypes for all of the above.
+
+Fri Apr 26 01:59:46 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	Add case-insensitivity support to the database.
+
+	* libdb/db_storage.h (struct mandata): Add 'name' element.
+	* libdb/db_lookup.c (dbprintf): Print name.
+	  (split_content): Read name from start of data.
+	  (make_content): Prepend name to each data element.
+	  (name_to_key): New function, converting a name to lowercase for
+	  use in database keys.
+	  (make_multi_key): Use name_to_key().
+	  (dblookup): Use name_to_key(). If info->name is "-", set it to the
+	  requested key instead.
+	* libdb/db_delete.c (dbdelete): Use name_to_key().
+	* libdb/db_store.c (dbstore): Likewise.
+
+	* src/check_mandirs.c (make_filename): Use in->name if name is NULL.
+	  (filename_info): Fill in info->name with either a new req_name
+	  argument or the supplied base_name.
+	  (test_manfile): Update calls to make_filename() and
+	  filename_info().
+	* src/check_mandirs.h: Update prototype.
+
+	* src/man.c (struct candidate): Rename 'name' to 'req_name'.
+	  (display_filesystem, display_database_check): Update accordingly.
+	  (compare_candidates): Sort exact-case matches to the front.
+	  (add_candidate): Update calls to compare_candidate() and
+	  filename_info(). When comparing duplicates, check the name field
+	  in the mandata rather than the requested name.
+	  (try_section): The hack to get the name from info_buffer is no
+	  longer required now that filename_info() fills that in.
+	  (display_filesystem): Update calls to make_filename(). Use the
+	  mandata name for the displayed title rather than the requested
+	  name. Sanity-check in->name != "-".
+
+	* include/manconfig.h.in: Bump the database version to 2.4.0.
+
+	* lib/xstrndup.c: Prototype strnlen().
+
+Mon Apr 22 00:00:08 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/globbing.c (match_in_directory): New function, implementing a
+	  limited glob() with optional case-insensitivity.
+	  (look_for_file): Use match_in_directory() rather than glob().
+	  Accept new match_case argument.
+	* src/globbing.h: Update prototype.
+	* src/check_mandirs.c (purge_whatis, purge_missing): Update calls to
+	  look_for_file().
+	* src/man.c (usage, man_getopt): Add --ignore-case and --match-case
+	  arguments.
+	  (try_section): Update calls to look_for_file().
+	  (try_section, display_filesystem, display_database,
+	  display_database_check, display_pages, man): Make sure to use the
+	  candidate name rather than the requested name, so that
+	  case-insensitive lookups work.
+	* man/man1/man.man1 (OPTIONS): Document --ignore-case and
+	  --match-case.
+
+	* po/.cvsignore: Ignore man-db.pot rather than man_db.pot.
+
+Thu Apr 18 11:15:11 BST 2002  Matej Vela  <vela@debian.org>
+
+	* docs/manpage.example: Use .BR for links to other man pages.
+
+Wed Apr  3 19:54:03 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* Rename package from man_db to man-db.
+
+	* docs/NEWS: Start updating for 2.4.0.
+
+Wed Apr  3 18:44:04 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* GNUmakefile.in (distclean): Remove autom4te.cache.
+
+Wed Apr  3 18:40:19 BST 2002  Colin Watson  <cjwatson@debian.org>
+
+	* .cvsignore: Add autom4te.cache.
+	* configure.in: Use AC_LIBOBJ rather than setting LIBOBJS directly.
+	  (--enable-setuid): Use quadrigraphs to get [ and ].
+	  (--with-config-file): New option.
+	* include/Defines.in (config_file): Honour --with-config-file
+	  setting.
+
+Fri Mar 29 21:08:37 GMT 2002  dann frazier <dannf@dannf.org>
+
+	* docs/manpage.example.sgml: Update copyright year.
+
+Thu Mar 21 16:22:58 GMT 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (main): Save the value of $LESS at startup to
+	  $MAN_ORIG_LESS, and use that saved value in preference to $LESS.
+	  This lets recursive invocations of man give less the correct page
+	  titles.
+
+Wed Mar 20 09:37:11 GMT 2002  Eirik Fuller <eirik@hackrat.com>
+
+	* src/check_mandirs.c (splitline): Don't create a copy of base_name
+	  as pointer_name.
+	  (test_manfile): Be more careful about pointer reuse across calls
+	  to splitline().
+
+Mon Feb 11 13:01:07 GMT 2002  Michael Piefel  <piefel@debian.org>
+
+	* po/de.po: Corrections and updates; convert to UTF-8.
+	* man/THANKS: Add credit (the contributor of the previous de.po is
+	  unidentified).
+
+Sun Jan 27 03:31:11 GMT 2002  Colin Watson  <cjwatson@debian.org>
+
+	* configure.in (ALL_LINGUAS): Add da. Reorder alphabetically.
+
+Sat Jan 12 17:55:12 GMT 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Match a line at a time rather than a character at a
+	  time after the end of the NAME section.
+
+	* src/check_mandirs.c (testmandirs): More --debug information.
+
+	* include/manconfig.h.in (LESS_OPTS): Prune duplicate -Pm option.
+	  Set -PM too so it works even when $LESS contains -M.
+	* src/man.c (make_display_command): Substitute prompt_string into
+	  LESS_OPTS twice to accommodate the above.
+
+Mon Jan  7 16:16:02 GMT 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Another {blank_eol} fix, thanks to Peter Clay.
+
+Sun Jan  6 19:05:46 GMT 2002  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Use {blank_eol}, not [blank_eol]. The latter
+	  matches in entirely inappropriate places.
+
+Sun Dec 23 06:17:47 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (long_options, usage, man_getopt): Add a new
+	  -E/--encoding option. It behaves a little like -T, except that it
+	  uses nroff instead of troff and outputs to a pager.
+	  (make_roff_command): Only call determine_lang_table() if
+	  roff_device isn't already set.
+	  (display, try_section, display_filesystem, display_database):
+	  Check for different_encoding.
+	* man/man1/man.man1 (DEFAULTS, OPTIONS): Document -E.
+
+Sun Dec 23 05:23:05 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (compare_candidates): Compare sections according to
+	  section_list before comparing them lexicographically.
+	  (add_candidate): Do a better job of inserting each entry at the
+	  right place in the list.
+
+Sun Dec 23 04:47:02 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (determine_lang_table): Format man pages in UTF-8 if
+	  that's the current locale's character set.
+
+Sun Dec 23 02:35:24 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (popen, pclose): Move to a separate library file ...
+	* lib/popen.c: ... here.
+	* acinclude.m4 (MAN_FUNC_PCLOSE): Use AC_LIBOBJ to conditionally
+	  compile this.
+	* acconfig.h: Remove BROKEN_PCLOSE definition.
+
+	Major rewrite of man's searching code to make it maintainable and to
+	prepare for better sorting of displayed man pages.
+
+	* src/man.c (add_candidate): New function to add an item to a list
+	  of candidate pages.
+	  (compare_candidates): New helper function.
+	  (compare_names, compare_mandata_ext): Remove.
+	  (try_section): Use add_candidate() rather than displaying the page
+	  immediately.
+	  (try_db): Likewise.
+	  (display_filesystem): New function to display pages found by
+	  try_section().
+	  (try_db_section): Rename to display_database(), and use the
+	  candidate structures.
+	  (exist_check): Rename to display_database_check(); use candidates.
+	  (locate_page): Pass the candidate list through to try_section()
+	  and try_db().
+	  (display_pages): New function to iterate through a candidate list
+	  and display each entry.
+	  (man): Create a candidate list and pass it to locate_page().
+	  Display pages only after building the full list.
+
+Mon Dec 17 03:40:48 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* man/man8/mandb.man8 (EXIT STATUS): Document mandb's exit codes.
+
+Mon Dec 17 03:20:15 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (long_options): Remove duplicate for --exact.
+	  (word_fnmatch): New function.
+	  (parse_whatis): Match using word_fnmatch() if --wildcard but not
+	  --exact was given.
+	* man/man1/apropos.man1 (OPTIONS): Document this.
+	  (DESCRIPTION): Fix typographical glitch.
+
+Mon Dec 17 00:53:20 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (OPTIONS): Mention groff 1.17 and the ps and
+	  utf8 devices.
+	* man/*/man1/man.man1: Likewise.
+
+Sun Dec  9 03:31:54 GMT 2001  Morten Brix Pedersen  <morten@wtf.dk>
+
+	* po/da.po: New file.
+	* man/THANKS: Add credit.
+
+Sun Dec  9 03:19:57 GMT 2001  Jose Rodriguez  <boriel@airtel.net>
+
+	* src/man.c (main): Initialize program_name before calling error().
+
+Fri Dec  7 01:35:31 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* configure.in: Detect libdb3, although man-db hasn't been well
+	  tested with it yet.
+
+Fri Dec  7 00:35:53 GMT 2001  Paul Slootman  <paul@wurtel.net>
+
+	* src/man.c (main): Delete spurious backslashes in prompt_string.
+
+Wed Nov 21 20:59:14 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* po/fr.po: Update from Laurent Pelecq.
+	* po/.cvsignore: Ignore ChangeLog.
+
+Wed Nov 21 00:48:50 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	Keeping generated files like the output of gettextize in CVS is bad.
+
+	* intl/*, po/ChangeLog, po/Makefile.in.in: Remove.
+	* autogen.sh: Run gettextize.
+	* release.sh: When releasing, pass --copy to gettextize.
+
+Wed Nov 21 00:29:26 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/compression.c (decompress): Free esc_file and esc_filename
+	  once we're finished with them.
+
+	* src/man.c (local_man_loop): If argv is a directory, display a
+	  useful error message rather than letting zsoelim get confused.
+
+Mon Nov 19 00:53:03 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_lookup.c (copy_datum): Explicitly null-terminate
+	  dat.dptr, since C string-manipulation functions are used on it.
+
+Fri Nov 16 04:28:31 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (add_nls_manpath): Concatenate strings more safely.
+
+	Changes adapted from a patch by OGAWA Hirofumi
+	<hirofumi@mail.parknet.co.jp>:
+
+	* acinclude.m4 (MAN_CHECK_BDB): $LIBS, not LIBS, and quote it while
+	  we're here.
+	* src/manp.c (pathappend): Use strsep() rather than strtok().
+	  (cat_manpath): Likewise.
+	  (add_nls_manpath): Likewise.
+
+Thu Nov  8 11:27:32 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (get_preprocessors_from_file): Drop privileges to access
+	  temporary file.
+
+Wed Nov  7 13:34:38 GMT 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display): Drop privileges throughout. Don't free
+	  command until after it could have been used for an error message.
+
+Sun Oct 14 05:23:20 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/version.c: Include <stdlib.h> for exit().
+	* include/manconfig.h.in: Remove spurious orphaned #ifdef. Oops.
+
+	Spanish translation updates from David Martínez <ender@adi.uam.es>:
+
+	* po/es.po, man/es_ES.88591/man1/apropos.man1: Bring up to date.
+	* man/man1/lexgrog.man1: Fix thinko - s/problems/programs/.
+
+Tue Sep 25 22:46:45 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (get_whatis): Suppress wrong report of a pointer loop
+	  when the second or subsequent element in a pointer chain points to
+	  itself and has a usable whatis.
+
+Wed Sep 19 00:47:55 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (local_man_loop): Drop privileges throughout.
+
+	Documentation corrections thanks to Andreas Dilger
+	<adilger@turbolabs.com>:
+
+	* man/man1/man.man1 and translations (SEE ALSO): Refer to man(7).
+	* docs/manpage.example, docs/manpage.example.pod,
+	  docs/manpage.example.sgml (SEE ALSO): Move to the end.
+	  (SYNOPSIS, DESCRIPTION, OPTIONS): Add more advice.
+	* docs/manpage.example (FILES): Restore tabs that had been turned
+	  into spaces.
+
+Tue Sep 18 03:46:00 BST 2001  Colin Watson  <cjwatson@debian.org>
+
+	* lib/xstrndup.c: New file.
+	* lib/Makefile.in: Build it.
+	* include/manconfig.h.in: Prototype xstrndup().
+
+	* src/man.c (compare_names, compare_mandata_ext): New functions.
+	  (try_section): Build title more locally, displaying extensions
+	  correctly. Sort the results of look_for_file().
+	  (try_db_section): Build title even if NROFF_MISSING is defined.
+	  (try_db): Sort data returned from the database.
+	  (locate_page): Look in the filesystem first and then the database,
+	  rather than the other way round.
+
+	* src/manp.c (checkpath): Remove; it used to resolve symlinks, but
+	  it doesn't do that any more and I don't think it should.
+	* src/manp.c: Constify arguments to many functions by either being
+	  more careful not to alter them or by duplicating them.
+	* src/util.c (is_directory): Likewise.
+	* src/catman.c, src/man.c, src/mandb.c, src/whatis.c (main):
+	  Simplify calls.
+	* src/manp.h, include/manconfig.h.in: Update prototypes.
+	* src/manp.h: add_system_manpath() is static now.
+
+	* include/manconfig.h.in: Provide stupid getcwd() emulation with
+	  getwd() if the former isn't available.
+	* src/man.c (main, format_display): Assume getcwd() is available.
+	* src/mandb.c (main): Likewise.
+	* src/manp.c (add_dir_to_path_list): Likewise.
+
+	* src/manp.c (add_dir_to_path_list): The checks that manpaths end in
+	  /man or /MAN were overly anal and never compiled in; remove them.
+
+	* acinclude.m4 (MAN_PROG_GNU_NROFF): More portable shell for ash.
+
+	* src/man.c (lang_table): We use the latin1 alias rather than
+	  iso8859 for all other languages, so do so for Korean too.
+
+	* src/lexgrog.l: Prevent the no-op request '.' from eating text on
+	  the next line.
+	  (find_name): Remove trailing spaces as well as leading ones.
+
 Fri Sep  7 19:28:12 BST 2001  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.3.20.

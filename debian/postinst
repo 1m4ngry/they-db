@@ -23,30 +23,23 @@ for x in $maybesetuid; do
 done
 
 if [ "$RET" = true ]; then
-    # man and mandb are to be installed setuid man, and for now we need the
-    # wrapper.
+    # man and mandb are to be installed setuid man.
     owner=man:root
     mode=4755
-    issetuid=1
 else
-    # man and mandb are not to be installed setuid, and we install symlinks
-    # directly to the executables.
+    # man and mandb are not to be installed setuid.
     owner=root:root
     mode=0755
-    issetuid=0
 fi
 
 for x in $maybesetuid; do
-    if [ $issetuid -eq 1 ]; then target=wrapper; else target=$x; fi
     # No statoverrides available or none exist for us ...
     if [ ! -x /usr/sbin/dpkg-statoverride ] || \
 	    ! dpkg-statoverride --list /usr/lib/man-db/$x >/dev/null; then
 	chown $owner /usr/lib/man-db/$x
 	chmod $mode  /usr/lib/man-db/$x
-	ln -sf ../lib/man-db/$target /usr/bin/$x
     fi
-    # Make sure we end up with a symlink
-    [ -L /usr/bin/$x ] || ln -sf ../lib/man-db/$target /usr/bin/$x
+    ln -sf ../lib/man-db/$x /usr/bin/$x
 done
 
 if [ -e /etc/cron.daily/man.moved-by-preinst ]; then
@@ -91,7 +84,7 @@ if [ ! -f $catdir/index.bt ]; then
 	    build_db=1
 	fi
     fi
-elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
+elif dpkg --compare-versions "$2" lt 2.4.0-1; then
     db_get man-db/rebuild-database
     if [ "$RET" = true ]; then
 	build_db=1
@@ -103,17 +96,18 @@ if [ $build_db -eq 1 ]; then
 	# Run in the foreground. In this case, chances are we're being run
 	# from debootstrap, which will have problems if mandb runs
 	# backgrounded for too long (bug #100616).
-	BACKGROUND=
+	# start-stop-daemon isn't available when running from debootstrap.
 	echo "Building database of manual pages ..." >&2
+	perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
+	         exec "/usr/lib/man-db/mandb", "-cq"';
     else
-	BACKGROUND=--background
 	echo "Building database of manual pages in the background." >&2
+	# --pidfile /dev/null so it always starts; mandb isn't really a
+	# daemon, but we want to start it like one.
+	start-stop-daemon --start --pidfile /dev/null --background \
+			  --startas /usr/lib/man-db/mandb --oknodo \
+			  --chuid man -- -cq >/dev/null 2>/dev/null
     fi
-    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
-    # but we want to start it like one.
-    start-stop-daemon --start --pidfile /dev/null \
-		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
-		      $BACKGROUND -- -c >/dev/null 2>/dev/null
 fi
 
 #DEBHELPER#

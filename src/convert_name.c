@@ -39,14 +39,14 @@
 #include "lib/error.h"
 #include "manp.h"
 
-static __inline__ void gripe_converting_name (char *name)
+static __inline__ void gripe_converting_name (const char *name)
 {
 	error (FATAL, 0, _("Can't convert %s to cat name"), name);
 }
 
 /* derive the catpage path for manpage 'name'. If alternate is not NULL, use
    its value as the catpath dir. */
-char *convert_name (char *name, char *alternate)
+char *convert_name (const char *name, const char *alternate)
 {
 	char *to_name, *t1 = NULL;
 	char *t2 = NULL;

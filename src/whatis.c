@@ -119,7 +119,6 @@ static const struct option long_options[] =
 	{"whatis",	no_argument,		0, 'f'},
 	{"apropos",	no_argument,		0, 'k'},
 	{"locale",	required_argument,	0, 'L'},
-	{"exact",	no_argument,		0, 'e'},
 	{0, 0, 0, 0}
 };
 
@@ -181,8 +180,9 @@ static __inline__ int use_grep (char *page, char *manpath)
 		anchor = "";
 #endif 	
 
-		command = strappend (NULL, get_def ("grep", GREP), flags, " ",
-				     anchor, esc_page, " ", esc_file, NULL);
+		command = strappend (NULL, get_def ("grep", GREP), " ", flags,
+				     " ", anchor, esc_page, " ", esc_file,
+				     NULL);
 		status = (system (command) == 0);
 		free (command);
 		free (esc_file);
@@ -204,10 +204,10 @@ static __inline__ int use_grep (char *page, char *manpath)
    
 /* Take mandata struct (earlier returned from a dblookup()) and return 
    the relative whatis */
-static char *get_whatis (struct mandata *info, char *page)
+static char *get_whatis (struct mandata *info, const char *page)
 {
 	int rounds;
-	char *newpage;
+	const char *newpage;
 
 	/* See if we need to fill in the whatis here. */
 	if (*(info->pointer) == '-' || STREQ (info->pointer, page)) {
@@ -223,7 +223,7 @@ static char *get_whatis (struct mandata *info, char *page)
 	 * arbitrary: it's just there to avoid an infinite loop.
 	 */
 	newpage = info->pointer;
-	info = dblookup_exact (newpage, info->ext);
+	info = dblookup_exact (newpage, info->ext, 1);
 	for (rounds = 0; rounds < 10; rounds++) {
 		struct mandata *newinfo;
 
@@ -247,7 +247,7 @@ static char *get_whatis (struct mandata *info, char *page)
 			return xstrdup (_("(unknown)"));
 		}
 
-		newinfo = dblookup_exact (info->pointer, info->ext);
+		newinfo = dblookup_exact (info->pointer, info->ext, 1);
 		free_mandata_struct (info);
 		info = newinfo;
 	}
@@ -260,16 +260,23 @@ static char *get_whatis (struct mandata *info, char *page)
 static void display (struct mandata *info, char *page)
 {
 	char *string, *whatis;
-	
+	const char *page_name;
+
 	whatis = get_whatis (info, page);
 	
 	if (debug)
 		dbprintf (info);
 
-	if (*(info->pointer) == '-' || STREQ (info->pointer, page))
-		string = strappend (NULL, page, " (", info->ext, ")", NULL);
+	if (info->name)
+		page_name = info->name;
 	else
-		string = strappend (NULL, page, " (", info->ext, ") [",
+		page_name = page;
+
+	if (STREQ (info->pointer, "-") || STREQ (info->pointer, page))
+		string = strappend (NULL, page_name, " (", info->ext, ")",
+				    NULL);
+	else
+		string = strappend (NULL, page_name, " (", info->ext, ") [",
 				    info->pointer, "]", NULL);
 
 	if (strlen (string) < (size_t) 20)
@@ -306,15 +313,15 @@ static __inline__ int whatis (char *page)
 	struct mandata *info;
 	int count = 0;
 
-	info = dblookup_all (page, NULL);
+	info = dblookup_all (page, NULL, 0);
 	while (info) {
 		struct mandata *pinfo;
 			
 		display (info, page);
 		count++;
 		pinfo = info->next;	/* go on to next structure */
-	 	free (info->addr);	/* free info's `content' */
-	 	free (info);		/* free info */
+		free_mandata_elements (info);
+	 	free (info);
 		info = pinfo;
 	}
 	return count;
@@ -371,6 +378,32 @@ static int match (char *lowpage, char *whatis)
 	return 0;
 }
 
+/* TODO: How on earth do we allow multiple-word matches without
+ * reimplementing fnmatch()?
+ */
+static int word_fnmatch (char *lowpage, char *whatis)
+{
+	char *lowwhatis = lower (whatis);
+	char *begin = lowwhatis, *p;
+
+	for (p = lowwhatis; *p; p++) {
+		if (islower (*p) || *p == '_')
+			continue;
+
+		/* Check for multiple non-word characters in a row. */
+		if (p <= begin + 1)
+			begin++;
+		else {
+			*p = '\0';
+			if (fnmatch (lowpage, begin, 0) == 0)
+				return 1;
+			begin = p + 1;
+		}
+	}
+
+	return 0;
+}
+
 /* return 1 if page matches whatis, else 0 */
 static int parse_whatis (char *page, char *lowpage, char *whatis)
 { 
@@ -383,8 +416,12 @@ static int parse_whatis (char *page, char *lowpage, char *whatis)
 #  endif
 #endif /* REGEX */
 
-	if (wildcard)
-		return (fnmatch (page, whatis, 0) == 0);
+	if (wildcard) {
+		if (exact)
+			return (fnmatch (page, whatis, 0) == 0);
+		else
+			return word_fnmatch (page, whatis);
+	}
 
 	return match (lowpage, whatis);
 }
@@ -645,7 +682,7 @@ int main (int argc, char *argv[])
 	else
 		free (manpath (NULL));
 
-	create_pathlist (xstrdup (manp), manpathlist);
+	create_pathlist (manp, manpathlist);
 
 	while (optind < argc) {
 #if defined(POSIX_REGEX)		

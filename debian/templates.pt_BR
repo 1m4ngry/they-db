@@ -9,6 +9,13 @@ Description: Do you want man and mandb to be installed setuid man?
  automatically kept up to date by people reading man pages. Storing cat
  pages, in particular, may aid performance on slower machines.
  .
+ Cached man pages only work if you are using a "normal"-width terminal (66
+ to 80 characters wide). This is to avoid one user causing cat pages to be
+ saved at widths that would be inconvenient for other users. In a future
+ release this will be configurable. Until then, if you use a wide terminal,
+ you can force man pages to be formatted to 80 characters anyway by setting
+ MANWIDTH=80.
+ .
  Enabling this feature may be a security risk, so it is disabled by
  default. If in doubt, I suggest you leave it disabled.
 Description-pt_BR: Você quer que man e mandb sejam instalados com setuid?
@@ -19,6 +26,14 @@ Description-pt_BR: Você quer que man e mandb sejam instalados com setuid?
  descrições de páginas de manual é automaticamente mantida atualizada por
  pessoas lendo páginas de manual. Guardar páginas cat, em particular,
  pode ajudar na performance em máquinas mais lentas.
+ .
+ Páginas de manual em cache funcionarão somente se você usa um -width
+ "normal" de terminal (de 66 a 80 caracteres). Isto é para evitar usuários
+ fazendo com que páginas cat sejam salvas em larguras que seriam
+ inconvenientes para outros usuários. Em um release futuro isto será
+ configurável. Até lá, se você usar um terminal largo, você pode forçar
+ as páginas de manual serem formatadas para 80 caracteres de qualquer
+ forma defininfo MANWIDTH=80.
  .
  Habilitar este recurso pode ser um risco de segurança, por isso essa
  mensagem é mostrada por padrão. Em caso de dúvidas, sugiro que você deixe

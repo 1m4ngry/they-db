@@ -58,7 +58,7 @@ extern char *strsep();
 
 #define NO_ENTRY	1;
 
-int dbdelete(char *name, struct mandata *info)
+int dbdelete(const char *name, struct mandata *info)
 {
 	datum key, cont;
 
@@ -68,35 +68,38 @@ int dbdelete(char *name, struct mandata *info)
 		fprintf(stderr, "Attempting delete of %s(%s) entry.\n", 
 			name, info->ext);
 
-	key.dptr = name;
+	key.dptr = name_to_key(name);
 	key.dsize = strlen(key.dptr) + 1;
 	cont = MYDBM_FETCH(dbf, key);
 
 	if (!cont.dptr) {			/* 0 entries */
+		free(key.dptr);
 		return NO_ENTRY;
 	} else if (*cont.dptr != '\t') {	/* 1 entry */
 		MYDBM_DELETE(dbf, key);
 		MYDBM_FREE(cont.dptr);
 	} else {				/* 2+ entries */
-		char *ext[ENTRIES], **e;
+		char *names[ENTRIES], *ext[ENTRIES];
 		char *multi_content = NULL;
 		datum multi_key;
-		int refs;
+		int refs, i, j;
 
 		/* Extract all of the extensions associated with 
 		   this key */
 
-		refs = list_extensions(cont.dptr + 1, e = ext);
-		
-		while (*e && strcmp(*e, info->ext) != 0)
-			e++;
+		refs = list_extensions(cont.dptr + 1, names, ext);
 
-		if (!*e) {
+		for (i = 0; i < refs; ++i)
+			if (STREQ(names[i], name) && STREQ(ext[i], info->ext))
+				break;
+
+		if (i >= refs) {
 			MYDBM_FREE(cont.dptr);
+			free(key.dptr);
 			return NO_ENTRY;
 		}
-			
-		multi_key = make_multi_key(name, *e);
+
+		multi_key = make_multi_key(names[i], ext[i]);
 		if (!MYDBM_EXISTS(dbf, multi_key)) {
 			error (0, 0,
 			       _( "multi key %s does not exist"),
@@ -105,7 +108,6 @@ int dbdelete(char *name, struct mandata *info)
 		}
 		MYDBM_DELETE(dbf, multi_key);
 		free(multi_key.dptr);
-		**e = '\0';
 
 		/* refs *may* be 1 if all manual pages with this name 
 		   have been deleted. In this case, we'll have to remove 
@@ -114,15 +116,15 @@ int dbdelete(char *name, struct mandata *info)
 		if (refs == 1) {
 			MYDBM_FREE(cont.dptr);
 			MYDBM_DELETE(dbf, key);
+			free(key.dptr);
 			return 0;
 		}
 			 
 		/* create our new multi content */
-		for (e = ext; *e; e++) {
-			if (**e)
+		for (j = 0; j < refs; ++j)
+			if (i != j)
 				multi_content = strappend(multi_content,
-							  "\t", *e, NULL);
-		}
+							  "\t", ext[j], NULL);
 
 		MYDBM_FREE(cont.dptr);
 
@@ -136,5 +138,7 @@ int dbdelete(char *name, struct mandata *info)
 		if (MYDBM_REPLACE(dbf, key, cont))
 			gripe_replace_key(key.dptr);
 	}
+
+	free(key.dptr);
 	return 0;
 }

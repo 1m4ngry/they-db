@@ -12,8 +12,13 @@ if dpkg --compare-versions "$2" lt 2.3.16; then
     # extend it back beyond then. Thus, we may need to build the database
     # from scratch on old upgrades. This also covers fresh installs.
     db_input low man-db/build-database || true
-elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
+elif dpkg --compare-versions "$2" lt 2.4.0-1; then
     # At 2.3.17.1-5, the database version number changed to 2.3.2.
+    # At 2.4.0-1, the database version number changed to 2.4.1 and we
+    # moved from libdb2 to libdb3.
+    # Set the seen flag to false in case people answered this for the
+    # previous transition.
+    db_fset man-db/rebuild-database seen false
     db_input medium man-db/rebuild-database || true
 fi
 

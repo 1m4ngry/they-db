@@ -3,7 +3,7 @@
 /*--------------------------------------------------------------------------*/
 /* This file contains the paths/binary locations of the programs used by    */
 /* these utilities and various C pre-processor definitions that modify the  */
-/* behaviour of the man_db suite. You may like to check that all of the     */
+/* behaviour of the man-db suite. You may like to check that all of the     */
 /* formatters are from the same package. Ie, that we are not using a native */
 /* UNIX nroff with GNU tbl.                                                 */
 /*--------------------------------------------------------------------------*/
@@ -47,7 +47,7 @@
 #define MAN_DB_UPDATES
 #define MAN_CATS
 
-/* By default, man_db will store a whatis referenced manual page in favour
+/* By default, man-db will store a whatis referenced manual page in favour
    of a stray cat page when they both share identical namespace. If you
    would like to see a stray cat eg. kill(1) in favour of a kill(1) whatis
    referenced to bash_builtins(1), uncomment the following line. */
@@ -58,10 +58,10 @@
    Also the maximum amount of non-comment lines in the config file. */
 #define MAXDIRS 128
 
-/* CATMODE is the mode of the formatted cat pages that we create. The man_db
+/* CATMODE is the mode of the formatted cat pages that we create. The man-db
    package can be run in 4 main modes, 3 of which are relatively secure and
    allow the cats to be non world writable. The `wide open' mode requires
-   CATMODE to be 0666. Edit if necessary, after reading the man_db manual */ 
+   CATMODE to be 0666. Edit if necessary, after reading the man-db manual */ 
 
 #define CATMODE		0644 /* u=rw,go=r */
 
@@ -165,12 +165,15 @@
 #endif
 
 /* GNU less flags (i)gnore case on search 
-		  (x8) set tab stops to 8 spaces
-		  (m)ore display style */
+ *                (x8) set tab stops to 8 spaces
+ *                (R)aw control chars (but keep track of screen appearance)
+ *                (m)ore display style
+ * 
+ * If you change this, be sure to match the format with
+ * man.c:make_display_command().
+ */
 
-#ifndef LESS_OPTS
-#  define LESS_OPTS	"-Pm\\:\\$ix8mPm"
-#endif
+#define LESS_OPTS	"-ix8RmPm%s$PM%s$"
 
 /* This is a minimal latin1 special characters to ascii translation table */
 #if !defined(TR_SET1) || !defined(TR_SET2)
@@ -234,8 +237,12 @@ extern void __chkr_garbage_detector (void);
    unconditionally */
 
 struct compression {
-	char *prog;
-	char *ext;
+	/* The following are const because they should be pointers to parts
+	 * of strings allocated elsewhere and should not be written through
+	 * or freed themselves.
+	 */
+	const char *prog;
+	const char *ext;
 	char *file;
 };
 
@@ -255,6 +262,7 @@ struct compression {
 extern VOID *xmalloc (size_t n);
 extern VOID *xrealloc (VOID *p, size_t n);
 extern __inline__ char *xstrdup (const char *string);
+extern __inline__ char *xstrndup (const char *string, size_t size);
 extern int create_tempfile (const char *template, char **created_filename);
 extern char *create_tempdir (const char *template);
 
@@ -264,8 +272,8 @@ extern __inline__ void ver (void);
 #endif /* !STATIC_VER */
 
 /* compression.c */
-extern struct compression *comp_info (char *filename);
-extern struct compression *comp_file (char *filename);
+extern struct compression *comp_info (const char *filename);
+extern struct compression *comp_file (const char *filename);
 extern char *decompress (const char *filename, const struct compression *comp);
 extern __inline__ void remove_ztemp (void);
 extern __inline__ char *get_ztemp (void);
@@ -279,21 +287,25 @@ extern int find_name (char *file, char *filename, struct lexgrog *p_lg);
 
 /* util.c */
 extern char *mkdbname (const char *path);
-extern int is_changed (char *fa, char *fb);
-extern int is_directory (char *path);
+extern int is_changed (const char *fa, const char *fb);
+extern int is_directory (const char *path);
 extern __inline__ int do_system (const char *command);
 extern char *escape_shell (const char *unesc);
 extern int remove_directory (const char *directory);
 
-#if !defined(HAVE_BASENAME)
-extern char *basename ();
-#else /* HAVE_BASENAME */
+#ifdef HAVE_BASENAME
 extern char *basename (const char *path);
-#endif /* !HAVE_BASENAME */
+#else /* !HAVE_BASENAME */
+extern char *basename ();
+#endif /* HAVE_BASENAME */
 
 #ifndef HAVE_STRSEP
 extern char *strsep (char **stringp, const char *delim);
 #endif /* !HAVE_STRSEP */
+
+#ifndef HAVE_GETCWD
+#  define getcwd(buf,size) getwd (buf)
+#endif
 
 extern char *strappend (char *, ...);
 
@@ -333,7 +345,7 @@ extern char *program_name;	/* the basename of the program (as called) */
 
 /* some special database keys used for storing important info */
 #define VER_KEY         "$version$"	/* version key */
-#define VER_ID          "2.3.2"		/* version content */
+#define VER_ID          "2.4.1"		/* version content */
 #define KEY     	"$mtime$"	/* `time of last update' key */
 
 /* The owner of man (if setuid) is the definition of SECURE_MAN_UID */

@@ -1,3 +1,47 @@
+man-db (2.4.0-1) unstable; urgency=low
+
+  * New upstream release.
+    - Restructure the code that finds man pages to allow more flexibility.
+      Man pages are now located first, then sorted properly before they are
+      displayed (closes: #107946, #146696).
+    - Case-insensitive lookups are now the default, although they can be
+      disabled with -I or --match-case (closes: #108410). The database
+      format had to be changed to support this, so existing databases will
+      need to be rebuilt; debconf will ask about this at medium priority. In
+      the process, move from libdb2 to libdb3.
+    - Add a new -E/--encoding option to select different nroff devices
+      (closes: #123994).
+    - Use groff's utf8 device if the current locale specifies the UTF-8
+      character set (closes: #129783).
+    - Various changes that help with displaying output from the forthcoming
+      groff 1.18. In particular, the -R flag is passed to less - shout if
+      this causes any problems.
+    - Work around libdb delays on zero-length databases (closes: #137908).
+    - Add $MANLESS, which can be used to override all of man's
+      do-what-I-mean code for setting $LESS (closes: #141403).
+    - 'apropos --wildcard' anchors on word boundaries by default. Use
+      --exact as well to revert to the old behaviour (closes: #37686).
+
+    - Mention ps and utf8 groff output devices in man(1) (closes: #123997).
+    - Document mandb's exit codes in its man page (closes: #111851).
+    - Set less's -M prompt as well as its -m prompt (closes: #123312).
+    - Give the correct page titles to less when man is invoked recursively
+      (closes: #139155).
+    - Use .BR for references in manpage.example (closes: #143389).
+
+  * Stop using the wrapper that squashed root privileges down to uid man. It
+    didn't provide any real security benefits in my opinion, and caused too
+    many problems (closes: #58112, #74790).
+  * Updated German and Brazilian Portuguese debconf translations (thanks,
+    Sebastian Rittau and Andre Luis Lopes).
+  * Correct path to text manual in doc-base file, and mention some more
+    formats (thanks, Robert Luberda; closes: #149547).
+  * start-stop-daemon isn't available when running from debootstrap. Use
+    perl in the postinst instead to drop privileges in this case (thanks to
+    Torsten Landschoff for the idea).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 26 Jun 2002 15:40:32 +0000
+
 man-db (2.3.20-20) unstable; urgency=low
 
   * Fix Catalan debconf translation (thanks, Jordi Mallach;

@@ -4,7 +4,7 @@
  * lexgrog.l: extract 'whatis' info from nroff man / formatted cat pages.
  *  
  * Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
- * Copyright (c) 2001 Colin Watson.
+ * Copyright (c) 2001, 2002 Colin Watson.
  *
  * You may distribute under the terms of the GNU General Public
  * License as specified in the file COPYING that comes with this
@@ -109,9 +109,12 @@ digit		[[:digit:]]
 upper		[[:upper:]]
 alpha		[[:alpha:]]
 blank		[[:blank:]]
-blank_eol	[[:blank:]\n]
-bol		\n+
-next		\n*
+blank_eol	[[:blank:]\r\n]
+eol		\r?\n
+bol		{eol}+
+next		{eol}*
+empty		{eol}{blank}*
+indent		{eol}{blank}+
 dbl_quote	\"
 font_change	\\f([[:upper:]1-4]|\({upper}{2})
 size_change	\\s[+-]?{digit}
@@ -135,7 +138,7 @@ nl_name		N[Aa][Aa][Mm]
 pl_name		N[Aa][Zz][Ww][Aa]
 sv_name		N[Aa][Mm][Nn]
 name		({cs_name}|{de_name}|{en_name}|{es_name}|{fi_name}|{fr_name}|{hu_name}|{it_name}|{latin_name}|{nl_name}|{pl_name}|{sv_name})
-name_sec	{dbl_quote}?{style_change}?{name}{style_change}?{dbl_quote}?
+name_sec	{dbl_quote}?{style_change}?{name}{style_change}?({blank}*{dbl_quote})?
 
  /* eptgrv : eqn, pic, tbl, grap, refer, vgrind */
 tbl_request	\.TS
@@ -150,16 +153,16 @@ vgrind_request	\.vS
 
  /* begin NAME section processing */
 <MAN_FILE>{sec_request}{blank_eol}+{name_sec}{blank}*	BEGIN (MAN_NAME);
-<CAT_FILE>(\n{blank}*){2,}{name}{blank}*\n{blank}+	BEGIN (CAT_NAME);
+<CAT_FILE>{empty}{2,}{name}{blank}*{indent}		BEGIN (CAT_NAME);
 
  /* general text matching */
-<MAN_FILE>\.[^Ss\n].*{next}				|
+<MAN_FILE>\.[^Ss\r\n].*{next}				|
 <MAN_FILE>\..{0,3}{dbl_quote}?.{0,4}{dbl_quote}? 	|
 <MAN_FILE>{comment}.*{next}				|
 <CAT_FILE>.{1,9}					|
 <CAT_FILE>[ ]*						|
-<CAT_FILE>\n{2,}					|
-<MAN_FILE,CAT_FILE>.|\n
+<CAT_FILE>{eol}{2,}					|
+<MAN_FILE,CAT_FILE>.|{eol}
 
 <MAN_REST>{
 	{bol}{tbl_request}		filters[TBL_FILTER] = 't';
@@ -174,10 +177,10 @@ vgrind_request	\.vS
 					*p_name = '\0'; /* terminate the string */
 					yyterminate ();
 				}
-<MAN_REST>.|\n
+<MAN_REST>.+|{eol}
 
  /* rules to end NAME section processing */
-<FORCE_EXIT>.|\n		{	/* forced exit */
+<FORCE_EXIT>.|{eol}		{	/* forced exit */
 					*p_name = '\0'; /* terminate the string */
 					yyterminate ();
 				}
@@ -185,13 +188,14 @@ vgrind_request	\.vS
 <MAN_NAME>{bol}{sec_request}{blank}*	| 	/* Another section */
 <MAN_NAME>{bol}\.X{upper}{blank}+	|	/* special - hpux */
 <MAN_NAME>{bol}\.sp{blank}*		|	/* vertical spacing */
-<MAN_NAME>\n{blank}*{bol}.+	{	/* terminate the string */
+<MAN_NAME>{bol}\.ig{blank}*		|	/* block comment */
+<MAN_NAME>{empty}{bol}.+	{	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (MAN_REST);
 				}
 
 <CAT_NAME>{bol}S[yYeE]			|
-<CAT_NAME>\n{2,}.+			|
+<CAT_NAME>{eol}{2,}.+			|
 <CAT_NAME>{next}__		{	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (CAT_REST);
@@ -215,13 +219,13 @@ vgrind_request	\.vS
 <MAN_NAME>{bol}\.nf.*			fill_mode = 0;
 <MAN_NAME>{bol}\.fi.*			fill_mode = 1;
 
-<CAT_NAME>-\n[blank_eol]*		/* strip continuations */
+<CAT_NAME>-{eol}{blank_eol}*		/* strip continuations */
 
  /* convert to DASH */
 <MAN_NAME>{next}{blank}*\\\((mi|hy|em){blank}*	|
-<MAN_NAME>{next}[blank_eol]+[-\\]-{blank}*	|
-<MAN_NAME>{next}[blank_eol]*[-\\]-{blank}+	|
-<CAT_NAME>{next}{blank}+-{1,2}[blank_eol]+	|
+<MAN_NAME>{next}{blank_eol}+[-\\]-{blank}*	|
+<MAN_NAME>{next}{blank_eol}*[-\\]-{blank}+	|
+<CAT_NAME>{next}{blank}+-{1,2}{blank_eol}+	|
 <MAN_NAME>{bol}\.Nd{blank}*			add_separator_to_whatis ();
 
  /* escape sequences and special characters */
@@ -230,19 +234,19 @@ vgrind_request	\.vS
  	{next}\\('|\(aa)		add_char_to_whatis ('\'');
  	{next}\\(`|\(ga)		add_char_to_whatis ('`');
 	{next}\\-			add_char_to_whatis ('-');
- 	{next}\\\.			add_char_to_whatis ('.');
-	{next}((\\[ 0t])|[ ]|\t)*	add_char_to_whatis (' ');
+	{next}\\\.			add_char_to_whatis ('.');
+	{next}((\\[ 0t~])|[ ]|\t)*	add_char_to_whatis (' ');
 	{next}\\\((ru|ul)		add_char_to_whatis ('_');
 	{next}\\\\t			add_char_to_whatis ('\t');
 
-	{next}\\[|^&!%acdpruz{}\n]	/* various useless control chars */
+	{next}\\[|^&!%acdpruz{}\r\n]	/* various useless control chars */
 	{next}\\[bhlLvx]{blank}*'[^']+'	/* various inline functions */
 
 	{next}\\\$[1-9]			/* interpolate arg */
 
 	{next}\\\*(\({alpha})?{alpha}	/* interpolate string */
 	{next}\\\({alpha}{alpha}	/* special (non printable) character */
-	{next}\\\".* 			/* comment */
+	{next}\\["#].* 			/* comment */
 
 	{next}{font_change}		/* font changes */
 	{next}\\k{alpha}		/* mark input place in register */
@@ -258,7 +262,7 @@ vgrind_request	\.vS
 	{next}\(\\\|\){blank}*		/* function() in hpux */
 }
 
- /* collapse spaces, escpaed spaces, tabs, newlines to a single space */
+ /* collapse spaces, escaped spaces, tabs, newlines to a single space */
 <CAT_NAME>{next}((\\[ ])|{blank})*	add_char_to_whatis (' ');
 
  /* a ROFF break request (.br) or a paragraph request (.LP, .PP, .P)
@@ -279,7 +283,7 @@ vgrind_request	\.vS
 <MAN_NAME>[[:alnum:]]*		add_str_to_whatis (yytext, yyleng);
 
  /* normalise the period (,) separators */
-<CAT_NAME>{blank}*,[ \t\n]*		|
+<CAT_NAME>{blank}*,[ \t\r\n]*		|
 <MAN_NAME>{blank}*,{blank}*		add_str_to_whatis (", ", 2);
 
 <CAT_NAME,MAN_NAME>{bol}.	{

@@ -18,16 +18,7 @@
 #ifdef BTREE
 
 #include <stdio.h>
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-#endif /* STDC_HEADERS */
+#include <errno.h>
 
 #if HAVE_SYS_FILE_H
 #  include <sys/file.h> /* for flock() */
@@ -47,85 +38,11 @@
 #include "manconfig.h"
 #include "lib/error.h"
 #include "lib/flock.h"
+#include "lib/hashtable.h"
 #include "mydbm.h"
 #include "db_storage.h"
 
-/* This is a temporary hack, largely duplicated from src/hashtable.c, to
- * sanity-check databases for loops. 2.3.21 should have a proper hashtable
- * library.
- */
-
-#define HASHSIZE 2001
-
-struct nlist {
-        struct nlist *next;	/* next in the chain */
-        char *name;		/* the _name_ */
-};
-
-static struct nlist *hashtab[HASHSIZE];		/* The storage array */
-
-/* return hash value for string */
-static unsigned int hash (char *s, size_t len)
-{
-	unsigned int hashval = 0;
-	int i;
-	for (i = 0; i < len; i++)
-		hashval = s[i] + 31 * hashval;
-	return hashval % HASHSIZE;
-}
-
-/* return true if we've seen this string before */
-static int lookup (char *name, size_t len)
-{
-	struct nlist *np;
-	
-	for (np = hashtab[hash(name, len)]; np; np = np->next) {
-		if (strncmp (name, np->name, len) == 0)
-			return 1;
-	}
-	return 0;
-}
-
-/* remember that we've seen this string */
-static void install (char *name, size_t len)
-{
-	struct nlist *np;
-	unsigned int hashval;
-
-	if (lookup (name, len))
-		return;
-
-	np = (struct nlist *) xmalloc (sizeof (struct nlist));
-	np->name = xmalloc (len + 1);
-	strncpy (np->name, name, len);
-	np->name[len] = '\0';
-	hashval = hash (name, len);
-
-	/* point to last w/ this hash */
-	np->next = hashtab[hashval];
-
-	/* attach to hashtab array */
-	hashtab[hashval] = np;
-}
-
-/* free up the hash tree (garbage collect) */
-static void free_hashtab (void)
-{
-	int i;
-
-	for (i = 0; i < HASHSIZE; i++) {
-		struct nlist *np = hashtab[i];
-		while (np) {
-			struct nlist *next;
-
-			free (np->name);
-			next = np->next;
-			free (np);
-			np = next;
-		}
-		hashtab[i] = NULL;
-	}
-}
+struct hashtable *loop_check_hash;
 
 /* the Berkeley database libraries do nothing to arbitrate between concurrent 
    database accesses, so we do a simple flock(). If the db is opened in 
@@ -175,6 +92,24 @@ DB *btree_flopen(char *filename, int flags, int mode)
 		lock_op = LOCK_EX | LOCK_NB;
 	} else {
 		lock_op = LOCK_SH | LOCK_NB;
+	}
+
+	if (!(flags & O_CREAT)) {
+		/* Berkeley DB thinks that a zero-length file means that
+		 * somebody else is writing it, and sleeps for a few
+		 * seconds to give the writer a chance. All very well, but
+		 * the common case is that the database is just zero-length
+		 * because mandb was interrupted or ran out of disk space or
+		 * something like that - so we check for this case by hand
+		 * and ignore the database if it's zero-length.
+		 */
+		struct stat iszero;
+		if (stat (filename, &iszero) < 0)
+			return NULL;
+		if (iszero.st_size == 0) {
+			errno = EINVAL;
+			return NULL;
+		}
 	}
 
 	if (flags & O_TRUNC) {
@@ -251,8 +186,14 @@ static __inline__ datum btree_findkey(DB *dbf, u_int flags)
 {
 	datum key, data;
 
-	if (flags == R_FIRST)
-		free_hashtab ();
+	if (flags == R_FIRST) {
+		if (loop_check_hash) {
+			hash_free (loop_check_hash);
+			loop_check_hash = NULL;
+		}
+	}
+	if (!loop_check_hash)
+		loop_check_hash = hash_create (&plain_hash_free);
 
 	if (((dbf->seq)(dbf, (DBT *) &key, (DBT *) &data, flags))) {
 		key.dptr = NULL;
@@ -260,7 +201,7 @@ static __inline__ datum btree_findkey(DB *dbf, u_int flags)
 		return key;
 	}
 
-	if (lookup (key.dptr, key.dsize)) {
+	if (hash_lookup (loop_check_hash, key.dptr, key.dsize)) {
 		/* We've seen this key already, which is broken. Return NULL
 		 * so the caller doesn't go round in circles.
 		 */
@@ -273,7 +214,7 @@ static __inline__ datum btree_findkey(DB *dbf, u_int flags)
 		return key;
 	}
 
-	install (key.dptr, key.dsize);
+	hash_install (loop_check_hash, key.dptr, key.dsize, 0, NULL);
 
 	return copy_datum(key);
 }
@@ -363,10 +304,10 @@ int dbstore(struct mandata *in, char *basename)
 				cont = make_content(in);
 				status = replace_if_necessary(in, &old, key, cont);
 				free(cont.dptr);
-				free(old.addr);
+				free_mandata_elements(&old);
 				break;
 			}
-			free(old.addr);
+			free_mandata_elements(&old);
 			status = (dbf->seq)(dbf, (DBT *) &key, (DBT *) &cont, R_NEXT);
 			if (strcmp(key.dptr, basename) != 0) {
 				key.dptr = basename;
@@ -414,7 +355,7 @@ static struct mandata *dblookup(char *page, char *section, int flags)
 		    strncmp(section, info->ext, 
 		    	    flags & EXACT ? strlen(info->ext)
 		    	    : strlen(section)) == 0) ) {
-			free(info->addr);
+			free_mandata_elements(info);
 		} else {
 			null_me = &(info->next);
 			info = (info->next = infoalloc());

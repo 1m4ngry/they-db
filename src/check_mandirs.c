@@ -23,6 +23,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <errno.h>
+#include <ctype.h>
 
 #ifdef HAVE_DIRENT_H
 #  include <dirent.h>
@@ -107,11 +108,14 @@ static void gripe_rwopen_failed (char *database)
 	}
 }
 
-char *make_filename (const char *path, const char *name, 
+char *make_filename (const char *path, const char *name,
 		     struct mandata *in, char *type)
 {
 	static char *file;
-	
+
+	if (!name)
+		name = in->name;    /* comes from dblookup(), so non-NULL */
+
 	file = (char *) xrealloc (file, sizeof "//." + strlen (path) + 
 				  strlen (type) + strlen (in->sec) +
 				  strlen (name) + strlen (in->ext));
@@ -119,7 +123,7 @@ char *make_filename (const char *path, const char *name,
 	(void) sprintf (file, "%s/%s%s/%s.%s",
 			path, type, in->sec, name, in->ext);
 
-	if (*in->comp != '-')	/* Is there an extension ? */
+	if (in->comp && *in->comp != '-')	/* Is there an extension? */
 		file = strappend (file, ".", in->comp, NULL);
 
 	return file;
@@ -136,7 +140,10 @@ int splitline (char *raw_whatis, struct mandata *info, char *base_name)
 			fprintf (stderr, "raw_whatis = %s\n", raw_whatis);
 		info->whatis = strstr (raw_whatis, " - ");
 		if (info->whatis) {
-			char *space = info->whatis;
+			/* Deliberate cast in order to modify the whatis.
+			 * Don't change its length!
+			 */
+			char *space = (char *) info->whatis;
 			while (*space == ' ')
 				*space-- = '\0';    /* separate description */
 			info->whatis += 3;
@@ -214,7 +221,7 @@ int splitline (char *raw_whatis, struct mandata *info, char *base_name)
 
 /* Fill in a mandata structure with information about a file name.
  * file is the name to examine. info points to the structure to be filled
- * in.
+ * in. req_name is the page name that was requested.
  * 
  * Returns either a pointer to the buffer which the fields in info point
  * into, to be freed by the caller, or NULL on error. The buffer will
@@ -222,9 +229,11 @@ int splitline (char *raw_whatis, struct mandata *info, char *base_name)
  * the base of the file name in that directory, the section extension, and
  * optionally the compression extension (if COMP_SRC is defined).
  * 
- * Only the fields ext, sec, and comp are filled in by this function.
+ * Only the fields name, ext, sec, and comp are filled in by this function.
+ * name is only set if it differs from req_name; otherwise it remains at
+ * NULL.
  */
-char *filename_info (char *file, struct mandata *info)
+char *filename_info (char *file, struct mandata *info, const char *req_name)
 {
 	char *manpage = xstrdup (file);
 	char *base_name = basename (manpage);
@@ -248,15 +257,18 @@ char *filename_info (char *file, struct mandata *info)
 	info->comp = NULL;
 #endif /* COMP_SRC */
 
-	info->ext = strrchr (base_name, '.');
-	if (!info->ext) {
-		/* no section extension */
-		gripe_bogus_manpage (file);
-		free (manpage);
-		return NULL;
+	{
+		char *ext = strrchr (base_name, '.');
+		if (!ext) {
+			/* no section extension */
+			gripe_bogus_manpage (file);
+			free (manpage);
+			return NULL;
+		}
+		*ext++ = '\0';			/* set section ext */
+		info->ext = ext;
 	}
 
-	*(info->ext++) = '\0';			/* set section ext */
 	*(base_name - 1) = '\0';		/* strip '/base_name' */ 
 	info->sec = strrchr (manpage, '/') + 4;	/* set section name */
 
@@ -266,6 +278,11 @@ char *filename_info (char *file, struct mandata *info)
 		free (manpage);
 		return NULL;
 	}
+
+	if (req_name && !STREQ (base_name, req_name))
+		info->name = xstrdup (base_name);
+	else
+		info->name = NULL;
 
 	return manpage;
 }
@@ -287,7 +304,7 @@ void test_manfile (char *file, const char *path)
 
 	memset (&lg, '\0', sizeof (struct lexgrog));
 
-	manpage = filename_info (file, &info);
+	manpage = filename_info (file, &info, NULL);
 	if (!manpage)
 		return;
 	base_name = manpage + strlen (manpage) + 1;
@@ -299,17 +316,17 @@ void test_manfile (char *file, const char *path)
 	/* to get mtime info */
 	(void) lstat (file, &buf);
 	info._st_mtime = buf.st_mtime;
-	
+
 	/* check that our file actually contains some data */
 	if (buf.st_size == 0) {
-		/* man_db pre 2.3 place holder ? */
+		/* man-db pre 2.3 place holder ? */
 		free (manpage);
 		return;
 	}
 
 	/* see if we already have it, before going any further, this will
 	   save both an ult_src() a find_name(), amongst other time wastes */
-	exists = dblookup_exact (base_name, info.ext);
+	exists = dblookup_exact (base_name, info.ext, 1);
 
 	/* Ensure we really have the actual page. Gzip keeps the mtime
 	   the same when it compresses, so we have to compare comp 
@@ -330,7 +347,7 @@ void test_manfile (char *file, const char *path)
 			/* see if the cached file actually exists. It's 
 			   evident at this point that we have multiple 
 			   comp extensions */
-			abs_filename = make_filename (path, base_name,
+			abs_filename = make_filename (path, NULL,
 						      exists, "man");
 			if (debug)
 				fprintf (stderr, "test_manfile(): stat %s\n",
@@ -585,13 +602,21 @@ static short testmandirs (const char *path, time_t last)
 		if (strncmp (mandir->d_name, "man", 3) != 0)
 			continue;
 
+		if (debug)
+			fprintf (stderr, "Examining %s\n", mandir->d_name);
+
 		if (stat (mandir->d_name, &stbuf) != 0)	/* stat failed */
 			continue;
 		if (!S_ISDIR(stbuf.st_mode))		/* not a directory */
 			continue;
-		if (!force_rescan && stbuf.st_mtime <= last)
+		if (!force_rescan && stbuf.st_mtime <= last) {
 			/* scanned already */
+			if (debug)
+				fprintf (stderr,
+					 "%s modified %ld, db modified %ld\n",
+					 mandir->d_name, stbuf.st_mtime, last);
 			continue;
+		}
 
 		if (debug)
 			fprintf (stderr,
@@ -609,7 +634,7 @@ static short testmandirs (const char *path, time_t last)
 			fprintf (stderr, "\r");
 			fprintf (stderr,
 				 _("Updating index cache for path "
-				   "`%s'. Wait..."), path);
+				   "`%s/%s'. Wait..."), path, mandir->d_name);
 		}
 		add_dir_entries (path, mandir->d_name);
 		MYDBM_CLOSE (dbf);
@@ -837,7 +862,7 @@ static __inline__ short purge_whatis (const char *manpath, char *name,
 		int save_debug = debug;
 		debug = 0;
 		real_found = look_for_file (manpath, info->ext,
-					    info->pointer, 0);
+					    info->pointer, 0, 1);
 		debug = save_debug;
 
 		if (real_found)
@@ -921,7 +946,7 @@ short purge_missing (const char *manpath)
 
 		save_debug = debug;
 		debug = 0;	/* look_for_file() is quite noisy */
-		found = look_for_file (manpath, entry.ext, nicekey, 0);
+		found = look_for_file (manpath, entry.ext, nicekey, 0, 1);
 		debug = save_debug;
 
 		/* Now actually decide whether to purge, depending on the

@@ -5,5 +5,11 @@ Abstract: The database cached manual pager suite.
 Section: Apps/Tools
 
 Format: text
-Files: /usr/share/doc/man-db/man_db.cat.gz
+Files: /usr/share/doc/man-db/man-db-manual.txt.gz
+
+Format: DVI
+Files: /usr/share/doc/man-db/man-db-manual.dvi.gz
+
+Format: PostScript
+Files: /usr/share/doc/man-db/man-db-manual.ps.gz
 

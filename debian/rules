@@ -19,7 +19,7 @@ GNUmakefile:
 	touch configure stamp-h.in	# avoid autoconf build-dependency
 	test -x configure || chmod +x configure 
 	./configure --prefix=/usr --enable-mandirs=GNU --enable-setuid \
-	            --with-db=db2 --with-device=latin1
+	            --with-db=db3 --with-device=latin1
 
 build: build-stamp
 build-stamp: GNUmakefile
@@ -37,9 +37,8 @@ clean:
 	-$(MAKE) -C manual -i distclean
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
-	-rm -f po/da.gmo po/fr.gmo
 	dh_clean
-	-cd po && rm -f stamp-cat-id cat-id-tbl.c man-db.pot
+	-cd po && rm -f stamp-cat-id cat-id-tbl.c
 
 install: install-stamp
 install-stamp: build
@@ -49,11 +48,12 @@ install-stamp: build
 	dh_installdirs
 	$(MAKE) install prefix=$(CURDIR)/$(dtmp)/usr \
 			config_file=$(CURDIR)/$(dtmp)/etc/manpath.config
-	# Debian man-db puts potentially setuid executables in a private
-	# directory in order to do wrapper magic.
+	# Debian man-db used to put potentially setuid executables in a
+	# private directory in order to do wrapper magic. The wrapper isn't
+	# used any more, but migration is complicated enough that these stay
+	# in /usr/lib/man-db (for now).
 	mv $(dtmp)/usr/bin/man			$(dtmp)/usr/lib/man-db/man
 	mv $(dtmp)/usr/bin/mandb		$(dtmp)/usr/lib/man-db/mandb
-	install -m755 src/wrapper		$(dtmp)/usr/lib/man-db
 	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)
 	# now do manual changes needed by debian
 	# change locale names

@@ -5,7 +5,7 @@
 # Copyright (C) 1994, Graeme Wilford.
 #
 # You may distribute under the terms of the GNU General Public
-# License as specified in the COPYING file that comes with the man_db 
+# License as specified in the COPYING file that comes with the man-db 
 # distribution.  
 #
 # Sat Aug  6 13:28:44 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk):
@@ -75,7 +75,7 @@ manpath = $(shell echo manpath |sed '$(transform)')
 zsoelim = $(shell echo zsoelim |sed '$(transform)')
 lexgrog = $(shell echo lexgrog |sed '$(transform)')
 
-config_file = $(sysconfdir)/man_db.conf
+config_file = @config_file@
 
 # These are phony in all directories
 DEFAULT_TARGETS = TAGS all install uninstall \
