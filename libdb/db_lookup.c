@@ -40,8 +40,6 @@ extern char *strsep();
 extern int errno;
 #endif /* not STDC_HEADERS */
 
-#define NLS_SET	db_lookupSet
-
 #include <libintl.h>
 #define _(String) gettext (String)
 
@@ -144,7 +142,7 @@ char **split_data(char *content, char *start[])
 		start[count] = strsep(&content, "\t");
 		if (!start[count]) {
 			error (0, 0,
-			       _( "only %d fields in content"),
+			       _("only %d fields in content"),
 			       count);
 			gripe_corrupt_data();
 		}

@@ -407,12 +407,9 @@ int main(int argc, char *argv[])
 
 
 #ifdef SECURE_MAN_UID
-	/* record who we actually are */
-	ruid = getuid();
-	euid = geteuid();
-
-	if (ruid == 0)
-		setuid(ruid);
+	/* record who we are and drop effective privs for later use */
+	init_security();
+#endif /* SECURE_MAN_UID */
 
 #ifdef DO_CHOWN
 	if ( (man_owner = getpwnam(MAN_OWNER)) == NULL)
@@ -422,11 +419,9 @@ int main(int argc, char *argv[])
 		user = 1;
 #endif /* DO_CHOWN */
 
-#endif /* SECURE_MAN_UID */
-
 
 	/* This is required for global_catpath(), regardless */
-	manp = manpath(NULL); 
+	manp = manpath(NULL);	/* also calls read_config_file() */
 
 	if ( opt_test )
 		quiet = 1;
@@ -453,7 +448,7 @@ int main(int argc, char *argv[])
 
 	/* get the manpath as an array of pointers */
 	create_pathlist(xstrdup(manp), manpathlist); 
-	
+
 	/* finished manpath processing, regain privs */
 	regain_effective_privs();
 

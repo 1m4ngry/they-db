@@ -9,30 +9,19 @@ AC_ARG_PROGRAM
 dnl
 dnl Define below date and version information to be put into man pages etc.
 dnl
-datemark=20000223
+datemark=20010514
 date=`LANG=C date -d $datemark `
 date_it=`LANG=it_IT date -d $datemark +'%d %B %Y'`
 date_es=`LANG=es_ES date -d $datemark +'%d %B %Y'`
 date_de=`LANG=de_DE date -d $datemark +'%d %B %Y'`
 date_fr=`LANG=fr_FR date -d $datemark +'%d %B %Y'`
 dnl
-curdate=`LANG=en_EN date +'%d %B %Y'`
-curdate_it=`LANG=it_IT date +'%d %B %Y'`
-curdate_es=`LANG=es_ES date +'%d %B %Y'`
-curdate_de=`LANG=de_DE date +'%d %B %Y'`
-curdate_fr=`LANG=fr_FR date +'%d %B %Y'`
-PWD=`pwd`
-changequote(, )
-VERSION=`expr $PWD : '.*-\([0-9.]*\)'`
-PACKAGE=`expr $PWD : '.*/\(.*\)-[0-9.]*'`
-changequote([, ])
+PACKAGE=man_db
+VERSION=2.3.18
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(PACKAGE)dnl
 AC_SUBST(VERSION)dnl
-ALL_LINGUAS="de it es cs ja fr"
-AM_GNU_GETTEXT
-AC_LINK_FILES($nls_cv_header_libgt, $nls_cv_header_intl)
 dnl
 dnl MAN_ECHO("string to be echoed")dnl
 define(MAN_ECHO, [echo $1 1>&AC_FD_MSG])dnl
@@ -45,16 +34,11 @@ define(MAN_AC_VERSION, [builtin(eval, $3 + $2 * 1000 + $1 * 1000000)])dnl
 man_ac_version=MAN_AC_VERSION(AC_PREREQ_CANON(AC_PREREQ_SPLIT(AC_ACVERSION)))
 dnl
 AC_SUBST(date)dnl
-AC_SUBST(curdate)dnl
 dnl AC_SUBST(datemark)dnl
 AC_SUBST(date_it)dnl
-AC_SUBST(curdate_it)dnl
 AC_SUBST(date_es)dnl
-AC_SUBST(curdate_es)dnl
 AC_SUBST(date_de)dnl
-AC_SUBST(curdate_de)dnl
 AC_SUBST(date_fr)dnl
-AC_SUBST(curdate_fr)dnl
 AC_SUBST(man_ac_version)dnl
 dnl
 dnl We have to be a bit naughty here and supply options.
@@ -125,42 +109,9 @@ AC_PROG_RANLIB
 AC_PATH_PROG(cat, cat)
 AC_PATH_PROG(lynx, lynx)
 AC_PATH_PROG(tr, tr)
-dnl
-if test -s /etc/debian_version
-then 	AC_PATH_PROGS(pager, pager)
-	test "$pager" || AC_MSG_ERROR(Debian requires /usr/bin/pager)
-else	AC_PATH_PROGS(pager, pager less more)
-fi
+AC_PATH_PROG(grep, grep)
+AC_PATH_PROGS(pager, pager less more)
 test "$pager" && pager="exec $pager -s"
-dnl
-dnl
-dnl now test if this is a debian system
-dnl
-AC_MSG_CHECKING(if this is a Debian GNU/Linux system)
-if test -s /etc/debian_version
-then 
-	debian=`awk '{ print $1 }' /etc/debian_version`
-	AC_DEFINE_UNQUOTED(DEBIAN,$debian)
-	AC_MSG_RESULT(yes Debian-$debian)
-	dnl
-	AC_MSG_CHECKING(for the full debian version of this program)
-	dnl
-	tempfile=`tempfile`
-	if	test -r debian/changelog
-	then	`dpkg-parsechangelog 2>/dev/null >$tempfile`
-	elif	test -r ../debian/changelog
-	then	`dpkg-parsechangelog -l../debian/changelog 2>/dev/null >$tempfile`
-	else	`rm -f $tempfile`
-		AC_MSG_ERROR(this macro requires that configure runs inside a debianized tree)
-	fi
-	debian_version=`awk '/Version:/{ print $2 }' $tempfile`
-	debian_maint=`awk -F: '/Maintainer:/{ print $2 }' $tempfile`
-	AC_MSG_RESULT($debian_version $debian_maint)
-	AC_DEFINE_UNQUOTED(DEBVER,"$debian_version")
-	AC_DEFINE_UNQUOTED(DEBMAINT,"$debian_maint")
-else
-	AC_MSG_RESULT(no)
-fi
 dnl
 dnl define below (in list of preference) *roff macros to check for.
 dnl
@@ -268,10 +219,6 @@ then
 fi
 AC_PATH_PROGS(tbl, tbl gtbl)
 AC_PATH_PROGS(col, col gcol)
-if test -s /etc/debian_version -a ! "$col"
-then
-	AC_MSG_ERROR(man-db on debian must be built with col; install bsdmainutils)
-fi
 AC_PATH_PROGS(vgrind, vgrind gvgrind)
 AC_PATH_PROGS(refer, refer grefer)
 AC_PATH_PROGS(grap, grap)
@@ -321,6 +268,13 @@ AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS(unistd.h memory.h fcntl.h limits.h sys/file.h regex.h)
 AC_CHECK_HEADERS(string.h strings.h, break)
+dnl
+dnl Internationalization support.
+dnl
+ALL_LINGUAS="de it es cs ja fr"
+AM_GNU_GETTEXT
+AC_SUBST(LINGUAS)dnl
+AC_LINK_FILES($nls_cv_header_libgt, $nls_cv_header_intl)
 dnl
 dnl Checks for structures and compiler characteristics.
 dnl
@@ -505,18 +459,9 @@ dnl Check for available functions.
 dnl
 AC_CHECK_FUNCS(getcwd getwd, break)
 AC_CHECK_FUNCS(atexit on_exit, break)
-AC_CHECK_FUNCS(setreuid strerror)
+AC_CHECK_FUNCS(seteuid setreuid setresuid strerror)
 AC_CHECK_FUNCS(canonicalize_file_name)
-AC_CHECK_FUNC(setlocale,
-  AC_DEFINE(HAVE_SETLOCALE)
-  AC_CHECK_FUNC(catopen,
-    nls=on,
-    AC_CHECK_LIB(i, catopen,
-      LIBS="$LIBS -li"
-      nls=on,
-      nls=off)),
-  nls=off)
-AC_SUBST(nls)dnl
+AC_CHECK_FUNCS(setlocale)
 dnl
 dnl I think it's reasonable to assume that the system has the following 
 dnl headers if the (POSIXy) functions exist.
@@ -535,26 +480,30 @@ MAN_ECHO_VAR(CPPFLAGS)
 MAN_ECHO_VAR(CFLAGS)
 MAN_ECHO_VAR(LDFLAGS)
 MAN_ECHO_VAR(LIBS)
-AC_OUTPUT([GNUmakefile \
-	lib/Makefile \
-	src/Makefile \
-	man/Makefile \
-	libdb/Makefile \
-	zsoelim/Makefile \
-	include/Defines \
-	include/comp_src.h \
-	include/manconfig.h \
-	intl/Makefile \
+AC_OUTPUT([GNUmakefile
+	lib/Makefile
+	src/Makefile
+	src/man_db.conf
+	man/Makefile
+	libdb/Makefile
+	zsoelim/Makefile
+	include/Defines
+	include/comp_src.h
+	include/manconfig.h
+	intl/Makefile
 	po/Makefile.in], \
 	[sed -e "/POTFILES =/r po/POTFILES" po/Makefile.in > po/Makefile ]) 
 date > stamp-h
 dnl Create a bogus makefile that non-GNU make's will try to use. This is 
 dnl better than messages like `make:105: missing separator **' 
-cat > makefile <<MEOF
-all:
+cat > makefile <<\MEOF
+all: GNUmakefile
 	@echo "Compilation of this package requires GNU make ver 3.68 or above."
 	@echo "If you are using GNU make and it ignores the GNUmakefile in this"
 	@echo "directory, issue the command 'make -f GNUmakefile'"
+
+GNUmakefile: GNUmakefile.in
+	CONFIG_HEADERS= CONFIG_FILES=$@ ./config.status
 
 update install clean realclean distclean TAGS dist: all
 MEOF

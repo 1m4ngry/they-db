@@ -34,10 +34,14 @@ CFLAGS = @CFLAGS@
 LDFLAGS = @LDFLAGS@
 LDLIBS = @LIBS@ #@LEXLIB@
 
+# Allow prog-specific MANDEFS and ensure MANCPPFLAGS comes before
+# user/configure defined CPPFLAGS
+USERCPPFLAGS := $(CPPFLAGS)
+override CPPFLAGS = $(DEFS) $(MANDEFS) $(MANCPPFLAGS) $(USERCPPFLAGS)
+
 # system directories
 prefix = @prefix@
 exec_prefix = @exec_prefix@
-MSG_DIR = $(top_srcdir)/nls/en_GB
 
 # GNU installation variables
 bindir = $(exec_prefix)/bin
@@ -52,7 +56,11 @@ man5ext = .5
 man8ext = .8
 
 # special rule for sysconfdir
-sysconfdir = $(subst /usr,,$(prefix)/etc)
+ifeq ($(strip $(prefix)),/usr)
+sysconfdir = /etc
+else
+sysconfdir = $(prefix)/etc
+endif
 
 # The names of the installed programs/manual pages are referred to 
 # as variables. They all undergo autoconf transformation rules.
@@ -76,21 +84,13 @@ DEFAULT_TARGETS = TAGS all install uninstall \
 
 # Some misc stuff...
 debug = @debug@
-nls = @nls@
 date = @date@
 date_it = @date_it@
 date_es = @date_es@
 date_de = @date_de@
 date_fr = @date_fr@
-curdate = @curdate@
-curdate_it = @curdate_it@
-curdate_es = @curdate_es@
-curdate_de = @curdate_de@
-curdate_fr = @curdate_fr@
 version = @VERSION@
 man_install_flags = @man_install_flags@
-gencat = $(local_gencat)
-#gencat = $(shell which gencat)
 
 # some path definitions required by the manpage Makefile...
 pager="@pager@"
@@ -108,23 +108,12 @@ troff="@troff@"
 	$(CPP) -M $(CPPFLAGS) $< | \
 	  sed -e 's/$*\.o[ 	]*/& $@/g' > $@ || (rm -f $@; exit 1)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+%.i: %.c
+	$(CPP) $(CPPFLAGS) $< > $@
 
 # A rule to re-create subdirectory Makefiles
 ifneq ($(top_srcdir),$(srcdir))
 %: %.in
 	-$(MAKE) -C .. `basename \`pwd\``/$@
 endif
-
-# A message useful in some subdirectories.
-define make_in_root
-@echo " "
-@echo "The value of the nls variable has not yet been determined." 
-@echo "Please issue the make command in the directory above this one."
-@echo "Once the value of the nls variable has been determined, it will"
-@echo "be possible to issue make here." 
-@echo " "
-@exit 1
-endef
 

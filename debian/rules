@@ -6,9 +6,6 @@ dtmp    = debian/$(package)
 
 export DH_COMPAT=3
 
-# build flags that need overwrite
-NLS = all
-
 ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 CFLAGS = -O2
 # Enable other features - not just yet.
@@ -18,13 +15,7 @@ CFLAGS = -g -O2
 endif
 LDFLAGS = 
 
-./configure incl/config.h.in: ./configure.in ./acconfig.h
-	# this creates incl/config.h.in from acconfig.h
-	autoheader
-	# this creates configure from configure.in
-	autoconf
-
-GNUmakefile: ./configure
+GNUmakefile:
 # create the makefile needed both from build and clean rules
 	test -x configure || chmod +x configure 
 	./configure --prefix=/usr --enable-setuid \
@@ -34,17 +25,17 @@ build: build-stamp
 build-stamp: GNUmakefile
 # Builds the binary package.
 	dh_testdir
-	$(MAKE) nls="$(NLS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
-	html2text -style pretty debian/man-db-manual.html \
-		> debian/man-db-manual.txt
+	$(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+	$(MAKE) -C manual SOELIM=../zsoelim/zsoelim
 	touch build-stamp
 
 clean:
 	dh_testdir
-	-$(MAKE) nls="$(NLS)" -i distclean
+	-$(MAKE) -i distclean
+	-$(MAKE) -C manual -i distclean
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
-	dh_clean debian/man-db-manual.txt
+	dh_clean
 	-cd po && rm -f stamp-cat-id cat-id-tbl.c man-db.pot
 
 install: install-stamp
@@ -67,10 +58,11 @@ install-stamp: build
 	ln -sf ../lib/man-db/wrapper	$(dtmp)/usr/bin/man
 	ln -sf ../lib/man-db/wrapper	$(dtmp)/usr/bin/mandb
 	install -m755 src/accessdb	$(dtmp)/usr/sbin
-	install -m644 src/man_db.config	$(dtmp)/etc/manpath.config
+	sed 's/man_db\.config/manpath.config/' \
+		src/man_db.conf		> $(dtmp)/etc/manpath.config
 	# Do safe directories.
 	set -e; for x in zsoelim man intl po; do \
-		$(MAKE) nls="$(NLS)" -C $$x install prefix=../$(dtmp)/usr; \
+		$(MAKE) -C $$x install prefix=../$(dtmp)/usr; \
 	done
 	install -m755 tools/chconfig	$(dtmp)/usr/share/$(package)
 	# now do manual changes needed by debian
@@ -80,7 +72,6 @@ install-stamp: build
 	mv $(dtmp)/usr/share/man/it_IT.88591 $(dtmp)/usr/share/man/it
 	mv $(dtmp)/usr/share/man/ja_JP.eucJP $(dtmp)/usr/share/man/ja
 	rm -rf $(dtmp)/usr/share/man/de_DE.ascii
-	rm -rf $(dtmp)/usr/share/man/ja_JP.ujis
 	touch install-stamp
 
 binary-indep: build install
@@ -89,8 +80,10 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installdocs
-	dh_installexamples debian/manpage.example
-	install -m644 src/man_db.config \
+	install -m644 manual/man_db.cat \
+		$(dtmp)/usr/share/doc/man-db/man-db-manual.txt
+	dh_installexamples docs/manpage.example
+	install -m644 $(dtmp)/etc/manpath.config \
 		$(dtmp)/usr/share/doc/$(package)/examples/manpath.config
 	dh_installchangelogs docs/ChangeLog
 	dh_installcron

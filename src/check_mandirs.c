@@ -587,9 +587,7 @@ short create_db(const char *manpath)
 	/* Open the db in CTRW mode to store the $ver$ ID */
 
 	if ( (dbf = MYDBM_CTRWOPEN(database)) == NULL) {
-		error (0, errno,
-		       _( "can't create index cache %s"),
-		       database);
+		error (0, errno, _( "can't create index cache %s"), database);
 		return 0;
 		/* should really return EOF */
 	}

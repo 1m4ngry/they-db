@@ -1,3 +1,29 @@
+man-db (2.3.18-1) unstable; urgency=low
+
+  * New upstream release, incorporating changes from Wilf's 2.3.11 and
+    2.3b12 releases as well as all my upstream-relevant changes to date. At
+    long last the Debian diff is a manageable size.
+  * Build the manual from the original nroff source. HTML is gone for now,
+    until I can get satisfactory output from grohtml.
+  * Remove build dependency on html2text as a result of the above.
+  * Build-depend on lynx, as configure checks for its path.
+  * jgroff no longer exists, so drop the alternative dependency on it.
+  * Remove debian/rules cruft to generate configure, which is now definitely
+    built upstream.
+
+  * The configuration file is now partially automatically generated, and is
+    called man_db.conf upstream. The Debian package still uses
+    manpath.config for now to save me having to do the hacking necessary to
+    move a conffile.
+  * According to FHS 2.1, the location of locally installed man pages is
+    /usr/local/share/man rather than /usr/local/man. The upstream
+    configuration file now has /usr/local/man mapped to
+    /var/cache/man/oldlocal and /usr/local/share/man mapped to
+    /var/cache/man/local. Move .../local to .../oldlocal in the postinst to
+    save regenerating cat pages.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 15 May 2001 00:00:56 +0100
+
 man-db (2.3.17.1-5) unstable; urgency=low
 
   * Formally took over upstream maintenance. No release yet, but updated

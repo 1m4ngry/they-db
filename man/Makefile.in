@@ -12,22 +12,20 @@ srcdir = @srcdir@
 VPATH = @srcdir@
 top_srcdir = @top_srcdir@
 INSTALL = @INSTALL@
+USE_NLS = @USE_NLS@
+LINGUAS = @LINGUAS@
 
 include ../include/Defines
 
 .PHONY: $(DEFAULT_TARGETS) dirs nlsinstall nlsuninstall
 
-ifeq ($(nls),on)
-all:
-	$(make_in_root)
-else
-  ifeq ($(nls),all)
-    NLS := $(notdir $(wildcard $(srcdir)/*_*))
+ifeq ($(USE_NLS),yes)
+  ifeq ($(strip $(LINGUAS)),)
+    NLS := $(wildcard $(srcdir)/*_*)
   else
-    ifneq ($(nls),off)
-      NLS := $(notdir $(wildcard $(srcdir)/$(nls)))
-    endif
+    NLS := $(foreach lingua, $(LINGUAS), $(wildcard $(srcdir)/$(lingua)_*))
   endif
+  NLS := $(shell for x in $(NLS); do [ -e $$x/man1/man.man1 ] && echo $$x; done)
 endif
 
 # force these variables to be resolved here, rather than at each reference.
@@ -50,15 +48,10 @@ define process_manpage
 sed -e 's,%pager%,$(pager),g' \
     -e 's,%troff%,$(troff),g' \
     -e 's/%date%/$(date)/g' \
-    -e 's/%curdate%/$(curdate)/g' \
     -e 's/%date_es%/$(date_es)/g' \
-    -e 's/%curdate_es%/$(curdate_es)/g' \
     -e 's/%date_it%/$(date_it)/g' \
-    -e 's/%curdate_it%/$(curdate_it)/g' \
     -e 's/%date_de%/$(date_de)/g' \
-    -e 's/%curdate_de%/$(curdate_de)/g' \
     -e 's/%date_fr%/$(date_fr)/g' \
-    -e 's/%curdate_fr%/$(curdate_fr)/g' \
     -e 's,%version%,$(version),g' \
     -e 's,%zsoelim%,$(zsoelim),g' \
     -e 's,%man%,$(man),g' \
@@ -93,11 +86,11 @@ catman.8 = $(manroot)/$(nlspath)/$(man8dir)/$(catman)$(man8ext)
 accessdb.8 = $(manroot)/$(nlspath)/$(man8dir)/accessdb$(man8ext)
 
 # Rules... We've got some rules 'round here.
-%.1 : %.man1
+%.1: %.man1
 	$(process_manpage)
-%.5 : %.man5
+%.5: %.man5
 	$(process_manpage)
-%.8 : %.man8
+%.8: %.man8
 	$(process_manpage)
 
 # The default programs to build 

@@ -14,9 +14,9 @@
 
 %%license: GPL
 
-%%maintainer: Fabrizio Polacco <fpolacco@debian.org>
+%%maintainer: Colin Watson <cjwatson@debian.org>
 
-%%updated: 2000-06-21
+%%updated: 2001-05-14
 
 %%keywords: manpage, man, browser, database, groff
 
@@ -26,21 +26,21 @@
 
 %%GNU: why not?
 
-%%web-page: http://www.debian.org/Packages/unstable/doc/man-db.html
+%%web-page: http://man-db.sourceforge.net/
 
 %%support: 
 
 %%doc: 
 
-%%developers: John W. Eaton, Graeme Wilford, Fabrizio Polacco <fpolacco@debian.org>
+%%developers: John W. Eaton, Graeme Wilford, Fabrizio Polacco <fpolacco@debian.org>, Colin Watson <cjwatson@debian.org>
 
 %%contributors: 
 
 %%sponsors: 
 
-%%source: ftp://ftp.debian.org/debian/dists/unstable/main/source/doc/man-db_*.tar.gz
+%%source: ftp://ftp.sourceforge.net/pub/sourceforge/man-db/man_db-*.tar.gz
 
-%%debian: ftp://ftp.debian.org/debian/dists/unstable/main/binary-i386/doc/man-db_*.deb
+%%debian: ftp://ftp.debian.org/debian/pool/main/m/man-db/man-db_*.deb
 
 %%redhat: 
 
@@ -62,9 +62,9 @@
 
 %%source-prerequisites:
 
-%%version: 2.3.18 on 21 Jun 2000 for alpha, hurd-i386, i386, m68k, powerpc, sparc.
+%%version: 2.3.18 on 21 Jun 2000 for alpha, arm, hurd-i386, i386, ia64, m68k, mips, powerpc, sparc.
 
-%%announce-list: debian-devel-changes@lists.debian.org
+%%announce-list: man-db-announce@lists.sourceforge.net
 
 %%announce-news:
 
@@ -76,5 +76,5 @@
 
 %%dev-news:
 
-%%bug-list: http://cgi.debian.org/cgi-bin/pkgreport.cgi?archive=no&pkg=man-db
+%%bug-list: http://bugs.debian.org/man-db
 

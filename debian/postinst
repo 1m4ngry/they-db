@@ -29,6 +29,13 @@ if dpkg --compare-versions "$2" lt 2.3.16; then
     fi
 fi
 
+if dpkg --compare-versions "$2" lt 2.3.18; then
+    # /usr/local/man now mapped to /var/cache/man/oldlocal
+    if [ -d $catdir/local -a ! -d $catdir/oldlocal ]; then
+	mv -f $catdir/local $catdir/oldlocal
+    fi
+fi
+
 # Old packages removed catpages on upgrade. The preinst hack should have
 # avoided this, but let's be sure.
 if [ ! -d $catdir ]; then

@@ -1,10 +1,15 @@
 README for the man_db manual pager suite, version 2.3.x
 =======================================================
 
-Please read the man_db-manual, available in cat/PostScript/dvi formats,
-located at an FTP site carrying this package.  It contains configuration 
-details and other aspects of this manual pager suite that are not 
-duplicated or relevant here.
+Please read the man_db manual, available in PostScript format, located at an
+FTP site carrying this package.  It contains configuration details and other
+aspects of this manual pager suite that are not duplicated or relevant in
+this README.
+
+As of man_db-2.3.11, the man_db manual is *included* with this distribution
+in source form.  Please check manual/README for details of the formatters
+required.  The man_db manual must be built from the manual subdirectory and
+does not require use of ./configure.
 
 Read docs/INSTALL.autoconf for generic options to configure.
 Read docs/INSTALL.quick if you know all about man_db.
@@ -16,9 +21,9 @@ This package _requires_ GNU make version 3.68 or newer to be used.
 Other vendors' make programs will not work with the Makefiles in this 
 package due to extensive utilization of GNU make features.
 
-The C source will require an ANSI C compiler. To generate dependencies 
-(only necessary if developing or source level debugging), a cpp that
-understands -M is required.
+The C source requires an ANSI C compiler. To generate dependencies (only
+necessary if developing or source level debugging), a cpp that understands
+-M is required.
 
 
 Notice to users of man_db version 2.2 or 2.2.1 
@@ -38,29 +43,76 @@ $(bindir)/{man,mandb,manpath,apropos,whatis} and associated manual pages
 may be replaced by this version depending upon install directories.
 
 
-Notice regarding current state of FSSTND (Linux/?BSD)
-=====================================================
+Notice regarding current state of FHS (Linux/?BSD)
+==================================================
 
-The FSSTND is currently in a state of flux with respect to manual and
-cat page hierarchies.  As of July 13th, 1995, the last public release
-of the standard proposed the root of the manual page hierarchy as
-`/usr' and the root of the writable cat hierarchy as `/var/catman' for
-the purposes of man->cat filename translation.  As such, the following
-are defined in ./include/manconfig.h.in:
+As of May 13th, 2001, the last public release of the Filesystem Hierarchy
+Standard proposed the root of the manual page hierarchy as `/usr/share' and
+the root of the writable cat hierarchy as `/var/cache/man' for the purposes
+of man->cat filename translation.  As such, the following are defined in
+./include/manconfig.h.in:
+
+#define FHS_CAT_ROOT    "/var/cache/man"        /* required by fsstnd() */
+#define FHS_MAN_ROOT    "/usr/share"            /* required by fsstnd() */
+
+For compatibility with the old FSSTND, the following locations are also
+defined:
 
 #define CAT_ROOT        "/var/catman"           /* required by fsstnd() */
 #define MAN_ROOT        "/usr"                  /* required by fsstnd() */
 
 Should these locations change, simply define the paths accordingly and
-recompile.  Other FSSTND changes relating to man/cat paths will not be
+recompile.  Other FHS changes relating to man/cat paths will not be
 compatible with this version of man_db.
-                                                
+
+Non generic arguments to configure
+==================================
+
+To allow the configuration program, configure, to be non-interactive, it can
+be passed various options to alter the default settings.  Generic configure
+options are discussed in docs/INSTALL.autoconf.  The following list of
+options is extracted from the man_db manual.  It is strongly recommended
+that relevant sections of the manual are read if any of these options are
+used.
+ 
+--enable-debug
+     By  default,  the configuration process creates produc-
+     tion quality Makefiles.  This option,  which  takes  no
+     argument,  changes  certain  values to aid in debugging
+     man_db-2.3.x. It does not alter the physical  behaviour
+     of any of the programs.
+
+--enable-setuid[=ARG]
+     By  default,  man will be installed as a setuid program
+     to user man. Use this option with an argument to change
+     the setuid owner.
+
+--disable-setuid
+     Use  this option to install man as a non-setuid program
+     and to change  the  default  cat  and  database  files'
+     access flags to allow users to modify them.
+
+--with-device=DEVICE
+     Use  this  flag to alter the default output device used
+     by NROFF. DEVICE is passed to NROFF with the -T option.
+     configure  will  test that NROFF will run with the sup-
+     plied device argument.
+
+--with-db=LIBRARY
+     configure will look for database interface libraries in
+     the  order  Berkeley DB, gdbm and finally ndbm and will
+     #define appropriate variables relative to the first one
+     found. To override the built in order on platforms hav-
+     ing a choice of interface library, use this  option  to
+     specify which library to use.
+
+
 INSTALL
 =======
 
 Running configure.
 
-	o READ `docs/INSTALL' regarding ./configure options
+	o READ `docs/INSTALL.autoconf' regarding ./configure options
 
 	o RUN `./configure --help' to see what --enable and --with
 	  options may be useful.
@@ -68,7 +120,7 @@ Running configure.
 	o RUN `./configure' with the appropriate options and environment
 	  variable settings
 
-BROWSE or EDIT the following files that are created by the configuration
+BROWSE or EDIT the following files that were created by the configuration
 process.
 
 	o `include/Defines' regarding general definitions used by all
@@ -81,31 +133,25 @@ process.
 	  inadequate for your requirements.  (usually .Z [compress], 
 	  .z, .gz [gzip])
 
+configure will determine your system's ability to use native language
+support (NLS) message catalogues.  You may set the environment variable
+LINGUAS to limit the set of translations installed.  LINGUAS should contain
+a space-separated list of two-letter language identifiers.  To compile
+man_db with no support for message catalogues, simply pass the --disable-nls
+option to configure.  N.B. This is not related to man's ability to display
+NLS manual pages, support for which is compiled in by default. 
+
 Running make.
 
-configure will determine your system's ability to use native language
-support (NLS) message catalogues.  If support is available, running `make'
-with no target will display the available language identifiers.  To compile 
-man_db with no support for message catalogues, simply run `make' with a 
-target of `all'.  N.B. This is not related to man's ability to display NLS 
-manual pages, support for which is compiled in by default. 
-
-	o RUN `make' to query nls languages on systems that support message
-	  catalogues or `make all' to compile with the default English
-	  messages only. 
-
-If you ran `make' with no target and the compile did not begin, do one of 
-the following.
-
-	o RUN `make nls=<your_choice>', `make nls=all' or `make nls=off'
-	  which is equivalent to `make all'.
+	o RUN `make' to compile man_db with the set of translations chosen
+	  when running `./configure'.
 
 Sort out the man_db configuration file.
 
 	o RUN `./src/man -l man/man5/manpath.5' from the root of this
 	  distribution to read the man_db configuration file details.
 
-	o EDIT `./src/man_db.config' to your local requirements.
+	o EDIT `./src/man_db.conf' to your local requirements.
 
 Install the package.
 
@@ -118,7 +164,7 @@ The following command is required if you elected to compile the package
 without support for message catalogues but would like to install native
 language manual page translations.
 
-	o RUN `make man targets=install nls=<your_choice>' to install
+	o RUN `make man targets=install LINGUAS=<your_choice>' to install
 	  translations of the standard English manual pages 
 
 Initialise the `index' databases for all manpaths marked as global in the
@@ -168,7 +214,7 @@ configuration options as only a single copy of the sources is required.
 To enable this support, simply change directory to where you would like to
 build the package and run the configure program in this directory 
 *from there*.  Further information about this support can be found in the 
-generic install document `docs/INSTALL'
+generic install document `docs/INSTALL.autoconf'.
 
 
 Makefile targets and variables
@@ -250,3 +296,13 @@ Ultrix-4.3a
 	  POSIX environment:
 
 		CC='cc -YPOSIX' ./configure
+
+
+Contacting the maintainer
+=========================
+
+The current maintainer of man_db is Colin Watson <cjwatson@debian.org>.
+Please feel free to contact me with any queries or problems you may have. If
+you are using the Debian GNU/Linux or GNU/Hurd system, I welcome bug reports
+against the man-db package by way of the Debian bug tracking system
+(http://bugs.debian.org/).
