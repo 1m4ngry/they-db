@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 3.0.0), flex, gettext, groff, libgdbm-dev
 
 Package: man-db
 Architecture: any
-Depends: groff-base (>= 1.17-2) | groff (>> 1.15-3.ja.3), bsdmainutils, ${debconf-depends}, dpkg (>= 1.9.0), ${shlibs:Depends}
+Depends: groff-base (>= 1.17.2-2), bsdmainutils, ${debconf-depends}, dpkg (>= 1.9.0), ${shlibs:Depends}
 Suggests: groff
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
