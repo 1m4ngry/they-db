@@ -1,3 +1,16 @@
+man-db (2.3.20-4) unstable; urgency=medium
+
+  * Release Manager: this bug has been in man-db since 2.3.18-3, and meant
+    that new installations of woody had broken cat directories by default.
+    It really needs to beat the base system freeze.
+  * mandb: correctly chown newly created cat directories to man when running
+    as root (closes: #113764).
+  * debian/postinst: chown everything in /var/cache/man to man if upgrading
+    from older versions.
+  * Build with -Wall.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 30 Sep 2001 14:52:25 +0100
+
 man-db (2.3.20-3) unstable; urgency=low
 
   * Suppress spurious "pointer loop" error from apropos/whatis in certain

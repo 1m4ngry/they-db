@@ -63,9 +63,14 @@ if dpkg --compare-versions "$2" lt 2.3.18; then
     fi
 fi
 
-# Old packages removed catpages on upgrade. The preinst hack should have
-# avoided this, but let's be sure.
-if [ ! -d $catdir ]; then
+if [ -d $catdir ]; then
+    # Catdirs sometimes used to be created with the wrong permissions.
+    if dpkg --compare-versions "$2" lt 2.3.20-4; then
+	chown -R man /var/cache/man
+    fi
+else
+    # Old packages removed catpages on upgrade. The preinst hack should have
+    # avoided this, but let's be sure.
     install -d -o man -g root -m 02755 $catdir
 fi
 

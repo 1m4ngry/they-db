@@ -7,12 +7,10 @@ dtmp    = debian/$(package)
 export DH_COMPAT=3
 
 ifeq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-CFLAGS = -O2
+CFLAGS = -O2 -Wall
 LDFLAGS = 
-# Enable other features - not just yet.
-# CFLAGS = -O2 -DDEBUG
 else
-CFLAGS = -g -O2
+CFLAGS = -O2 -g -Wall
 LDFLAGS = -g
 endif
 

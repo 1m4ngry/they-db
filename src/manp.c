@@ -646,6 +646,9 @@ mkcatdirs (char *mandir, char *catdir)
 {
 	char manname[PATH_MAX+6];
 	char catname[PATH_MAX+6];
+#ifdef SECURE_MAN_UID
+	struct passwd *man_owner = get_man_owner ();
+#endif
 
 	if (catdir) {
 		int oldmask = umask (022);
@@ -666,7 +669,7 @@ mkcatdirs (char *mandir, char *catdir)
 					 catdir);
 #ifdef SECURE_MAN_UID
 			if (ruid == 0)
-				chown (catdir, euid, 0);
+				chown (catdir, man_owner->pw_uid, 0);
 #endif /* SECURE_MAN_UID */
 			drop_effective_privs ();
 		}
@@ -694,7 +697,8 @@ mkcatdirs (char *mandir, char *catdir)
 						fprintf (stderr, " cat%d", j);
 #ifdef SECURE_MAN_UID
 					if (ruid == 0)
-						chown (catname, euid, 0);
+						chown (catname,
+						       man_owner->pw_uid, 0);
 #endif /* SECURE_MAN_UID */
 				}
 			}
