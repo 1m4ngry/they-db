@@ -72,6 +72,10 @@ binary-arch: build install
 	dh_installdocs
 	install -m644 manual/man_db.cat \
 		$(dtmp)/usr/share/doc/man-db/man-db-manual.txt
+	install -m644 manual/man_db.dvi \
+		$(dtmp)/usr/share/doc/man-db/man-db-manual.dvi
+	install -m644 manual/man_db.ps \
+		$(dtmp)/usr/share/doc/man-db/man-db-manual.ps
 	dh_installexamples docs/manpage.example*
 	install -m644 $(dtmp)/etc/manpath.config \
 		$(dtmp)/usr/share/doc/$(package)/examples/manpath.config

@@ -1,3 +1,16 @@
+man-db (2.3.20-14) unstable; urgency=medium
+
+  * The "mad-db" release.
+  * Fix segfault due to reusing a freed pointer in some cases of pages with
+    multiple names. Thanks to Eirik Fuller for an excellent piece of
+    analysis (closes: #123130).
+  * Move section 2 in front of the extensions for scripting languages in
+    section 3 by default, at the request of the Perl maintainer.
+  * Install DVI and PostScript versions of the manual, for ease of printing
+    (closes: #134926).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 21 Feb 2002 01:25:17 +0000
+
 man-db (2.3.20-13) unstable; urgency=low
 
   * Add Danish translation (thanks, Morten Brix Pedersen; closes: #122674).
