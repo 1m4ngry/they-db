@@ -1,0 +1,145 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-05-18 03:32+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Description
+#: ../templates:4
+msgid "Do you want man and mandb to be installed setuid man?"
+msgstr "Você quer que man e mandb sejam instalados com setuid?"
+
+#. Description
+#: ../templates:4
+msgid ""
+"The man and mandb program can be installed with the set-user-id bit set, so "
+"that they will run with the permissions of the 'man' user. This allows "
+"ordinary users to benefit from the caching of preformatted manual pages "
+"('cat pages'), and means that the database of man page descriptions is "
+"automatically kept up to date by people reading man pages. Storing cat "
+"pages, in particular, may aid performance on slower machines."
+msgstr ""
+"Os programas man e mandb podem ser instalados com bit set-user-id ligado, "
+"assim eles serão executados com as permissões do usuário 'man'. Isto permite "
+"que usuários normais se beneficiem do caching de páginas de manual pré-"
+"formatadas ('cat pages'), e significa que a base de dados de descrições de "
+"páginas de manual é automaticamente mantida atualizada por pessoas lendo "
+"páginas de manual. Guardar páginas cat, em particular, pode ajudar na "
+"performance em máquinas mais lentas."
+
+#. Description
+#: ../templates:4
+msgid ""
+"Cached man pages only work if you are using a \"normal\"-width terminal (66 "
+"to 80 characters wide). This is to avoid one user causing cat pages to be "
+"saved at widths that would be inconvenient for other users. In a future "
+"release this will be configurable. Until then, if you use a wide terminal, "
+"you can force man pages to be formatted to 80 characters anyway by setting "
+"MANWIDTH=80."
+msgstr ""
+"Páginas de manual em cache funcionarão somente se você usa um -width \"normal"
+"\" de terminal (de 66 a 80 caracteres). Isto é para evitar usuários fazendo "
+"com que páginas cat sejam salvas em larguras que seriam inconvenientes para "
+"outros usuários. Em um release futuro isto será configurável. Até lá, se "
+"você usar um terminal largo, você pode forçar as páginas de manual serem "
+"formatadas para 80 caracteres de qualquer forma defininfo MANWIDTH=80."
+
+#. Description
+#: ../templates:4
+msgid ""
+"Enabling this feature may be a security risk, so it is disabled by default. "
+"If in doubt, I suggest you leave it disabled."
+msgstr ""
+"Habilitar este recurso pode ser um risco de segurança, por isso essa "
+"mensagem é mostrada por padrão. Em caso de dúvidas, sugiro que você deixe "
+"essa opção desabilitada."
+
+#. Description
+#: ../templates:25
+msgid "Should mandb build its database now?"
+msgstr "man-db deve construir sua própria base de dados agora?"
+
+#. Description
+#: ../templates:25
+msgid ""
+"You do not yet have a database of manual page descriptions. Building one may "
+"take some time, depending on how many pages you have installed; it will "
+"happen in the background, possibly slowing down the installation of other "
+"packages. Do you want this to happen now?"
+msgstr ""
+"Você ainda não posui uma base de dados de descrição de páginas de manual. "
+"Construir uma agora requer algum tempo, dependendo de quantas páginas você "
+"possui instaladas; isso acontecerá em segundo plano (background), "
+"possivelmente deixando a instalação de outros pacotes mais lenta. Você quer "
+"que isso aconteça agora?"
+
+#. Description
+#: ../templates:25
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
+"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
+"to display any output."
+msgstr ""
+"Caso você não queira construir a base de dados agora, ela será reconstruída "
+"da próxima vez que /etc/cron.weekly/mandb for executado, ou você pode fazer "
+"isso você mesmo usando 'mandb -c' como o usuário 'man'. Até que isso ocorra, "
+"os comandos 'whatis' e 'apropos' não poderão exibir qualquer saída."
+
+#. Description
+#: ../templates:39
+msgid "Should mandb rebuild its database now?"
+msgstr "mandb deve reconstruir sua base de dados agora?"
+
+#. Description
+#: ../templates:39
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages. Do you "
+"want this to happen now?"
+msgstr ""
+"Esta versão de man-db é incompatível com sua base de dados existente de "
+"descrições de páginas de manual, portanto estas base de dados precisam ser "
+"reconstruídas. Isto pode levar algum tempo, dependendo de quantas páginas "
+"você possui instaladas; isso cocrrerá em segundo plano (background), "
+"possivelmente deixando a instalação de outros pacotes mais lenta. Você quer "
+"que isso aconteça agora?"
+
+#. Description
+#: ../templates:39
+msgid ""
+"If you do not rebuild the database now, it will be rebuilt the next time /"
+"etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+"user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not be "
+"able to display any output."
+msgstr ""
+"Caso você não reconstrua a base de dados agora, ela será reconstruída na "
+"próxima vez que /etc/cron.weekly/mandb for executado, ou você pode fazer "
+"isso você mesmo usando 'mandb -c' como o usuário 'man'. Até que isso "
+"aconteça, os comandos 'whatis' e 'apropos' não irão exibir qualquer saída."
+
+#. Description
+#: ../templates:39
+msgid "Incompatible changes like this should happen rarely."
+msgstr "Mudanças incompatíveis como essa deverão raramente ocorrer."

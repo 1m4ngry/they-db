@@ -14,6 +14,14 @@ CFLAGS = -g -Wall
 LDFLAGS = -g
 endif
 
+ifeq (,$(wildcard /usr/bin/po2debconf))
+PO2DEBCONF := no
+MINDEBCONFVER := 0.5
+else
+PO2DEBCONF := yes
+MINDEBCONFVER := 1.2.0
+endif
+
 GNUmakefile:
 # create the makefile needed both from build and clean rules
 	touch configure stamp-h.in	# avoid autoconf build-dependency
@@ -37,6 +45,12 @@ clean:
 	-$(MAKE) -C manual -i distclean
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
+ifeq ($(PO2DEBCONF),yes)
+	# Compatibility with woody.
+	echo 1 > debian/po/output
+	po2debconf debian/templates.master > debian/templates
+	rm -f debian/po/output
+endif
 	dh_clean
 	-cd po && rm -f stamp-cat-id cat-id-tbl.c
 
@@ -82,6 +96,9 @@ binary-arch: build install
 		$(dtmp)/usr/share/bug/man-db/presubj
 	dh_installchangelogs docs/ChangeLog
 	dh_installcron
+ifeq ($(PO2DEBCONF),yes)
+	po2debconf -e utf8 debian/templates.master > debian/templates
+endif
 	dh_installdebconf
 	dh_strip
 	dh_compress
@@ -90,7 +107,7 @@ binary-arch: build install
 	chown man:root $(dtmp)/var/cache/man
 	chmod 2755     $(dtmp)/var/cache/man
 	dh_shlibdeps
-	dh_gencontrol
+	dh_gencontrol -- -V'debconf-depends=debconf (>= $(MINDEBCONFVER))'
 	dh_md5sums
 	dh_builddeb
 

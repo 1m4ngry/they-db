@@ -1,3 +1,12 @@
+man-db (2.4.1-8) unstable; urgency=low
+
+  * debian/postinst: Remove '>/dev/null 2>/dev/null' from start-stop-daemon
+    invocation (see #154958 and #191249).
+  * Convert to po-debconf, including hacks for source package compatibility
+    with woody.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 18 May 2003 23:55:31 +0100
+
 man-db (2.4.1-7) unstable; urgency=low
 
   * Return 0 from xcopy() if the source file doesn't exist, so that mandb

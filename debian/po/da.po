@@ -1,0 +1,142 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2003-05-18 03:32+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Description
+#: ../templates:4
+msgid "Do you want man and mandb to be installed setuid man?"
+msgstr "Vil du have, at man og mandb bliver installeret 'setuid man'?"
+
+#. Description
+#: ../templates:4
+msgid ""
+"The man and mandb program can be installed with the set-user-id bit set, so "
+"that they will run with the permissions of the 'man' user. This allows "
+"ordinary users to benefit from the caching of preformatted manual pages "
+"('cat pages'), and means that the database of man page descriptions is "
+"automatically kept up to date by people reading man pages. Storing cat "
+"pages, in particular, may aid performance on slower machines."
+msgstr ""
+"Programmerne man og mandb kan blive installeret med sæt-bruger-ID sat, så de "
+"vil blive kørt med brugeren 'man's rettigheder. Det gør det muligt for "
+"almindelige brugere at benytte præformaterede manualsider ('cat-sider') fra "
+"mellemlageret, og betyder at databasen over manualsidebeskrivelser "
+"automatisk holdes opdateret, når folk læser manualsiderne. Især kan cat-"
+"sider kan gøre visningen hurtigere på langsomme maskiner."
+
+#. Description
+#: ../templates:4
+msgid ""
+"Cached man pages only work if you are using a \"normal\"-width terminal (66 "
+"to 80 characters wide). This is to avoid one user causing cat pages to be "
+"saved at widths that would be inconvenient for other users. In a future "
+"release this will be configurable. Until then, if you use a wide terminal, "
+"you can force man pages to be formatted to 80 characters anyway by setting "
+"MANWIDTH=80."
+msgstr ""
+"Gemte manualsider vil kun virke, hvis du bruger hvis du bruger en terminal "
+"med \"normal\" bredde (66 til 80 karakterer). Dette er for at undgå, at en "
+"bruger får manualsider gemt med en bredde der vil være gene for andre "
+"brugere. I en fremtidig udgave vil dette være konfigurerbart. Indtil da, kan "
+"du, hvis du bruger en 'bred' terminal, tvinge manualsider til at blive "
+"formateret til 80 karakter alligevel ved at sætte MANWIDTH=80."
+
+#. Description
+#: ../templates:4
+msgid ""
+"Enabling this feature may be a security risk, so it is disabled by default. "
+"If in doubt, I suggest you leave it disabled."
+msgstr ""
+"At slå denne funktion til kan være en sikkerheds-risiko, derfor er den som "
+"standard slået fra. Hvis du er i tvivl, foreslår jeg at du lader den være "
+"slået fra."
+
+#. Description
+#: ../templates:25
+msgid "Should mandb build its database now?"
+msgstr "Skal mandb opbygge sin database nu?"
+
+#. Description
+#: ../templates:25
+msgid ""
+"You do not yet have a database of manual page descriptions. Building one may "
+"take some time, depending on how many pages you have installed; it will "
+"happen in the background, possibly slowing down the installation of other "
+"packages. Do you want this to happen now?"
+msgstr ""
+"Du har endnu ingen database over manualsidebeskrivelser. Det vil tage nogen "
+"tid at opbygge en sådan, afhængigt af, hvor mange manualsider, du har "
+"installeret. Det vil ske i baggrunden, og kan midlertidigt gøre "
+"installationen af andre pakker langsommere. Vil du have, at det sker nu?"
+
+#. Description
+#: ../templates:25
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
+"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
+"to display any output."
+msgstr ""
+"Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang, /etc/"
+"cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c' som "
+"brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' ikke "
+"kunne vise noget."
+
+#. Description
+#: ../templates:39
+msgid "Should mandb rebuild its database now?"
+msgstr "Skal mandb genopbygge sin database nu?"
+
+#. Description
+#: ../templates:39
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages. Do you "
+"want this to happen now?"
+msgstr ""
+"Denne version af man-db er inkompatibel med din eksisterende database med "
+"manualside-beskrivelser, så databasen skal genopbygges. Det vil tage nogen "
+"tid at opbygge en sådan, afhængigt af, hvor mange manualsider, du har "
+"installeret. Det vil ske i baggrunden, og kan midlertidigt gøre "
+"installationen af andre pakker langsommere. Vil du have, at det sker nu?"
+
+#. Description
+#: ../templates:39
+msgid ""
+"If you do not rebuild the database now, it will be rebuilt the next time /"
+"etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+"user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not be "
+"able to display any output."
+msgstr ""
+"Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang, /etc/"
+"cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c' som "
+"brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' ikke "
+"kunne vise noget."
+
+#. Description
+#: ../templates:39
+msgid "Incompatible changes like this should happen rarely."
+msgstr "Inkompatible ændringer som denne bør ske sjældent."

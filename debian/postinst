@@ -107,7 +107,7 @@ if [ $build_db -eq 1 ]; then
 	# daemon, but we want to start it like one.
 	start-stop-daemon --start --pidfile /dev/null --background \
 			  --startas /usr/bin/mandb --oknodo --chuid man \
-			  -- --create --quiet >/dev/null 2>/dev/null
+			  -- --create --quiet
     fi
 fi
 
