@@ -37,7 +37,7 @@ clean:
 	-$(MAKE) -C manual -i distclean
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
-	-rm -f po/fr.gmo
+	-rm -f po/da.gmo po/fr.gmo
 	dh_clean
 	-cd po && rm -f stamp-cat-id cat-id-tbl.c man-db.pot
 

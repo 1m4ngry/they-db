@@ -1,3 +1,14 @@
+man-db (2.3.20-13) unstable; urgency=low
+
+  * Add Danish translation (thanks, Morten Brix Pedersen; closes: #122674).
+  * Add Danish debconf translation (thanks, Claus Hindsgaul and Rune B.
+    Broberg; closes: #126606).
+  * Update Spanish debconf translation (thanks, José Luis González
+    González).
+  * Delete spurious backslashes in the less prompt string (closes: #122355).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 27 Jan 2002 03:10:06 +0000
+
 man-db (2.3.20-12) unstable; urgency=medium
 
   * Add some text to the install-setuid debconf note to explain that cat

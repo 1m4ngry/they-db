@@ -3876,7 +3876,7 @@ EOF
 fi
 done
 
-ALL_LINGUAS="de it es cs ja fr"
+ALL_LINGUAS="de it es cs ja fr da"
 echo "$as_me:3880: checking whether ${MAKE-make} sets \${MAKE}" >&5
 echo $ECHO_N "checking whether ${MAKE-make} sets \${MAKE}... $ECHO_C" >&6
 set dummy ${MAKE-make}; ac_make=`echo "$2" | sed 'y,./+-,__p_,'`
