@@ -1,3 +1,17 @@
+man-db (2.3.20-19) unstable; urgency=low
+
+  * debconf translations:
+    - Add Catalan (thanks, Antoni Bella; closes: #140294).
+    - Update Russian (thanks, Ilgiz Kalmetev; closes: #140886).
+  * debian/cron.daily: Force /var/cache/man to be owned by man, just in case
+    something else changed it (closes: #129340). If you want the cat
+    directories to be owned by some other user, use dpkg-statoverride on
+    /var/cache/man to set this; cron.daily won't touch them then.
+  * debian/control: Depend on dpkg (>= 1.9.0) for the exit status of
+    'dpkg-statoverride --list'.
+
+ -- Colin Watson <cjwatson@debian.org>  Sat,  4 May 2002 20:28:27 +0100
+
 man-db (2.3.20-18) unstable; urgency=medium
 
   * Add French debconf translation (thanks, Philippe Batailler;

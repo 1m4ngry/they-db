@@ -6,6 +6,9 @@
 # expunge old catman pages which have not been read in a week
 if [ -d /var/cache/man ]; then
   cd /
+  if ! dpkg-statoverride --list /var/cache/man >/dev/null 2>&1; then
+    chown -R man /var/cache/man || true		# just in case
+  fi
   start-stop-daemon --start --pidfile /dev/null --startas /bin/sh \
 	--oknodo --chuid man -- -c \
 	"find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | \
