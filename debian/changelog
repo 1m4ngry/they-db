@@ -5,6 +5,7 @@ man-db (2.4.2-20) UNRELEASED; urgency=low
   * Restore the intended ability to use SECTIONS to move extensions out of
     order with respect to their parent sections, broken while working around
     #204249.
+  * Move extended section 3posix after section 2 (closes: #277981).
   * Update debconf translations:
     - Russian (thanks, Yuri Kozlov; part of #268584).
 
