@@ -1,3 +1,11 @@
+man-db (2.3.19-2) unstable; urgency=medium
+
+  * A bracketing typo made determine_lang_table() never detect anything
+    except the fallback language. This completely broke at least Japanese
+    (closes: #103808).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat,  7 Jul 2001 16:36:20 +0100
+
 man-db (2.3.19-1) unstable; urgency=medium
 
   * The "laptop envy (damn tbm for having a nicer one than me)" release.
