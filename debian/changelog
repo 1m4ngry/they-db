@@ -1,3 +1,12 @@
+man-db (2.4.0-4) unstable; urgency=low
+
+  * Make sure the loop that scans for per-system manpaths if $SYSTEM is set
+    always makes progress (closes: #151270).
+  * Install man/THANKS.
+  * Update David Martínez' e-mail address.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed,  3 Jul 2002 22:52:13 +0000
+
 man-db (2.4.0-3) unstable; urgency=low
 
   * Include a bug/reportbug presubj hook to encourage the inclusion of
