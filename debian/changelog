@@ -1,3 +1,46 @@
+man-db (2.3.17.1-5) unstable; urgency=low
+
+  * Formally took over upstream maintenance. No release yet, but updated
+    debian/copyright with new location of upstream source (and also Wilf's
+    distribution site for old sources).
+  * Generate man-db-manual.txt from man-db-manual.html at build time using
+    html2text, rather than including it in the diff. (The next upstream
+    release will have both generated from the original nroff source.)
+  * Don't run configure in the clean rule, and ignore errors due to not
+    finding the makefile. In normal autobuilds it just wastes time.
+
+  * Bumped database format version to 2.3.2. This really should have been
+    done a long time ago.
+  * If database information is found to be in an old format, then ignore it
+    and use the filesystem instead. mandb will fix it up when it's run, as
+    it is in the postinst (although this may well become optional soon).
+  * Explicitly close the database if the version number is wrong, so that
+    the above works.
+  * Lower warnings about wrong version numbers to debugging messages.
+  * All hail debootstrap for making the testing above so painless!
+
+  * Taught lexgrog how to detect grap and vgrind. Preprocessor lines (with
+    '\", see man(1)) are no longer strictly necessary for these. It's still
+    good practice to declare what preprocessors your man page needs if it
+    uses any - even tbl - for compatibility with older versions of man.
+  * History updates for the man pages.
+  * Made accessdb check for /var/cache/man in preference to /var/catman, and
+    updated the man page accordingly. (Incidentally, I'd have preferred it
+    if the Japanese translator hadn't improvised text that wasn't in the
+    English version, as now I don't know how to update it to keep up with
+    this change. Please don't do this in future.)
+  * Fixed the --test option to mandb (it really doesn't alter existing
+    databases now), and documented it. It should be almost feasible to use
+    it for lintian checks now, if need be (closes: #5360).
+  * Generate a warning if displaying a page requires going through a whatis
+    reference with no link in the filesystem. Supporting this is necessarily
+    a major performance hog; see policy bug #94995 for more information.
+  * Removed code preventing symlinks outside a mantree from working. I can't
+    see how it's a security problem, and in some situations (e.g. stow) such
+    symlinks are useful (closes: #94642).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat,  5 May 2001 00:19:00 +0100
+
 man-db (2.3.17.1-4) unstable; urgency=high
 
   * Drop privileges in mandb when creating a temporary database in a

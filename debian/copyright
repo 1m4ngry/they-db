@@ -7,12 +7,21 @@ The author has stopped work on it. Until 2001 it was maintained by the
 late Fabrizio Polacco <fpolacco@debian.org>. It is now maintained to the
 best of his ability by Colin Watson <cjwatson@debian.org>.
 
+The original upstream sources as maintained by Graeme Wilford are
+available at ftp://ftp.ee.surrey.ac.uk/pub/software/unix/wilf/man_db/.
+
+The current upstream source is held in CVS at
+http://sourceforge.net/projects/man-db/, and future upstream releases
+will take place from there.
+
 This package is a native Debian package.
 
 This program is under the GNU General Public License, Version 2.
 The primary copyright holder is Graeme Wilford. 
 Portions are copyrighted by Free Software Foundation, Inc. 
 Portions are copyrighted by John W. Eaton.
+Portions are copyrighted by Fabrizio Polacco.
+Portions are copyrighted by Colin Watson.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by

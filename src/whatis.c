@@ -384,7 +384,6 @@ static int apropos(char *page, char *lowpage)
 	end = btree_nextkeydata(dbf, &key, &cont);
 	while (!end) {
 #endif /* !BTREE */
-
 		/* bug#4372, NULL pointer dereference in cont.dptr, fix
 		 * by dassen@wi.leidenuniv.nl (J.H.M.Dassen), thanx Ray.
 		 * cjwatson: In that case, complain and exit, otherwise we
@@ -400,7 +399,7 @@ static int apropos(char *page, char *lowpage)
 		}
 
 		if (*key.dptr != '$') {
-			if (cont.dptr && (*cont.dptr != '\t'))	/* a real page */
+			if (*cont.dptr != '\t')		/* a real page */
 			{
 				char *tab;
 				int match;
@@ -474,7 +473,12 @@ static void search(char *page)
 		if (debug)
 			fprintf(stderr, "path=%s\n", *mp);
 
-		if ( !(dbf = MYDBM_RDOPEN(database)) || dbver_rd(dbf)) {
+		dbf = MYDBM_RDOPEN(database);
+		if (dbf && dbver_rd(dbf)) {
+			MYDBM_CLOSE(dbf);
+			dbf = NULL;
+		}
+		if (!dbf) {
 			found += use_grep(page, *mp);			
 			continue;
 		}

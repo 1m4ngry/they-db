@@ -62,10 +62,10 @@ int main(int argc, char *argv[])
 	datum key,content;
 
 	program_name = basename(argv[0]);
-	if ( is_directory (CAT_ROOT) == 1 )
-		cat_root = CAT_ROOT;
-	else if ( is_directory (FHS_CAT_ROOT) == 1 )
+	if ( is_directory (FHS_CAT_ROOT) == 1 )
 		cat_root = FHS_CAT_ROOT;
+	else if ( is_directory (CAT_ROOT) == 1 )
+		cat_root = CAT_ROOT;
 
 	if (argc > 2)
 		usage(FAIL);
@@ -74,7 +74,12 @@ int main(int argc, char *argv[])
 	else
 		database = strappend( NULL, cat_root, MAN_DB, NULL);
 		
-	if ( !(dbf = MYDBM_RDOPEN(database)) || dbver_rd(dbf)) {
+	dbf = MYDBM_RDOPEN(database);
+	if (dbf && dbver_rd(dbf)) {
+		MYDBM_CLOSE(dbf);
+		dbf = NULL;
+	}
+	if (!dbf) {
 		error (0, errno, _("can't open %s for reading"), database);
 		usage(FAIL);
 	}

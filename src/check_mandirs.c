@@ -481,7 +481,9 @@ static short testmandirs(const char *path, time_t last)
 				  "\tsubdirectory %s has been 'modified'\n",
 				  mandir->d_name);
 
-			if ( (dbf = MYDBM_RWOPEN(database)) == NULL) {
+			dbf = MYDBM_RWOPEN(database);
+
+			if (! dbf) {
 				/* rwopen(database); */
 #ifdef MAN_DB_UPDATES
 				if (!quiet)
@@ -495,7 +497,7 @@ static short testmandirs(const char *path, time_t last)
 			        fprintf(stderr, _( "Updating index cache for path `%s'. Wait..."), path);
 			}
 		  	add_dir_entries(path, mandir->d_name);
-		  	MYDBM_CLOSE(dbf);
+			MYDBM_CLOSE(dbf);
 		  	amount++;
 		}
 	}
@@ -585,7 +587,9 @@ short create_db(const char *manpath)
 	/* Open the db in CTRW mode to store the $ver$ ID */
 
 	if ( (dbf = MYDBM_CTRWOPEN(database)) == NULL) {
-		error (0, errno, _( "can't create index cache %s"), database);
+		error (0, errno,
+		       _( "can't create index cache %s"),
+		       database);
 		return 0;
 		/* should really return EOF */
 	}
@@ -608,7 +612,12 @@ short create_db(const char *manpath)
    filesystem */
 short update_db(const char *manpath)
 {
-	if ( (dbf = MYDBM_RDOPEN(database)) && !dbver_rd(dbf)) {
+	dbf = MYDBM_RDOPEN(database);
+	if (dbf && dbver_rd(dbf)) {
+		MYDBM_CLOSE(dbf);
+		dbf = NULL;
+	}
+	if (dbf) {
 		datum key, content;
 		short new;
 

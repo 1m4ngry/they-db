@@ -2187,7 +2187,7 @@ static int try_section (char *path, char *sec, char *name)
 	}
 #ifndef NROFF_MISSING
 	else {
-		for (np = names; *np ; np++){
+		for (np = names; *np ; np++) {
 			char *man_file;
 			char *cat_file;
 
@@ -2284,6 +2284,11 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 			error (0, errno, _( "can't update index cache %s"), database);
 	}
 #endif /* MAN_DB_UPDATES */
+
+	if (in->id == WHATIS_MAN || in->id == WHATIS_CAT)
+		error (OK, 0,
+		       _("warning: %s: relying on whatis refs is deprecated"),
+		       name);
 
 #ifndef NROFF_MISSING /* #ifdef NROFF */
 	/*
@@ -2417,7 +2422,12 @@ static int try_db(char *manpath, char *sec, char *name)
 	in_cache = lookup(manpath); /* have we looked here already? */
 	
 	if ( !in_cache ) {
-		if ( (dbf = MYDBM_RDOPEN(database)) && !dbver_rd(dbf)) {
+		dbf = MYDBM_RDOPEN(database);
+		if (dbf && dbver_rd(dbf)) {
+			MYDBM_CLOSE(dbf);
+			dbf = NULL;
+		}
+		if (dbf) {
 			if (debug)
 				fprintf(stderr,
 					"Succeeded in opening %s O_RDONLY\n",
@@ -2499,7 +2509,7 @@ static int try_db(char *manpath, char *sec, char *name)
 	return found;
 }
 
-/* try to locate the page under the specified manpath, in the derised section,
+/* try to locate the page under the specified manpath, in the desired section,
    with the supplied name. glob if necessary. Initially try to find it via
    a db cache access, if that fails, search the filesystem. */
 static int locate_page(char *manpath, char *sec, char *name)

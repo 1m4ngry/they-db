@@ -35,14 +35,16 @@ build-stamp: GNUmakefile
 # Builds the binary package.
 	dh_testdir
 	$(MAKE) nls="$(NLS)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+	html2text -style pretty debian/man-db-manual.html \
+		> debian/man-db-manual.txt
 	touch build-stamp
 
-clean: GNUmakefile
+clean:
 	dh_testdir
 	-$(MAKE) nls="$(NLS)" -i distclean
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
-	dh_clean
+	dh_clean debian/man-db-manual.txt
 	-cd po && rm -f stamp-cat-id cat-id-tbl.c man-db.pot
 
 install: install-stamp
@@ -67,7 +69,7 @@ install-stamp: build
 	install -m755 src/accessdb	$(dtmp)/usr/sbin
 	install -m644 src/man_db.config	$(dtmp)/etc/manpath.config
 	# Do safe directories.
-	for x in zsoelim man intl po; do \
+	set -e; for x in zsoelim man intl po; do \
 		$(MAKE) nls="$(NLS)" -C $$x install prefix=../$(dtmp)/usr; \
 	done
 	install -m755 tools/chconfig	$(dtmp)/usr/share/$(package)

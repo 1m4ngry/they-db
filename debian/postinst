@@ -35,7 +35,8 @@ if [ ! -d $catdir ]; then
     install -d -g root -m 02755 -o man $catdir
 fi
 
-if [ ! -f $catdir/index.bt ] || dpkg --compare-versions "$2" lt 2.3.17; then
+if [ ! -f $catdir/index.bt ] || \
+   dpkg --compare-versions "$2" lt 2.3.17.1-5; then
     echo "  Building manual page index in background."
     nice mandb -c 2>/dev/null >/dev/null &
 fi

@@ -152,6 +152,12 @@ char **split_data(char *content, char *start[])
 
 	/* initialise pointer to Nth field (whatis) */
 	start[FIELDS - 1] = content;
+	if (!start[FIELDS - 1]) {
+		error (0, 0,
+		       _( "only %d fields in content"),
+		       FIELDS - 1);
+		gripe_corrupt_data();
+	}
 	
 	return start;
 }
@@ -177,7 +183,7 @@ void split_content(char *cont_ptr, struct mandata *pinfo)
 	pinfo->next = (struct mandata *) NULL;
 }
 	
-/* The compliment of split_content */
+/* The complement of split_content */
 datum make_content(struct mandata *in)
 {
 	datum cont;
