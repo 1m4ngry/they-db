@@ -1795,20 +1795,21 @@ case 21:
 case 22:
 #line 192 "lexgrog.l"
 case 23:
-YY_RULE_SETUP
-#line 192 "lexgrog.l"
+#line 193 "lexgrog.l"
+case YY_STATE_EOF(MAN_NAME):
+#line 193 "lexgrog.l"
 {	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (MAN_REST);
 				}
 	YY_BREAK
 case 24:
-#line 198 "lexgrog.l"
-case 25:
 #line 199 "lexgrog.l"
+case 25:
+#line 200 "lexgrog.l"
 case 26:
 YY_RULE_SETUP
-#line 199 "lexgrog.l"
+#line 200 "lexgrog.l"
 {	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (CAT_REST);
@@ -1818,12 +1819,12 @@ YY_RULE_SETUP
 /* ROFF request removal */
 
 case 27:
-#line 208 "lexgrog.l"
-case 28:
 #line 209 "lexgrog.l"
+case 28:
+#line 210 "lexgrog.l"
 case 29:
 YY_RULE_SETUP
-#line 209 "lexgrog.l"
+#line 210 "lexgrog.l"
 {	/* per line comments */
 						newline_found ();
 					}
@@ -1835,7 +1836,7 @@ case 30:
 yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 215 "lexgrog.l"
+#line 216 "lexgrog.l"
 newline_found ();
 	YY_BREAK
 case 31:
@@ -1843,156 +1844,156 @@ case 31:
 yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 216 "lexgrog.l"
+#line 217 "lexgrog.l"
 newline_found ();
 	YY_BREAK
 /* Toggle fill mode */
 case 32:
 YY_RULE_SETUP
-#line 219 "lexgrog.l"
+#line 220 "lexgrog.l"
 fill_mode = 0;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 220 "lexgrog.l"
+#line 221 "lexgrog.l"
 fill_mode = 1;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 222 "lexgrog.l"
+#line 223 "lexgrog.l"
 /* strip continuations */
 	YY_BREAK
 /* convert to DASH */
 case 35:
-#line 226 "lexgrog.l"
-case 36:
 #line 227 "lexgrog.l"
-case 37:
+case 36:
 #line 228 "lexgrog.l"
-case 38:
+case 37:
 #line 229 "lexgrog.l"
+case 38:
+#line 230 "lexgrog.l"
 case 39:
 YY_RULE_SETUP
-#line 229 "lexgrog.l"
+#line 230 "lexgrog.l"
 add_separator_to_whatis ();
 	YY_BREAK
 /* escape sequences and special characters */
 
 case 40:
 YY_RULE_SETUP
-#line 233 "lexgrog.l"
+#line 234 "lexgrog.l"
 add_char_to_whatis ('\\');
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 234 "lexgrog.l"
+#line 235 "lexgrog.l"
 add_char_to_whatis ('\'');
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 235 "lexgrog.l"
+#line 236 "lexgrog.l"
 add_char_to_whatis ('`');
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 236 "lexgrog.l"
+#line 237 "lexgrog.l"
 add_char_to_whatis ('-');
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 237 "lexgrog.l"
+#line 238 "lexgrog.l"
 add_char_to_whatis ('.');
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 238 "lexgrog.l"
+#line 239 "lexgrog.l"
 add_char_to_whatis (' ');
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 239 "lexgrog.l"
+#line 240 "lexgrog.l"
 add_char_to_whatis ('_');
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 240 "lexgrog.l"
+#line 241 "lexgrog.l"
 add_char_to_whatis ('\t');
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 242 "lexgrog.l"
+#line 243 "lexgrog.l"
 /* various useless control chars */
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 243 "lexgrog.l"
+#line 244 "lexgrog.l"
 /* various inline functions */
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 245 "lexgrog.l"
+#line 246 "lexgrog.l"
 /* interpolate arg */
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 247 "lexgrog.l"
+#line 248 "lexgrog.l"
 /* interpolate string */
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 248 "lexgrog.l"
+#line 249 "lexgrog.l"
 /* special (non printable) character */
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 249 "lexgrog.l"
+#line 250 "lexgrog.l"
 /* comment */
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 251 "lexgrog.l"
+#line 252 "lexgrog.l"
 /* font changes */
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 252 "lexgrog.l"
+#line 253 "lexgrog.l"
 /* mark input place in register */
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 254 "lexgrog.l"
+#line 255 "lexgrog.l"
 /* interpolate number register */
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 255 "lexgrog.l"
+#line 256 "lexgrog.l"
 /* overstrike chars */
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 257 "lexgrog.l"
+#line 258 "lexgrog.l"
 /* size changes */
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 258 "lexgrog.l"
+#line 259 "lexgrog.l"
 /* width of string */
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 260 "lexgrog.l"
+#line 261 "lexgrog.l"
 /* catch all */
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 262 "lexgrog.l"
+#line 263 "lexgrog.l"
 /* function() in hpux */
 	YY_BREAK
 
 /* collapse spaces, escaped spaces, tabs, newlines to a single space */
 case 62:
 YY_RULE_SETUP
-#line 266 "lexgrog.l"
+#line 267 "lexgrog.l"
 add_char_to_whatis (' ');
 	YY_BREAK
 /* a ROFF break request (.br) or a paragraph request (.LP, .PP, .P)
@@ -2000,20 +2001,20 @@ add_char_to_whatis (' ');
     for later processing */
 
 case 63:
-#line 273 "lexgrog.l"
-case 64:
 #line 274 "lexgrog.l"
-case 65:
+case 64:
 #line 275 "lexgrog.l"
+case 65:
+#line 276 "lexgrog.l"
 case 66:
 YY_RULE_SETUP
-#line 275 "lexgrog.l"
+#line 276 "lexgrog.l"
 add_char_to_whatis ((char) 0x11);
 	YY_BREAK
 
 case 67:
 YY_RULE_SETUP
-#line 278 "lexgrog.l"
+#line 279 "lexgrog.l"
 { /* very general roff requests */
 						newline_found ();
 					}
@@ -2021,20 +2022,20 @@ YY_RULE_SETUP
 /* pass words as a chunk. speed optimization */
 case 68:
 YY_RULE_SETUP
-#line 283 "lexgrog.l"
+#line 284 "lexgrog.l"
 add_str_to_whatis (yytext, yyleng);
 	YY_BREAK
 /* normalise the period (,) separators */
 case 69:
-#line 287 "lexgrog.l"
+#line 288 "lexgrog.l"
 case 70:
 YY_RULE_SETUP
-#line 287 "lexgrog.l"
+#line 288 "lexgrog.l"
 add_str_to_whatis (", ", 2);
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 289 "lexgrog.l"
+#line 290 "lexgrog.l"
 {
 					newline_found ();
 					add_char_to_whatis (yytext[yyleng - 1]);
@@ -2042,23 +2043,22 @@ YY_RULE_SETUP
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 294 "lexgrog.l"
+#line 295 "lexgrog.l"
 add_char_to_whatis (*yytext);
 	YY_BREAK
 /* default EOF rule */
 case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(MAN_NAME):
 case YY_STATE_EOF(CAT_NAME):
 case YY_STATE_EOF(CAT_FILE):
 case YY_STATE_EOF(MAN_FILE):
 case YY_STATE_EOF(CAT_REST):
 case YY_STATE_EOF(FORCE_EXIT):
-#line 297 "lexgrog.l"
+#line 298 "lexgrog.l"
 return 1;
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 299 "lexgrog.l"
+#line 300 "lexgrog.l"
 ECHO;
 	YY_BREAK
 
@@ -2949,7 +2949,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 299 "lexgrog.l"
+#line 300 "lexgrog.l"
 
 
 /* print warning and force scanner to terminate */

@@ -1,3 +1,10 @@
+man-db (2.4.0-9) unstable; urgency=low
+
+  * Don't fail whatis parse upon encountering EOF in the NAME section of a
+    man page (closes: #160102).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 11 Sep 2002 19:23:29 +0100
+
 man-db (2.4.0-8) unstable; urgency=low
 
   * Recover if /var/cache/man has been deleted (closes: #159665).
