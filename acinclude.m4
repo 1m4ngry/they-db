@@ -124,12 +124,11 @@ do
                       [AS_VAR_SET(man_tr_bdb, no)])
          ])
       AS_IF([test AS_VAR_GET(man_tr_bdb) = yes],
-            [AC_MSG_RESULT(yes)
-             $3
+            [$3
+             DBLIBS="-l$lib"
              db=yes],
-            [AC_MSG_RESULT(no)
-             LIBS="$man_saved_LIBS"
-             db=no])
+            [db=no])
+      LIBS="$man_saved_LIBS"
       AS_VAR_POPDEF([man_tr_bdb])dnl
       test "$db" = "yes" && break
     done
@@ -137,3 +136,21 @@ do
   test "$db" = "yes" && break
 done[]dnl
 ])# MAN_CHECK_BDB
+
+dnl Check for strsignal(). If not available, check for sys_siglist.
+AC_DEFUN(MAN_FUNC_STRSIGNAL,
+[
+AC_CACHE_CHECK([for strsignal], man_cv_func_strsignal,
+[AC_LINK_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE]],
+                                 [[char *p = strsignal (1);]])],
+                [man_cv_func_strsignal=yes],
+                [man_cv_func_strsignal=no])])
+if test "$man_cv_func_strsignal" = "yes"
+then
+	AC_DEFINE(HAVE_STRSIGNAL, 1, [Define to 1 if you have the `strsignal' function.])
+fi
+if test "$man_cv_func_strsignal" = "no"
+then
+	AC_DECL_SYS_SIGLIST
+fi
+])

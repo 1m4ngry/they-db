@@ -19,8 +19,10 @@
 \|]
 .RB [\| \-m
 .IR system \|[\|,.\|.\|.\|]\|]
-.RB [ \-M
+.RB [\| \-M
 .IR path \|]
+.RB [\| \-C
+.IR file \|]
 .I keyword
 \&.\|.\|.
 .SH DESCRIPTION
@@ -48,6 +50,9 @@ and word boundaries in the description.
 .TP
 .B \-d, \-\-debug
 Print debugging information.
+.TP
+.B \-v, \-\-verbose
+Print verbose warning messages.
 .TP
 .B \-r, \-\-regex
 Interpret each keyword as a regular expression.
@@ -119,11 +124,15 @@ environment variable.
 This option overrides the contents of
 .RB $ MANPATH .
 .TP
+.BI \-C\  file ,\ \-\-config\-file= file
+Use this user configuration file rather than the default of
+.IR ~/.manpath .
+.TP
 .B \-h, \-\-help
 Print a help message and exit.
 .TP
 .B \-V, \-\-version
-Display version and author information.
+Display version information.
 .SH "EXIT STATUS"
 .TP
 .B 0

@@ -39,15 +39,10 @@
 #  include <string.h>
 #elif defined(HAVE_STRINGS_H)
 #  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr(), *strcat();
 #endif /* STDC_HEADERS */
 
 #if defined(HAVE_UNISTD_H)
 #  include <unistd.h>
-#else 
-extern uid_t getuid(), geteuid();
-extern pid_t vfork();
 #endif /* HAVE_UNISTD_H */
 
 #if defined(HAVE_LIMITS_H)
@@ -55,6 +50,10 @@ extern pid_t vfork();
 #elif defined(HAVE_SYS_PARAM_H)
 #  include <sys/param.h>
 #endif
+
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
 
 #ifdef HAVE_GETOPT_H
 #  include <getopt.h>
@@ -77,30 +76,34 @@ int debug = 0;
 char *program_name;
 int quiet = 0;
 
+extern char *user_config_file;
+
 static const struct option long_options[] =
 {
-    {"catpath", no_argument, 		0, 'c'},
-    {"global",  no_argument,		0, 'g'},
-    {"debug",   no_argument, 		0, 'd'},
-    {"help",    no_argument, 		0, 'h'},
-    {"quiet",   no_argument, 		0, 'q'},
-    {"version", no_argument, 		0, 'V'},
-    {"systems",  required_argument, 	0, 'm'},
+    {"catpath",	    no_argument, 	0, 'c'},
+    {"global",	    no_argument,	0, 'g'},
+    {"debug",	    no_argument, 	0, 'd'},
+    {"help",	    no_argument, 	0, 'h'},
+    {"quiet",	    no_argument, 	0, 'q'},
+    {"version",	    no_argument, 	0, 'V'},
+    {"config-file", required_argument,	0, 'C'},
+    {"systems",	    required_argument, 	0, 'm'},
     {0, 0, 0, 0}
 };
 
-static const char args[] = "cgdhqVm:";
+static const char args[] = "cgdhqVC:m:";
 
 static void usage (int status)
 {
 	printf (_( 
-		"usage: %s [[-gcdq] [-m system]] | [-V] | [-h]\n"),
+		"usage: %s [[-gcdq] [-C file] [-m system]] | [-V] | [-h]\n"),
 		program_name);
 	printf (_(
 		"-c, --catpath               show relative catpaths.\n"
 		"-g, --global                show the entire global manpath.\n"
 	        "-d, --debug                 produce debugging info.\n"
 	        "-q, --quiet                 produce fewer warnings.\n"
+		"-C, --config-file file      use this user configuration file.\n"
 	        "-m, --systems system        express which `systems' to use.\n"
 	        "-V, --version               show version.\n"
 	        "-h, --help                  show this usage message.\n"));
@@ -114,22 +117,16 @@ static void usage (int status)
 int main (int argc, char *argv[])
 {
 	int c, global = 0, cat = 0;
-	char *alt_system = "";
+	const char *alt_system = "";
 	char *path_string;
 	int option_index; /* not used, but required by getopt_long() */
-	char *locale;
 
 	program_name = xstrdup (basename (argv[0]));
 	/* initialise the locale */
-	locale = setlocale (LC_ALL, "");
-	if (locale)
-		locale = xstrdup (locale);
-	else {
+	if (!setlocale (LC_ALL, ""))
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
-		locale = "C";
-	}
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
 
@@ -146,6 +143,9 @@ int main (int argc, char *argv[])
 		    	case 'q':
 			    	quiet = 1;
 			    	break;
+			case 'C':
+				user_config_file = optarg;
+				break;
 			case 'm':
 				alt_system = optarg;
 				break;

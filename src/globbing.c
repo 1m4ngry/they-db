@@ -2,7 +2,7 @@
  * globbing.c: interface to the POSIX glob routines
  *  
  * Copyright (C) 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -57,13 +57,16 @@ extern char *strrchr();
 #  include "lib/fnmatch.h"
 #endif
 
+#include <sys/types.h>
 #include <dirent.h>
 
 #include "manconfig.h"
 #include "lib/error.h"
+#include "lib/hashtable.h"
+#include "globbing.h"
 
-char *extension;
-static char *mandir_layout = MANDIR_LAYOUT;
+const char *extension;
+static const char *mandir_layout = MANDIR_LAYOUT;
 
 #ifdef TEST
 
@@ -82,10 +85,12 @@ static const struct option long_options[] =
 	{"extension",	required_argument,	0,	'e'},
 	{"ignore-case",	no_argument,		0,	'i'},
 	{"match-case",	no_argument,		0,	'I'},
+	{"help",	no_argument,		0,	'h'},
+	{"version",	no_argument,		0,	'V'},
 	{0, 0, 0, 0}
 };
 
-static const char args[] = "de:iI";
+static const char args[] = "de:iIhV";
 
 #endif /* TEST */
 
@@ -103,11 +108,13 @@ static __inline__ char *end_pattern (char *pattern, const char *sec)
 #define LAYOUT_HPUX	2
 #define LAYOUT_IRIX	4
 #define LAYOUT_SOLARIS	8
+#define LAYOUT_BSD	16
 
 static int parse_layout (const char *layout)
 {
 	if (!*layout)
-		return LAYOUT_GNU | LAYOUT_HPUX | LAYOUT_SOLARIS | LAYOUT_IRIX;
+		return LAYOUT_GNU | LAYOUT_HPUX | LAYOUT_IRIX |
+		       LAYOUT_SOLARIS | LAYOUT_BSD;
 	else {
 		int flags = 0;
 
@@ -124,28 +131,98 @@ static int parse_layout (const char *layout)
 			flags |= LAYOUT_IRIX;
 		if (strstr (layout, "SOLARIS"))
 			flags |= LAYOUT_SOLARIS;
+		if (strstr (layout, "BSD"))
+			flags |= LAYOUT_BSD;
 
 		return flags;
 	}
 }
 
-int match_in_directory (const char *path, const char *pattern, int ignore_case,
-			glob_t *pglob)
+struct dirent_hashent {
+	char **names;
+	size_t names_len, names_max;
+};
+
+static void dirent_hash_free (void *defn)
 {
+	struct dirent_hashent *hashent = defn;
+	size_t i;
+
+	for (i = 0; i < hashent->names_len; ++i)
+		free (hashent->names[i]);
+	free (hashent->names);
+	free (hashent);
+}
+
+static struct hashtable *dirent_hash = NULL;
+
+static struct dirent_hashent *update_directory_cache (const char *path)
+{
+	struct dirent_hashent *cache;
 	DIR *dir;
 	struct dirent *entry;
-	int allocated = 4;
+
+	if (!dirent_hash)
+		dirent_hash = hash_create (&dirent_hash_free);
+	cache = hash_lookup (dirent_hash, path, strlen (path));
+
+	/* Check whether we've got this one already. */
+	if (cache) {
+		if (debug)
+			fprintf (stderr, "update_directory_cache %s: hit\n",
+				 path);
+		return cache;
+	}
+
+	if (debug)
+		fprintf (stderr, "update_directory_cache %s: miss\n", path);
+
+	dir = opendir (path);
+	if (!dir) {
+		if (debug)
+			fprintf (stderr, "can't open directory %s: %s\n",
+				 path, strerror (errno));
+		return NULL;
+	}
+
+	cache = xmalloc (sizeof (struct dirent_hashent));
+	cache->names_len = 0;
+	cache->names_max = 1024;
+	cache->names = xmalloc (sizeof (char *) * cache->names_max);
+
+	/* Dump all the entries into cache->names, resizing if necessary. */
+	for (entry = readdir (dir); entry; entry = readdir (dir)) {
+		if (cache->names_len >= cache->names_max) {
+			cache->names_max *= 2;
+			cache->names =
+				xrealloc (cache->names,
+					  sizeof (char *) * cache->names_max);
+		}
+		cache->names[cache->names_len++] = xstrdup (entry->d_name);
+	}
+
+	hash_install (dirent_hash, path, strlen (path), cache);
+	closedir (dir);
+
+	return cache;
+}
+
+static int match_in_directory (const char *path, const char *pattern,
+			       int ignore_case, glob_t *pglob)
+{
+	struct dirent_hashent *cache;
+	size_t allocated = 4;
 	int flags;
+	size_t i;
 
 	pglob->gl_pathc = 0;
 	pglob->gl_pathv = NULL;
 	pglob->gl_offs = 0;
 
-	dir = opendir (path);
-	if (!dir) {
+	cache = update_directory_cache (path);
+	if (!cache) {
 		if (debug)
-			fprintf (stderr, "can't open directory %s for %s: "
-				 "%s\n", path, pattern, strerror (errno));
+			fprintf (stderr, "directory cache update failed\n");
 		return -1;
 	}
 
@@ -156,14 +233,14 @@ int match_in_directory (const char *path, const char *pattern, int ignore_case,
 	pglob->gl_pathv = xmalloc (allocated * sizeof (char *));
 	flags = ignore_case ? FNM_CASEFOLD : 0;
 
-	for (entry = readdir (dir); entry; entry = readdir (dir)) {
-		int fnm = fnmatch (pattern, entry->d_name, flags);
+	for (i = 0; i < cache->names_len; ++i) {
+		int fnm = fnmatch (pattern, cache->names[i], flags);
 		if (fnm)
 			continue;
 
 		if (debug)
 			fprintf (stderr, "matched: %s/%s\n",
-				 path, entry->d_name);
+				 path, cache->names[i]);
 
 		if (pglob->gl_pathc >= allocated) {
 			allocated *= 2;
@@ -171,7 +248,7 @@ int match_in_directory (const char *path, const char *pattern, int ignore_case,
 				pglob->gl_pathv, allocated * sizeof (char *));
 		}
 		pglob->gl_pathv[pglob->gl_pathc++] =
-			strappend (NULL, path, "/", entry->d_name, NULL);
+			strappend (NULL, path, "/", cache->names[i], NULL);
 	}
 
 	if (pglob->gl_pathc >= allocated) {
@@ -180,7 +257,6 @@ int match_in_directory (const char *path, const char *pattern, int ignore_case,
 					    allocated * sizeof (char *));
 	}
 	pglob->gl_pathv[pglob->gl_pathc] = NULL;
-	closedir (dir);
 
 	return 0;
 }
@@ -284,6 +360,24 @@ char **look_for_file (const char *unesc_hier, const char *sec,
 					     &gbuf);
 	}
 
+	/* BSD cat pages take the extension .0 */
+	if ((layout & LAYOUT_BSD) && (status != 0 || gbuf.gl_pathc == 0)) {
+		if (path)
+			*path = '\0';
+		if (pattern)
+			*pattern = '\0';
+		if (cat) {
+			path = strappend (path, hier, "/cat", sec, NULL);
+			pattern = strappend (pattern, name, ".0*", NULL);
+		} else {
+			path = strappend (path, hier, "/man", sec, NULL);
+			pattern = end_pattern (strappend (pattern, name, NULL),
+					       sec);
+		}
+		status = match_in_directory (path, pattern, !match_case,
+					     &gbuf);
+	}
+
 	free (name);
 	free (hier);
 	free (path);
@@ -296,6 +390,21 @@ char **look_for_file (const char *unesc_hier, const char *sec,
 }		
 
 #ifdef TEST
+
+static void usage (int status)
+{
+	printf (_("usage: %s [-deiIhV] path section name\n"), program_name);
+	printf (_(
+		"-d, --debug                 emit debugging messages.\n"
+		"-e, --extension             limit search to extension type `extension'.\n"
+		"-i, --ignore-case           look for pages case-insensitively (default).\n"
+		"-I, --match-case            look for pages case-sensitively.\n"
+		"-V, --version               show version.\n"
+		"-h, --help                  show this usage message.\n"));
+
+	exit (status);
+}
+
 int main (int argc, char **argv)
 {
 	int c, option_index;
@@ -317,12 +426,21 @@ int main (int argc, char **argv)
 			case 'I':
 				match_case = 1;
 				break;
+			case 'V':
+				ver ();
+				break;
+			case 'h':
+				usage (OK);
+				break;
+			default:
+				usage (FAIL);
+				break;
 		}
 	}
 
 	program_name = xstrdup (basename (argv[0]));
 	if (argc - optind != 3)
-		error (FAIL, 0, "usage: %s path sec name", program_name);
+		usage (FAIL);
 
 	for (i = 0; i <= 1; i++) {
 		char **files;
@@ -335,4 +453,5 @@ int main (int argc, char **argv)
 	}
 	return 0;
 }
+
 #endif /* TEST */

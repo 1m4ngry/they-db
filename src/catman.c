@@ -83,6 +83,10 @@ extern int errno;
 #  endif /* _POSIX_VERSION */
 #endif /* !ARG_MAX */
 
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
+
 #ifdef HAVE_GETOPT_H
 #  include <getopt.h>
 #else /* !HAVE_GETOPT_H */
@@ -109,14 +113,15 @@ char *database;
 
 static const struct option long_options[] =
 {
-    {"debug",		no_argument, 	0, 'd'},
-    {"manpath",      required_argument, 0, 'M'},
-    {"help",		no_argument,	0, 'h'},
-    {"version",		no_argument, 	0, 'V'},
+    {"debug",		no_argument,	    0, 'd'},
+    {"manpath",		required_argument,  0, 'M'},
+    {"config-file",	required_argument,  0, 'C'},
+    {"help",		no_argument,	    0, 'h'},
+    {"version",		no_argument,	    0, 'V'},
     {0, 0, 0, 0}
 };
 
-static const char args[] = "dM:hV";
+static const char args[] = "dM:C:hV";
 
 #ifdef HAVE_SETLOCALE
 static char *locale;
@@ -125,15 +130,17 @@ static char *locale;
 extern char *optarg;
 extern int optind, opterr, optopt;
 extern char *manpathlist[];
+extern char *user_config_file;
 
 static void usage (int status)
 {
-	printf (_("usage: %s [-dhV] [-M manpath] [section] ...\n"),
+	printf (_("usage: %s [-dhV] [-C file] [-M manpath] [section] ...\n"),
 		program_name);
 	printf (_(
 		"-d, --debug                 produce debugging info.\n"
 		"-M, --manpath path          set search path for manual pages "
 					    "to `path'.\n"
+		"-C, --config-file file      use this user configuration file.\n"
 		"-V, --version               show version.\n"
 		"-h, --help                  show this usage message.\n"));
 
@@ -153,7 +160,7 @@ static int rdopen_db (void)
 
 /* fork() and execve() man with the appropriate catman args. 
    If we __inline__ this function, gcc v2.6.2 gives us `clobber' warnings ?? */
-static void catman (char *argp[], int arg_no)
+static void catman (char *argp[])
 {
 	pid_t child;
 	int status;
@@ -215,8 +222,8 @@ static void do_catman (char *argp[], int arg_no, int first_arg)
 
 	/* The last argument must be NULL */
 	argp[arg_no] = NULL;
-	
-	catman (argp, arg_no);
+
+	catman (argp);
 
 	/* don't free the last entry, it's NULL */
 	/* don't free the last but one entry, it's our nextkey */
@@ -247,7 +254,7 @@ static __inline__ void reset_cursor (datum key)
 
 /* find all pages that are in the supplied manpath and section and that are
    ultimate source files. */
-static __inline__ int parse_for_sec (char *manpath, char *section)
+static int parse_for_sec (const char *manpath, const char *section)
 {
 	char *argp[MAX_ARGS];
 	datum key;
@@ -257,23 +264,23 @@ static __inline__ int parse_for_sec (char *manpath, char *section)
 	if (rdopen_db () || dbver_rd (dbf))
 		return 1;
 		
-	argp[arg_no++] = "man"; 	/* Name of program */
+	argp[arg_no++] = xstrdup ("man"); 	/* Name of program */
 
 #ifdef HAVE_SETLOCALE
 	/* As we supply a NULL environment to save precious execve() space,
 	   we must also supply a locale if necessary */
 	if (locale) {
-		argp[arg_no++] = "-L";		/* locale option */
-		argp[arg_no++] = locale;	/* The locale */
+		argp[arg_no++] = xstrdup ("-L");	/* locale option */
+		argp[arg_no++] = xstrdup (locale);	/* The locale */
 		initial_bit += sizeof "-L" + strlen (locale) + 1;
 	} else
 		initial_bit = 0;
 
 #endif /* HAVE_SETLOCALE */
 
-	argp[arg_no++] = "-caM";	/* options */
-	argp[arg_no++] = manpath;	/* particular manpath */
-	argp[arg_no++] = section;	/* particular section */
+	argp[arg_no++] = xstrdup ("-caM");	/* options */
+	argp[arg_no++] = xstrdup (manpath);	/* particular manpath */
+	argp[arg_no++] = xstrdup (section);	/* particular section */
 
 	first_arg = arg_no;		/* first pagename argument */
 	
@@ -362,6 +369,10 @@ static __inline__ int parse_for_sec (char *manpath, char *section)
 	if (arg_no > first_arg)
 		do_catman (argp, arg_no, first_arg);
 
+	arg_no = first_arg - 1;
+	while (arg_no >= 0)
+		free (argp[arg_no--]);
+
 	return 0;
 }
 
@@ -379,21 +390,20 @@ int main (int argc, char *argv[])
 {
 	int c;
 	char *sys_manp;
-	char **mp, **sections;
+	char **mp;
+	const char **sections;
 
 	int option_index; /* not used, but required by getopt_long() */
 
 	program_name = xstrdup (basename (argv[0]));
 
 	/* initialise the locale */
-	locale = setlocale (LC_ALL, "");
-	if (locale)
-		locale = xstrdup (locale);
-	else {
+	locale = xstrdup (setlocale (LC_ALL, ""));
+	if (!locale) {
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
-		locale = "C";
+		locale = xstrdup ("C");
 	}
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
@@ -407,6 +417,9 @@ int main (int argc, char *argv[])
 				break;
 			case 'M':
 				manp = optarg;
+				break;
+			case 'C':
+				user_config_file = optarg;
 				break;
 			case 'V':
 				ver ();
@@ -424,10 +437,10 @@ int main (int argc, char *argv[])
 
 	/* If we were supplied sections: sort them out */
 	if (optind != argc) {
-		char **sp;
+		const char **sp;
 		
-		sections = sp = (char **) xmalloc ((argc - optind + 1) * 
-						    sizeof (char *));
+		sections = sp = xmalloc ((argc - optind + 1) *
+					 sizeof *sections);
 		while (optind != argc)
 			*sp++ = argv[optind++];
 		*sp = NULL;
@@ -437,28 +450,29 @@ int main (int argc, char *argv[])
 		mansect = getenv ("MANSECT");
 		if (mansect && *mansect) {
 			/* MANSECT contains sections */
-			char *sec;
+			const char *sec;
 			int i = 0;
 
 			mansect = xstrdup (mansect);
 			sections = NULL;
 			for (sec = strtok (mansect, ":"); sec; 
 			     sec = strtok (NULL, ":")) {
-			     	sections = (char **) xrealloc (sections, 
-							       (i + 2) *
-							       sizeof (char *));
+			     	sections = xrealloc (sections,
+						     (i + 2) *
+						     sizeof *sections);
 				sections[i++] = sec;
 			}
 			sections[i] = NULL;
+			free (mansect);
 		} else {
 			/* use default sections */ 
-			static char *std_sections[] = STD_SECTIONS;
+			static const char *std_sections[] = STD_SECTIONS;
 			sections = std_sections;
 		}
 	}
 
 	if (debug) {
-		char **sp;
+		const char **sp;
 
 		for (sp = sections; *sp; sp++)
 			fprintf (stderr, "sections: %s\n", *sp);
@@ -483,7 +497,8 @@ int main (int argc, char *argv[])
 	create_pathlist (manp, manpathlist); 
 	
 	for (mp = manpathlist; *mp; mp++) {
-		char *catpath, **sp;
+		char *catpath;
+		const char **sp;
 		size_t len;
 
 		catpath = get_catpath (*mp, SYSTEM_CAT | USER_CAT);

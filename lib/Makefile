@@ -1,0 +1,75 @@
+# Library Makefile for the man package.
+#
+# Copyright (C) 1994, 1995 Graeme Wilford.
+#
+# This file is part of man-db.
+#
+# man-db is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# man-db is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with man-db; if not, write to the Free Software Foundation,
+# Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# Wed June  6 15:44:47 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk):
+
+library = libman.a
+
+srcdir = .
+
+top_srcdir = ..
+
+include ../include/Defines
+
+.PHONY: $(DEFAULT_TARGETS) test
+
+MANCPPFLAGS = -I../include -I$(top_srcdir) -I$(srcdir) -I-
+
+ALLSRCS = alloca.c basename.c cleanup.c error.c fnmatch.c getopt.c getopt1.c \
+	  glob.c memcmp.c putenv.c realpath.c rename.c \
+	  strappend.c strcspn.c strsep.c strspn.c strstr.c strnlen.c \
+	  xmalloc.c xstrdup.c xstrndup.c \
+	  waitpid.c tempfile.c mkdtemp.c mkstemp.c tempname.c hashtable.c \
+	  xstrsignal.c pipeline.c
+
+ALLOBJS = $(ALLSRCS:.c=.o)
+
+XOBJS = xstrdup.o xstrndup.o xmalloc.o error.o xstrsignal.o
+
+ALL =   $(libobjects) cleanup.o strappend.o tempfile.o \
+      hashtable.o pipeline.o $(XOBJS)
+
+all: $(library)
+
+test: $(library)($(ALLOBJS))
+	-$(RANLIB) $(library)
+
+$(library): $(library)($(ALL))
+	-$(RANLIB) $@
+
+mkdtemp.o mkstemp.o: tempname.o
+
+# The standard targets
+install uninstall:
+
+mostlyclean:
+	rm -f *~ core $(ALL)
+
+clean: mostlyclean
+	rm -f $(library)
+
+distclean: clean
+	rm -f Makefile
+
+realclean: distclean
+	rm -f tags
+
+TAGS:
+	$(MKTAGS) $(srcdir)/*.[ch]

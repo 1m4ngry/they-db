@@ -65,13 +65,26 @@ extern int strncmp();
 extern int errno;
 #endif
 
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
+
 #define STATIC_VER	/* zsoelim has a static ver() */
 
 #define NAME	so_name[so_stack_ptr]
 #define LINE	so_line[so_stack_ptr]
 
+#include <libintl.h>
+#define _(String) gettext (String)
+
 #include "manconfig.h"
 #include "lib/error.h"
+
+#ifdef HAVE_GETOPT_H
+#  include <getopt.h>
+#else /* !HAVE_GETOPT_H */
+#  include "lib/getopt.h"
+#endif /* HAVE_GETOPT_H */
 
 #ifdef COMP_SRC
 #include "comp_src.h"
@@ -88,6 +101,16 @@ static void zap_quotes(void);
 #endif
 
 char *program_name;
+
+static const struct option long_options[] =
+{
+	{"compatible",	no_argument,		0,	'C'},
+	{"help",	no_argument,		0,	'h'},
+	{"version",	no_argument,		0,	'V'},
+	{0, 0, 0, 0}
+};
+
+static const char args[] = "ChV";
 
 static YY_BUFFER_STATE so_stack[MAX_SO_DEPTH];
 static char *so_name[MAX_SO_DEPTH];
@@ -150,7 +173,7 @@ W	[ \t]
 <so>\"?[^ \t\n\"]+\"?	{ 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
-				       "%s:%d: .so requests nested too deeply or are recursive",
+				       _("%s:%d: .so requests nested too deeply or are recursive"),
 				       NAME, LINE);
 
 			ZAP_QUOTES;
@@ -163,7 +186,7 @@ W	[ \t]
 			if (open_file(xstrdup(yytext)) && open_file(temp_name)) {
 #ifndef __alpha
 				error(OK, 0, 
-				      "%s:%d: warning: failed .so request", NAME, LINE);
+				      _("%s:%d: warning: failed .so request"), NAME, LINE);
 				printf(".so %s\n", yytext);
 #endif
 				BEGIN(end_request);
@@ -184,7 +207,7 @@ W	[ \t]
 <so>\n		{
 			no_newline = 0;
 			error(OK, 0,
-			      "%s:%d: warning: newline in .so request, ignoring",
+			      _("%s:%d: warning: newline in .so request, ignoring"),
 			      NAME, LINE);
 			putchar('\n');
 			LINE++;
@@ -234,7 +257,7 @@ W	[ \t]
 <lfnumber,lfname>.	{
 			no_newline = 1;
 			error(OK, 0,
-			      "%s:%d: warning: malformed .lf request, ignoring",
+			      _("%s:%d: warning: malformed .lf request, ignoring"),
 			      NAME, LINE);
 			putchar(*yytext);
 			BEGIN(INITIAL);
@@ -243,7 +266,7 @@ W	[ \t]
 <lfnumber,lfname>\n	{
 			no_newline = 0;
 			error(OK, 0,
-			      "%s:%d: warning: newline in .lf request, ignoring",
+			      _("%s:%d: warning: newline in .lf request, ignoring"),
 			      NAME, LINE);
 			putchar('\n');
 			LINE++;
@@ -281,7 +304,7 @@ static void zap_quotes(void)
 			yytext[yyleng - 1] = '\0';
 			yytext++;
 		} else
-			error(OK, 0, "%s:%d: unterminated quote in roff request",
+			error(OK, 0, _("%s:%d: unterminated quote in roff request"),
 			      NAME, LINE);
 	}
 }
@@ -290,15 +313,18 @@ static void zap_quotes(void)
 /* print the usage message, then exit */
 static void usage (int status)
 {
-	printf("usage: %s [ -VCh ] [ file ... ]\n", program_name);
+	printf (_("usage: %s [-CVh] [file ...]\n"), program_name);
+	printf (_(
+		"-C, --compatible            compatibility switch (ignored).\n"
+		"-V, --version               show version.\n"
+		"-h, --help                  show this usage message.\n"));
 	exit (status);
 }
 
 /* print the version, then exit */
 static __inline__ void ver(void)
 {
-	printf("%s, version %s, %s (G.Wilford@ee.surrey.ac.uk)\n",
-	       program_name, VERSION, DATE);
+	printf(_("%s, version %s, %s\n"), program_name, VERSION, DATE);
 	exit(OK);
 }
 
@@ -313,11 +339,12 @@ static void parse_file(void)
 
 int main(int argc, char *argv[])
 {
-	int c;
+	int c, option_index;
 
-	program_name = basename(argv[0]);
+	program_name = xstrdup(basename(argv[0]));
 
-	while ( (c = getopt(argc, argv, "hVC")) != EOF ) {
+	while ( (c = getopt_long(argc, argv, args,
+				 long_options, &option_index)) != EOF ) {
 		switch (c) {
 			case 'V':
 				ver();
@@ -336,7 +363,7 @@ int main(int argc, char *argv[])
 	/* if we have any arguments, parse them in command line order, else
 	   open stdin */
 	if (optind == argc) {
-		so_name[0] = "-";
+		so_name[0] = xstrdup("-");
 		parse_file();
 	} else {
 		while (optind < argc) {
@@ -413,13 +440,13 @@ static int open_file(char *filename)
 
 			file_fd = create_tempfile ("zsman", &filename);
 			if (file_fd < 0)
-				error (FATAL, errno, "can't create a temporary filename");
+				error (FATAL, errno, _("can't create a temporary filename"));
 			command = strappend(NULL, comp->prog, " ", compfile, " > ", filename, NULL);
 			exit_status = system(command);
 			close( file_fd);
 
 			if (exit_status != 0) {
-				error (OK, 0, "%s exited with status %d",
+				error (OK, 0, _("%s exited with status %d"),
 				       command, exit_status);
 				free(command);
 				yyin = oldyyin;
@@ -429,7 +456,8 @@ static int open_file(char *filename)
 			free(command);
 
 			if( !(yyin = fopen( filename, "r" )) )  {
-				error (OK, errno, "open decompressed file: %s",
+				error (OK, errno,
+				       _("open decompressed file: %s"),
 				       filename);
 				yyin = oldyyin;
 				return 1;

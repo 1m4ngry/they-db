@@ -17,8 +17,11 @@
 .SH SYNOPSIS
 .\" The general command line
 .B %man%
-.RB [\| \-c \||\| \-w \||\| \-tZHT
-.IR device \|]
+.RB [\| \-c \||\| \-w \||\| \-tZ \|]
+.RB [\| \-H \|\c
+.RI [\| browser \|]\|]
+.RB [\| \-T \|\c
+.RI [\| device \|]\|]
 .RB [\| \-adhu7V \|]
 .RB [\| \-i \||\| \-I \|]
 .RB [\| \-m
@@ -27,6 +30,8 @@
 .IR locale \|]
 .RB [\| \-p
 .IR string \|]
+.RB [\| \-C
+.IR file \|]
 .RB [\| \-M
 .IR path \|]
 .RB [\| \-P
@@ -44,8 +49,11 @@
 .B %man%
 .B \-l
 .RB [\| \-7 \|]
-.RB [\| \-tZHT
-.IR device \|]
+.RB [\| \-tZ \|]
+.RB [\| \-H \|\c
+.RI [\| browser \|]\|]
+.RB [\| \-T \|\c
+.RI [\| device \|]\|]
 .RB [\| \-p
 .IR string \|]
 .RB [\| \-P
@@ -166,7 +174,7 @@ Display, in succession, all of the available
 manual pages contained within the manual.
 It is possible to quit between successive displays or skip any of them.
 .TP
-\fB%man% \-t \fIalias \fR|\fI lpr -Pps
+\fB%man% \-t \fIalias \fR|\fI lpr \-Pps
 Format the manual page referenced by
 .RI ` alias ',
 usually a shell manual page, into the default
@@ -431,7 +439,7 @@ or both, are not harmful.
 For options that require an argument, each duplication will override the
 previous argument value.
 .TP
-.B \-l, \-\-local-file
+.B \-l, \-\-local\-file
 Activate `local' mode.
 Format and display local manual files instead of searching through the
 system's manual collection.
@@ -473,6 +481,10 @@ Its use is to reset those options that may have been set in
 Any options that follow
 .B \-D
 will have their usual effect.
+.TP
+.BI \-C\  file ,\ \-\-config\-file= file
+Use this user configuration file rather than the default of
+.IR ~/.manpath .
 .TP
 .BI \-M\  path ,\ \-\-manpath= path
 Specify an alternate manpath to use.
@@ -591,14 +603,23 @@ device.
 It will not translate any
 .I latin1
 text.
-The following table shows the translations performed.
+The following table shows the translations performed: some parts of it may
+only be displayed properly when using
+.B GNU
+.BR nroff 's
+.IR latin1 (7)
+device.
 
+.ie c \[shc] \
+.  ds soft-hyphen \[shc]
+.el \
+.  ds soft-hyphen \(hy
 .TS
 tab (@);
 l c c c.
 Description@Octal@latin1@ascii
 _
-continuation hyphen@255@\[shc]@-
+continuation hyphen@255@\*[soft-hyphen]@-
 bullet (middle dot)@267@\(bu@o
 acute accent@264@\(aa@'
 multiplication sign@327@\(mu@x
@@ -786,10 +807,8 @@ This option is not required in conjunction with
 .BR \-T ,
 or
 .BR \-Z .
-.PP
-.BI \-T\  device ,\ \-\-troff-device
-.RI [\| =device \|]
-.RS
+.TP
+\fB\-T\fP[\fIdevice\fP], \fB\-\-troff\-device\fP[=\fIdevice\fP]
 This option is used to change
 .B groff
 (or possibly
@@ -800,7 +819,6 @@ It implies
 Examples (provided with Groff-1.17) include
 .BR dvi ", " latin1 ", " ps ", " utf8 ,
 .BR X75 " and " X100 .
-.RE
 .TP
 .B \-Z, \-\-ditroff
 .B groff
@@ -818,11 +836,13 @@ and will suppress the use of a post-processor.
 It implies
 .BR \-t .
 .TP
-.B \-H, \-\-html
+\fB\-H\fP[\fIbrowser\fP], \fB\-\-html\fP[=\fIbrowser\fP]
 This option will cause
 .B groff
 to produce HTML output, and will display that output in a web browser.
-The choice of browser is determined by the
+The choice of browser is determined by the optional
+.I browser
+argument if one is provided, by the
 .RB $ BROWSER
 environment variable, or by a compile-time default if that is unset (usually
 .BR lynx ).
@@ -915,7 +935,7 @@ For example, if you want to set the prompt string unconditionally to
 \(lqmy prompt string\(rq, set
 .RB $ MANLESS
 to
-.RB \(oq -Psmy\ prompt\ string \(cq.
+.RB \(oq \-Psmy\ prompt\ string \(cq.
 .TP
 .B BROWSER
 If
@@ -1024,13 +1044,13 @@ the man-db package manual,
 Dec 23 1992: Rik Faith (faith@cs.unc.edu) applied bug fixes
 supplied by Willem Kasdorp (wkasdo@nikhefk.nikef.nl).
 
-30th April 1994 - 23rd February 2000: Wilf.
-(G.Wilford@ee.surrey.ac.uk) has been developing and maintaining this package
+30th April 1994 \- 23rd February 2000: Wilf. (G.Wilford@ee.surrey.ac.uk)
+has been developing and maintaining this package
 with the help of a few dedicated people.
 
-30th October 1996 - 30th March 2001: Fabrizio Polacco <fpolacco@debian.org>
+30th October 1996 \- 30th March 2001: Fabrizio Polacco <fpolacco@debian.org>
 maintained and enhanced this package for the Debian project, with the
 help of all the community.
 
-31st March 2001 - %date%: Colin Watson <cjwatson@debian.org> is now
+31st March 2001 \- present day: Colin Watson <cjwatson@debian.org> is now
 developing and maintaining man-db.

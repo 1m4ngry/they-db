@@ -1,4 +1,4 @@
-/* include/config.h.in.  Generated from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.in by autoheader.  */
 
 /* Define if your sprintf function returns a count of converted characters. */
 #undef ANSI_SPRINTF
@@ -68,6 +68,10 @@
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
 #undef HAVE_DCGETTEXT
+
+/* Define to 1 if you have the declaration of `sys_siglist', and to 0 if you
+   don't. */
+#undef HAVE_DECL_SYS_SIGLIST
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
@@ -152,8 +156,8 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
-/* Define to 1 if you have the `efence' library (-lefence). */
-#undef HAVE_LIBEFENCE
+/* Define to 1 if you have the <libgen.h> header file. */
+#undef HAVE_LIBGEN_H
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
@@ -262,6 +266,9 @@
 /* Define to 1 if you have the `strsep' function. */
 #undef HAVE_STRSEP
 
+/* Define to 1 if you have the `strsignal' function. */
+#undef HAVE_STRSIGNAL
+
 /* Define to 1 if you have the `strspn' function. */
 #undef HAVE_STRSPN
 
@@ -297,6 +304,9 @@
 /* Define to 1 if you have the `tsearch' function. */
 #undef HAVE_TSEARCH
 
+/* Define if you have the 'uintmax_t' type in <stdint.h> or <inttypes.h>. */
+#undef HAVE_UINTMAX_T
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
@@ -330,6 +340,9 @@
 /* Define to 1 if you have the `__argz_stringify' function. */
 #undef HAVE___ARGZ_STRINGIFY
 
+/* Define to 1 if you have the `__fsetlocking' function. */
+#undef HAVE___FSETLOCKING
+
 /* Define as const if the declaration of iconv() needs const. */
 #undef ICONV_CONST
 
@@ -339,11 +352,11 @@
 /* Define to the manual page hierarchy organization(s) in use. */
 #undef MANDIR_LAYOUT
 
+/* Define if your groff installation has the Debian multibyte patch. */
+#undef MULTIBYTE_GROFF
+
 /* Define if you have, and want to use, ndbm interface routines. */
 #undef NDBM
-
-/* Define if you want to remove debugging assertions. */
-#undef NDEBUG
 
 /* Define if you don't have nroff. */
 #undef NROFF_MISSING
@@ -442,8 +455,8 @@
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef uid_t
 
-/* Define to unsigned long or unsigned long long if <inttypes.h> and
-   <stdint.h> don't define. */
+/* Define to unsigned long or unsigned long long if <stdint.h> and
+   <inttypes.h> don't define. */
 #undef uintmax_t
 
 /* Define as `fork' if `vfork' does not work. */

@@ -119,7 +119,7 @@ static struct passwd *man_owner;
  */
 static int priv_drop_count = 0;
 
-static __inline__ void gripe_set_euid ()
+static __inline__ void gripe_set_euid (void)
 {
 	error (FATAL, errno, _("can't set effective uid"));
 }
@@ -172,11 +172,11 @@ void drop_effective_privs (void)
 
 		uid = ruid;
 	}
-#endif /* SECURE_MAN_UID */
 
 	priv_drop_count++;
 	if (debug)
 		fprintf (stderr, "++priv_drop_count = %d\n", priv_drop_count);
+#endif /* SECURE_MAN_UID */
 }
 
 /* 
@@ -185,6 +185,7 @@ void drop_effective_privs (void)
  */
 void regain_effective_privs (void)
 {
+#ifdef SECURE_MAN_UID
 	if (priv_drop_count) {
 		priv_drop_count--;
 		if (debug)
@@ -194,7 +195,6 @@ void regain_effective_privs (void)
 			return;
 	}
 
-#ifdef SECURE_MAN_UID
 	if (uid != euid) {
 		if (debug)
 			fputs ("regain_effective_privs()\n", stderr);

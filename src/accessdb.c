@@ -2,6 +2,7 @@
  * accessdb.c: show every key/content pair in the database.
  *
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2002 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -44,6 +45,10 @@ extern int errno;
 extern char *strchr();
 #endif /* STDC_HEADERS */
 
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
+
 #include <libintl.h>
 #define _(String) gettext (String)
 
@@ -51,9 +56,24 @@ extern char *strchr();
 #include "libdb/mydbm.h"
 #include "lib/error.h"
 
+#ifdef HAVE_GETOPT_H
+#  include <getopt.h>
+#else /* !HAVE_GETOPT_H */
+#  include "lib/getopt.h"
+#endif /* HAVE_GETOPT_H */
+
 char *program_name;
-char *cat_root;
+const char *cat_root;
 int debug;
+
+static const struct option long_options[] =
+{
+	{"help",	no_argument,		0, 'h'},
+	{"version",	no_argument,		0, 'V'},
+	{0, 0, 0, 0}
+};
+
+static const char args[] = "hV";
 
 /* for db_storage.c */
 char *database;
@@ -61,15 +81,19 @@ MYDBM_FILE dbf;
 
 static void usage (int status)
 {
-	fprintf (stderr,
-		 _("\nUsage: accessdb [man_database]\n"
-		 "\tman_database defaults to %s" MAN_DB "\n"), cat_root);
+	printf (_("usage: %s [-hV] [man database]\n"), program_name);
+	printf (_(
+		"-V, --version               show version.\n"
+		"-h, --help                  show this usage message.\n"
+		"\n"
+		"The man database defaults to %s%s.\n"), cat_root, MAN_DB);
 
 	exit (status);
 }
 
 int main (int argc, char *argv[])
 {
+	int c, option_index;
 	MYDBM_FILE dbf;
 	datum key;
 
@@ -79,9 +103,23 @@ int main (int argc, char *argv[])
 	else if (is_directory (CAT_ROOT) == 1)
 		cat_root = CAT_ROOT;
 
-	if (argc > 2)
+	while ((c = getopt_long (argc, argv, args,
+				 long_options, &option_index)) != -1) {
+		switch (c) {
+			case 'h':
+				usage (OK);
+				break;
+			case 'V':
+				ver ();
+				break;
+			default:
+				usage (FAIL);
+				break;
+		}
+	}
+	if (argc - optind > 1)
 		usage (FAIL);
-	else if (argc == 2) 
+	else if (argc - optind == 1) 
 		database = argv[1];
 	else
 		database = strappend (NULL, cat_root, MAN_DB, NULL);
@@ -99,7 +137,7 @@ int main (int argc, char *argv[])
 	key = MYDBM_FIRSTKEY (dbf);
 
 	while (key.dptr != NULL) {
-		datum content;
+		datum content, nextkey;
 		char *t, *nicekey;
 
 		content = MYDBM_FETCH (dbf, key);
@@ -113,7 +151,9 @@ int main (int argc, char *argv[])
 		printf ("%s -> \"%s\"\n", nicekey, content.dptr);
 		free (nicekey); 
 		MYDBM_FREE (content.dptr);
-		key = MYDBM_NEXTKEY (dbf, key);
+		nextkey = MYDBM_NEXTKEY (dbf, key);
+		MYDBM_FREE (key.dptr);
+		key = nextkey;
 	}
 
 	MYDBM_CLOSE (dbf);

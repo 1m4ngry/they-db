@@ -286,6 +286,7 @@ extern VOID *xmalloc (size_t n);
 extern VOID *xrealloc (VOID *p, size_t n);
 extern __inline__ char *xstrdup (const char *string);
 extern __inline__ char *xstrndup (const char *string, size_t size);
+extern const char *xstrsignal (int signum);
 extern int create_tempfile (const char *template, char **created_filename);
 extern char *create_tempdir (const char *template);
 
@@ -306,7 +307,8 @@ extern int straycats (char *mandir);
 
 /* lexgrog.l */
 struct lexgrog;
-extern int find_name (const char *file, char *filename, struct lexgrog *p_lg);
+extern int find_name (const char *file, const char *filename,
+		      struct lexgrog *p_lg);
 
 /* util.c */
 extern char *mkdbname (const char *path);
@@ -317,9 +319,7 @@ extern char *escape_shell (const char *unesc);
 extern int remove_directory (const char *directory);
 extern char *trim_spaces (const char *s);
 
-#ifdef HAVE_BASENAME
-extern char *basename (const char *path);
-#else /* !HAVE_BASENAME */
+#ifndef HAVE_BASENAME
 extern char *basename ();
 #endif /* HAVE_BASENAME */
 

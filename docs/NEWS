@@ -1,3 +1,72 @@
+man-db 2.4.2 (20 September 2003)
+================================
+
+Major changes since man-db 2.4.1:
+
+	Fixes:
+	------
+
+	o SECURITY: Fix a number of buffer overruns in configuration file
+	  handling, ultimate source location, and MANPATH processing. This
+	  is CVE CAN-2003-0620.
+
+	o SECURITY: Restrict the use of the DEFINE directive in ~/.manpath
+	  to code running with dropped privilege. Previously, the
+	  'compressor' variable could be used to run arbitrary code with
+	  raised privilege. This is CVE CAN-2003-0645.
+
+	o Make sure to initialize mandata structures to zero. The uses of
+	  uninitialized memory resulting from this had been leading to
+	  random segfaults.
+
+	o Drop privileges in order to be able to read pages in
+	  non-world-readable user manpaths while setuid.
+
+	o man can be built with --disable-setuid again.
+
+	o man's locale support has been revamped. The encoding of source
+	  manual pages is no longer related to the encoding of the input
+	  passed to *roff or to *roff's terminal output device. These
+	  frequently differ, especially in UTF-8 locales but in other
+	  circumstances as well, and a "just send 8-bit data" approach is no
+	  longer adequate. If you are using a version of groff with the
+	  Debian multibyte patch applied, pass the --enable-mb-groff option
+	  to configure.
+
+	o When using GDBM, accessdb and apropos did not return database
+	  entries in sorted order, since GDBM's key traversal interface is
+	  not lexicographically ordered. The database layer has been
+	  corrected to cope with this.
+
+	Improvements:
+	-------------
+
+	o man now calls mandb to update databases rather than doing it
+	  itself. This leaves cat pages as the sole remaining reason for man
+	  to be setuid.
+
+	o The "undocumented" message is only displayed if a corresponding
+	  executable is found on the $PATH.
+
+	o All programs that read ~/.manpath now take a -C option to cause
+	  them to read a different user configuration file instead.
+
+	o The --enable-debug option to configure has been removed. man-db's
+	  Makefiles now always calculate full dependencies for C files.
+
+	o mandb caches the contents of directories, significantly speeding
+	  up the purging of obsolete entries.
+
+	o mandb now knows how to purge database entries corresponding to
+	  removed stray cat pages.
+
+	In addition, a pipeline execution library has been written, which
+	will make it possible to eliminate all or almost all use of the
+	shell in a future release. Unfortunately, time pressures due to the
+	security issues above meant that the pipeline library was not well
+	enough tested for use in this release, so it is present but unused.
+	That will be the first item for 2.4.3.
+
 man-db 2.4.1 (22 December 2002)
 ===============================
 

@@ -2,22 +2,19 @@ dnl Process this file with autoconf v2.50a+ to produce a configure script.
 dnl
 dnl Initialise and check we're in the correct directory.
 dnl
-AC_INIT(man-db, 2.4.1)
+AC_INIT(man-db, 2.4.2)
 AC_PREREQ(2.50a)
 AC_CONFIG_SRCDIR(acinclude.m4)
 AC_CONFIG_AUX_DIR(tools)
-AC_CONFIG_HEADER(include/config.h)
+AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 AC_ARG_PROGRAM
 dnl
 dnl Define below date and version information to be put into man pages etc.
 dnl
-datemark=20010907
-date=`LANG=C date -d $datemark +'%d %B %Y'`
-date_it=`LANG=it_IT date -d $datemark +'%d %B %Y'`
-date_es=`LANG=es_ES date -d $datemark +'%d %B %Y'`
-date_de=`LANG=de_DE date -d $datemark +'%d %B %Y'`
-date_fr=`LANG=fr_FR date -d $datemark +'%d %B %Y'`
+datemark=20030920
+date=`LANG=C date -d $datemark +'%Y-%m-%d'`
+AC_SUBST(date)dnl
 dnl
 PACKAGE=AC_PACKAGE_NAME
 VERSION=AC_PACKAGE_VERSION
@@ -28,33 +25,11 @@ AC_DEFINE_UNQUOTED(VERSION, "$VERSION",
 AC_SUBST(PACKAGE)dnl
 AC_SUBST(VERSION)dnl
 dnl
-dnl MAN_ECHO("string to be echoed")dnl
-define(MAN_ECHO, [echo $1 1>&AC_FD_MSG])dnl
-dnl MAN_ECHO_VAR(ENV-VARIABLE)
-define(MAN_ECHO_VAR, [MAN_ECHO("default $1 = \"$$1\"")])dnl
-dnl
-AC_SUBST(date)dnl
-dnl AC_SUBST(datemark)dnl
-AC_SUBST(date_it)dnl
-AC_SUBST(date_es)dnl
-AC_SUBST(date_de)dnl
-AC_SUBST(date_fr)dnl
-dnl
 dnl We have to be a bit naughty here and supply options.
 dnl The autoconf literature states that only features that can be 
 dnl separately 'built' should use --enable and friends. Oh well...
-dnl Current options: debug, setuid, device, db.
+dnl Current options: setuid, device, db.
 dnl 
-AC_ARG_ENABLE(debug,
-[  --enable-debug	  build a Makefile suitable for debugging purposes], 
-	 [: ${LDFLAGS=-g -Wall}
-	  MAN_ECHO("Enabling debugging Makefile")
-	  debug=on],
-	 [: ${CFLAGS=-g -O2 -Wall}
-	  : ${LIBS=-lc}
-	  AC_DEFINE(NDEBUG, 1,
-		    [Define if you want to remove debugging assertions.])
-	  debug=off])
 AC_ARG_ENABLE(setuid,
 [  --enable-setuid[=ARG]	  install man setuid to user ARG @<:@ARG=man@:>@
   --disable-setuid	  don't install man setuid],
@@ -66,11 +41,11 @@ AC_ARG_ENABLE(setuid,
 	   then
 		man_owner=
 		man_install_flags="-m 755"
-		MAN_ECHO("Man will not be installed setuid")
+		AC_MSG_NOTICE([Man will not be installed setuid])
 	   else
 		man_owner=$enableval
 		man_install_flags="-m 4755 -o $man_owner"
-		MAN_ECHO("Man will be installed setuid $enableval")
+		AC_MSG_NOTICE([Man will be installed setuid $enableval])
 	   	AC_DEFINE_UNQUOTED(SECURE_MAN_UID, "$man_owner",
 				   [Define as the setuid owner of man or undefine if not installing setuid.])
 	   fi],
@@ -83,9 +58,17 @@ AC_ARG_ENABLE(undoc,
 	 then
 		AC_MSG_ERROR(--enable-undoc requires an argument)
 	 else
-		MAN_ECHO("Suggesting '$enableval' for missing manual pages")
+		AC_MSG_NOTICE([Suggesting '$enableval' for missing manual pages])
 		AC_DEFINE_UNQUOTED(UNDOC_COMMAND, "$enableval",
 				   [Define as the name of a command you want to suggest when a non-existent page is requested.])
+	 fi])
+AC_ARG_ENABLE(mb-groff,
+[  --enable-mb-groff       expect groff with Debian multibyte patch],
+	[if test "$enableval" = "yes"
+	 then
+		 AC_MSG_NOTICE([Including support for groff with Debian multibyte patch])
+		 AC_DEFINE(MULTIBYTE_GROFF, 1,
+			   [Define if your groff installation has the Debian multibyte patch.])
 	 fi])
 AC_ARG_WITH(device,
 [  --with-device=DEVICE	  use nroff with the output device DEVICE],
@@ -118,13 +101,17 @@ dnl
 dnl Finish the argument parsing
 dnl
 AC_SUBST(man_install_flags)dnl
-AC_SUBST(debug)dnl
 AC_SUBST(config_file)dnl
 dnl
 dnl Check $PATH for the following progs and append suitable options.
 dnl 
 AC_PROG_CC
 AC_PROG_CPP
+CFLAGS="$CFLAGS -Wall"
+if test "$GCC" = yes
+then
+	CFLAGS="$CFLAGS -W -Wpointer-arith -Wwrite-strings -Wstrict-prototypes"
+fi
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_PATH_PROG(cat, cat)
@@ -290,22 +277,23 @@ dnl Work out which manual page hierarchy scheme might be in use.
 dnl
 AC_ARG_ENABLE(mandirs,
 [  --enable-mandirs=OS	  select manual page hierarchy organization
-                          (GNU, HPUX, Solaris, IRIX)],
-	[MAN_ECHO("Using hierarchy organization(s) $enableval")
+                          (GNU, HPUX, IRIX, Solaris, BSD)],
+	[AC_MSG_NOTICE([Using hierarchy organization(s) $enableval])
 	 AC_DEFINE_UNQUOTED(MANDIR_LAYOUT, "$enableval",
 			    [Define to the manual page hierarchy organization(s) in use.])],
 	[case $host in
-		*-gnu)          mandir=GNU;;
-		*-hpux*)        mandir=HPUX;;
-		*-irix*)        mandir=IRIX;;
-		*-solaris*)     mandir=Solaris;;
-		*)              mandir=;;
+		*-gnu)          mandirs=GNU;;
+		*-hpux*)        mandirs=HPUX;;
+		*-irix*)        mandirs=IRIX;;
+		*-solaris*)     mandirs=Solaris;;
+		*-bsd*)         mandirs=BSD;;
+		*)              mandirs=;;
 	 esac
-	 if test -n "$mandir"; then
-		MAN_ECHO("Using hierarchy organization $mandir")
-		AC_DEFINE_UNQUOTED(MANDIR_LAYOUT, "$mandir")
+	 if test -n "$mandirs"; then
+		AC_MSG_NOTICE([Using hierarchy organization $mandirs])
+		AC_DEFINE_UNQUOTED(MANDIR_LAYOUT, "$mandirs")
 	 else
-		MAN_ECHO("Allowing any hierarchy organization")
+		AC_MSG_NOTICE([Allowing any hierarchy organization])
 		AC_DEFINE(MANDIR_LAYOUT, "")
 	 fi])
 dnl
@@ -319,13 +307,13 @@ AC_PROG_LEX
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
-AC_CHECK_HEADERS(unistd.h memory.h fcntl.h limits.h sys/file.h regex.h)
+AC_CHECK_HEADERS(unistd.h memory.h fcntl.h limits.h sys/file.h regex.h libgen.h)
 AC_CHECK_HEADERS(string.h strings.h, break)
 dnl
 dnl Internationalization support.
 dnl
 AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.11.5)
+AM_GNU_GETTEXT_VERSION(0.12.1)
 AC_SUBST(LINGUAS)dnl
 dnl
 dnl Checks for structures and compiler characteristics.
@@ -346,6 +334,7 @@ AC_FUNC_VFORK
 AC_FUNC_VPRINTF
 MAN_FUNC_ANSI_SPRINTF
 MAN_FUNC_PCLOSE
+MAN_FUNC_STRSIGNAL
 dnl
 dnl Find a suitable database interface header and library
 dnl
@@ -409,7 +398,7 @@ then
     for lib in gdbm c dbm
     do
       AC_CHECK_LIB($lib, gdbm_fetch,
-		   test "$lib" = "c" || LIBS="$LIBS -l$lib" 
+		   test "$lib" = "c" || DBLIBS="-l$lib" 
 		   [AC_DEFINE(GDBM, 1, [Define if you have, and want to use, gdbm interface routines.])]
 		   db=yes, db=no)
       if test "$db" = "yes" 
@@ -430,7 +419,7 @@ then
     for lib in ndbm c dbm
     do
       AC_CHECK_LIB($lib, dbm_fetch,
-		   test "$lib" = "c" || LIBS="$LIBS -l$lib"
+		   test "$lib" = "c" || DBLIBS="-l$lib"
 		   [AC_DEFINE(NDBM, 1, [Define if you have, and want to use, ndbm interface routines.])]
 		   db=yes, db=no)
       test "$db" = "yes" && break
@@ -445,10 +434,7 @@ then
       AC_MSG_ERROR(Fatal: $db: unsupported database library)
     fi
 fi
-if test "$debug" = "on" 
-then
-  AC_CHECK_LIB(efence, EF_Print)
-fi
+AC_SUBST(DBLIBS)
 dnl
 dnl Check for available functions.
 dnl
@@ -476,12 +462,16 @@ AC_CHECK_FUNC(getopt_long,
 	       AC_LIBOBJ([getopt1])])
 AC_REPLACE_FUNCS(flock putenv realpath rename basename waitpid strstr strsep strcspn strspn strnlen mkdtemp mkstemp)
 dnl
+dnl MAN_ECHO_VAR(ENV-VARIABLE)
+define(MAN_ECHO_VAR, [AC_MSG_NOTICE([default $1 = "$$1"])])dnl
+dnl
 MAN_ECHO_VAR(CC)
 MAN_ECHO_VAR(CPP)
 MAN_ECHO_VAR(CPPFLAGS)
 MAN_ECHO_VAR(CFLAGS)
 MAN_ECHO_VAR(LDFLAGS)
 MAN_ECHO_VAR(LIBS)
+MAN_ECHO_VAR(DBLIBS)
 
 AC_CONFIG_FILES(GNUmakefile
 	lib/Makefile

@@ -2,7 +2,7 @@
  * check_mandirs.c: used to auto-update the database caches
  *
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001 Colin Watson.
+ * Copyright (C) 2001, 2002 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -72,6 +72,10 @@ extern time_t time();
 extern int errno;
 #endif
 
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
+
 #include <libintl.h>
 #define _(String) gettext (String)
 
@@ -80,7 +84,10 @@ extern int errno;
 #include "libdb/db_storage.h"
 #include "lib/error.h"
 #include "lib/hashtable.h"
+#include "descriptions.h"
+#include "filenames.h"
 #include "globbing.h"
+#include "manp.h"
 #include "ult_src.h"
 #include "security.h"
 #include "check_mandirs.h"
@@ -91,13 +98,6 @@ int force_rescan = 0;
 
 static struct hashtable *whatis_hash = NULL;
 
-static void gripe_bogus_manpage (const char *manpage)
-{
-	if (quiet < 2)
-		error (0, 0, _("warning: %s: ignoring bogus filename"),
-		       manpage);
-}	  	  
-
 static void gripe_multi_extensions (const char *path, const char *sec, 
 				    const char *name, const char *ext)
 {
@@ -105,13 +105,6 @@ static void gripe_multi_extensions (const char *path, const char *sec,
 		error (0, 0,
 		       _("warning: %s/man%s/%s.%s*: competing extensions"),
 		       path, sec, name, ext);
-}
-
-static void gripe_bad_store (const char *name, const char *ext)
-{
-	if (quiet < 2)
-		error (0, 0, _("warning: failed to store entry for %s(%s)"),
-		       name, ext);
 }
 
 static void gripe_rwopen_failed (const char *database)
@@ -129,257 +122,18 @@ static void gripe_rwopen_failed (const char *database)
 	}
 }
 
-char *make_filename (const char *path, const char *name,
-		     struct mandata *in, char *type)
-{
-	static char *file;
-
-	if (!name)
-		name = in->name;    /* comes from dblookup(), so non-NULL */
-
-	file = (char *) xrealloc (file, sizeof "//." + strlen (path) + 
-				  strlen (type) + strlen (in->sec) +
-				  strlen (name) + strlen (in->ext));
-				   
-	(void) sprintf (file, "%s/%s%s/%s.%s",
-			path, type, in->sec, name, in->ext);
-
-	if (in->comp && *in->comp != '-')	/* Is there an extension? */
-		file = strappend (file, ".", in->comp, NULL);
-
-	return file;
-}
-
-/* Parse the description in a whatis line returned by find_name() into a
- * sequence of names and whatis descriptions.
- */
-struct page_description *parse_descriptions (const char *base_name,
-					     const char *whatis)
-{
-	const char *sep, *nextsep;
-	struct page_description *desc = NULL, *head = NULL;
-	int seen_base_name = 0;
-
-	if (!whatis)
-		return NULL;
-
-	sep = whatis;
-
-	while (sep) {
-		char *record;
-		size_t length;
-		const char *dash;
-		char *names;
-		const char *token;
-
-		/* Use a while loop so that we skip over things like the
-		 * result of double line breaks.
-		 */
-		while (*sep == 0x11 || *sep == ' ')
-			++sep;
-		nextsep = strchr (sep, 0x11);
-
-		/* Get this record as a null-terminated string. */
-		if (nextsep)
-			length = (size_t) (nextsep - sep);
-		else
-			length = strlen (sep);
-		if (length == 0)
-			break;
-
-		record = xstrndup (sep, length);
-		if (debug)
-			fprintf (stderr, "record = '%s'\n", record);
-
-		/* Split the record into name and whatis description. */
-		dash = strstr (record, " - ");
-		if (dash)
-			names = xstrndup (record, dash - record);
-		else
-			names = xstrdup (record);
-
-		for (token = strtok (names, ","); token;
-		     token = strtok (NULL, ",")) {
-			/* Allocate new description node. */
-			if (head) {
-				desc->next = malloc (sizeof *desc);
-				desc = desc->next;
-			} else {
-				desc = malloc (sizeof *desc);
-				head = desc;
-			}
-			desc->name   = trim_spaces (token);
-			desc->whatis = dash ? trim_spaces (dash + 3) : NULL;
-			desc->next   = NULL;
-
-			if (STREQ (base_name, desc->name))
-				seen_base_name = 1;
-		}
-
-		free (names);
-
-		sep = nextsep;
-	}
-
-	/* If it isn't there already, add the base_name onto the returned
-	 * list.
-	 */
-	if (!seen_base_name) {
-		if (head) {
-			desc->next = malloc (sizeof *desc);
-			desc = desc->next;
-			desc->whatis = xstrdup (head->whatis);
-		} else {
-			desc = malloc (sizeof *desc);
-			head = desc;
-			desc->whatis = NULL;
-		}
-		desc->name = xstrdup (base_name);
-		desc->next = NULL;
-	}
-
-	return head;
-}
-
-/* Take a list of descriptions returned by parse_descriptions() and store
- * it into the database.
- */
-void store_descriptions (const struct page_description *head,
-			 struct mandata *info, const char *base_name)
-{
-	const struct page_description *desc;
-	char save_id = info->id;
-
-	if (debug)
-		fprintf (stderr, "base_name = '%s'\n", base_name);
-
-	for (desc = head; desc; desc = desc->next) {
-		/* Either it's the real thing or merely a reference. Get the
-		 * id and pointer right in either case.
-		 */
-		if (STREQ (base_name, desc->name)) {
-			info->id = save_id;
-			info->pointer = NULL;
-			info->whatis = desc->whatis;
-		} else {
-			if (save_id < STRAY_CAT)
-				info->id = WHATIS_MAN;
-			else
-				info->id = WHATIS_CAT;
-			info->pointer = base_name;
-			/* Don't waste space storing the whatis in the db
-			 * more than once.
-			 */
-			info->whatis = NULL;
-		}
-
-		if (debug)
-			fprintf (stderr, "name = '%s', id = %c\n",
-				 desc->name, info->id);
-		if (dbstore (info, desc->name) > 0) {
-			gripe_bad_store (base_name, info->ext);
-			break;
-		}
-	}
-}
-
-/* Free a description list and all its contents. */
-void free_descriptions (struct page_description *head)
-{
-	struct page_description *desc = head, *prev;
-
-	while (desc) {
-		free (desc->name);
-		if (desc->whatis)
-			free (desc->whatis);
-		prev = desc;
-		desc = desc->next;
-		free (prev);
-	}
-}
-
-/* Fill in a mandata structure with information about a file name.
- * file is the name to examine. info points to the structure to be filled
- * in. req_name is the page name that was requested.
- * 
- * Returns either a pointer to the buffer which the fields in info point
- * into, to be freed by the caller, or NULL on error. The buffer will
- * contain either three or four null-terminated strings: the directory name,
- * the base of the file name in that directory, the section extension, and
- * optionally the compression extension (if COMP_SRC is defined).
- * 
- * Only the fields name, ext, sec, and comp are filled in by this function.
- * name is only set if it differs from req_name; otherwise it remains at
- * NULL.
- */
-char *filename_info (const char *file, struct mandata *info,
-		     const char *req_name)
-{
-	char *manpage = xstrdup (file);
-	char *base_name = basename (manpage);
-#ifdef COMP_SRC
-	struct compression *comp;
-#endif
-
-	/* Bogus files either have (i) no period, ie no extension, (ii)
-	   a compression extension, but no sectional extension, (iii)
-	   a missmatch between the section they are under and the
-	   sectional part of their extension. */
-
-#ifdef COMP_SRC
-	comp = comp_info (base_name);
-	if (comp) {
-		info->comp = comp->ext;
-		*(comp->file) = '\0';		/* to strip the comp ext */
-	} else
-		info->comp = NULL;
-#else /* !COMP_SRC */	
-	info->comp = NULL;
-#endif /* COMP_SRC */
-
-	{
-		char *ext = strrchr (base_name, '.');
-		if (!ext) {
-			/* no section extension */
-			gripe_bogus_manpage (file);
-			free (manpage);
-			return NULL;
-		}
-		*ext++ = '\0';			/* set section ext */
-		info->ext = ext;
-	}
-
-	*(base_name - 1) = '\0';		/* strip '/base_name' */ 
-	info->sec = strrchr (manpage, '/') + 4;	/* set section name */
-
-	if (strncmp (info->sec, info->ext, strlen (info->sec)) != 0) {
-		/* missmatch in extension */
-		gripe_bogus_manpage (file);
-		free (manpage);
-		return NULL;
-	}
-
-	if (req_name && !STREQ (base_name, req_name))
-		info->name = xstrdup (base_name);
-	else
-		info->name = NULL;
-
-	return manpage;
-}
-
 /* take absolute filename and path (for ult_src) and do sanity checks on 
    file. Also check that file is non-zero in length and is not already in
    the db. If not, find its ult_src() and see if we have the whatis cached, 
    otherwise cache it in case we trace another manpage back to it. Next,
    store it in the db along with any references found in the whatis. */
-void test_manfile (char *file, const char *path)
+void test_manfile (const char *file, const char *path)
 {
 	char *base_name;
 	const char *ult;
 	struct lexgrog lg;
 	char *manpage;
 	struct mandata info, *exists;
-	struct nlist *in_cache;
 	struct stat buf;
 	size_t len;
 
@@ -508,12 +262,11 @@ void test_manfile (char *file, const char *path)
 	 * clear the hash between calls.
 	 */
 
-	in_cache = hash_lookup (whatis_hash, ult, strlen (ult));
+	lg.whatis = xstrdup (hash_lookup (whatis_hash, ult, strlen (ult)));
 
-	if (in_cache) {		/* cache hit */
-		lg.whatis = in_cache->defn ? xstrdup (in_cache->defn) : NULL;
-	} else {		/* cache miss */
+	if (!lg.whatis) {	/* cache miss */
 		/* go get the whatis info in its raw state */
+		char *file_copy = xstrdup (file);
 #ifdef COMP_SRC
 		/* if the nroff was compressed, an uncompressed version is
 		   shown by a call to get_ztemp(), grog this for a whatis
@@ -528,15 +281,16 @@ void test_manfile (char *file, const char *path)
 #ifdef COMP_SRC
 		ztemp = get_ztemp ();
 		if (ztemp) {
-			find_name (ztemp, basename (file), &lg);
+			find_name (ztemp, basename (file_copy), &lg);
 			remove_ztemp ();  /* get rid of temp file identifier */
 		} else
 #endif /* COMP_SRC */
-			find_name (ult, basename (file), &lg);
+			find_name (ult, basename (file_copy), &lg);
+		free (file_copy);
 		regain_effective_privs ();
 
 		hash_install (whatis_hash, ult, strlen (ult),
-			      lg.whatis ? xstrdup (lg.whatis) : NULL);
+			      xstrdup (lg.whatis));
 	}
 
 	if (debug)
@@ -683,7 +437,7 @@ void update_db_time (void)
 	datum key1, content1;
 #endif /* FAST_BTREE */
 
-	key.dptr = KEY;
+	key.dptr = xstrdup (KEY);
 	key.dsize = sizeof KEY;
 	content.dptr = (char *) xmalloc (16); /* 11 is max long with '\0' */
 	(void) sprintf (content.dptr, "%ld", (long) time (NULL));
@@ -716,6 +470,7 @@ void update_db_time (void)
 #endif /* !FAST_BTREE */
 
 	MYDBM_CLOSE (dbf);
+	free (key.dptr);
 	free (content.dptr);
 }
 
@@ -725,7 +480,7 @@ void reset_db_time (void)
 {
 	datum key;
 
-	key.dptr = KEY;
+	key.dptr = xstrdup (KEY);
 	key.dsize = sizeof KEY;
 
 	/* we don't really care if we can't open it RW - it's not fatal */
@@ -742,6 +497,7 @@ void reset_db_time (void)
 	if (debug)
 		fprintf (stderr, "reset_db_time()\n");
 	MYDBM_CLOSE (dbf);
+	free (key.dptr);
 }
 
 /* routine to prepare/create the db prior to calling testmandirs() */
@@ -794,10 +550,11 @@ short update_db (const char *manpath)
 		datum key, content;
 		short new;
 
-		key.dptr = KEY;
+		key.dptr = xstrdup (KEY);
 		key.dsize = sizeof KEY;
 		content = MYDBM_FETCH (dbf, key);
 		MYDBM_CLOSE (dbf);
+		free (key.dptr);
 
 		if (debug)
 			fprintf (stderr, "update_db(): %ld\n",
@@ -822,6 +579,65 @@ short update_db (const char *manpath)
 		fprintf (stderr, "failed to open %s O_RDONLY\n", database);
 		
 	return EOF;
+}
+
+/* Purge any entries pointing to name. This currently assumes that pointers
+ * are always shallow, which may not be a good assumption yet; it should be
+ * close, though.
+ *
+ * Assumes that the appropriate database is already open on dbf.
+ */
+void purge_pointers (const char *name)
+{
+	datum key = MYDBM_FIRSTKEY (dbf);
+
+	if (debug)
+		fprintf (stderr, "Purging pointers to vanished page \"%s\"\n",
+			 name);
+
+	while (key.dptr != NULL) {
+		datum content, nextkey;
+		struct mandata entry;
+		char *nicekey, *tab;
+
+		/* Ignore db identifier keys. */
+		if (*key.dptr == '$')
+			goto pointers_next;
+
+		content = MYDBM_FETCH (dbf, key);
+		if (!content.dptr)
+			return;
+
+		/* Get just the name. */
+		nicekey = xstrdup (key.dptr);
+		tab = strchr (nicekey, '\t');
+		if (tab)
+			*tab = '\0';
+
+		if (*content.dptr == '\t')
+			goto pointers_contentnext;
+
+		split_content (content.dptr, &entry);
+		if (entry.id != SO_MAN && entry.id != WHATIS_MAN)
+			goto pointers_contentnext;
+
+		if (STREQ (entry.pointer, name)) {
+			if (!opt_test)
+				dbdelete (nicekey, &entry);
+			else if (debug)
+				fprintf (stderr,
+					 "%s(%s): pointer vanished, "
+					 "would delete\n", nicekey, entry.ext);
+		}
+
+pointers_contentnext:
+		free (nicekey);
+		MYDBM_FREE (content.dptr);
+pointers_next:
+		nextkey = MYDBM_NEXTKEY (dbf, key);
+		MYDBM_FREE (key.dptr);
+		key = nextkey;
+	}
 }
 
 /* Count the number of exact extension matches returned from look_for_file()
@@ -867,6 +683,9 @@ static int count_glob_matches (const char *name, const char *ext,
 static short purge_normal (const char *name, struct mandata *info,
 			   char **found)
 {
+	/* TODO: On some systems, the cat page extension differs from the
+	 * man page extension, so this may be too strict.
+	 */
 	if (count_glob_matches (name, info->ext, found))
 		return 0;
 
@@ -879,10 +698,13 @@ static short purge_normal (const char *name, struct mandata *info,
 	return 1;
 }
 
-/* Decide whether to purge a reference to a WHATIS_MAN page. */
-static short purge_whatis (const char *manpath, const char *name,
+/* Decide whether to purge a reference to a WHATIS_MAN or WHATIS_CAT page. */
+static short purge_whatis (const char *path, int cat, const char *name,
 			   struct mandata *info, char **found)
 {
+	/* TODO: On some systems, the cat page extension differs from the
+	 * man page extension, so this may be too strict.
+	 */
 	if (count_glob_matches (name, info->ext, found)) {
 		/* If the page exists and didn't beforehand, then presumably
 		 * we're about to rescan, which will replace the WHATIS_MAN
@@ -898,7 +720,7 @@ static short purge_whatis (const char *manpath, const char *name,
 				 name, info->ext);
 		force_rescan = 1;
 		return 0;
-	} else if (*info->pointer == '-') {
+	} else if (STREQ (info->pointer, "-")) {
 		/* This is broken; a WHATIS_MAN should never have an empty
 		 * pointer field. This might have happened due to the first
 		 * name in a page being different from what the file name
@@ -924,8 +746,8 @@ static short purge_whatis (const char *manpath, const char *name,
 		char **real_found;
 		int save_debug = debug;
 		debug = 0;
-		real_found = look_for_file (manpath, info->ext,
-					    info->pointer, 0, 1);
+		real_found = look_for_file (path, info->ext,
+					    info->pointer, cat, 1);
 		debug = save_debug;
 
 		if (count_glob_matches (info->pointer, info->ext, real_found))
@@ -987,7 +809,7 @@ static short check_multi_key (const char *name, const char *content)
 /* Go through the database and purge references to man pages that no longer
  * exist.
  */
-short purge_missing (const char *manpath)
+short purge_missing (const char *manpath, const char *catpath)
 {
 	datum key;
 	short count = 0;
@@ -1043,30 +865,31 @@ short purge_missing (const char *manpath)
 		split_content (content.dptr, &entry);
 		content.dptr = entry.addr;
 
-		/* We only handle ULT_MAN, SO_MAN, and WHATIS_MAN for now. */
-		if (entry.id > WHATIS_MAN) {
-			free (nicekey);
-			MYDBM_FREE (content.dptr);
-			nextkey = MYDBM_NEXTKEY (dbf, key);
-			MYDBM_FREE (key.dptr);
-			key = nextkey;
-			continue;
-		}
-
 		save_debug = debug;
 		debug = 0;	/* look_for_file() is quite noisy */
-		found = look_for_file (manpath, entry.ext,
-				       entry.name ? entry.name : nicekey,
-				       0, 1);
+		if (entry.id <= WHATIS_MAN)
+			found = look_for_file (manpath, entry.ext,
+					       entry.name ? entry.name
+							  : nicekey,
+					       0, 1);
+		else
+			found = look_for_file (catpath, entry.ext,
+					       entry.name ? entry.name
+							  : nicekey,
+					       1, 1);
 		debug = save_debug;
 
 		/* Now actually decide whether to purge, depending on the
 		 * type of entry.
 		 */
-		if (entry.id == ULT_MAN || entry.id == SO_MAN)
+		if (entry.id == ULT_MAN || entry.id == SO_MAN ||
+		    entry.id == STRAY_CAT)
 			count += purge_normal (nicekey, &entry, found);
-		else		/* entry.id == WHATIS_MAN */
-			count += purge_whatis (manpath, nicekey,
+		else if (entry.id == WHATIS_MAN)
+			count += purge_whatis (manpath, 0, nicekey,
+					       &entry, found);
+		else	/* entry.id == WHATIS_CAT */
+			count += purge_whatis (catpath, 1, nicekey,
 					       &entry, found);
 
 		free (nicekey);
@@ -1077,6 +900,7 @@ short purge_missing (const char *manpath)
 		key = nextkey;
 	}
 
+	MYDBM_REORG (dbf);
 	MYDBM_CLOSE (dbf);
 	return count;
 }

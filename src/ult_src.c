@@ -42,7 +42,7 @@
 extern int errno;
 #endif
 
-#ifndef S_ISLNK /* loosing sys/stat.h */
+#ifndef S_ISLNK /* losing sys/stat.h */
 #  if defined(S_IFMT) && defined(S_IFLNK)
 #    define S_ISLNK(mode) (((mode) & S_IFMT) == S_IFLNK)
 #  endif
@@ -63,8 +63,6 @@ extern int errno;
 #  endif /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H  */
 
-extern char *realpath();
-
 #if defined(STDC_HEADERS)
 #  include <string.h>
 #  include <stdlib.h>
@@ -74,6 +72,7 @@ extern char *realpath();
 #  include <strings.h>
 #else /* no string(s) header */
 extern char *strrchr();
+extern char *realpath();
 #endif /* no string(s) header */
 
 #if defined(HAVE_UNISTD_H)
@@ -342,7 +341,7 @@ const char *ult_src (const char *name, const char *path,
 		/* make sure that we skip over any comments */
 		do {
 			bptr = fgets (buffer, 1024, fp);
-		} while (bptr && strncmp (buffer, ".\\\"", 3) == 0);
+		} while (bptr && STRNEQ (buffer, ".\\\"", 3));
 
 		fclose(fp);
 

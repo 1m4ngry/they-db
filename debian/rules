@@ -26,9 +26,10 @@ GNUmakefile:
 # create the makefile needed both from build and clean rules
 	touch configure stamp-h.in	# avoid autoconf build-dependency
 	test -x configure || chmod +x configure 
-	./configure --prefix=/usr --enable-setuid --with-db=db3 \
+	./configure --prefix=/usr --enable-setuid --with-db=gdbm \
 	            --enable-undoc='man 7 undocumented' \
-	            --with-device=latin1 --with-config-file=/etc/manpath.config
+	            --with-device=latin1 --enable-mb-groff \
+	            --with-config-file=/etc/manpath.config
 
 build: build-stamp
 build-stamp: GNUmakefile

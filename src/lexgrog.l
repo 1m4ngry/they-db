@@ -51,6 +51,10 @@ extern int errno;
 #  include <strings.h>
 #endif /* HAVE_STRING_H */
 
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
+
 #include <libintl.h>
 #define _(String) gettext (String)
 
@@ -73,7 +77,8 @@ static void add_separator_to_whatis (void);
 static void newline_found (void);
 
 static char newname[MAX_NAME];
-static char *p_name, *fname;
+static char *p_name;
+static const char *fname;
 static char filters[MAX_FILTERS];
 
 static int fill_mode;
@@ -87,7 +92,7 @@ static int fill_mode;
 #  include "lib/getopt.h"
 #endif /* HAVE_GETOPT_H */
 
-char *program_name = "lexgrog";
+char *program_name;
 int debug = 0;
 
 static const struct option long_options[] =
@@ -109,6 +114,7 @@ static const char args[] = "mcwfhV";
 %option ecs meta-ecs
 %option 8bit batch caseful never-interactive 
 %option nostdinit
+%option warn
 %option noyywrap nounput
 
 %x MAN_NAME
@@ -167,8 +173,8 @@ vgrind_request	\.vS
 %%
 
  /* begin NAME section processing */
-<MAN_FILE>{sec_request}{blank_eol}+{name_sec}{blank}*	BEGIN (MAN_NAME);
-<CAT_FILE>{empty}{2,}{name}{blank}*{indent}		BEGIN (CAT_NAME);
+<MAN_FILE>{sec_request}{blank_eol}+{name_sec}{blank_eol}*	BEGIN (MAN_NAME);
+<CAT_FILE>{empty}{2,}{name}{blank}*{indent}			BEGIN (CAT_NAME);
 
  /* general text matching */
 <MAN_FILE>\.[^Ss\r\n].*{next}				|
@@ -367,7 +373,7 @@ static void newline_found (void)
 	}
 }
 
-int find_name (const char *file, char *filename, lexgrog *p_lg)
+int find_name (const char *file, const char *filename, lexgrog *p_lg)
 {
 	int ret;
 
@@ -375,14 +381,29 @@ int find_name (const char *file, char *filename, lexgrog *p_lg)
 		yyin = fdopen (dup (0), "r");
 	} else {
 #ifdef COMP_SRC
+		struct compression *comp;
+#endif /* COMP_SRC */
+		struct stat st;
+
+		if (stat (file, &st)) {
+			error (0, errno, "%s", file);
+			return 0;
+		}
+
+		if (S_ISDIR (st.st_mode)) {
+			error (0, EISDIR, "%s", file);
+			return 0;
+		}
+
+#ifdef COMP_SRC
 		/* See if we need to decompress the file(s) first. */
-		struct compression *comp = comp_info (file);
+		comp = comp_info (file);
 		if (comp) {
 			file = decompress (file, comp);
 			if (!file)
 				return 0;
 		}
-#endif
+#endif /* COMP_SRC */
 		drop_effective_privs ();
 		yyin = fopen (file, "r");
 		regain_effective_privs ();
@@ -390,7 +411,7 @@ int find_name (const char *file, char *filename, lexgrog *p_lg)
 			error (0, errno, _("can't open %s"), file);
 #ifdef COMP_SRC
 			remove_ztemp ();
-#endif
+#endif /* COMP_SRC */
 			return 0;
 		}
 	}
@@ -450,13 +471,13 @@ static void usage (int status)
 {
 	printf (_("usage: %s [-mcwfhV] file ...\n"), program_name);
 	printf (_(
-		"-m --man                    parse as man page.\n"
-		"-c --cat                    parse as cat page.\n"
-		"-w --whatis                 show whatis information.\n"
-		"-f --filters                show guessed series of "
+		"-m, --man                   parse as man page.\n"
+		"-c, --cat                   parse as cat page.\n"
+		"-w, --whatis                show whatis information.\n"
+		"-f, --filters               show guessed series of "
 					    "preprocessing filters.\n"
-		"-V --version                show version.\n"
-		"-h --help                   show this usage message.\n"
+		"-V, --version               show version.\n"
+		"-h, --help                  show this usage message.\n"
 		"\n"
 		"The defaults are --man and --whatis.\n"));
 	exit (status);
@@ -468,6 +489,9 @@ int main (int argc, char **argv)
 	int type = 0;
 	int parse_man = 0, parse_cat = 0, show_whatis = 0, show_filters = 0;
 	int some_failed = 0;
+
+	program_name = xstrdup (basename (argv[0]));
+
 	while ((c = getopt_long (argc, argv, args,
 				 long_options, &option_index)) != -1) {
 		switch (c) {
@@ -569,6 +593,7 @@ int main (int argc, char **argv)
 	else
 		return OK;
 }
+
 #endif /* TEST */
 
 #ifdef PROFILE

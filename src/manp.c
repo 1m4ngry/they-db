@@ -120,6 +120,8 @@ static struct list *namestore, *tailstore;
 char *tmplist[MAXDIRS];
 char *manpathlist[MAXDIRS];
 
+char *user_config_file = NULL;
+
 static void mkcatdirs (const char *mandir, const char *catdir);
 static __inline__ char *get_manpath (char *path);
 static __inline__ char *has_mandir (const char *p);
@@ -143,7 +145,7 @@ static void add_to_list (const char *key, const char *cont, int flag)
 		namestore = list;
 }
 
-static char *get_from_list (char *key, int flag)
+static const char *get_from_list (const char *key, int flag)
 {
 	struct list *list;
 
@@ -168,15 +170,15 @@ static struct list *iterate_over_list (struct list *prev, char *key, int flag)
 /* Must not return DEFINEs set in ~/.manpath. This is used to fetch
  * definitions used in raised-privilege code; if in doubt, be conservative!
  */
-char *get_def (char *thing, char *def)
+const char *get_def (const char *thing, const char *def)
 {
-	char *config_def = get_from_list (thing, DEFINE);
+	const char *config_def = get_from_list (thing, DEFINE);
 	return config_def ? config_def : def;
 }
 
-char *get_def_user (char *thing, char *def)
+const char *get_def_user (const char *thing, const char *def)
 {
-	char *config_def = get_from_list (thing, DEFINE_USER);
+	const char *config_def = get_from_list (thing, DEFINE_USER);
 	if (!config_def)
 		config_def = get_from_list (thing, DEFINE);
 	return config_def ? config_def : def;
@@ -207,11 +209,11 @@ static void add_sections (char *sections)
 	}
 }
 
-char **get_sections (void)
+const char **get_sections (void)
 {
 	struct list *list;
 	int length = 0;
-	char **sections, **sectionp;
+	const char **sections, **sectionp;
 
 	for (list = namestore; list; list = list->next)
 		if (list->flag == SECTION)
@@ -341,11 +343,9 @@ static char *pathappend (char *oldpath, const char *appendage)
 
 static __inline__ void gripe_reading_mp_config (const char *file)
 {
-	if (!quiet)
-		error (FAIL, 0,
-		       _("can't make sense of the manpath configuration file "
-			 "%s"),
-		       file);
+	error (FAIL, 0,
+	       _("can't make sense of the manpath configuration file %s"),
+	       file);
 }
 
 static __inline__ void gripe_stat_file (const char *file)
@@ -369,7 +369,8 @@ static void gripe_overlong_list (void)
    catpath list */
 char *cat_manpath (char *manp)
 {
-	char *catp = NULL, *path, *catdir;
+	char *catp = NULL;
+	const char *path, *catdir;
 
 	for (path = strsep (&manp, ":"); path; path = strsep (&manp, ":")) {
 		catdir = get_from_list (path, MANDB_MAP_USER);
@@ -566,7 +567,7 @@ static char *add_system_manpath (const char *systems, const char *manpathlist)
  * $HOME/bin in his path and the directory $HOME/bin/man exists -- the
  * directory $HOME/bin/man will be added to the manpath.
  */
-char *guess_manpath (const char *systems)
+static char *guess_manpath (const char *systems)
 {
 	char *path = getenv ("PATH");
 
@@ -661,8 +662,7 @@ extern uid_t euid;			/* initial effective user id */
 static void
 mkcatdirs (const char *mandir, const char *catdir)
 {
-	char manname[PATH_MAX+6];
-	char catname[PATH_MAX+6];
+	char *manname, *catname;
 #ifdef SECURE_MAN_UID
 	struct passwd *man_owner = get_man_owner ();
 #endif
@@ -691,7 +691,8 @@ mkcatdirs (const char *mandir, const char *catdir)
 			drop_effective_privs ();
 		}
 		/* then the hierarchy */
-		sprintf (catname, "%s/cat1", catdir);
+		catname = strappend (NULL, catdir, "/cat1", NULL);
+		manname = strappend (NULL, mandir, "/man1", NULL);
 		if (is_directory (catdir) == 1) {
 			int j;
 			regain_effective_privs ();
@@ -700,8 +701,8 @@ mkcatdirs (const char *mandir, const char *catdir)
 					 "creating catdir hierarchy %s	",
 					 catdir);
 			for (j = 1; j <= 9; j++) {
-				sprintf (catname, "%s/cat%d", catdir, j);
-				sprintf (manname, "%s/man%d", mandir, j);
+				catname[strlen (catname) - 1] = '0' + j;
+				manname[strlen (manname) - 1] = '0' + j;
 				if ((is_directory (manname) == 1)
 				 && (is_directory (catname) != 1)) {
 					if (mkdir (catname,
@@ -723,6 +724,8 @@ mkcatdirs (const char *mandir, const char *catdir)
 				fprintf (stderr, "\n");
 			drop_effective_privs ();
 		}
+		free (catname);
+		free (manname);
 		umask (oldmask);
 	}
 }
@@ -748,7 +751,7 @@ static void add_to_dirlist (FILE *config, int user)
 		if (*bp == '#' || *bp == '\0')
 			continue;
 		else if (strncmp (bp, "NO", 2) == 0)
-			continue;	/* mach any word starting with NO */
+			continue;	/* match any word starting with NO */
 		else if (sscanf (bp, "MANBIN %*s") == 1)
 			continue;
 		else if (sscanf (bp, "MANDATORY_MANPATH %49s", key) == 1)
@@ -780,7 +783,11 @@ void read_config_file(void)
 
 	home = xstrdup (getenv ("HOME"));
 	if (home) {
-		char *dotmanpath = strappend (home, "/.manpath", NULL);
+		char *dotmanpath;
+		if (!user_config_file)
+			dotmanpath = strappend (home, "/.manpath", NULL);
+		else
+			dotmanpath = xstrdup (user_config_file);
 		config = fopen (dotmanpath, "r");
 		if (config != NULL) {
 			if (debug)

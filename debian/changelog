@@ -1,3 +1,31 @@
+man-db (2.4.2-1) unstable; urgency=low
+
+  * New upstream release.
+    - Revamped locale support.
+      + The encoding of source manual pages is no longer considered to be
+        related to the encoding of the input passed to *roff or to *roff's
+        terminal output device. iconv pipes are inserted where necessary to
+        convert between encodings.
+      + Avoid using -Tlatin1 in locales that don't support it, like C and
+        *.ISO-8859-2 (closes: #163983, #168442).
+    - 'man ./foo.1' behaves much more like 'man -l foo.1' (closes: #170512).
+    - Directories found in strange places in manual hierarchies don't crash
+      mandb (closes: #176645).
+    - Clarify 'man -Tdevice' syntax in man(1) (closes: #186806).
+    - Add -C switch to use a different configuration file (closes: #176522).
+    - mandb now knows how to purge removed stray cat pages from the database
+      (closes: #143632).
+  * Climb off the Berkeley DB version treadmill and use GDBM instead, whose
+    version churn is a lot less frequent, and which is smaller and more
+    appropriate to the use man-db makes of its databases (closes: #177176).
+  * debian/postinst: Remove old index.bt databases from /var/cache/man.
+  * debian/copyright: Remove outdated claim to be a native package (thanks,
+    Petr Hudec). Various other updates and corrections.
+  * debian/changelog: Correct date of second-earliest entry (thanks again,
+    Petr Hudec).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 20 Sep 2003 12:08:29 +0100
+
 man-db (2.4.1-13) unstable; urgency=medium
 
   * Fix segfault caused by an unchecked strcpy() while resolving hard links.
@@ -2019,7 +2047,7 @@ Wed Nov 22 17:30:49 GMT 1995  Alvar Bray <alvar@meiko.co.uk>
 24-July-1995  Alvar Bray <alvar@meiko.co.uk>
 	Setup to use more as the default pager.
 
-03-July-1994 Alvar Bray <alvar@meiko.co.uk>
+03-July-1995 Alvar Bray <alvar@meiko.co.uk>
 	Change of Maintainer.
 	Added Extended description.
 

@@ -65,6 +65,10 @@ extern char *strrchr();
 #  include <regex.h>
 #endif /* HAVE_REGEX_H */
 
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
+
 #ifdef HAVE_FNMATCH_H
 #  include <fnmatch.h>
 #else /* !HAVE_FNMATCH_H */
@@ -84,6 +88,7 @@ extern char *strrchr();
 #include "manp.h"
 
 extern char *manpathlist[];
+extern char *user_config_file;
 extern char *optarg;
 extern int optind, opterr, optopt;
 
@@ -116,11 +121,12 @@ static int status = OK;
 #  error #define WHATIS or APROPOS, so I know who I am
 #endif
 
-static const char args[] = "drewhVm:M:fkL:";
+static const char args[] = "dvrewhVm:M:fkL:C:";
 
 static const struct option long_options[] =
 {
 	{"debug",	no_argument,		0, 'd'},
+	{"verbose",	no_argument,		0, 'v'},
 	{"regex",	no_argument,		0, 'r'},
 	{"exact",	no_argument,		0, 'e'},
 	{"wildcard",	no_argument,		0, 'w'},
@@ -131,20 +137,23 @@ static const struct option long_options[] =
 	{"whatis",	no_argument,		0, 'f'},
 	{"apropos",	no_argument,		0, 'k'},
 	{"locale",	required_argument,	0, 'L'},
+	{"config-file",	required_argument,	0, 'C'},
 	{0, 0, 0, 0}
 };
 
 #ifdef APROPOS
 static void usage (int status)
 {
-	printf (_("usage: %s [-d] [-r|-w|-e] [-m systems] [-M manpath] | [-h] | [-V] keyword ...\n"), program_name);
+	printf (_("usage: %s [-dhV] [-r|-w|-e] [-m systems] [-M manpath] [-C file] keyword ...\n"), program_name);
 	printf (_(
 		"-d, --debug                produce debugging info.\n"
+		"-v, --verbose              print verbose warning messages.\n"
 		"-r, --regex                interpret each keyword as a regex (default).\n"
 		"-e, --exact                search each keyword for exact match.\n"
 		"-w, --wildcard             the keyword(s) contain wildcards.\n"
 		"-m, --systems system       include alternate systems' man pages.\n"
 		"-M, --manpath path         set search path for manual pages to `path'.\n"
+		"-C, --config-file file     use this user configuration file.\n"
 		"-V, --version              show version.\n"
 		"-h, --help                 show this usage message.\n"));
 
@@ -153,13 +162,15 @@ static void usage (int status)
 #else	
 static void usage (int status)
 {
-	printf (_("usage: %s [-d] [-r|-w] [-m systems] [-M manpath] | [-h] | [-V] keyword ...\n"), program_name);
+	printf (_("usage: %s [-dhV] [-r|-w] [-m systems] [-M manpath] [-C file] keyword ...\n"), program_name);
 	printf(_(
 		"-d, --debug                produce debugging info.\n"
+		"-v, --verbose              print verbose warning messages.\n"
 		"-r, --regex                interpret each keyword as a regex.\n"
 		"-w, --wildcard             the keyword(s) contain wildcards.\n"
 		"-m, --systems system       include alternate systems' man pages.\n"
 		"-M, --manpath path         set search path for manual pages to `path'.\n"
+		"-C, --config-file file     use this user configuration file.\n"
 		"-V, --version              show version.\n"
 		"-h, --help                 show this usage message.\n"));
 
@@ -176,7 +187,8 @@ static __inline__ int use_grep (char *page, char *manpath)
 	if (access (whatis_file, R_OK) == 0) {
 		char *esc_page = escape_shell (page);
 		char *esc_file = escape_shell (whatis_file);
-		char *flags, *anchor, *command;
+		const char *flags, *anchor;
+		char *command;
 #if defined(WHATIS)
 		flags = get_def_user ("whatis_grep_flags", WHATIS_GREP_FLAGS);
 		anchor = "^";
@@ -226,7 +238,7 @@ static char *get_whatis (struct mandata *info, const char *page)
 	if (*(info->pointer) == '-' || STREQ (info->pointer, page)) {
 		if (info->whatis != NULL && *(info->whatis))
 			return xstrdup (info->whatis);
-		if (*(info->pointer) != '-')
+		if (!quiet && *(info->pointer) != '-')
 			error (0, 0, _("warning: %s contains a pointer loop"),
 			       page);
 		return xstrdup (_("(unknown subject)"));
@@ -252,7 +264,7 @@ static char *get_whatis (struct mandata *info, const char *page)
 				free_mandata_struct (info);
 				return return_whatis;
 			}
-			if (*(info->pointer) != '-')
+			if (!quiet && *(info->pointer) != '-')
 				error (0, 0,
 				       _("warning: %s contains a pointer loop"),
 				       page);
@@ -265,7 +277,8 @@ static char *get_whatis (struct mandata *info, const char *page)
 		info = newinfo;
 	}
 
-	error (0, 0, _("warning: %s contains a pointer loop"), page);
+	if (!quiet)
+		error (0, 0, _("warning: %s contains a pointer loop"), page);
 	return xstrdup (_("(unknown subject)"));
 }
 
@@ -356,8 +369,9 @@ static int parse_name (char *page, char *dbname)
 #ifdef APROPOS
 	if (!wildcard) {
 		char *lowdbname = lower (dbname);
-		return STREQ (lowdbname, page);
+		int ret = STREQ (lowdbname, page);
 		free (lowdbname);
+		return ret;
 	}
 #endif
 
@@ -450,6 +464,10 @@ static int apropos (char *page, char *lowpage)
 {
 	datum key, cont;
 	int found = 0;
+
+#ifndef APROPOS
+	lowpage = lowpage; /* not used in whatis */
+#endif
 
 #ifndef BTREE
 	datum nextkey;
@@ -591,21 +609,19 @@ static void search (char *page)
 int main (int argc, char *argv[])
 {
 	int c;
-	char *manp = NULL, *alt_systems = "";
-	char *llocale = 0, *locale;
+	const char *manp = NULL, *alt_systems = "";
+	char *llocale = NULL, *locale;
 	int option_index;
 
 	program_name = xstrdup (basename (argv[0]));
 
 	/* initialise the locale */
-	locale = setlocale (LC_ALL, "");
-	if (locale)
-		locale = xstrdup (locale);
-	else {
+	locale = xstrdup (setlocale (LC_ALL, ""));
+	if (!locale) {
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
-		locale = "C";
+		locale = xstrdup ("C");
 	}
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
@@ -616,6 +632,9 @@ int main (int argc, char *argv[])
 
 			case 'd':
 				debug = 1;
+				break;
+			case 'v':
+				quiet = 0;
 				break;
 			case 'L':
 				llocale = optarg;
@@ -646,6 +665,9 @@ int main (int argc, char *argv[])
 			case 'f': /* fall through */
 			case 'k': /* ignore, may be passed by man */
 				break;
+			case 'C':
+				user_config_file = optarg;
+				break;
 			case 'V':
 				ver ();
 				break;
@@ -662,6 +684,7 @@ int main (int argc, char *argv[])
 	   issued as an argument or in $MANOPT */
 	if (llocale) {
 		setlocale (LC_ALL, llocale);
+		free (locale);
 		locale = xstrdup (llocale);
 		if (debug)
 			fprintf(stderr,

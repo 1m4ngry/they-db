@@ -96,10 +96,6 @@ DEFAULT_TARGETS = TAGS all install uninstall \
 # Some misc stuff...
 debug = @debug@
 date = @date@
-date_it = @date_it@
-date_es = @date_es@
-date_de = @date_de@
-date_fr = @date_fr@
 version = @VERSION@
 man_install_flags = @man_install_flags@
 
@@ -115,9 +111,10 @@ troff="@troff@"
 # become the default for all Makefiles.
 
 # A couple of rules.
-%.d: %.c
-	$(CPP) -M $(CPPFLAGS) $< | \
-	  sed -e 's/$*\.o[ 	]*/& $@/g' > $@ || (rm -f $@; exit 1)
+.depend/%.d: %.c
+	@test -d .depend || mkdir .depend
+	@$(CPP) -M $(CPPFLAGS) $< | \
+	  sed -e 's,$*\.o[ 	]*,& $@,g' > $@ || (rm -f $@; exit 1)
 
 %.i: %.c
 	$(CPP) $(CPPFLAGS) $< > $@

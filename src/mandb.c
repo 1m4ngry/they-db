@@ -83,6 +83,10 @@ extern char *getwd();
 #  include <pwd.h>
 #endif /* SECURE_MAN_UID */
 
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
+
 #ifdef HAVE_GETOPT_H
 #  include <getopt.h>
 #else /* !HAVE_GETOPT_H */
@@ -98,6 +102,7 @@ extern char *getwd();
 #include "lib/error.h"
 #include "lib/cleanup.h"
 #include "check_mandirs.h"
+#include "filenames.h"
 #include "manp.h"
 #include "security.h"
 
@@ -110,23 +115,27 @@ char *manp;
 char *database;
 extern char *extension;		/* for globbing.c */
 extern int force_rescan;	/* for check_mandirs.c */
+static char *single_filename = NULL;
+extern char *user_config_file;	/* for manp.c */
 
 /* default options */
 static const struct option long_options[] =
 {
-    {"create", 		no_argument,	0, 'c'},
-    {"debug",		no_argument, 	0, 'd'},
-    {"help",		no_argument,	0, 'h'},
-    {"no-purge",	no_argument,	0, 'p'},
-    {"quiet",		no_argument, 	0, 'q'},
-    {"user-db",		no_argument, 	0, 'u'},
-    {"no-straycats",    no_argument,	0, 's'},
-    {"test",		no_argument, 	0, 't'},
-    {"version",		no_argument, 	0, 'V'},
+    {"create", 		no_argument,		0, 'c'},
+    {"debug",		no_argument,		0, 'd'},
+    {"filename",	required_argument,	0, 'f'},
+    {"help",		no_argument,		0, 'h'},
+    {"no-purge",	no_argument,		0, 'p'},
+    {"quiet",		no_argument,		0, 'q'},
+    {"user-db",		no_argument,		0, 'u'},
+    {"no-straycats",    no_argument,		0, 's'},
+    {"test",		no_argument,		0, 't'},
+    {"config-file",	required_argument,	0, 'C'},
+    {"version",		no_argument,		0, 'V'},
     {0, 0, 0, 0}
 };
 
-static const char args[] = "cdhpqstuV";
+static const char args[] = "cdf:hpqstuC:V";
 static int check_for_strays = 1;
 static int purge = 1;
 static int user;
@@ -150,9 +159,6 @@ static char *xtmpfile;
 #ifdef SECURE_MAN_UID
 extern uid_t ruid;
 extern uid_t euid;
-#ifdef MAN_DB_UPDATES
-#  define DO_CHOWN
-#endif /* MAN_DB_UPDATES */
 #endif /* SECURE_MAN_UID */
 
 extern char *optarg;
@@ -162,7 +168,8 @@ extern int pages;
 
 static void usage (int status)
 {
-	printf (_("usage: %s [-dqspuc|-h|-V] [manpath]\n"), program_name);
+	printf (_("usage: %s [-dqspuct|-h|-V] [-C file] [-f filename] [manpath]\n"),
+		program_name);
 	printf (_(
 		"-d, --debug                 produce debugging info.\n"
 		"-q, --quiet                 work quietly, except for 'bogus' warning.\n"
@@ -170,6 +177,9 @@ static void usage (int status)
 		"-p, --no-purge              don't purge obsolete entries from the dbs.\n"
 		"-u, --user-db               produce user databases only.\n"
 		"-c, --create                create dbs from scratch, rather than updating.\n"
+		"-t, --test                  check manual pages for correctness.\n"
+		"-f, --filename              update just the entry for this filename.\n"
+		"-C, --config-file           use this user configuration file.\n"
 		"-V, --version               show version.\n"
 		"-h, --help                  show this usage message.\n")
 	);
@@ -232,8 +242,8 @@ static int xcopy (const char *from, const char *to)
 		}
 	}
 
-	fclose(ifp);
-	fclose(ofp);
+	fclose (ifp);
+	fclose (ofp);
 
 	if (ret < 0)
 		xremove (to);
@@ -269,7 +279,7 @@ static __inline__ void finish_up (void)
 #endif /* NDBM */
 }
 
-#ifdef DO_CHOWN
+#ifdef SECURE_MAN_UID
 /* chown() with error checking */
 static __inline__ void xchown (const char *path, uid_t owner, uid_t group)
 {
@@ -293,12 +303,37 @@ static __inline__ void do_chown (uid_t uid)
 	xchown (xfile, uid, -1);
 #  endif /* NDBM */
 }
-#endif /* DO_CHOWN */
+#endif /* SECURE_MAN_UID */
+
+/* Update a single file in an existing database. */
+static short update_one_file (const char *manpath, const char *filename)
+{
+	dbf = MYDBM_RWOPEN (database);
+	if (dbf) {
+		struct mandata info;
+		char *manpage;
+
+		memset (&info, 0, sizeof (struct mandata));
+		manpage = filename_info (filename, &info, "");
+		if (info.name) {
+			dbdelete (info.name, &info);
+			purge_pointers (info.name);
+		}
+
+		test_manfile (filename, manpath);
+	}
+	MYDBM_CLOSE (dbf);
+
+	return 1;
+}
 
 /* dont actually create any dbs, just do an update */
 static __inline__ short update_db_wrapper (const char *manpath)
 {
 	short amount;
+
+	if (single_filename)
+		return update_one_file (manpath, single_filename);
 
 	amount = update_db (manpath);
 	if (amount != EOF)
@@ -310,6 +345,8 @@ static __inline__ short update_db_wrapper (const char *manpath)
 /* remove incomplete databases */
 static void cleanup (void *dummy)
 {
+	dummy = dummy; /* not used */
+
 #ifdef NDBM
 #  ifdef BERKELEY_DB
 	unlink (tmpdbfile);
@@ -380,7 +417,7 @@ static short mandb (const char *catpath, const char *manpath)
 	return amount;
 }
 
-int main(int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 	int c;
 	char *sys_manp;
@@ -389,7 +426,6 @@ int main(int argc, char *argv[])
 	int purged = 0;
 	int quiet_temp = 0;
 	char **mp;
-	char *locale;
 
 	int option_index; /* not used, but required by getopt_long() */
 
@@ -398,29 +434,23 @@ int main(int argc, char *argv[])
 	char *cwd = wd;
 #endif /* __profile__ */
 
-#ifdef DO_CHOWN
+#ifdef SECURE_MAN_UID
 	struct passwd *man_owner;
 #endif
 
 	program_name = xstrdup (basename (argv[0]));
 
 	/* initialise the locale */
-	locale = setlocale (LC_ALL, "");
-	if (locale)
-		locale = xstrdup (locale);
-	else {
+	if (!setlocale (LC_ALL, ""))
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
-		locale = "C";
-	}
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
 
 	while ((c = getopt_long (argc, argv, args,
 				 long_options, &option_index)) != EOF) {
 		switch (c) {
-
 			case 'd':
 				debug = 1;
 				break;
@@ -443,14 +473,23 @@ int main(int argc, char *argv[])
 			case 't':
 				opt_test = 1;
 				break;
+			case 'f':
+				single_filename = optarg;
+				create = 0;
+				purge = 0;
+				check_for_strays = 0;
+				break;
+			case 'C':
+				user_config_file = optarg;
+				break;
 			case 'V':
-				ver();
+				ver ();
 				break;
 			case 'h':
-				usage(OK);
+				usage (OK);
 				break;
 			default:
-				usage(FAIL);
+				usage (FAIL);
 				break;
 		}
 	}
@@ -467,7 +506,7 @@ int main(int argc, char *argv[])
 	init_security ();
 #endif /* SECURE_MAN_UID */
 
-#ifdef DO_CHOWN
+#ifdef SECURE_MAN_UID
 	man_owner = getpwnam (MAN_OWNER);
 	if (man_owner == NULL)
 		error (FAIL, 0,
@@ -475,7 +514,7 @@ int main(int argc, char *argv[])
 		       MAN_OWNER);
 	if (!user && euid != 0 && euid != man_owner->pw_uid)
 		user = 1;
-#endif /* DO_CHOWN */
+#endif /* SECURE_MAN_UID */
 
 
 	/* This is required for get_catpath(), regardless */
@@ -533,18 +572,23 @@ int main(int argc, char *argv[])
 		force_rescan = 0;
 		if (purge) {
 			database = mkdbname (catpath);
-			purged += purge_missing (*mp);
+			purged += purge_missing (*mp, catpath);
 		}
 
 		push_cleanup (cleanup, NULL);
-		amount += mandb (catpath, *mp);
+		if (single_filename) {
+			if (STRNEQ (*mp, single_filename, strlen (*mp)))
+				amount += mandb (catpath, *mp);
+			/* otherwise try the next manpath */
+		} else
+			amount += mandb (catpath, *mp);
 
 		if (!opt_test) {
 			finish_up ();
-#ifdef DO_CHOWN
+#ifdef SECURE_MAN_UID
 			if (global_manpath && euid == 0)
 				do_chown (man_owner->pw_uid);
-#endif
+#endif /* SECURE_MAN_UID */
 		} else
 			cleanup (NULL);
 		pop_cleanup ();
@@ -583,5 +627,7 @@ int main(int argc, char *argv[])
 		chdir (cwd);
 #endif /* __profile__ */
 
+	if (!amount)
+		error (FAIL, 0, _("No databases updated."));
 	exit (OK);
 }

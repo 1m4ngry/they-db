@@ -67,9 +67,12 @@ else
     install -d -o man -g root -m 02755 $catdir
 fi
 
+# Clean up old btree databases from before 2.4.2-1.
+find /var/cache/man -name index.bt -print0 | xargs -0r rm -f
+
 build_db=0
 
-if [ ! -f $catdir/index.bt ]; then
+if [ ! -f $catdir/index.db ]; then
     # If the build-database question was never asked, this is probably a
     # fresh install, or maybe we're reconfiguring. The default is to build
     # the database.
@@ -84,7 +87,7 @@ if [ ! -f $catdir/index.bt ]; then
 	    build_db=1
 	fi
     fi
-elif dpkg --compare-versions "$2" lt 2.4.0-1; then
+elif dpkg --compare-versions "$2" lt 2.4.2-1; then
     db_get man-db/rebuild-database
     if [ "$RET" = true ]; then
 	build_db=1
@@ -115,7 +118,7 @@ fi
 
 # The upgrade is complete, so no more concern about this question being
 # asked twice. Clean up the flag.
-db_fset man-db/rebuild-database seen_in_2.4.0-1_upgrade false
+db_fset man-db/rebuild-database seen_in_2.4.2-1_upgrade false
 
 db_stop
 

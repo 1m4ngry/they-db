@@ -190,7 +190,6 @@ char *decompress (const char *filename, const struct compression *comp)
 		free (command);
 		return NULL;
 	}
-
 	free (command);
 	return file;
 }
