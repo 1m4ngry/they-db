@@ -1,9 +1,9 @@
 #!/bin/sh
 #
-# Last modification: Sun,  1 Apr 2001 14:36:58 +0100
+# Last modification: Fri, 18 May 2001 13:54:15 +0100
 # man-db cron weekly
 
 # regenerate man database
 if [ -x /usr/bin/mandb ]; then
-    /usr/bin/nice /usr/bin/mandb 2>/dev/null >/dev/null
+    nice su man -c 'mandb 2>/dev/null >/dev/null'
 fi

@@ -1,0 +1,22 @@
+#! /bin/sh -e
+
+. /usr/share/debconf/confmodule
+db_version 2.0
+
+db_input medium man-db/install-setuid || true
+
+if dpkg --compare-versions "$2" lt 2.3.16; then
+    # All versions before 2.3.17.1-1 removed cat page hierarchies on
+    # upgrade. Since then a preinst hack means upgrades from 2.3.16 or later
+    # won't do this, but the hack is nasty enough that I don't want to
+    # extend it back beyond then. Thus, we may need to build the database
+    # from scratch on old upgrades. This also covers fresh installs.
+    db_input low man-db/build-database || true
+elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
+    # At 2.3.17.1-5, the database version number changed to 2.3.2.
+    db_input medium man-db/rebuild-database || true
+fi
+
+db_go
+
+exit 0

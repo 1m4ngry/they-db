@@ -1,3 +1,98 @@
+man-db (2.3.18-6) unstable; urgency=low
+
+  * Note in man-db/build-database and man-db/rebuild-database templates that
+    the build will happen in the background and possibly slow down
+    installation of other packages (closes: #71931).
+  * Bump priority of man-db/rebuild-database (not man-db/build-database)
+    question to medium.
+
+  * Various updates from CVS for autoconf 2.50.
+  * Avoid autoconf build-dep by touching configure and stamp-h.in in build
+    and clean (ugh - remember to run the autotools manually).
+  * Improved configure's checks for Berkeley DB to correctly handle newer
+    headers with dbopen() defined as a macro (thanks, Duncan Simpson).
+
+  * Fix a thinko in whatis parsing that meant "foo," would sometimes be
+    stored in the database alongside "foo".
+  * If we can't write to a cat page (e.g. man isn't setuid), don't bother to
+    open a compressor to /dev/null, so that man can abort straight away
+    rather than formatting whole pages into the bit-bucket when a user quits
+    the pager early (closes: #98528).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 26 May 2001 20:26:25 +0100
+
+man-db (2.3.18-5) unstable; urgency=low
+
+  * Remove /usr/bin/man and /usr/bin/mandb on prerm remove (closes: #98221).
+  * Stop using statoverrides in the postinst, as it's too hard to tell
+    between maintainer-script-installed overrides and admin-installed
+    overrides. Instead use ordinary chown/chmod (thanks, Michal Politowski;
+    closes: #98224).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 21 May 2001 22:52:05 +0100
+
+man-db (2.3.18-4) unstable; urgency=low
+
+  * Call db_stop in the postinst, just to be safe. I have a feeling
+    redirecting stdout and stderr to /dev/null when running mandb might not
+    be enough.
+  * Don't remove catdirs in the postinst, even if we're upgrading from old
+    versions that did that.
+  * Remove some output in the postinst - whoops. Upgrades from <= 2.3.17.1-5
+    to 2.3.18-3 were probably broken.
+  * If it turns out that we have to (re)build the database, ask a
+    low-priority debconf question about it (defaulting to yes). Rebuilding
+    should happen much less often now in any case (closes: #74579).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 20 May 2001 19:34:55 +0100
+
+man-db (2.3.18-3) unstable; urgency=low
+
+  * So, I flame Peter T. Breuer on Usenet for his bug report being several
+    bugs rolled up into one and being full of flamage itself. Then I think,
+    well, since I'm ranting about it, I may as well see if I can fix it. Of
+    course, it now turns out that fixing that was key to a load of other
+    bugs. So I apologize to Peter and promise, again, to write the code
+    before spouting off in future. :)
+  * If opening a database or a cat page fails due to a lack of permissions
+    (e.g. a read-only partition), recover gracefully and only complain about
+    it in debug mode (addresses part of bug #47000).
+  * Improved documentation of MANDB_MAP directives in /etc/manpath.config
+    (addresses the other part of that bug, so closes: #47000).
+
+  * Once man and mandb don't complain about certain classes of permission
+    problems, it becomes easy to install them non-setuid. Since in this mode
+    man can't write cat pages or update the database on the fly, non-setuid
+    is the default but a debconf question asks whether to install them
+    setuid. I hope this meets the concerns about man-db's security policy
+    (closes: #42128).
+  * As well as the above, the recent security updates should have made sure
+    that man and mandb drop privileges at the right times, and so can read
+    privately-owned directories (closes: #42479, #42791).
+  * In non-setuid mode there's no need to use the root-squashing wrapper.
+    I'm not going to close related bugs yet, as they're still present for
+    those who install setuid; I still intend to split the setuid stuff out
+    into a separate process and remove the wrapper entirely.
+  * The postinst and cron.weekly now explicitly su to man to run mandb,
+    since the wrapper might not be present.
+  * If searching for a page in the database returns no output, check the
+    filesystem anyway, as the database might not be up to date.
+
+  * Tidied up parsing of multiple whatis keys in .SH NAME sections, so that
+    each separate name gets assigned its own whatis entry correctly.
+    Separating items in the NAME section with newlines remains unsupported,
+    as at the moment man pages can get away with spreading their whatis
+    description over multiple lines and I'd rather not break them
+    gratuitously. However, multiple items will be recognized (and have been
+    for a long time, albeit brokenly up to now) if they are separated by a
+    .br (break) request. *roff doesn't normally do much with newlines in the
+    middle of paragraphs in its input, so this is consistent. See bug #97916
+    for more details (closes: #17735).
+
+  * Updated tools/config.sub to know about the sh/sheb architectures.
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 19 May 2001 19:29:39 +0100
+
 man-db (2.3.18-2) unstable; urgency=medium
 
   * man would segfault if the argument to -S contained only colons, and

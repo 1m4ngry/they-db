@@ -3,11 +3,11 @@ Section: doc
 Priority: important
 Maintainer: Colin Watson <cjwatson@debian.org>
 Standards-Version: 3.5.2
-Build-Depends: autoconf, bsdmainutils, debhelper (>= 3.0.0), flex, gettext, grap, groff, libdb2-dev (>= 2:2.7.7-2.2), lynx, vgrind
+Build-Depends: bsdmainutils, debhelper (>= 3.0.0), flex, gettext, grap, groff, libdb2-dev (>= 2:2.7.7-2.2), lynx, vgrind
 
 Package: man-db
 Architecture: any
-Depends: groff (>> 1.15-3.ja.3), bsdmainutils, ${shlibs:Depends}
+Depends: groff (>> 1.15-3.ja.3), bsdmainutils, debconf (>= 0.2.0), ${shlibs:Depends}
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
 Replaces: man, nlsutils

@@ -1,32 +1,61 @@
 #!/bin/sh -e
-#
-# man postinst
-#
-# this script is executed after all the files in the package are
-# installed: it builds the catman hierarchy and then the database.
 
 [ "$1" = configure ] || exit 0
 
 oldcatdir=/var/catman
 catdir=/var/cache/man
+maybesetuid='man mandb'
+
+# For now we depend on debconf. If this causes problems with base system
+# interdependencies I'm willing to consider making it optional.
+
+. /usr/share/debconf/confmodule
+db_version 2.0
+db_get man-db/install-setuid
+
+# Sorry about this, but #98224 is right - statoverrides don't work as
+# cleanly as I'd hoped here. I'm going to have to carry around some cruft
+# for a while.
+for x in $maybesetuid; do
+    if dpkg --compare-versions "$2" eq 2.3.18-4 && \
+	    [ "`dpkg-statoverride --list /usr/lib/man-db/$x`" = \
+	      "man root 4755 /usr/lib/man-db/$x" ]; then
+	dpkg-statoverride --remove /usr/lib/man-db/$x
+    fi
+done
+
+if [ "$RET" = true ]; then
+    # man and mandb are to be installed setuid man, and for now we need the
+    # wrapper.
+    owner=man:root
+    mode=4755
+    wrapper=1
+else
+    # man and mandb are not to be installed setuid, and we install symlinks
+    # directly to the executables.
+    owner=root:root
+    mode=0755
+    wrapper=0
+fi
+
+for x in $maybesetuid; do
+    if [ $wrapper -eq 1 ]; then target=wrapper; else target=$x; fi
+    # No statoverrides available or none exist for us ...
+    if [ ! -x /usr/sbin/dpkg-statoverride ] || \
+	    ! dpkg-statoverride --list /usr/lib/man-db/$x >/dev/null; then
+	chown $owner /usr/lib/man-db/$x
+	chmod $mode  /usr/lib/man-db/$x
+	ln -sf ../lib/man-db/$target /usr/bin/$x
+    fi
+    # Make sure we end up with a symlink
+    [ -L /usr/bin/$x ] || ln -sf ../lib/man-db/$target /usr/bin/$x
+done
 
 if [ -e /etc/cron.daily/man.moved-by-preinst ]; then
     rm /etc/cron.daily/man.moved-by-preinst
 fi
 if [ -e /etc/cron.weekly/catman.moved-by-preinst ]; then
     rm /etc/cron.weekly/catman.moved-by-preinst
-fi
-
-if dpkg --compare-versions "$2" lt 2.3.16; then
-    # removing all catpages hierarchy
-    if [ -d $oldcatdir ]; then
-	echo "  Removing catpages as well as $oldcatdir hierarchy."
-	rm -rf $oldcatdir 2>/dev/null || true
-    fi
-    if [ -d $catdir ]; then
-	echo "  Removing catpages as well as $catdir hierarchy."
-	rm -rf $catdir 2>/dev/null || true
-    fi
 fi
 
 if dpkg --compare-versions "$2" lt 2.3.18; then
@@ -42,12 +71,34 @@ if [ ! -d $catdir ]; then
     install -d -g root -m 02755 -o man $catdir
 fi
 
-if [ ! -f $catdir/index.bt ] || \
-   dpkg --compare-versions "$2" lt 2.3.17.1-5; then
-    echo "  Building manual page index in background."
-    nice mandb -c 2>/dev/null >/dev/null &
+build_db=0
+
+if [ ! -f $catdir/index.bt ]; then
+    if dpkg --compare-versions "$2" lt 2.3.16; then
+	db_get man-db/build-database
+	if [ "$RET" = true ]; then
+	    build_db=1
+	fi
+    else
+	# Um. At this point all bets are off. The config script won't have
+	# asked the question, so we can't db_get it ... but the database
+	# should never be missing when upgrading from >= 2.3.16. In this
+	# case, bad luck, the database gets built.
+	build_db=1
+    fi
+elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
+    db_get man-db/rebuild-database
+    if [ "$RET" = true ]; then
+	build_db=1
+    fi
+fi
+
+if [ "$build_db" -eq 1 ]; then
+    nice su man -c 'mandb -c 2>/dev/null >/dev/null' &
 fi
 
 #DEBHELPER#
+
+db_stop
 
 exit 0

@@ -17,6 +17,7 @@ LDFLAGS =
 
 GNUmakefile:
 # create the makefile needed both from build and clean rules
+	touch configure stamp-h.in	# avoid autoconf build-dependency
 	test -x configure || chmod +x configure 
 	./configure --prefix=/usr --enable-setuid \
 	            --with-db=db2 --with-device=latin1
@@ -31,6 +32,7 @@ build-stamp: GNUmakefile
 
 clean:
 	dh_testdir
+	touch configure stamp-h.in	# avoid autoconf build-dependency
 	-$(MAKE) -i distclean
 	-$(MAKE) -C manual -i distclean
 	-rm -f build-stamp install-stamp man/index.*
@@ -50,13 +52,11 @@ install-stamp: build
 	# until such time as it can be fixed.
 	install -m755 src/man		$(dtmp)/usr/lib/man-db
 	install -m755 src/mandb		$(dtmp)/usr/lib/man-db
-	install -m755 src/wrapper	$(dtmp)/usr/lib/man-db/wrapper
+	install -m755 src/wrapper	$(dtmp)/usr/lib/man-db
 	install -m755 src/manpath	$(dtmp)/usr/bin
 	install -m755 src/catman	$(dtmp)/usr/bin
 	install -m755 src/whatis	$(dtmp)/usr/bin
 	install -m755 src/apropos	$(dtmp)/usr/bin
-	ln -sf ../lib/man-db/wrapper	$(dtmp)/usr/bin/man
-	ln -sf ../lib/man-db/wrapper	$(dtmp)/usr/bin/mandb
 	install -m755 src/accessdb	$(dtmp)/usr/sbin
 	sed 's/man_db\.config/manpath.config/' \
 		src/man_db.conf		> $(dtmp)/etc/manpath.config
@@ -87,13 +87,12 @@ binary-arch: build install
 		$(dtmp)/usr/share/doc/$(package)/examples/manpath.config
 	dh_installchangelogs docs/ChangeLog
 	dh_installcron
+	dh_installdebconf
 	install -m644 debian/overrides \
 		      $(dtmp)/usr/share/lintian/overrides/$(package)
 	dh_strip
 	dh_compress
 	dh_fixperms
-	chown man  $(dtmp)/usr/lib/man-db/man $(dtmp)/usr/lib/man-db/mandb
-	chmod 4755 $(dtmp)/usr/lib/man-db/man $(dtmp)/usr/lib/man-db/mandb
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
