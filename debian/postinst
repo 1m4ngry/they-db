@@ -104,7 +104,7 @@ if [ $build_db -eq 1 ]; then
 	# start-stop-daemon isn't available when running from debootstrap.
 	echo "Building database of manual pages ..." >&2
 	perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
-	         exec "/usr/bin/mandb", "-cq"';
+	         exec "/usr/bin/mandb", "-cq"' || true
     else
 	echo "Building database of manual pages in the background." >&2
 	# --pidfile /dev/null so it always starts; mandb isn't really a
