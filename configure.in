@@ -106,7 +106,7 @@ AC_PATH_PROG(cat, cat)
 AC_PATH_PROG(lynx, lynx, /usr/bin/lynx)
 AC_PATH_PROG(tr, tr)
 AC_PATH_PROG(grep, grep)
-AC_PATH_PROGS(pager, pager less more)
+AC_PATH_PROG(pager, pager, /usr/bin/pager)
 test "$pager" && pager="exec $pager -s"
 dnl
 dnl define below (in list of preference) *roff macros to check for.

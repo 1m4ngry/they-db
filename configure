@@ -2217,22 +2217,23 @@ for ac_dir in $ac_dummy; do
 fi
 done
 
+  test -z "$ac_cv_path_lynx" && ac_cv_path_lynx="/usr/bin/lynx"
   ;;
 esac
 fi
 lynx=$ac_cv_path_lynx
 
 if test -n "$lynx"; then
-  echo "$as_me:2226: result: $lynx" >&5
+  echo "$as_me:2227: result: $lynx" >&5
 echo "${ECHO_T}$lynx" >&6
 else
-  echo "$as_me:2229: result: no" >&5
+  echo "$as_me:2230: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
 # Extract the first word of "tr", so it can be a program name with args.
 set dummy tr; ac_word=$2
-echo "$as_me:2235: checking for $ac_word" >&5
+echo "$as_me:2236: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_tr+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2249,7 +2250,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_tr="$ac_dir/$ac_word"
-   echo "$as_me:2252: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2253: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2260,16 +2261,16 @@ fi
 tr=$ac_cv_path_tr
 
 if test -n "$tr"; then
-  echo "$as_me:2263: result: $tr" >&5
+  echo "$as_me:2264: result: $tr" >&5
 echo "${ECHO_T}$tr" >&6
 else
-  echo "$as_me:2266: result: no" >&5
+  echo "$as_me:2267: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
 # Extract the first word of "grep", so it can be a program name with args.
 set dummy grep; ac_word=$2
-echo "$as_me:2272: checking for $ac_word" >&5
+echo "$as_me:2273: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_grep+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2286,7 +2287,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_grep="$ac_dir/$ac_word"
-   echo "$as_me:2289: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2290: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2297,18 +2298,16 @@ fi
 grep=$ac_cv_path_grep
 
 if test -n "$grep"; then
-  echo "$as_me:2300: result: $grep" >&5
+  echo "$as_me:2301: result: $grep" >&5
 echo "${ECHO_T}$grep" >&6
 else
-  echo "$as_me:2303: result: no" >&5
+  echo "$as_me:2304: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
-for ac_prog in pager less more
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-echo "$as_me:2311: checking for $ac_word" >&5
+# Extract the first word of "pager", so it can be a program name with args.
+set dummy pager; ac_word=$2
+echo "$as_me:2310: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_pager+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2325,11 +2324,12 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_pager="$ac_dir/$ac_word"
-   echo "$as_me:2328: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2327: found $ac_dir/$ac_word" >&5
    break
 fi
 done
 
+  test -z "$ac_cv_path_pager" && ac_cv_path_pager="/usr/bin/pager"
   ;;
 esac
 fi
@@ -2343,16 +2343,13 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-  test -n "$pager" && break
-done
-
 test "$pager" && pager="exec $pager -s"
 macros="andoc an doc"
 for ac_prog in nroff gnroff groff
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2355: checking for $ac_word" >&5
+echo "$as_me:2352: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_nroff+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2369,7 +2366,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_nroff="$ac_dir/$ac_word"
-   echo "$as_me:2372: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2369: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2380,10 +2377,10 @@ fi
 nroff=$ac_cv_path_nroff
 
 if test -n "$nroff"; then
-  echo "$as_me:2383: result: $nroff" >&5
+  echo "$as_me:2380: result: $nroff" >&5
 echo "${ECHO_T}$nroff" >&6
 else
-  echo "$as_me:2386: result: no" >&5
+  echo "$as_me:2383: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2392,7 +2389,7 @@ done
 
 if test "$nroff"
 then
-		echo "$as_me:2395: checking whether nroff is GNU nroff" >&5
+		echo "$as_me:2392: checking whether nroff is GNU nroff" >&5
 echo $ECHO_N "checking whether nroff is GNU nroff... $ECHO_C" >&6
 
 if test "${man_cv_prog_gnu_nroff+set}" = set; then
@@ -2413,26 +2410,26 @@ then
 EOF
 
 fi
-echo "$as_me:2416: result: $man_cv_prog_gnu_nroff" >&5
+echo "$as_me:2413: result: $man_cv_prog_gnu_nroff" >&5
 echo "${ECHO_T}$man_cv_prog_gnu_nroff" >&6
 
 	if test "$nroff_device"
 	then
-		echo "$as_me:2421: checking that nroff works with argument$nroff_device" >&5
+		echo "$as_me:2418: checking that nroff works with argument$nroff_device" >&5
 echo $ECHO_N "checking that nroff works with argument$nroff_device... $ECHO_C" >&6
 		if $nroff $nroff_device </dev/null >/dev/null 2>&1 3>&1
 		then
-			echo "$as_me:2425: result: yes" >&5
+			echo "$as_me:2422: result: yes" >&5
 echo "${ECHO_T}yes" >&6
 		else
-			echo "$as_me:2428: result: no" >&5
+			echo "$as_me:2425: result: no" >&5
 echo "${ECHO_T}no" >&6
-			{ { echo "$as_me:2430: error: nroff does not work with argument$nroff_device" >&5
+			{ { echo "$as_me:2427: error: nroff does not work with argument$nroff_device" >&5
 echo "$as_me: error: nroff does not work with argument$nroff_device" >&2;}
    { (exit 1); exit 1; }; }
 		fi
 	fi
-	echo "$as_me:2435: checking for appropriate nroff macro" >&5
+	echo "$as_me:2432: checking for appropriate nroff macro" >&5
 echo $ECHO_N "checking for appropriate nroff macro... $ECHO_C" >&6
 	if test "${man_cv_prog_nroff_macro+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2451,16 +2448,16 @@ fi
 	if test "$man_cv_prog_nroff_macro"
 	then
 		nroff="$nroff ${man_cv_prog_nroff_macro}"
-		echo "$as_me:2454: result: $man_cv_prog_nroff_macro" >&5
+		echo "$as_me:2451: result: $man_cv_prog_nroff_macro" >&5
 echo "${ECHO_T}$man_cv_prog_nroff_macro" >&6
 	else
-		echo "$as_me:2457: result: ambiguous" >&5
+		echo "$as_me:2454: result: ambiguous" >&5
 echo "${ECHO_T}ambiguous" >&6
-		{ echo "$as_me:2459: WARNING: please edit include/manconfig.h and add nroff definition" >&5
+		{ echo "$as_me:2456: WARNING: please edit include/manconfig.h and add nroff definition" >&5
 echo "$as_me: WARNING: please edit include/manconfig.h and add nroff definition" >&2;}
 	fi
 else
-	{ echo "$as_me:2463: WARNING: Cannot find an nroff-like program" >&5
+	{ echo "$as_me:2460: WARNING: Cannot find an nroff-like program" >&5
 echo "$as_me: WARNING: Cannot find an nroff-like program" >&2;}
 	nroff="(nroff not installed)"
 	cat >>confdefs.h <<\EOF
@@ -2472,7 +2469,7 @@ for ac_prog in groff
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2475: checking for $ac_word" >&5
+echo "$as_me:2472: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_troff+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2489,7 +2486,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_troff="$ac_dir/$ac_word"
-   echo "$as_me:2492: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2489: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2500,10 +2497,10 @@ fi
 troff=$ac_cv_path_troff
 
 if test -n "$troff"; then
-  echo "$as_me:2503: result: $troff" >&5
+  echo "$as_me:2500: result: $troff" >&5
 echo "${ECHO_T}$troff" >&6
 else
-  echo "$as_me:2506: result: no" >&5
+  echo "$as_me:2503: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2522,7 +2519,7 @@ else
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2525: checking for $ac_word" >&5
+echo "$as_me:2522: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_troff+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2539,7 +2536,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_troff="$ac_dir/$ac_word"
-   echo "$as_me:2542: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2539: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2550,10 +2547,10 @@ fi
 troff=$ac_cv_path_troff
 
 if test -n "$troff"; then
-  echo "$as_me:2553: result: $troff" >&5
+  echo "$as_me:2550: result: $troff" >&5
 echo "${ECHO_T}$troff" >&6
 else
-  echo "$as_me:2556: result: no" >&5
+  echo "$as_me:2553: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2568,7 +2565,7 @@ then
 #define HAS_TROFF 1
 EOF
 
-	echo "$as_me:2571: checking for appropriate $TROFF options" >&5
+	echo "$as_me:2568: checking for appropriate $TROFF options" >&5
 echo $ECHO_N "checking for appropriate $TROFF options... $ECHO_C" >&6
 	if test "${man_cv_prog_troff_options+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2589,12 +2586,12 @@ fi
 	if test "$man_cv_prog_troff_options"
 	then
 		troff="$troff $man_cv_prog_troff_options"
-		echo "$as_me:2592: result: $man_cv_prog_troff_options" >&5
+		echo "$as_me:2589: result: $man_cv_prog_troff_options" >&5
 echo "${ECHO_T}$man_cv_prog_troff_options" >&6
 	else
-		echo "$as_me:2595: result: ambiguous" >&5
+		echo "$as_me:2592: result: ambiguous" >&5
 echo "${ECHO_T}ambiguous" >&6
-		{ echo "$as_me:2597: WARNING: please edit include/manconfig.h and add troff definition" >&5
+		{ echo "$as_me:2594: WARNING: please edit include/manconfig.h and add troff definition" >&5
 echo "$as_me: WARNING: please edit include/manconfig.h and add troff definition" >&2;}
 	fi
 else
@@ -2604,7 +2601,7 @@ for ac_prog in eqn geqn
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2607: checking for $ac_word" >&5
+echo "$as_me:2604: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_eqn+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2621,7 +2618,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_eqn="$ac_dir/$ac_word"
-   echo "$as_me:2624: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2621: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2632,10 +2629,10 @@ fi
 eqn=$ac_cv_path_eqn
 
 if test -n "$eqn"; then
-  echo "$as_me:2635: result: $eqn" >&5
+  echo "$as_me:2632: result: $eqn" >&5
 echo "${ECHO_T}$eqn" >&6
 else
-  echo "$as_me:2638: result: no" >&5
+  echo "$as_me:2635: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2646,7 +2643,7 @@ for ac_prog in neqn gneqn
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2649: checking for $ac_word" >&5
+echo "$as_me:2646: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_neqn+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2663,7 +2660,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_neqn="$ac_dir/$ac_word"
-   echo "$as_me:2666: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2663: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2674,10 +2671,10 @@ fi
 neqn=$ac_cv_path_neqn
 
 if test -n "$neqn"; then
-  echo "$as_me:2677: result: $neqn" >&5
+  echo "$as_me:2674: result: $neqn" >&5
 echo "${ECHO_T}$neqn" >&6
 else
-  echo "$as_me:2680: result: no" >&5
+  echo "$as_me:2677: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2693,7 +2690,7 @@ for ac_prog in tbl gtbl
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2696: checking for $ac_word" >&5
+echo "$as_me:2693: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_tbl+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2710,7 +2707,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_tbl="$ac_dir/$ac_word"
-   echo "$as_me:2713: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2710: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2721,10 +2718,10 @@ fi
 tbl=$ac_cv_path_tbl
 
 if test -n "$tbl"; then
-  echo "$as_me:2724: result: $tbl" >&5
+  echo "$as_me:2721: result: $tbl" >&5
 echo "${ECHO_T}$tbl" >&6
 else
-  echo "$as_me:2727: result: no" >&5
+  echo "$as_me:2724: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2735,7 +2732,7 @@ for ac_prog in col gcol
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2738: checking for $ac_word" >&5
+echo "$as_me:2735: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_col+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2752,7 +2749,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_col="$ac_dir/$ac_word"
-   echo "$as_me:2755: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2752: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2763,21 +2760,22 @@ fi
 col=$ac_cv_path_col
 
 if test -n "$col"; then
-  echo "$as_me:2766: result: $col" >&5
+  echo "$as_me:2763: result: $col" >&5
 echo "${ECHO_T}$col" >&6
 else
-  echo "$as_me:2769: result: no" >&5
+  echo "$as_me:2766: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
   test -n "$col" && break
 done
+test -n "$col" || col="/usr/bin/col"
 
 for ac_prog in vgrind gvgrind
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2780: checking for $ac_word" >&5
+echo "$as_me:2778: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_vgrind+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2794,7 +2792,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_vgrind="$ac_dir/$ac_word"
-   echo "$as_me:2797: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2795: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2805,21 +2803,22 @@ fi
 vgrind=$ac_cv_path_vgrind
 
 if test -n "$vgrind"; then
-  echo "$as_me:2808: result: $vgrind" >&5
+  echo "$as_me:2806: result: $vgrind" >&5
 echo "${ECHO_T}$vgrind" >&6
 else
-  echo "$as_me:2811: result: no" >&5
+  echo "$as_me:2809: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
   test -n "$vgrind" && break
 done
+test -n "$vgrind" || vgrind="/usr/bin/vgrind"
 
 for ac_prog in refer grefer
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2822: checking for $ac_word" >&5
+echo "$as_me:2821: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_refer+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2836,7 +2835,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_refer="$ac_dir/$ac_word"
-   echo "$as_me:2839: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2838: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2847,10 +2846,10 @@ fi
 refer=$ac_cv_path_refer
 
 if test -n "$refer"; then
-  echo "$as_me:2850: result: $refer" >&5
+  echo "$as_me:2849: result: $refer" >&5
 echo "${ECHO_T}$refer" >&6
 else
-  echo "$as_me:2853: result: no" >&5
+  echo "$as_me:2852: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2861,7 +2860,7 @@ for ac_prog in grap
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2864: checking for $ac_word" >&5
+echo "$as_me:2863: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_path_grap+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2878,7 +2877,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   if $as_executable_p "$ac_dir/$ac_word"; then
    ac_cv_path_grap="$ac_dir/$ac_word"
-   echo "$as_me:2881: found $ac_dir/$ac_word" >&5
+   echo "$as_me:2880: found $ac_dir/$ac_word" >&5
    break
 fi
 done
@@ -2889,15 +2888,16 @@ fi
 grap=$ac_cv_path_grap
 
 if test -n "$grap"; then
-  echo "$as_me:2892: result: $grap" >&5
+  echo "$as_me:2891: result: $grap" >&5
 echo "${ECHO_T}$grap" >&6
 else
-  echo "$as_me:2895: result: no" >&5
+  echo "$as_me:2894: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
   test -n "$grap" && break
 done
+test -n "$grap" || grap="/usr/bin/grap"
 
 for ac_prog in pic gpic
 do

@@ -1,3 +1,13 @@
+man-db (2.3.20-8) unstable; urgency=low
+
+  * Force build-time pager detection to return /usr/bin/pager, even if for
+    some reason it doesn't exist (closes: #117246).
+  * Actually remember to run autoconf this time.
+  * Add 3tcl and 3tk sections to /etc/manpath.config as a workaround until
+    extensions work properly (closes: #115345).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue,  6 Nov 2001 10:46:44 +0000
+
 man-db (2.3.20-7) unstable; urgency=high
 
   * Drop privileges throughout format_display(), and fix use of freed memory
