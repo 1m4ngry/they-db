@@ -1,3 +1,12 @@
+man-db (2.3.20-5) unstable; urgency=low
+
+  * Add Russian debconf translation (thanks, Ilgiz Kalmetev;
+    closes: #114981).
+  * Remove --nicelevel from cron.daily script until start-stop-daemon is
+    fixed. Sorry (see #114997).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue,  9 Oct 2001 20:06:39 +0100
+
 man-db (2.3.20-4) unstable; urgency=medium
 
   * Release Manager: this bug has been in man-db since 2.3.18-3, and meant

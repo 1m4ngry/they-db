@@ -7,7 +7,7 @@
 if [ -d /var/cache/man ]; then
   cd /
   start-stop-daemon --start --pidfile /dev/null --startas /bin/sh \
-	--oknodo --chuid man --nicelevel 10 -- -c \
+	--oknodo --chuid man -- -c \
 	"find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | \
 	 xargs -r0 rm -f"
 fi
@@ -18,5 +18,5 @@ if [ -x /usr/bin/mandb ]; then
     # but we want to start it like one.
     start-stop-daemon --start --pidfile /dev/null \
 		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
-		      --nicelevel 10 -- --no-purge >/dev/null 2>/dev/null
+		      -- --no-purge >/dev/null 2>/dev/null
 fi
