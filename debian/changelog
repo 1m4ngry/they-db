@@ -1,3 +1,24 @@
+man-db (2.3.19-6) unstable; urgency=low
+
+  * Escape shell arguments properly to cope with spaces in man page names
+    (closes: #27492, #50107).
+  * Honour more than one MANPATH_MAP entry per $PATH element, providing of
+    course that the manpath exists (closes: #108979).
+  * Set roff_device to ascii8 and LESSCHARSET to iso8859 for Korean (thanks,
+    Ho-seok Lee; closes: #109598, #109599).
+  * Display an error if setlocale() fails.
+  * Switch off --html option properly, as it doesn't work very well yet
+    anyway. The -Thtml option still works.
+  * Fix count of purged whatis references.
+  * src/wrapper.c: Include <grp.h> for initgroups().
+
+  * debian/control: Improve language of description.
+  * debian/copyright: Minor updates. Mention Markus Armbruster.
+  * debian/rules: Build and install /usr/lib/man-db/lexgrog; it's handy for
+    testing purposes.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 26 Aug 2001 01:20:00 +0100
+
 man-db (2.3.19-5) unstable; urgency=low
 
   * Improve creation of temporary files by using mkstemp() rather than

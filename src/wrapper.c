@@ -25,6 +25,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <pwd.h>
+#include <grp.h>
 #include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,6 +73,9 @@ int main (int argc, char **argv)
 	char *p;
 	struct passwd *pwd;
 
+	/* We don't warn about this setlocale() call failing, as the program
+	 * we call will do that.
+	 */
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);

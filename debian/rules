@@ -28,6 +28,8 @@ build-stamp: GNUmakefile
 	dh_testdir
 	$(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
 		config_file=/etc/manpath.config
+	$(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+		config_file=/etc/manpath.config -C src lexgrog
 	$(MAKE) -C manual SOELIM=../zsoelim/zsoelim
 	touch build-stamp
 
@@ -54,6 +56,7 @@ install-stamp: build
 	install -m755 src/man		$(dtmp)/usr/lib/man-db
 	install -m755 src/mandb		$(dtmp)/usr/lib/man-db
 	install -m755 src/wrapper	$(dtmp)/usr/lib/man-db
+	install -m755 src/lexgrog	$(dtmp)/usr/lib/man-db
 	install -m755 src/manpath	$(dtmp)/usr/bin
 	install -m755 src/catman	$(dtmp)/usr/bin
 	install -m755 src/whatis	$(dtmp)/usr/bin
