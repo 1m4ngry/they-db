@@ -12,7 +12,7 @@ dnl
 dnl Define below date and version information to be put into man pages etc.
 dnl
 datemark=20010514
-date=`LANG=C date -d $datemark `
+date=`LANG=C date -d $datemark +'%d %B %Y'`
 date_it=`LANG=it_IT date -d $datemark +'%d %B %Y'`
 date_es=`LANG=es_ES date -d $datemark +'%d %B %Y'`
 date_de=`LANG=de_DE date -d $datemark +'%d %B %Y'`
@@ -103,7 +103,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_PATH_PROG(cat, cat)
-AC_PATH_PROG(lynx, lynx)
+AC_PATH_PROG(lynx, lynx, /usr/bin/lynx)
 AC_PATH_PROG(tr, tr)
 AC_PATH_PROG(grep, grep)
 AC_PATH_PROGS(pager, pager less more)
@@ -214,10 +214,10 @@ then
 	(test "$nroff_device" && neqn="$eqn -T$nroff_device" || neqn="$eqn -Tascii")
 fi
 AC_PATH_PROGS(tbl, tbl gtbl)
-AC_PATH_PROGS(col, col gcol)
-AC_PATH_PROGS(vgrind, vgrind gvgrind)
+AC_PATH_PROGS(col, col gcol, /usr/bin/col)
+AC_PATH_PROGS(vgrind, vgrind gvgrind, /usr/bin/vgrind)
 AC_PATH_PROGS(refer, refer grefer)
-AC_PATH_PROGS(grap, grap)
+AC_PATH_PROGS(grap, grap, /usr/bin/grap)
 AC_PATH_PROGS(pic, pic gpic)
 test "$pic" && pic="$pic -S"
 AC_PATH_PROG(gzip, gzip)
@@ -421,6 +421,11 @@ AC_CONFIG_FILES(GNUmakefile
 	include/manconfig.h
 	intl/Makefile
 	po/Makefile.in)
+AC_CONFIG_COMMANDS(broken-gettext,
+	[echo creating "po/POTFILES"
+	 sed -e "/^#/d" -e "/^[ 	]*\$/d" -e "s,.*,     $top_srcdir/& \\\\," -e "\$s/\(.*\) \\\\/\1/" < "$srcdir/po/POTFILES.in" > "po/POTFILES"
+	 echo creating "po/Makefile"
+	 sed -e "/POTFILES =/r po/POTFILES" "po/Makefile.in" > "po/Makefile"])
 AC_OUTPUT
 
 date > stamp-h

@@ -508,7 +508,7 @@ static short testmandirs(const char *path, time_t last)
 
 			if (! dbf) {
 				/* rwopen(database); */
-				if (errno == EACCES) {
+				if (errno == EACCES || errno == EROFS) {
 					if (debug)
 						fprintf(stderr,
 							"database %s is read-only\n",
@@ -619,7 +619,7 @@ short create_db(const char *manpath)
 	/* Open the db in CTRW mode to store the $ver$ ID */
 
 	if ( (dbf = MYDBM_CTRWOPEN(database)) == NULL) {
-		if (errno == EACCES) {
+		if (errno == EACCES || errno == EROFS) {
 			if (debug)
 				fprintf(stderr, "database %s is read-only\n",
 					database);

@@ -208,20 +208,20 @@ static __inline__ int check_for_stray(void)
 				filter = strappend(NULL, 
 					           comp_info(catdir)->prog, " ",
 					           catdir, " | ",
-					           get_def("col", COL), "-bx > ",
-					           temp_name, NULL);
+					           get_def("col", COL),
+						   " -bx > ", temp_name, NULL);
 			else
 #elif defined (COMP_CAT)
 			if (info.comp)
 				filter = strappend(NULL, get_def("decompressor", DECOMPRESSOR),
 						   " ",
 						   catdir, " | ",
-						   get_def("col", COL), "-bx > ",
-						   temp_name, NULL);
+						   get_def("col", COL),
+						   " -bx > ", temp_name, NULL);
 			else
 #endif /* COMP_* */
 				filter = strappend(NULL, get_def("col", COL), 
-						   "-bx < ",
+						   " -bx < ",
 						   catdir, " > ", temp_name,
 						   NULL);
 
@@ -247,18 +247,21 @@ static __inline__ int check_for_stray(void)
 				if (do_system(filter) != 0) {
 					remove(temp_name);
 					perror(filter);
-					exit (CHILD_FAIL);
+				} else {
+					strays++;
+
+					lg.type = CATPAGE;
+					if (!find_name (temp_name,
+							basename (catdir), &lg))
+						if (quiet < 2)
+							error (0, 0, _("warning: %s: whatis parse for %s(%s) failed"),
+								catdir,
+								basename (mandir),
+								info.sec);
+
+					(void) splitline (lg.whatis, &info,
+							  basename (mandir));
 				}
-
-				strays++;
-				
-				lg.type = CATPAGE;
-				if ( ! find_name(temp_name, basename(catdir), &lg) )
-					if (quiet < 2)
-						error (0, 0, _( "warning: %s: whatis parse for %s(%s) failed"),
-						       catdir, basename(mandir), info.sec);
-
-				(void) splitline( lg.whatis, &info, basename(mandir));
 			}
 			
 			free(filter);

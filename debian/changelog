@@ -1,3 +1,30 @@
+man-db (2.3.18-8) unstable; urgency=medium
+
+  * Fix infinite loop in pathappend() if man pages are present for both a
+    given language and that language with a country code (closes: #100119).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri,  8 Jun 2001 18:13:36 +0100
+
+man-db (2.3.18-7) unstable; urgency=medium
+
+  * Folded in changelog entry from 2.3.16-4 security update. The backport
+    was from upstream 2.3.18, so the vulnerability didn't apply to unstable.
+  * Allow .PP etc. as well as .br between whatis definitions (e.g. pod2man).
+  * Make straycats use 'col -bx' rather than 'col-bx' (thanks, Matt Kraai;
+    closes: #98923).
+  * The response to the above was a rather excessive exit(). straycats
+    should now continue gracefully instead (thanks, Andrew Suffield).
+  * Fix silly date format in man-db's English man pages.
+  * pathappend() now eliminates duplicate manpaths (closes: #99667).
+  * configure.in falls back to standard paths for col, grap, lynx, and
+    vgrind, so we don't need those as build dependencies any more.
+  * groff has been split! Depend on the base package, suggest the others.
+  * The previous fix for #47000 only worked for read-only directories, not
+    read-only filesystems. Fix it harder.
+  * gettext seems to be broken with the new autoconf. Hack it for now.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed,  6 Jun 2001 18:27:24 +0100
+
 man-db (2.3.18-6) unstable; urgency=low
 
   * Note in man-db/build-database and man-db/rebuild-database templates that
@@ -423,6 +450,16 @@ man-db (2.3.17-1) unstable; urgency=low
     This rant closes: #63497; be happy!:wq
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Fri,  7 Apr 2000 10:50:45 +0300
+
+man-db (2.3.16-4) stable; urgency=high
+
+  * Backport another security fix from unstable.
+  * Count how many times privileges have been dropped, and don't regain them
+    until regain_effective_privs() is called the same number of times. The
+    lack of nesting meant it was still possible to create files owned by uid
+    man (thanks, Luki R.; closes: #99624).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri,  1 Jun 2001 23:50:31 +0000
 
 man-db (2.3.16-3) stable; urgency=high
 
