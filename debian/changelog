@@ -1,6 +1,6 @@
 man-db (2.4.2-20) UNRELEASED; urgency=low
 
-  * Suggest less (closes: #280096).
+  * Suggest less, since we have special support for it (closes: #280096).
   * Update debconf translations:
     - Russian (thanks, Yuri Kozlov; part of #268584).
 
