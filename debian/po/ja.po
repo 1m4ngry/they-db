@@ -11,15 +11,14 @@
 #
 #    Developers do not need to manually edit POT or PO files.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: man-db_2.4.2-9\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2004-02-22 00:11+0900\n"
+"Last-Translator: Kenshi Muto <kmuto@debian.org>\n"
+"Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=EUC-JP\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,69 +26,46 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid "Should man and mandb be installed 'setuid man'?"
-msgstr "man と mandb を setuid man な状態でインストールしますか?"
+msgstr "man と mandb を man に setuid した状態でインストールしますか?"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
-msgstr ""
-"man プログラムと mandb プログラムは、「man」ユーザの権限恩恵を受ける ために、"
-"set-user-id ビットをセットした状態でインストールすることがで きます。そうする"
-"と、通常のユーザがフォーマット済みのマニュアルページ (「cat ページ」) の"
-"キャッシングを使うことができ、マニュアルページの記 述が、それを読む人によっ"
-"て、自動的に更新されます。特に、遅いマシンで は、cat ページを保存しておくと、"
-"パフォーマンスの向上に役立ちます。"
+msgstr "man プログラムと mandb プログラムは、「man」ユーザの権限恩恵を受けるために、set-user-id ビットをセットした状態でインストールすることができます。そうすると、通常のユーザがフォーマット済みのマニュアルページ (「cat ページ」) のキャッシングを使うことができ、遅いマシンでのパフォーマンスの向上に役立ちます。"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
-msgstr ""
-"キャッシングされたマニュアルページは、「通常」幅のターミナル (66 文字 から "
-"80 文字) を使っている時のみ、使えます。これによって、他のユーザ にとって不便"
-"な幅に整形されたページが保存されてしまうのを防ぐことがで きます。将来、これは"
-"設定可能となります。それまでは、幅の広いターミナ ルを使っている場合、"
-"MANWIDTH=80 と設定することでマニュアルページが 80 文字で整形されるように強制"
-"する必要があります。"
+msgstr "ほかのユーザにとって不便な幅に整形されたページが保存されてしまうのを防ぐため、キャッシュされたマニュアルページは、80 文字幅の端末を使っているときのみ動作します。幅の広い端末を使っている場合、MANWIDTH=80 と設定することでマニュアルページが 80 文字幅で整形されるように強制できます。"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
-msgstr ""
-"セキュリティ上の問題があるかも知れないので、この機能はデフォルトでは 無効と"
-"なっています。分からなければ、無効のままにしておくのをおすすめ します。"
+msgstr "これを有効にするとセキュリティ上の問題が発生するかもしれないため、この機能はデフォルトでは無効となっています。よくわからなければ、無効のままにしておくことをお勧めします。"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:21
-#, fuzzy
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
 "packages."
-msgstr ""
-"マニュアルページの記述のデータベースがまだありません。どれだけのマニ ュアル"
-"ページをインストールしたかに依存して、この構築には多少の時間が かかります。構"
-"築はバックグラウンドで行いますので、他のパッケージのイ ンストール過程が遅くな"
-"るかもしれません。いま構築したいですか?"
+msgstr "マニュアルページの記述のデータベースがまだありません。どれだけのマニュアルページをインストールしたかに依存して、この構築には多少の時間がかかります。構築はバックグラウンドで行うので、ほかのパッケージのイ ンストール過程が遅くなるかもしれません。"
 
 #. Type: boolean
 #. Description
@@ -100,18 +76,12 @@ msgstr "mandb は、いまデータベースを構築すべきですか?"
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-#, fuzzy
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
 "background, possibly slowing down the installation of other packages."
-msgstr ""
-"man-db のこのバージョンは、いまこのマシンに存在しているマニュアルペー ジの記"
-"述のデータベースと互換性がありませんので、データベースを再構築 する必要があり"
-"ます。どれだけのマニュアルページをインストールしたかに 依存して、この構築には"
-"多少の時間がかかります。構築はバックグラウンド で行いますので、他のパッケージ"
-"のインストール過程が遅くなるかもしれま せん。いま構築したいですか?"
+msgstr "man-db のこのバージョンは、いまこのマシンに存在しているマニュアルページの記述のデータベースと互換性がないので、データベースを再構築する必要があります。どれだけのマニュアルページをインストールしたかに依存して、この構築には多少の時間がかかります。構築はバックグラウンドで行うので、ほかのパッケージのインストール過程が遅くなるかもしれません。"
 
 #. Type: boolean
 #. Description
@@ -121,29 +91,10 @@ msgid ""
 "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
 "'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
 "to display any output."
-msgstr ""
-"いまデータベースを構築しなければ、次回に /etc/cron.weekly/mandb が起 動した時"
-"に構築されます。「man」ユーザで「mandb -c」を実行することでも 構築できます。"
-"それまでの間、「whatis」コマンドと「apropos」コマンドは 正しく動作しません。"
+msgstr "いまデータベースを構築しなければ、次回に /etc/cron.weekly/mandb が起動したときに構築されます。「man」ユーザで「mandb -c」を実行することでも構築できます。それまでの間、「whatis」コマンドと「apropos」コマンドは正しく動作しません。"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
 msgid "Incompatible changes like this should happen rarely."
-msgstr ""
-"今回のように、バージョンアップに伴って互換性がなくなることは、まれに しか起こ"
-"らないはずです。"
-
-#~ msgid "Should mandb rebuild its database now?"
-#~ msgstr "mandb は、いまデータベースを再構築すべきですか?"
-
-#~ msgid ""
-#~ "If you do not rebuild the database now, it will be rebuilt the next time /"
-#~ "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#~ "be able to display any output."
-#~ msgstr ""
-#~ "いまデータベースを構築しなければ、次回に /etc/cron.weekly/mandb が起 動し"
-#~ "た時に構築されます。「man」ユーザで「mandb -c」を実行することでも 構築でき"
-#~ "ます。それまでの間、「whatis」コマンドと「apropos」コマンドは 正しく動作し"
-#~ "ません。"
+msgstr "今回のように、バージョンアップに伴って互換性がなくなることは、まれにしか起こらないはずです。"

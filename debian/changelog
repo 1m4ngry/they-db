@@ -1,3 +1,12 @@
+man-db (2.4.2-10) unstable; urgency=low
+
+  * Update debconf translations:
+    - Danish (thanks, Claus Hindsgaul; closes: #233272).
+    - French (thanks, Christian Perrier; closes: #232490).
+    - Japanese (thanks, Kenshi Muto; closes: #234051).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 22 Feb 2004 19:45:13 +0000
+
 man-db (2.4.2-9) unstable; urgency=low
 
   * Improve the wording of some debconf templates (thanks, Christian

@@ -14,6 +14,49 @@ Description: Should man and mandb be installed 'setuid man'?
  .
  Enabling this feature may be a security risk, so it is disabled by default.
  If in doubt, you should leave it disabled.
+Description-da: Skal man og mandb installeres 'setuid man'?
+ Programmerne man og mandb kan blive installeret med sæt-bruger-ID sat, så
+ de vil blive kørt med brugeren 'man's rettigheder. Det gør det muligt for
+ almindelige brugere at benytte præformaterede manualsider ('cat-sider')
+ fra mellemlageret, hvilket går hurtigere på langsomme maskiner.
+ .
+ Gemte manualsider vil kun virke, hvis du bruger en terminal, der er 80
+ tegn bred, for at undgå at nogle cat-sider bliver gemt med bredder, der
+ ikke passer til andre brugeres skærme. Hvis du bruger en 'bred' terminal,
+ tvinge manualsider til alligevel at blive tilpasset 80 tegn ved at sætte
+ MANWIDTH=80.
+ .
+ Det kan være en sikkerhedsrisiko at slå denne funktion til. Derfor er den
+ som udgangspunkt slået fra. Hvis du er i tvivl, bør du slå den fra.
+Description-fr: Faut-il exécuter les programmes man et mandb avec les droits de l'utilisateur « man » ?
+ Les programmes man et mandb peuvent s'exécuter avec les droits de
+ l'utilisateur « man ». Les utilisateurs ordinaires peuvent ainsi
+ bénéficier du cache des pages de manuel pré-formatées (« catpage ») ce qui
+ peut améliorer les performances des machines lentes.
+ .
+ Un terminal d'une largeur « normale » (80 caractères par ligne) est
+ indispensable pour que la mise en cache des pages fonctionne. Cela évite
+ qu'un utilisateur ne mette en cache des pages dans un format inutilisable
+ par un autre utilisateur. Si vous utilisez un terminal plus large, vous
+ pouvez forcer un formatage des pages sur 80 colonnes avec le paramètre
+ MANWIDTH=80.
+ .
+ Cette fonctionnalité peut comporter un risque pour la sécurité du
+ système ; elle n'est pas activée par défaut. Dans le doute, vous devriez
+ la laisser désactivée.
+Description-ja: man ¤È mandb ¤ò man ¤Ë setuid ¤·¤¿¾õÂÖ¤Ç¥¤¥ó¥¹¥È¡¼¥ë¤·¤Þ¤¹¤«?
+ man ¥×¥í¥°¥é¥à¤È mandb
+ ¥×¥í¥°¥é¥à¤Ï¡¢¡Öman¡×¥æ¡¼¥¶¤Î¸¢¸Â²¸·Ã¤ò¼õ¤±¤ë¤¿¤á¤Ë¡¢set-user-id
+ ¥Ó¥Ã¥È¤ò¥»¥Ã¥È¤·¤¿¾õÂÖ¤Ç¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ¤¹¡£¤½¤¦¤¹¤ë¤È¡¢ÄÌ¾ï¤Î¥æ¡¼¥¶¤¬¥Õ¥©¡¼¥Þ¥Ã¥ÈºÑ¤ß¤Î¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸
+ (¡Öcat ¥Ú¡¼¥¸¡×)
+ ¤Î¥­¥ã¥Ã¥·¥ó¥°¤ò»È¤¦¤³¤È¤¬¤Ç¤­¡¢ÃÙ¤¤¥Þ¥·¥ó¤Ç¤Î¥Ñ¥Õ¥©¡¼¥Þ¥ó¥¹¤Î¸þ¾å¤ËÌòÎ©¤Á¤Þ¤¹¡£
+ .
+ ¤Û¤«¤Î¥æ¡¼¥¶¤Ë¤È¤Ã¤ÆÉÔÊØ¤ÊÉý¤ËÀ°·Á¤µ¤ì¤¿¥Ú¡¼¥¸¤¬ÊÝÂ¸¤µ¤ì¤Æ¤·¤Þ¤¦¤Î¤òËÉ¤°¤¿¤á¡¢¥­¥ã¥Ã¥·¥å¤µ¤ì¤¿¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Ï¡¢80
+ Ê¸»úÉý¤ÎÃ¼Ëö¤ò»È¤Ã¤Æ¤¤¤ë¤È¤­¤Î¤ßÆ°ºî¤·¤Þ¤¹¡£Éý¤Î¹­¤¤Ã¼Ëö¤ò»È¤Ã¤Æ¤¤¤ë¾ì¹ç¡¢MANWIDTH=80
+ ¤ÈÀßÄê¤¹¤ë¤³¤È¤Ç¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤¬ 80
+ Ê¸»úÉý¤ÇÀ°·Á¤µ¤ì¤ë¤è¤¦¤Ë¶¯À©¤Ç¤­¤Þ¤¹¡£
+ .
+ ¤³¤ì¤òÍ­¸ú¤Ë¤¹¤ë¤È¥»¥­¥å¥ê¥Æ¥£¾å¤ÎÌäÂê¤¬È¯À¸¤¹¤ë¤«¤â¤·¤ì¤Ê¤¤¤¿¤á¡¢¤³¤Îµ¡Ç½¤Ï¥Ç¥Õ¥©¥ë¥È¤Ç¤ÏÌµ¸ú¤È¤Ê¤Ã¤Æ¤¤¤Þ¤¹¡£¤è¤¯¤ï¤«¤é¤Ê¤±¤ì¤Ð¡¢Ìµ¸ú¤Î¤Þ¤Þ¤Ë¤·¤Æ¤ª¤¯¤³¤È¤ò¤ª´«¤á¤·¤Þ¤¹¡£
 
 Template: man-db/build-database
 Type: boolean
@@ -28,6 +71,34 @@ Description: Should mandb build its database now?
  /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
  user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
  be able to display any output.
+Description-da: Skal mandb opbygge sin database nu?
+ Du har endnu ingen database over manualsidebeskrivelser. Det vil tage
+ nogen tid at opbygge en sådan, afhængigt af, hvor mange manualsider, du
+ har installeret. Det vil ske i baggrunden, og kan midlertidigt gøre
+ installationen af andre pakker langsommere.
+ .
+ Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang,
+ /etc/cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c'
+ som brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos'
+ ikke kunne vise noget.
+Description-fr: Faut-il construire la base de données des pages de manuel maintenant ?
+ Aucune base de données des pages de manuel n'existe encore. Selon le
+ nombre de pages installées, sa construction peut prendre du temps ; elle
+ se déroule en arrière-plan et peut ralentir l'installation des autres
+ paquets. Veuillez confirmer que vous souhaitez l'effectuer maintenant.
+ .
+ Si vous ne construisez pas la base de données maintenant, elle le sera à
+ la prochaine exécution de /etc/cron.weekly/mandb ou bien vous pourrez le
+ faire vous-même en lançant « mandb -c » en tant qu'utilisateur « man ».
+ Dans l'intervalle, les commandes « whatis » et « apropos » ne pourront
+ rien afficher.
+Description-ja: mandb ¤Ï¡¢¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
+ ¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Îµ­½Ò¤Î¥Ç¡¼¥¿¥Ù¡¼¥¹¤¬¤Þ¤À¤¢¤ê¤Þ¤»¤ó¡£¤É¤ì¤À¤±¤Î¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤¿¤«¤Ë°ÍÂ¸¤·¤Æ¡¢¤³¤Î¹½ÃÛ¤Ë¤ÏÂ¿¾¯¤Î»þ´Ö¤¬¤«¤«¤ê¤Þ¤¹¡£¹½ÃÛ¤Ï¥Ð¥Ã¥¯¥°¥é¥¦¥ó¥É¤Ç¹Ô¤¦¤Î¤Ç¡¢¤Û¤«¤Î¥Ñ¥Ã¥±¡¼¥¸¤Î¥¤
+ ¥ó¥¹¥È¡¼¥ë²áÄø¤¬ÃÙ¤¯¤Ê¤ë¤«¤â¤·¤ì¤Þ¤»¤ó¡£
+ .
+ ¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤·¤Ê¤±¤ì¤Ð¡¢¼¡²ó¤Ë /etc/cron.weekly/mandb
+ ¤¬µ¯Æ°¤·¤¿¤È¤­¤Ë¹½ÃÛ¤µ¤ì¤Þ¤¹¡£¡Öman¡×¥æ¡¼¥¶¤Ç¡Ömandb
+ -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â¹½ÃÛ¤Ç¤­¤Þ¤¹¡£¤½¤ì¤Þ¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Þ¥ó¥É¤È¡Öapropos¡×¥³¥Þ¥ó¥É¤ÏÀµ¤·¤¯Æ°ºî¤·¤Þ¤»¤ó¡£
 
 Template: man-db/rebuild-database
 Type: boolean
@@ -45,3 +116,39 @@ Description: Should mandb build its database now?
  be able to display any output.
  .
  Incompatible changes like this should happen rarely.
+Description-da: Skal mandb opbygge sin database nu?
+ Denne version af man-db er inkompatibel med din eksisterende database med
+ manualside-beskrivelser, så databasen skal genopbygges. Det vil tage nogen
+ tid afhængigt af, hvor mange manualsider du har installeret. Det vil ske i
+ baggrunden, og kan midlertidigt gøre installationen af andre pakker
+ langsommere.
+ .
+ Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang,
+ /etc/cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c'
+ som brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos'
+ ikke kunne vise noget.
+ .
+ Inkompatible ændringer som denne skulle være sjældne.
+Description-fr: Faut-il construire la base de données des pages de manuel maintenant ?
+ Cette version de man-db est incompatible avec l'actuelle base de données
+ des descriptions de pages, qui doit être reconstruite. Selon le nombre de
+ pages installées, cette opération peut prendre du temps ; comme elle se
+ déroule en arrière-plan, elle peut ralentir l'installation des autres
+ paquets.
+ .
+ Si vous ne construisez pas la base de données maintenant, elle le sera à
+ la prochaine exécution de /etc/cron.weekly/mandb ou bien vous pourrez le
+ faire vous-même en lançant « mandb -c » en tant qu'utilisateur « man ».
+ Dans l'intervalle, les commandes « whatis » et « apropos » ne pourront
+ rien afficher.
+ .
+ De telles incompatibilités n'arrivent que rarement.
+Description-ja: mandb ¤Ï¡¢¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
+ man-db
+ ¤Î¤³¤Î¥Ð¡¼¥¸¥ç¥ó¤Ï¡¢¤¤¤Þ¤³¤Î¥Þ¥·¥ó¤ËÂ¸ºß¤·¤Æ¤¤¤ë¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Îµ­½Ò¤Î¥Ç¡¼¥¿¥Ù¡¼¥¹¤È¸ß´¹À­¤¬¤Ê¤¤¤Î¤Ç¡¢¥Ç¡¼¥¿¥Ù¡¼¥¹¤òºÆ¹½ÃÛ¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Þ¤¹¡£¤É¤ì¤À¤±¤Î¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤¿¤«¤Ë°ÍÂ¸¤·¤Æ¡¢¤³¤Î¹½ÃÛ¤Ë¤ÏÂ¿¾¯¤Î»þ´Ö¤¬¤«¤«¤ê¤Þ¤¹¡£¹½ÃÛ¤Ï¥Ð¥Ã¥¯¥°¥é¥¦¥ó¥É¤Ç¹Ô¤¦¤Î¤Ç¡¢¤Û¤«¤Î¥Ñ¥Ã¥±¡¼¥¸¤Î¥¤¥ó¥¹¥È¡¼¥ë²áÄø¤¬ÃÙ¤¯¤Ê¤ë¤«¤â¤·¤ì¤Þ¤»¤ó¡£
+ .
+ ¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤·¤Ê¤±¤ì¤Ð¡¢¼¡²ó¤Ë /etc/cron.weekly/mandb
+ ¤¬µ¯Æ°¤·¤¿¤È¤­¤Ë¹½ÃÛ¤µ¤ì¤Þ¤¹¡£¡Öman¡×¥æ¡¼¥¶¤Ç¡Ömandb
+ -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â¹½ÃÛ¤Ç¤­¤Þ¤¹¡£¤½¤ì¤Þ¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Þ¥ó¥É¤È¡Öapropos¡×¥³¥Þ¥ó¥É¤ÏÀµ¤·¤¯Æ°ºî¤·¤Þ¤»¤ó¡£
+ .
+ º£²ó¤Î¤è¤¦¤Ë¡¢¥Ð¡¼¥¸¥ç¥ó¥¢¥Ã¥×¤ËÈ¼¤Ã¤Æ¸ß´¹À­¤¬¤Ê¤¯¤Ê¤ë¤³¤È¤Ï¡¢¤Þ¤ì¤Ë¤·¤«µ¯¤³¤é¤Ê¤¤¤Ï¤º¤Ç¤¹¡£

@@ -1,24 +1,22 @@
 #
-#    Translators, if you are not familiar with the PO format, gettext
-#    documentation is worth reading, especially sections dedicated to
-#    this format, e.g. by running:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
+#.  Translators, if you are not familiar with the PO format, gettext
+#.  documentation is worth reading, especially sections dedicated to
+#.  this format, e.g. by running:
+#.       info -n '(gettext)PO Files'
+#.       info -n '(gettext)Header Entry'
 #
-#    Some information specific to po-debconf are available at
-#            /usr/share/doc/po-debconf/README-trans
-#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#.  Some information specific to po-debconf are available at
+#.          /usr/share/doc/po-debconf/README-trans
+#.       or http://www.debian.org/intl/l10n/po-debconf/README-trans
 #
-#    Developers do not need to manually edit POT or PO files.
+#.  Developers do not need to manually edit POT or PO files.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2004-02-11 07:06+0100\n"
+"Last-Translator: Christian Perrier <bubulle@debian.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
@@ -27,63 +25,55 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr ""
-"Voulez-vous installer les programmes man et mandb pour l'utilisateur "
-"« man » ?"
+"Faut-il exécuter les programmes man et mandb avec les droits de "
+"l'utilisateur « man » ?"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
 msgstr ""
-"On peut positionner le bit « set-user-id » des programmes man et mandb de "
-"manière qu'ils s'exécutent avec les droits de l'utilisateur « man ». Les "
-"utilisateurs ordinaires peuvent ainsi bénéficier du cache des pages de "
-"manuel pré-formatées (« catpage ») ; cela permet aussi que la base de "
-"données des descriptions de page soit maintenue à jour par ceux qui lisent "
-"le manuel. Le cache des pages peut aussi améliorer les performances des "
-"machines lentes."
+"Les programmes man et mandb peuvent s'exécuter avec les droits de "
+"l'utilisateur « man ». Les utilisateurs ordinaires peuvent ainsi bénéficier "
+"du cache des pages de manuel pré-formatées (« catpage ») ce qui peut "
+"améliorer les performances des machines lentes."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"Il faut utiliser un terminal d'une largeur « normale » (de 66 à 80 "
-"caractères par ligne) pour que le cache des pages fonctionne. On évite ainsi "
-"qu'un utilisateur ne cache des pages dans un format inutilisable par un "
-"autre utilisateur. En attendant une version où l'on pourra choisir une "
-"largeur, vous pouvez, si vous utilisez un grand écran, formater les pages "
-"pour 80 caractères avec le paramètre MANWIDTH=80."
+"Un terminal d'une largeur « normale » (80 caractères par ligne) est "
+"indispensable pour que la mise en cache des pages fonctionne. Cela évite "
+"qu'un utilisateur ne mette en cache des pages dans un format inutilisable "
+"par un autre utilisateur. Si vous utilisez un terminal plus large, vous "
+"pouvez forcer un formatage des pages sur 80 colonnes avec le paramètre "
+"MANWIDTH=80."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
 msgstr ""
 "Cette fonctionnalité peut comporter un risque pour la sécurité du système ; "
-"elle n'est pas installée par défaut. Si vous avez un doute, je vous propose "
-"de faire de même."
+"elle n'est pas activée par défaut. Dans le doute, vous devriez la laisser "
+"désactivée."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:21
-#, fuzzy
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -91,31 +81,29 @@ msgid ""
 "packages."
 msgstr ""
 "Aucune base de données des pages de manuel n'existe encore. Selon le nombre "
-"de pages installées, cela peut prendre du temps ; cela se passe en arrière-"
-"plan et cela peut ralentir l'installation des autres paquets. Voulez-vous "
-"lancer maintenant le programme mandb ?"
+"de pages installées, sa construction peut prendre du temps ; elle se déroule "
+"en arrière-plan et peut ralentir l'installation des autres paquets. Veuillez "
+"confirmer que vous souhaitez l'effectuer maintenant."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
 msgid "Should mandb build its database now?"
-msgstr "Voulez-vous construire la base de données maintenant ?"
+msgstr "Faut-il construire la base de données des pages de manuel maintenant ?"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-#, fuzzy
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
 "background, possibly slowing down the installation of other packages."
 msgstr ""
-"Cette version de man-db est incompatible avec votre base de données actuelle "
-"des descriptions de pages et celle-ci doit être reconstruite. Selon le "
-"nombre de pages installées, cela peut prendre du temps ; comme cela se passe "
-"en arrière-plan, cela peut ralentir l'installation des autres paquets. "
-"Voulez-vous lancer maintenant le programme mandb ?"
+"Cette version de man-db est incompatible avec l'actuelle base de données des "
+"descriptions de pages, qui doit être reconstruite. Selon le nombre de pages "
+"installées, cette opération peut prendre du temps ; comme elle se déroule en "
+"arrière-plan, elle peut ralentir l'installation des autres paquets."
 
 #. Type: boolean
 #. Description
@@ -126,29 +114,14 @@ msgid ""
 "'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
 "to display any output."
 msgstr ""
-"Si vous ne construisez pas maintenant la base de données, elle sera "
-"construite à la prochaine exécution de /etc/cron.weekly/mandb ou bien vous "
-"pourrez le faire vous-même en lançant « mandb -c » en tant que utilisateur "
-"« man ». Pendant ce temps, les commandes « whatis » et « apropos » ne "
-"pourront rien afficher."
+"Si vous ne construisez pas la base de données maintenant, elle le sera à la "
+"prochaine exécution de /etc/cron.weekly/mandb ou bien vous pourrez le faire "
+"vous-même en lançant « mandb -c » en tant qu'utilisateur « man ». Dans "
+"l'intervalle, les commandes « whatis » et « apropos » ne pourront rien "
+"afficher."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
 msgid "Incompatible changes like this should happen rarely."
 msgstr "De telles incompatibilités n'arrivent que rarement."
-
-#~ msgid "Should mandb rebuild its database now?"
-#~ msgstr "Voulez-vous reconstruire la base de données maintenant ?"
-
-#~ msgid ""
-#~ "If you do not rebuild the database now, it will be rebuilt the next time /"
-#~ "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#~ "be able to display any output."
-#~ msgstr ""
-#~ "Si vous ne construisez pas maintenant la base de données, elle sera "
-#~ "construite à la prochaine exécution de /etc/cron.weekly/mandb ou bien "
-#~ "vous pourrez le faire vous-même en lançant « mandb -c » en tant "
-#~ "qu'utilisateur « man ». Pendant ce temps, les commandes « whatis » et "
-#~ "« apropos » ne pourront rien afficher."
