@@ -1,3 +1,16 @@
+man-db (2.3.19-3) unstable; urgency=low
+
+  * Allow whatis entries to point to themselves. This sometimes happens when
+    multiple names and descriptions are present, and it's easier to tolerate
+    this.
+  * Prepend to $LESS rather than appending to it, so that long options work
+    (closes: #83594).
+  * Set the modification time of each cat page to be the same as that of the
+    corresponding man page, and regenerate cat pages if the modtime differs
+    rather than if it's newer (closes: #22358, #93659).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 10 Jul 2001 17:24:41 +0100
+
 man-db (2.3.19-2) unstable; urgency=medium
 
   * A bracketing typo made determine_lang_table() never detect anything
