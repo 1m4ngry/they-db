@@ -14,6 +14,21 @@ Description: Should man and mandb be installed 'setuid man'?
  .
  Enabling this feature may be a security risk, so it is disabled by default.
  If in doubt, you should leave it disabled.
+Description-cs: Mají se man a mandb nainstalovat jako 'setuid man'?
+ Programy man a mandb mohou být nainstalovány s nastaveným pøíznakem
+ set-user-id, tudí¾ se spou¹tí s právy u¾ivatele 'man'. Takto mohou i
+ obyèejní u¾ivatelé vyu¾ívat urychleného naèítání pøedformátovaných
+ manuálových stránek z vyrovnávací pamìti, co¾ mù¾e pomoci obzvlá¹tì na
+ pomalej¹ích poèítaèích. 
+ .
+ Manuálové stránky ve vyrovnávací pamìti fungují pouze pokud pou¾íváte 80
+ sloupcový terminál, aby se zabránilo mo¾nosti, ¾e nìkterý u¾ivatel ulo¾í
+ stránky s takovou ¹íøkou, která bude obtì¾ovat ostatní u¾ivatele.
+ Pou¾íváte-li ¹iroký terminál, mù¾ete pøinutit formátovaè stránek, aby
+ pou¾il standardních 80 sloupcù nastavením promìnné MANWIDTH=80.
+ .
+ Proto¾e se povolením této vlastnosti mù¾ete vystavit bezpeènostnímu
+ riziku, je vlastnost standardnì vypnutá.
 Description-da: Skal man og mandb installeres 'setuid man'?
  Programmerne man og mandb kan blive installeret med sæt-bruger-ID sat, så
  de vil blive kørt med brugeren 'man's rettigheder. Det gør det muligt for
@@ -28,6 +43,26 @@ Description-da: Skal man og mandb installeres 'setuid man'?
  .
  Det kan være en sikkerhedsrisiko at slå denne funktion til. Derfor er den
  som udgangspunkt slået fra. Hvis du er i tvivl, bør du slå den fra.
+Description-de: Möchten Sie man und mandb mit dem setuid-Flag installieren?
+ Die Programme »man« und »mandb« können so installiert werden, dass das
+ »set-user-id-Bit« gesetzt ist und die Programme daher mit den Rechten des
+ Benutzers »man« laufen. Dadurch kommen reguläre Benutzer in den Genuss von
+ vorformatierten Handbuchseiten (sogenannten »cat-Seiten«) und die
+ Datenbank der Handbuchbeschreibungen wird durch die Benutzer dieser Seiten
+ automatisch auf dem neuesten Stand gehalten. Besonders das Benutzen von
+ cat-Seiten kann auf langsameren Computern einen Geschwindigkeitsvorteil
+ beim Benutzen der Handbuchseiten bringen.
+ .
+ Vorformatierte Handbuchseiten funktionieren nur mit Terminals mit
+ »normaler« Breite (80 Buchstaben). Dadurch wird verhindert, dass ein
+ Benutzer die Seiten mit einer Größe speichert, die für andere Benutzer
+ unlesbar ist. Zukünftig wird sich dies konfigurieren lassen. Bis dahin
+ können Sie eine Breite der Handbuchseiten von 80 Zeichen durch Setzen der
+ Umgebungsvariable MANWIDTH=80 erzwingen.
+ .
+ Das Einschalten dieses Features kann ein Sicherheitsrisiko sein. Daher ist
+ es standardmäßig abgeschaltet. Wenn Sie sich nicht sicher sind, sollten
+ Sie daher mit »Nein« antworten.
 Description-fr: Faut-il exécuter les programmes man et mandb avec les droits de l'utilisateur « man » ?
  Les programmes man et mandb peuvent s'exécuter avec les droits de
  l'utilisateur « man ». Les utilisateurs ordinaires peuvent ainsi
@@ -57,6 +92,23 @@ Description-ja: man ¤È mandb ¤ò man ¤Ë setuid ¤·¤¿¾õÂÖ¤Ç¥¤¥ó¥¹¥È¡¼¥ë¤·¤Þ¤¹¤«?
  Ê¸»úÉý¤ÇÀ°·Á¤µ¤ì¤ë¤è¤¦¤Ë¶¯À©¤Ç¤­¤Þ¤¹¡£
  .
  ¤³¤ì¤òÍ­¸ú¤Ë¤¹¤ë¤È¥»¥­¥å¥ê¥Æ¥£¾å¤ÎÌäÂê¤¬È¯À¸¤¹¤ë¤«¤â¤·¤ì¤Ê¤¤¤¿¤á¡¢¤³¤Îµ¡Ç½¤Ï¥Ç¥Õ¥©¥ë¥È¤Ç¤ÏÌµ¸ú¤È¤Ê¤Ã¤Æ¤¤¤Þ¤¹¡£¤è¤¯¤ï¤«¤é¤Ê¤±¤ì¤Ð¡¢Ìµ¸ú¤Î¤Þ¤Þ¤Ë¤·¤Æ¤ª¤¯¤³¤È¤ò¤ª´«¤á¤·¤Þ¤¹¡£
+Description-pl: Czy man i mandb maj± byæ zainstalowane 'setuid man'?
+ Programy man i mandb mog± byæ zainstalowane z ustawionym bitem
+ set-user-id, tak ¿e bêd± siê uruchamiaæ z uprawnieniami u¿ytkownika 'man'.
+ Pozwala to zwyk³ym u¿ytkownikom na korzystanie z buforowania
+ preformatowanych stron podrêcznika (tzw. "strony cat"), co mo¿e powiêkszyæ
+ wydajno¶æ dzia³ania programu man na wolniejszych komputerach.
+ .
+ Buforowanie preformatowanych stron podrêcznika jest dostêpne tylko na
+ terminalach o szeroko¶ci 80 znaków, aby unikn±æ sytuacji, gdy strona
+ podrêcznika zachowana przez jednego u¿ytkownika sprawia³aby k³opot innym
+ u¿ytkownikom. Je¿eli u¿ywany jest szeroki terminal, mo¿na wymusiæ na
+ programie man zachowywanie preformatowanych stron o szeroko¶ci 80 znaków
+ ustawiaj±c zmienn± ¶rodowiska MANWIDTH=80.
+ .
+ W³±czenie tej opcji mo¿e byæ gro¼ne dla bezpieczeñstwa systemu, wiêc jest
+ domy¶lnie wy³±czona. W razie w±tpliwo¶ci, sugerujemy pozostawienie jej
+ wy³±czonej.
 Description-pt_BR: O man e o mandb devem ser instalados 'setuid man'?
  Os programas man e mandb podem ser instalados com bit set-user-id ligado,
  assim eles serão executados com as permissões do usuário 'man'. Isto
@@ -131,6 +183,15 @@ Description: Should mandb build its database now?
  /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
  user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
  be able to display any output.
+Description-cs: Má nyní mandb vytvoøit svou databázi?
+ Zatím nemáte databázi popisù manuálových stránek. Vytvoøení databáze mù¾e
+ trvat nìjakou dobu (v závislosti na poètu instalovaných balíkù). Proces
+ probìhne na pozadí, tudí¾ mù¾e zpomalit instalaci ostatních balíkù.
+ .
+ Nevytvoøíte-li databázi nyní, vytvoøí se automaticky pøi pøí¹tím spu¹tìní
+ /etc/cron.weekly/mandb. Také ji mù¾ete vytvoøit ruènì spu¹tìním 'mabdc -c'
+ jako u¾ivatel 'man'. Do té doby nebudou fungovat pøíkazy 'apropos' a
+ 'whatis'.
 Description-da: Skal mandb opbygge sin database nu?
  Du har endnu ingen database over manualsidebeskrivelser. Det vil tage
  nogen tid at opbygge en sådan, afhængigt af, hvor mange manualsider, du
@@ -141,6 +202,17 @@ Description-da: Skal mandb opbygge sin database nu?
  /etc/cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c'
  som brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos'
  ikke kunne vise noget.
+Description-de: Soll man-db seine Datenbank jetzt aufbauen?
+ Sie verfügen noch nicht über eine Datenbank mit Handbuchbeschreibungen. Es
+ benötigt eine gewisse Zeit, diese Datenbank neu aufzubauen. Dies geschieht
+ im Hintergrund und kann daher die Installation anderer Pakete
+ verlangsamen.
+ .
+ Wenn Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim
+ nächsten Aufruf von /etc/cron.weekly/mandb automatisch erstellt. Sie
+ können auch als Benutzer »man« »mandb -c« per Hand aufrufen. Solange die
+ Datenbank nicht auf eine dieser Arten erstellt wurde, zeigen die Befehle
+ »whatis« und »apropos« keine Ausgabe an.
 Description-fr: Faut-il construire la base de données des pages de manuel maintenant ?
  Aucune base de données des pages de manuel n'existe encore. Selon le
  nombre de pages installées, sa construction peut prendre du temps ; elle
@@ -159,6 +231,16 @@ Description-ja: mandb ¤Ï¡¢¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
  ¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤·¤Ê¤±¤ì¤Ð¡¢¼¡²ó¤Ë /etc/cron.weekly/mandb
  ¤¬µ¯Æ°¤·¤¿¤È¤­¤Ë¹½ÃÛ¤µ¤ì¤Þ¤¹¡£¡Öman¡×¥æ¡¼¥¶¤Ç¡Ömandb
  -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â¹½ÃÛ¤Ç¤­¤Þ¤¹¡£¤½¤ì¤Þ¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Þ¥ó¥É¤È¡Öapropos¡×¥³¥Þ¥ó¥É¤ÏÀµ¤·¤¯Æ°ºî¤·¤Þ¤»¤ó¡£
+Description-pl: Czy mandb powinien teraz zbudowaæ swoj± bazê danych?
+ W systemie nie ma jeszcze bazy danych opisów stron podrêcznika. Jej
+ tworzenie mo¿e zaj±æ trochê czasu, w zale¿no¶ci od liczby zainstalowanych
+ stron podrêcznika; bêdzie jednak uruchomione w tle, co najprawdopodobniej
+ spowolni instalacjê innych pakietów.
+ .
+ Je¿eli baza nie zostanie teraz zbudowana, to odbêdzie siê to nastêpnym
+ razem, gdy uruchomi siê /etc/cron.weekly/mandb. Mo¿na to tak¿e zrobiæ
+ rêcznie, wykonuj±c polecenie 'mandb -c' jako u¿ytkownik 'man'. Dopóki baza
+ nie zostanie zbudowana, nie bêd± dzia³aæ polecenia 'whatis' i 'apropos'.
 Description-pt_BR: O man-db deve construir sua própria base de dados agora?
  Você ainda não posui uma base de dados de descrição de páginas de manual.
  Construir uma base agora pode demorar algum tempo, dependendo de quantas
@@ -214,6 +296,19 @@ Description: Should mandb build its database now?
  be able to display any output.
  .
  Incompatible changes like this should happen rarely.
+Description-cs: Má nyní mandb vytvoøit svou databázi?
+ Tato verze man-db je nekompatibilní s va¹í stávající databází popisù
+ manuálových stránek, tudí¾ je potøeba databázi vytvoøit znovu. Vytvoøení
+ databáze mù¾e trvat nìjakou dobu (v závislosti na poètu instalovaných
+ balíkù). Proces probìhne na pozadí, tudí¾ mù¾e zpomalit instalaci
+ ostatních balíkù.
+ .
+ Nevytvoøíte-li databázi nyní, vytvoøí se automaticky pøi pøí¹tím spu¹tìní
+ /etc/cron.weekly/mandb. Také ji mù¾ete vytvoøit ruènì spu¹tìním 'mabdc -c'
+ jako u¾ivatel 'man'. Do té doby nebudou fungovat pøíkazy 'apropos' a
+ 'whatis'.
+ .
+ Nekompatibilní zmìny, jako je tato, by se mìly stávat velmi zøídka.
 Description-da: Skal mandb opbygge sin database nu?
  Denne version af man-db er inkompatibel med din eksisterende database med
  manualside-beskrivelser, så databasen skal genopbygges. Det vil tage nogen
@@ -227,6 +322,19 @@ Description-da: Skal mandb opbygge sin database nu?
  ikke kunne vise noget.
  .
  Inkompatible ændringer som denne skulle være sjældne.
+Description-de: Soll man-db seine Datenbank jetzt aufbauen?
+ Diese Version von man-db ist inkompatibel zu Ihrer alten Datenbank mit
+ Handbuchbeschreibungen. Daher muss die Datenbank neu aufgebaut werden.
+ Dies benötigt eine gewisse Zeit. Da es im Hintergrund geschieht, kann die
+ Installation anderer Pakete dadurch verlangsamt werden.
+ .
+ Wenn Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim
+ nächsten Aufruf von /etc/cron.weekly/mandb automatisch erstellt. Sie
+ können auch als Benutzer »man« »mandb -c« per Hand aufrufen. Solange die
+ Datenbank nicht auf eine dieser Arten erstellt wurde, zeigen die Befehle
+ »whatis« und »apropos« keine Ausgabe an.
+ .
+ Solche inkompatiblen Änderungen sollten nur selten vorkommen.
 Description-fr: Faut-il construire la base de données des pages de manuel maintenant ?
  Cette version de man-db est incompatible avec l'actuelle base de données
  des descriptions de pages, qui doit être reconstruite. Selon le nombre de
@@ -250,6 +358,19 @@ Description-ja: mandb ¤Ï¡¢¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
  -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â¹½ÃÛ¤Ç¤­¤Þ¤¹¡£¤½¤ì¤Þ¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Þ¥ó¥É¤È¡Öapropos¡×¥³¥Þ¥ó¥É¤ÏÀµ¤·¤¯Æ°ºî¤·¤Þ¤»¤ó¡£
  .
  º£²ó¤Î¤è¤¦¤Ë¡¢¥Ð¡¼¥¸¥ç¥ó¥¢¥Ã¥×¤ËÈ¼¤Ã¤Æ¸ß´¹À­¤¬¤Ê¤¯¤Ê¤ë¤³¤È¤Ï¡¢¤Þ¤ì¤Ë¤·¤«µ¯¤³¤é¤Ê¤¤¤Ï¤º¤Ç¤¹¡£
+Description-pl: Czy mandb powinien teraz zbudowaæ swoj± bazê danych?
+ Ta wersja pakietu man-db jest niekompatybilna z istniej±c± baz± danych
+ opisów stron podrêcznika, tak wiêc baza ta powinna byæ zbudowana na nowo.
+ Jej tworzenie mo¿e zaj±æ trochê czasu, w zale¿no¶ci od liczby
+ zainstalowanych stron podrêcznika; bêdzie jednak uruchomione w tle, co
+ najprawdopodobniej spowolni instalacjê innych pakietów.
+ .
+ Je¿eli baza nie zostanie teraz zbudowana, to odbêdzie siê to nastêpnym
+ razem, gdy uruchomi siê /etc/cron.weekly/mandb. Mo¿na to tak¿e zrobiæ
+ rêcznie, wykonuj±c polecenie 'mandb -c' jako u¿ytkownik 'man'. Dopóki baza
+ nie zostanie zbudowana, nie bêd± dzia³aæ polecenia 'whatis' i 'apropos'.
+ .
+ Takie niekompatybilne zmiany jak ta s± raczej rzadkie.
 Description-pt_BR: O man-db deve construir sua própria base de dados agora?
  Esta versão do man-db é incompatível com sua base de dados existente de
  descrições de páginas de manual. Por isso, as base de dados precisam ser

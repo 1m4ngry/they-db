@@ -1,3 +1,13 @@
+man-db (2.4.2-15) unstable; urgency=medium
+
+  * Add debconf translations:
+    - Czech (thanks, Miroslav Kure; closes: #244422).
+    - Polish (thanks, Robert Luberda; closes: #245056).
+  * Update debconf translations:
+    - German (thanks, Florian Ernst; closes: #244532).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 23 Apr 2004 01:30:38 +0100
+
 man-db (2.4.2-14) unstable; urgency=low
 
   * Add Turkish debconf translation (thanks, Recai Oktas and Mehmet Turker;

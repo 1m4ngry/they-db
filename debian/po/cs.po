@@ -1,0 +1,124 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: man-db\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-10 22:14+0000\n"
+"PO-Revision-Date: 2004-04-18 12:51+0200\n"
+"Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
+"Language-Team: Czech <provoz@debian.cz>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid "Should man and mandb be installed 'setuid man'?"
+msgstr "Mají se man a mandb nainstalovat jako 'setuid man'?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid ""
+"The man and mandb program can be installed with the set-user-id bit set, so "
+"that they will run with the permissions of the 'man' user. This allows "
+"ordinary users to benefit from the caching of preformatted manual pages "
+"('cat pages'), which may aid performance on slower machines."
+msgstr ""
+"Programy man a mandb mohou být nainstalovány s nastaveným pøíznakem set-user-"
+"id, tudí¾ se spou¹tí s právy u¾ivatele 'man'. Takto mohou i obyèejní "
+"u¾ivatelé vyu¾ívat urychleného naèítání pøedformátovaných manuálových "
+"stránek z vyrovnávací pamìti, co¾ mù¾e pomoci obzvlá¹tì na pomalej¹ích "
+"poèítaèích. "
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid ""
+"Cached man pages only work if you are using an 80-column terminal, to avoid "
+"one user causing cat pages to be saved at widths that would be inconvenient "
+"for other users. If you use a wide terminal, you can force man pages to be "
+"formatted to 80 columns anyway by setting MANWIDTH=80."
+msgstr ""
+"Manuálové stránky ve vyrovnávací pamìti fungují pouze pokud pou¾íváte 80 "
+"sloupcový terminál, aby se zabránilo mo¾nosti, ¾e nìkterý u¾ivatel ulo¾í "
+"stránky s takovou ¹íøkou, která bude obtì¾ovat ostatní u¾ivatele. Pou¾íváte-"
+"li ¹iroký terminál, mù¾ete pøinutit formátovaè stránek, aby pou¾il "
+"standardních 80 sloupcù nastavením promìnné MANWIDTH=80."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid ""
+"Enabling this feature may be a security risk, so it is disabled by default. "
+"If in doubt, you should leave it disabled."
+msgstr ""
+"Proto¾e se povolením této vlastnosti mù¾ete vystavit bezpeènostnímu riziku, "
+"je vlastnost standardnì vypnutá."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:21
+msgid ""
+"You do not yet have a database of manual page descriptions. Building one may "
+"take some time, depending on how many pages you have installed; it will "
+"happen in the background, possibly slowing down the installation of other "
+"packages."
+msgstr ""
+"Zatím nemáte databázi popisù manuálových stránek. Vytvoøení databáze mù¾e "
+"trvat nìjakou dobu (v závislosti na poètu instalovaných balíkù). Proces "
+"probìhne na pozadí, tudí¾ mù¾e zpomalit instalaci ostatních balíkù."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid "Should mandb build its database now?"
+msgstr "Má nyní mandb vytvoøit svou databázi?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages."
+msgstr ""
+"Tato verze man-db je nekompatibilní s va¹í stávající databází popisù "
+"manuálových stránek, tudí¾ je potøeba databázi vytvoøit znovu. Vytvoøení "
+"databáze mù¾e trvat nìjakou dobu (v závislosti na poètu instalovaných "
+"balíkù). Proces probìhne na pozadí, tudí¾ mù¾e zpomalit instalaci ostatních "
+"balíkù."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
+"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
+"to display any output."
+msgstr ""
+"Nevytvoøíte-li databázi nyní, vytvoøí se automaticky pøi pøí¹tím spu¹tìní /"
+"etc/cron.weekly/mandb. Také ji mù¾ete vytvoøit ruènì spu¹tìním 'mabdc -c' "
+"jako u¾ivatel 'man'. Do té doby nebudou fungovat pøíkazy 'apropos' a "
+"'whatis'."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid "Incompatible changes like this should happen rarely."
+msgstr "Nekompatibilní zmìny, jako je tato, by se mìly stávat velmi zøídka."

@@ -27,42 +27,39 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "Möchten Sie man und mandb mit dem setuid-Flag installieren?"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
 msgstr ""
-"Die Programme \"man\" und \"mandb\" können so installiert werden, dass das "
-"\"set-user-id-Bit\" gesetzt ist und die Programme daher mit den Rechten des "
-"Benutzers \"man\" laufen. Dadurch kommen reguläre Benutzer in den Genuss von "
-"vorformatierten Handbuchseiten (sogenannten \"cat-Seiten\") und die "
-"Datenbank der Handbuchbeschreibungen wird durch die Benutzer dieser Seiten "
-"automatisch auf dem neuesten Stand gehalten. Besonders das Benutzen von cat-"
-"Seiten kann auf langsameren Computern einen Geschwindigkeitsvorteil beim "
-"Benutzen der Handbuchseiten bringen."
+"Die Programme »man« und »mandb« können so installiert werden, dass das »set-"
+"user-id-Bit« gesetzt ist und die Programme daher mit den Rechten des "
+"Benutzers »man« laufen. Dadurch kommen reguläre Benutzer in den Genuss von "
+"vorformatierten Handbuchseiten (sogenannten »cat-Seiten«) und die Datenbank "
+"der Handbuchbeschreibungen wird durch die Benutzer dieser Seiten automatisch "
+"auf dem neuesten Stand gehalten. Besonders das Benutzen von cat-Seiten kann "
+"auf langsameren Computern einen Geschwindigkeitsvorteil beim Benutzen der "
+"Handbuchseiten bringen."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"Vorformatierte Handbuchseiten funktionieren nur mit Terminals mit \"normaler"
-"\" Breite (66 bis 80 Buchstaben). Dadurch wird verhindert, dass ein Benutzer "
-"die Seiten mit einer Größe speichert, die für andere Benutzer unlesbar ist. "
+"Vorformatierte Handbuchseiten funktionieren nur mit Terminals mit »normaler« "
+"Breite (80 Buchstaben). Dadurch wird verhindert, dass ein Benutzer die "
+"Seiten mit einer Größe speichert, die für andere Benutzer unlesbar ist. "
 "Zukünftig wird sich dies konfigurieren lassen. Bis dahin können Sie eine "
 "Breite der Handbuchseiten von 80 Zeichen durch Setzen der Umgebungsvariable "
 "MANWIDTH=80 erzwingen."
@@ -70,19 +67,17 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-#, fuzzy
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
 msgstr ""
 "Das Einschalten dieses Features kann ein Sicherheitsrisiko sein. Daher ist "
 "es standardmäßig abgeschaltet. Wenn Sie sich nicht sicher sind, sollten Sie "
-"daher mit \"Nein\" antworten."
+"daher mit »Nein« antworten."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:21
-#, fuzzy
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -91,8 +86,7 @@ msgid ""
 msgstr ""
 "Sie verfügen noch nicht über eine Datenbank mit Handbuchbeschreibungen. Es "
 "benötigt eine gewisse Zeit, diese Datenbank neu aufzubauen. Dies geschieht "
-"im Hintergrund und kann daher die Installation anderer Pakete verlangsamen. "
-"Möchten Sie die Datenbank jetzt erstellen?"
+"im Hintergrund und kann daher die Installation anderer Pakete verlangsamen."
 
 #. Type: boolean
 #. Description
@@ -103,7 +97,6 @@ msgstr "Soll man-db seine Datenbank jetzt aufbauen?"
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-#, fuzzy
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -113,8 +106,7 @@ msgstr ""
 "Diese Version von man-db ist inkompatibel zu Ihrer alten Datenbank mit "
 "Handbuchbeschreibungen. Daher muss die Datenbank neu aufgebaut werden. Dies "
 "benötigt eine gewisse Zeit. Da es im Hintergrund geschieht, kann die "
-"Installation anderer Pakete dadurch verlangsamt werden. Möchten Sie die "
-"Datenbank jetzt neu erstellen?"
+"Installation anderer Pakete dadurch verlangsamt werden."
 
 #. Type: boolean
 #. Description
@@ -127,9 +119,9 @@ msgid ""
 msgstr ""
 "Wenn Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim nächsten "
 "Aufruf von /etc/cron.weekly/mandb automatisch erstellt. Sie können auch als "
-"Benutzer \"man\" \"mandb -c\" per Hand aufrufen. Solange die Datenbank nicht "
-"auf eine dieser Arten erstellt wurde, zeigen die Befehle \"whatis\" und "
-"\"apropos\" keine Ausgabe an."
+"Benutzer »man« »mandb -c« per Hand aufrufen. Solange die Datenbank nicht auf "
+"eine dieser Arten erstellt wurde, zeigen die Befehle »whatis« und »apropos« "
+"keine Ausgabe an."
 
 #. Type: boolean
 #. Description
