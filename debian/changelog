@@ -1,3 +1,14 @@
+man-db (2.4.2-13) unstable; urgency=medium
+
+  * When sorting located man pages for display, sort by pure section, then
+    id (real page, symlink, whatis reference, etc.), then extended section,
+    rather than the previous ordering of extended section then id. This
+    works around the worst effects of #204249, in which changing a
+    cross-hierarchy man page alternative can cause man to get the display
+    order wrong.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon,  8 Mar 2004 00:23:21 +0000
+
 man-db (2.4.2-12) unstable; urgency=low
 
   * Add Ukrainian debconf translation (thanks, Eugeniy Meshcheryakov;
