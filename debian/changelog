@@ -1,3 +1,10 @@
+man-db (2.4.2-9) unstable; urgency=low
+
+  * Improve the wording of some debconf templates (thanks, Christian
+    Perrier; closes: #232002).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 10 Feb 2004 22:12:14 +0000
+
 man-db (2.4.2-8) unstable; urgency=low
 
   * Shorten the man-db/install-setuid template so that it doesn't overflow a

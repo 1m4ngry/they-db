@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-08 17:29+0000\n"
+"POT-Creation-Date: 2004-02-10 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,8 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-msgid "Do you want man and mandb to be installed setuid man?"
+#, fuzzy
+msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "man と mandb を setuid man な状態でインストールしますか?"
 
 #. Type: boolean
@@ -67,9 +68,10 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
+#, fuzzy
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
-"If in doubt, I suggest you leave it disabled."
+"If in doubt, you should leave it disabled."
 msgstr ""
 "セキュリティ上の問題があるかも知れないので、この機能はデフォルトでは 無効と"
 "なっています。分からなければ、無効のままにしておくのをおすすめ します。"
@@ -77,17 +79,12 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:21
-msgid "Should mandb build its database now?"
-msgstr "mandb は、いまデータベースを構築すべきですか?"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:21
+#, fuzzy
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
-"packages. Do you want this to happen now?"
+"packages."
 msgstr ""
 "マニュアルページの記述のデータベースがまだありません。どれだけのマニ ュアル"
 "ページをインストールしたかに依存して、この構築には多少の時間が かかります。構"
@@ -96,7 +93,29 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#: ../templates.master:35
+msgid "Should mandb build its database now?"
+msgstr "mandb は、いまデータベースを構築すべきですか?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+#, fuzzy
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages."
+msgstr ""
+"man-db のこのバージョンは、いまこのマシンに存在しているマニュアルペー ジの記"
+"述のデータベースと互換性がありませんので、データベースを再構築 する必要があり"
+"ます。どれだけのマニュアルページをインストールしたかに 依存して、この構築には"
+"多少の時間がかかります。構築はバックグラウンド で行いますので、他のパッケージ"
+"のインストール過程が遅くなるかもしれま せん。いま構築したいですか?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
@@ -110,42 +129,21 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-msgid "Should mandb rebuild its database now?"
-msgstr "mandb は、いまデータベースを再構築すべきですか?"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages. Do you "
-"want this to happen now?"
-msgstr ""
-"man-db のこのバージョンは、いまこのマシンに存在しているマニュアルペー ジの記"
-"述のデータベースと互換性がありませんので、データベースを再構築 する必要があり"
-"ます。どれだけのマニュアルページをインストールしたかに 依存して、この構築には"
-"多少の時間がかかります。構築はバックグラウンド で行いますので、他のパッケージ"
-"のインストール過程が遅くなるかもしれま せん。いま構築したいですか?"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
-msgid ""
-"If you do not rebuild the database now, it will be rebuilt the next time /"
-"etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-"user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not be "
-"able to display any output."
-msgstr ""
-"いまデータベースを構築しなければ、次回に /etc/cron.weekly/mandb が起 動した時"
-"に構築されます。「man」ユーザで「mandb -c」を実行することでも 構築できます。"
-"それまでの間、「whatis」コマンドと「apropos」コマンドは 正しく動作しません。"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
 msgid "Incompatible changes like this should happen rarely."
 msgstr ""
 "今回のように、バージョンアップに伴って互換性がなくなることは、まれに しか起こ"
 "らないはずです。"
+
+#~ msgid "Should mandb rebuild its database now?"
+#~ msgstr "mandb は、いまデータベースを再構築すべきですか?"
+
+#~ msgid ""
+#~ "If you do not rebuild the database now, it will be rebuilt the next time /"
+#~ "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+#~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
+#~ "be able to display any output."
+#~ msgstr ""
+#~ "いまデータベースを構築しなければ、次回に /etc/cron.weekly/mandb が起 動し"
+#~ "た時に構築されます。「man」ユーザで「mandb -c」を実行することでも 構築でき"
+#~ "ます。それまでの間、「whatis」コマンドと「apropos」コマンドは 正しく動作し"
+#~ "ません。"

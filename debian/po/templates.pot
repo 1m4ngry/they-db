@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-08 17:29+0000\n"
+"POT-Creation-Date: 2004-02-10 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-msgid "Do you want man and mandb to be installed setuid man?"
+msgid "Should man and mandb be installed 'setuid man'?"
 msgstr ""
 
 #. Type: boolean
@@ -55,13 +55,7 @@ msgstr ""
 #: ../templates.master:4
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
-"If in doubt, I suggest you leave it disabled."
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../templates.master:21
-msgid "Should mandb build its database now?"
+"If in doubt, you should leave it disabled."
 msgstr ""
 
 #. Type: boolean
@@ -71,23 +65,13 @@ msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
-"packages. Do you want this to happen now?"
-msgstr ""
-
-#. Type: boolean
-#. Description
-#: ../templates.master:21
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
+"packages."
 msgstr ""
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-msgid "Should mandb rebuild its database now?"
+msgid "Should mandb build its database now?"
 msgstr ""
 
 #. Type: boolean
@@ -97,18 +81,17 @@ msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages. Do you "
-"want this to happen now?"
+"background, possibly slowing down the installation of other packages."
 msgstr ""
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
 msgid ""
-"If you do not rebuild the database now, it will be rebuilt the next time /"
-"etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-"user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not be "
-"able to display any output."
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
+"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
+"to display any output."
 msgstr ""
 
 #. Type: boolean

@@ -1,7 +1,7 @@
 Template: man-db/install-setuid
 Type: boolean
 Default: false
-Description: Do you want man and mandb to be installed setuid man?
+Description: Should man and mandb be installed 'setuid man'?
  The man and mandb program can be installed with the set-user-id bit set, so
  that they will run with the permissions of the 'man' user. This allows
  ordinary users to benefit from the caching of preformatted manual pages
@@ -13,7 +13,7 @@ Description: Do you want man and mandb to be installed setuid man?
  formatted to 80 columns anyway by setting MANWIDTH=80.
  .
  Enabling this feature may be a security risk, so it is disabled by default.
- If in doubt, I suggest you leave it disabled.
+ If in doubt, you should leave it disabled.
 
 Template: man-db/build-database
 Type: boolean
@@ -22,249 +22,26 @@ Description: Should mandb build its database now?
  You do not yet have a database of manual page descriptions. Building one
  may take some time, depending on how many pages you have installed; it
  will happen in the background, possibly slowing down the installation of
- other packages. Do you want this to happen now?
+ other packages.
  .
  If you do not build the database now, it will be built the next time
  /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
  user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
  be able to display any output.
-Description-ca: Hauria de construir ara mandb la seva base de dades?
- Encara no teniu una base de dades de les descripcions de les pàgines de
- manual. El construir-ne una pot trigar una estona, depenent de quantes
- pàgines de manual tingueu instal·lades; això es farà en segon pla i
- possiblement alentirà la instal·lació d'altres paquets. Voleu que es faci
- això ara?
- .
- Si no construïu ara la base de dades, aquesta serà construïda la pròxima
- vegada que s'executi /etc/cron.weekly/mandb, o podeu fer-ho manualment amb
- "mandb -c" com a usuari "man".  Mentrestant, les ordres "whatis" i
- "apropos" no podran mostrar cap eixida.
-Description-da: Skal mandb opbygge sin database nu?
- Du har endnu ingen database over manualsidebeskrivelser. Det vil tage
- nogen tid at opbygge en sådan, afhængigt af, hvor mange manualsider, du
- har installeret. Det vil ske i baggrunden, og kan midlertidigt gøre
- installationen af andre pakker langsommere. Vil du have, at det sker nu?
- .
- Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang,
- /etc/cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c'
- som brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos'
- ikke kunne vise noget.
-Description-de: Soll man-db seine Datenbank jetzt aufbauen?
- Sie verfügen noch nicht über eine Datenbank mit Handbuchbeschreibungen. Es
- benötigt eine gewisse Zeit, diese Datenbank neu aufzubauen. Dies geschieht
- im Hintergrund und kann daher die Installation anderer Pakete
- verlangsamen. Möchten Sie die Datenbank jetzt erstellen?
- .
- Wenn Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim
- nächsten Aufruf von /etc/cron.weekly/mandb automatisch erstellt. Sie
- können auch als Benutzer "man" "mandb -c" per Hand aufrufen. Solange die
- Datenbank nicht auf eine dieser Arten erstellt wurde, zeigen die Befehle
- "whatis" und "apropos" keine Ausgabe an.
-Description-es: ¿Quiere que mandb construya su base de datos ahora?
- Todavía no tiene una base de datos de descripciones de páginas de manual.
- Construir una puede llevar algún tiempo, dependiendo de cuántas páginas de
- manual haya instalado; se realizará en segundo plano, por lo que es
- posible que haga más lenta la instalación de otros paquetes. ¿Quiere
- hacerlo ahora?
- .
- Si no construye la base de datos ahora, se hará la próxima vez que se
- ejecute /etc/cron.weekly/mandb, o puede hacerlo manualmente usando «mandb
- -c» como usuario man. Hasta entonces, las órdenes «whatis» y «apropos» no
- podrán mostrar nada.
-Description-fr: Voulez-vous construire la base de données maintenant ?
- Aucune base de données des pages de manuel n'existe encore. Selon le
- nombre de pages installées, cela peut prendre du temps ; cela se passe en
- arrière-plan et cela peut ralentir l'installation des autres paquets.
- Voulez-vous lancer maintenant le programme mandb ?
- .
- Si vous ne construisez pas maintenant la base de données, elle sera
- construite à la prochaine exécution de /etc/cron.weekly/mandb ou bien vous
- pourrez le faire vous-même en lançant « mandb -c » en tant que utilisateur
- « man ». Pendant ce temps, les commandes « whatis » et « apropos » ne
- pourront rien afficher.
-Description-ja: mandb ¤Ï¡¢¤¤¤Ş¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
- ¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Îµ­½Ò¤Î¥Ç¡¼¥¿¥Ù¡¼¥¹¤¬¤Ş¤À¤¢¤ê¤Ş¤»¤ó¡£¤É¤ì¤À¤±¤Î¥Ş¥Ë
- ¥å¥¢¥ë¥Ú¡¼¥¸¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤¿¤«¤Ë°ÍÂ¸¤·¤Æ¡¢¤³¤Î¹½ÃÛ¤Ë¤ÏÂ¿¾¯¤Î»ş´Ö¤¬
- ¤«¤«¤ê¤Ş¤¹¡£¹½ÃÛ¤Ï¥Ğ¥Ã¥¯¥°¥é¥¦¥ó¥É¤Ç¹Ô¤¤¤Ş¤¹¤Î¤Ç¡¢Â¾¤Î¥Ñ¥Ã¥±¡¼¥¸¤Î¥¤
- ¥ó¥¹¥È¡¼¥ë²áÄø¤¬ÃÙ¤¯¤Ê¤ë¤«¤â¤·¤ì¤Ş¤»¤ó¡£¤¤¤Ş¹½ÃÛ¤·¤¿¤¤¤Ç¤¹¤«?
- .
- ¤¤¤Ş¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤·¤Ê¤±¤ì¤Ğ¡¢¼¡²ó¤Ë /etc/cron.weekly/mandb ¤¬µ¯
- Æ°¤·¤¿»ş¤Ë¹½ÃÛ¤µ¤ì¤Ş¤¹¡£¡Öman¡×¥æ¡¼¥¶¤Ç¡Ömandb -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â
- ¹½ÃÛ¤Ç¤­¤Ş¤¹¡£¤½¤ì¤Ş¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Ş¥ó¥É¤È¡Öapropos¡×¥³¥Ş¥ó¥É¤Ï
- Àµ¤·¤¯Æ°ºî¤·¤Ş¤»¤ó¡£
-Description-nl: mandb-database nu opbouwen?
- U heeft nog geen man-pagina-beschrijvingsdatabase. Het opbouwen van deze
- database kan enige tijd duren, afhankelijk van hoeveel man-pagina's u
- geïnstalleerd heeft; dit gebeurt in de achtergrond en kan de installatie
- van andere pakketten vertragen. Wilt u dat dit nu gebeurt?
- .
- Indien u de database nu niet opbouwt zal deze bij de volgende uitvoering
- van /etc/cron.weekly/mandb opgebouwd worden. U kunt de database op elk
- moment ook zelf (her)opbouwen door 'mandb -c' uit te voeren als de
- gebruiker 'man'. In de tussentijd zullen de 'whatis' en 'apropos'
- commando's geen uitvoer weergeven.
-Description-pt_BR: man-db deve construir sua própria base de dados agora?
- Você ainda não posui uma base de dados de descrição de páginas de manual.
- Construir uma agora requer algum tempo, dependendo de quantas páginas você
- possui instaladas; isso acontecerá em segundo plano (background),
- possivelmente deixando a instalação de outros pacotes mais lenta. Você
- quer que isso aconteça agora?
- .
- Caso você não queira construir a base de dados agora, ela será
- reconstruída da próxima vez que /etc/cron.weekly/mandb for executado, ou
- você pode fazer isso você mesmo usando 'mandb -c' como o usuário 'man'.
- Até que isso ocorra, os comandos 'whatis' e 'apropos' não poderão exibir
- qualquer saída.
-Description-ru: ğÏÓÔÒÏÉÔØ ÂÁÚÕ ÄÁÎÎÙÈ mandb ÓÅÊŞÁÓ?
- õ  ×ÁÓ  ĞÏËÁ  ÎÅÔ ÂÁÚÙ ÄÁÎÎÙÈ ÏĞÉÓÁÎÉÊ ÓÔÒÁÎÉÃ ÒÕËÏ×ÏÄÓÔ×. åÅ ÓÏÚÄÁÎÉÅ
- ÍÏÖÅÔ   ÚÁÎÑÔØ   ÎÅËÏÔÏÒÏÅ   ×ÒÅÍÑ,   ×   ÚÁ×ÉÓÉÍÏÓÔÉ   ÏÔ  ËÏÌÉŞÅÓÔ×Á
- ÕÓÔÁÎÏ×ÌÅÎÎÙÈ ÓÔÒÁÎÉÃ ÒÕËÏ×ÏÄÓÔ×; ÓÏÚÄÁÎÉÅ ÂÁÚÙ ĞÒÏÉÚ×ÏÄÉÔÓÑ × ÆÏÎÏ×ÏÍ
- ĞÒÏÃÅÓÓÅ,  ŞÔÏ  ÍÏÖÅÔ  ÚÁÍÅÄÌÉÔØ  ÕÓÔÁÎÏ×ËÕ ÏÓÔÁÌØÎÙÈ ĞÁËÅÔÏ×. ÷ÁÓ ÜÔÏ
- ÕÓÔÒÁÉ×ÁÅÔ?
- .
- åÓÌÉ  ×Ù  ÎÅ ĞÏÓÔÒÏÉÔÅ ÂÁÚÕ ÄÁÎÙÈ ÓÅÊŞÁÓ, ÔÏ ÏÎÁ ÂÕÄÅÔ ĞÏÓÔÒÏÅÎÁ ĞÏÔÏÍ
- ĞÒÉ  ÚÁĞÕÓËÅ  /etc/cron.weekly/mandb,  ÉÌÉ ×Ù ÍÏÖÅÔÅ ÚÁĞÕÓÔÉÔØ ËÏÍÁÎÄÕ
- 'mandb  -c'  ÏÔ  ÉÍÅÎÉ  ĞÏÌØÚÏ×ÁÔÅÌÑ  'man'.  äÏ ÜÔÏÇÏ ÍÏÍÅÎÔÁ ËÏÍÁÎÄÙ
- 'whatis' É 'apropos' ÒÁÂÏÔÁÔØ ÎÅ ÓÍÏÇÕÔ.
 
 Template: man-db/rebuild-database
 Type: boolean
 Default: true
-Description: Should mandb rebuild its database now?
+Description: Should mandb build its database now?
  This version of man-db is incompatible with your existing database of
  manual page descriptions, so that database needs to be rebuilt. This may
  take some time, depending on how many pages you have installed; it will
  happen in the background, possibly slowing down the installation of other
- packages. Do you want this to happen now?
+ packages.
  .
- If you do not rebuild the database now, it will be rebuilt the next time
+ If you do not build the database now, it will be built the next time
  /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
  user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
  be able to display any output.
  .
  Incompatible changes like this should happen rarely.
-Description-ca: Hauria de reconstruir ara mandb la seva base de dades?
- Aquesta versió de man-db és incompatible amb la vostra base de dades de
- les descripcions de les pàgines de manual, pel que aquesta base de dades
- necessita ser recontruida.  Això pot trigar una estona, depenent de
- quantes pàgines de manual tingueu instal·lades; això es farà en un segon
- pla i possiblement alentirà la instal·lació d'altres paquets. Voleu que es
- faci això ara?
- .
- Si no reconstruïu ara la base de dades, aquesta serà reconstruïda la
- pròxima vegada que s'executi /etc/cron.weekly/mandb o podeu fer-ho
- manualment amb "mandb -c" com a usuari "man".  Mentrestant, les ordres
- "whatis" i "apropos" no podran mostrar cap eixida.
- .
- Canvis incompatibles com aquest passen molt rarament.
-Description-da: Skal mandb genopbygge sin database nu?
- Denne version af man-db er inkompatibel med din eksisterende database med
- manualside-beskrivelser, så databasen skal genopbygges. Det vil tage nogen
- tid at opbygge en sådan, afhængigt af, hvor mange manualsider, du har
- installeret. Det vil ske i baggrunden, og kan midlertidigt gøre
- installationen af andre pakker langsommere. Vil du have, at det sker nu?
- .
- Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang,
- /etc/cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c'
- som brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos'
- ikke kunne vise noget.
- .
- Inkompatible ændringer som denne bør ske sjældent.
-Description-de: Soll man-db seine Datenbank jetzt neu aufbauen?
- Diese Version von man-db ist inkompatibel zu Ihrer alten Datenbank mit
- Handbuchbeschreibungen. Daher muss die Datenbank neu aufgebaut werden.
- Dies benötigt eine gewisse Zeit. Da es im Hintergrund geschieht, kann die
- Installation anderer Pakete dadurch verlangsamt werden. Möchten Sie die
- Datenbank jetzt neu erstellen?
- .
- Wenn Sie die Datenbank jetzt nicht neu erstellen möchten, wird sie beim
- nächsten Aufruf von /etc/cron.weekly/mandb automatisch erneuert. Sie
- können auch als Benutzer "man" "mandb -c" per Hand aufrufen. Solange die
- Datenbank nicht auf eine dieser Arten erneuert wurde, zeigen die Befehle
- "whatis" und "apropos" keine Ausgabe an.
- .
- Solche inkompatiblen Änderungen sollten nur selten vorkommen.
-Description-es: ¿Quiere que mandb reconstruya su base de datos ahora?
- Esta versión de man-db es incompatible con la base de datos de
- descripciones de páginas de manual existente en su sistema, por lo que se
- debe rehacer. Puede llevar algún tiempo, dependiendo de cuántas páginas de
- manual haya instalado; se realizará en segundo plano, por lo que es
- posible que se haga más lenta la instalación de otros paquetes. ¿Quiere
- hacerlo ahora?
- .
- Si no reconstruye la base de datos ahora, se hará la próxima vez que se
- ejecute /etc/cron.weekly/mandb, o puede hacerlo manualmente usando «mandb
- -c» como usuario man. Hasta entonces, las órdenes «whatis» y «apropos» no
- podrán mostrar nada.
- .
- Los cambios incompatibles como éste sólo ocurren muy esporádicamente.
-Description-fr: Voulez-vous reconstruire la base de données maintenant ?
- Cette version de man-db est incompatible avec votre base de données
- actuelle des descriptions de pages et celle-ci doit être reconstruite.
- Selon le nombre de pages installées, cela peut prendre du temps ; comme
- cela se passe en arrière-plan, cela peut ralentir l'installation des
- autres paquets. Voulez-vous lancer maintenant le programme mandb ?
- .
- Si vous ne construisez pas maintenant la base de données, elle sera
- construite à la prochaine exécution de /etc/cron.weekly/mandb ou bien vous
- pourrez le faire vous-même en lançant « mandb -c » en tant qu'utilisateur
- « man ». Pendant ce temps, les commandes « whatis » et « apropos » ne
- pourront rien afficher.
- .
- De telles incompatibilités n'arrivent que rarement.
-Description-ja: mandb ¤Ï¡¢¤¤¤Ş¥Ç¡¼¥¿¥Ù¡¼¥¹¤òºÆ¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
- man-db ¤Î¤³¤Î¥Ğ¡¼¥¸¥ç¥ó¤Ï¡¢¤¤¤Ş¤³¤Î¥Ş¥·¥ó¤ËÂ¸ºß¤·¤Æ¤¤¤ë¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼
- ¥¸¤Îµ­½Ò¤Î¥Ç¡¼¥¿¥Ù¡¼¥¹¤È¸ß´¹À­¤¬¤¢¤ê¤Ş¤»¤ó¤Î¤Ç¡¢¥Ç¡¼¥¿¥Ù¡¼¥¹¤òºÆ¹½ÃÛ
- ¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Ş¤¹¡£¤É¤ì¤À¤±¤Î¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤¿¤«¤Ë
- °ÍÂ¸¤·¤Æ¡¢¤³¤Î¹½ÃÛ¤Ë¤ÏÂ¿¾¯¤Î»ş´Ö¤¬¤«¤«¤ê¤Ş¤¹¡£¹½ÃÛ¤Ï¥Ğ¥Ã¥¯¥°¥é¥¦¥ó¥É
- ¤Ç¹Ô¤¤¤Ş¤¹¤Î¤Ç¡¢Â¾¤Î¥Ñ¥Ã¥±¡¼¥¸¤Î¥¤¥ó¥¹¥È¡¼¥ë²áÄø¤¬ÃÙ¤¯¤Ê¤ë¤«¤â¤·¤ì¤Ş
- ¤»¤ó¡£¤¤¤Ş¹½ÃÛ¤·¤¿¤¤¤Ç¤¹¤«?
- .
- ¤¤¤Ş¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤·¤Ê¤±¤ì¤Ğ¡¢¼¡²ó¤Ë /etc/cron.weekly/mandb ¤¬µ¯
- Æ°¤·¤¿»ş¤Ë¹½ÃÛ¤µ¤ì¤Ş¤¹¡£¡Öman¡×¥æ¡¼¥¶¤Ç¡Ömandb -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â
- ¹½ÃÛ¤Ç¤­¤Ş¤¹¡£¤½¤ì¤Ş¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Ş¥ó¥É¤È¡Öapropos¡×¥³¥Ş¥ó¥É¤Ï
- Àµ¤·¤¯Æ°ºî¤·¤Ş¤»¤ó¡£
- .
- º£²ó¤Î¤è¤¦¤Ë¡¢¥Ğ¡¼¥¸¥ç¥ó¥¢¥Ã¥×¤ËÈ¼¤Ã¤Æ¸ß´¹À­¤¬¤Ê¤¯¤Ê¤ë¤³¤È¤Ï¡¢¤Ş¤ì¤Ë
- ¤·¤«µ¯¤³¤é¤Ê¤¤¤Ï¤º¤Ç¤¹¡£
-Description-nl: mandb-database nu heropbouwen?
- Deze nieuwe versie van man-db is incompatibel met uw bestaande
- man-pagina-beschrijvingsdatabase, en dus moet deze heropgebouwd worden.
- Dit kan enige tijd duren, afhankelijk van hoeveel man-pagina's u
- geïnstalleerd heeft; dit gebeurt in de achtergrond, en kan de installatie
- van andere pakketten vertragen. Wilt u dat dit nu gebeurt?
- .
- Indien u de database nu niet heropbouwt zal deze bij de volgende
- uitvoering van /etc/cron.weekly/mandb heropgebouwd worden. U kunt de
- database op elk moment ook zelf heropbouwen door 'mandb -c' uit te voeren
- als de gebruiker 'man'. In de tussentijd zullen de 'whatis' en 'apropos'
- commando's geen uitvoer weergeven.
- .
- Incompatibele veranderingen zoals deze komen zelden voor.
-Description-pt_BR: mandb deve reconstruir sua base de dados agora?
- Esta versão de man-db é incompatível com sua base de dados existente de
- descrições de páginas de manual, portanto estas base de dados precisam ser
- reconstruídas. Isto pode levar algum tempo, dependendo de quantas páginas
- você possui instaladas; isso cocrrerá em segundo plano (background),
- possivelmente deixando a instalação de outros pacotes mais lenta. Você
- quer que isso aconteça agora?
- .
- Caso você não reconstrua a base de dados agora, ela será reconstruída na
- próxima vez que /etc/cron.weekly/mandb for executado, ou você pode fazer
- isso você mesmo usando 'mandb -c' como o usuário 'man'. Até que isso
- aconteça, os comandos 'whatis' e 'apropos' não irão exibir qualquer saída.
- .
- Mudanças incompatíveis como essa deverão raramente ocorrer.
-Description-ru: ğÅÒÅÓÔÒÏÉÔØ ÂÁÚÕ ÄÁÎÎÙÈ mandb ÓÅÊŞÁÓ?
- üÔÁ ×ÅÒÓÉÑ man-db ÎÅÓÏ×ÍÅÓÔÉÍÁ Ó ÉÍÅÀİÅÊÓÑ Õ ×ÁÓ ÂÁÚÏÊ ÄÁÎÎÙÈ ÏĞÉÓÁÎÉÊ
- ÓÔÒÁÎÉÃ  ÒÕËÏ×ÏÄÓÔ×,  ĞÏÜÔÏÍÕ ÂÁÚÕ ÄÁÎÎÙÈ ÎÕÖÎÏ ĞÅÒÅÓÔÒÏÉÔØ. üÔÏ ÍÏÖÅÔ
- ÚÁÎÑÔØ  ÎÅËÏÔÏÒÏÅ  ×ÒÅÍÑ,  × ÚÁ×ÉÓÉÍÏÓÔÉ ÏÔ ËÏÌÉŞÅÓÔ×Á ÕÓÔÁÎÏ×ÌÅÎÎÙÈ Õ
- ×ÁÓ  ÓÔÒÁÎÉÃ; ÓÏÚÄÁÎÉÅ ÂÁÚÙ ĞÒÏÉÚ×ÏÄÉÔÓÑ × ÆÏÎÏ×ÏÍ ĞÒÏÃÅÓÓÅ, ŞÔÏ ÍÏÖÅÔ
- ÚÁÍÅÄÌÉÔØ ÕÓÔÁÎÏ×ËÕ ÏÓÔÁÌØÎÙÈ ĞÁËÅÔÏ×. ÷ÁÓ ÜÔÏ ÕÓÔÒÁÉ×ÁÅÔ?
- .
- åÓÌÉ  ×Ù  ÎÅ ĞÏÓÔÒÏÉÔÅ ÂÁÚÕ ÄÁÎÙÈ ÓÅÊŞÁÓ, ÔÏ ÏÎÁ ÂÕÄÅÔ ĞÏÓÔÒÏÅÎÁ ĞÏÔÏÍ
- ĞÒÉ  ÚÁĞÕÓËÅ  /etc/cron.weekly/mandb,  ÉÌÉ ×Ù ÍÏÖÅÔÅ ÚÁĞÕÓÔÉÔØ ËÏÍÁÎÄÕ
- 'mandb  -c'  ÏÔ  ÉÍÅÎÉ  ĞÏÌØÚÏ×ÁÔÅÌÑ  'man'.  äÏ ÜÔÏÇÏ ÍÏÍÅÎÔÁ ËÏÍÁÎÄÙ
- 'whatis' É 'apropos' ÒÁÂÏÔÁÔØ ÎÅ ÓÍÏÇÕÔ.
- .
- îÅÓÏ×ÍÅÓÔÉÍÙÅ ÉÚÍÅÎÅÎÉÑ ÎÁĞÏÄÏÂÉÅ ÜÔÏÇÏ ÓÌÕŞÁÀÔÓÑ ÒÅÄËÏ.

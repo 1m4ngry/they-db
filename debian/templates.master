@@ -1,7 +1,7 @@
 Template: man-db/install-setuid
 Type: boolean
 Default: false
-_Description: Do you want man and mandb to be installed setuid man?
+_Description: Should man and mandb be installed 'setuid man'?
  The man and mandb program can be installed with the set-user-id bit set, so
  that they will run with the permissions of the 'man' user. This allows
  ordinary users to benefit from the caching of preformatted manual pages
@@ -13,7 +13,7 @@ _Description: Do you want man and mandb to be installed setuid man?
  formatted to 80 columns anyway by setting MANWIDTH=80.
  .
  Enabling this feature may be a security risk, so it is disabled by default.
- If in doubt, I suggest you leave it disabled.
+ If in doubt, you should leave it disabled.
 
 Template: man-db/build-database
 Type: boolean
@@ -22,7 +22,7 @@ _Description: Should mandb build its database now?
  You do not yet have a database of manual page descriptions. Building one
  may take some time, depending on how many pages you have installed; it
  will happen in the background, possibly slowing down the installation of
- other packages. Do you want this to happen now?
+ other packages.
  .
  If you do not build the database now, it will be built the next time
  /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
@@ -32,14 +32,14 @@ _Description: Should mandb build its database now?
 Template: man-db/rebuild-database
 Type: boolean
 Default: true
-_Description: Should mandb rebuild its database now?
+_Description: Should mandb build its database now?
  This version of man-db is incompatible with your existing database of
  manual page descriptions, so that database needs to be rebuilt. This may
  take some time, depending on how many pages you have installed; it will
  happen in the background, possibly slowing down the installation of other
- packages. Do you want this to happen now?
+ packages.
  .
- If you do not rebuild the database now, it will be rebuilt the next time
+ If you do not build the database now, it will be built the next time
  /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
  user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
  be able to display any output.

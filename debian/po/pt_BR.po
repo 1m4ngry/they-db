@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-08 17:29+0000\n"
+"POT-Creation-Date: 2004-02-10 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,8 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-msgid "Do you want man and mandb to be installed setuid man?"
+#, fuzzy
+msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "Você quer que man e mandb sejam instalados com setuid?"
 
 #. Type: boolean
@@ -68,9 +69,10 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
+#, fuzzy
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
-"If in doubt, I suggest you leave it disabled."
+"If in doubt, you should leave it disabled."
 msgstr ""
 "Habilitar este recurso pode ser um risco de segurança, por isso essa "
 "mensagem é mostrada por padrão. Em caso de dúvidas, sugiro que você deixe "
@@ -79,17 +81,12 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:21
-msgid "Should mandb build its database now?"
-msgstr "man-db deve construir sua própria base de dados agora?"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:21
+#, fuzzy
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
-"packages. Do you want this to happen now?"
+"packages."
 msgstr ""
 "Você ainda não posui uma base de dados de descrição de páginas de manual. "
 "Construir uma agora requer algum tempo, dependendo de quantas páginas você "
@@ -99,7 +96,30 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#: ../templates.master:35
+msgid "Should mandb build its database now?"
+msgstr "man-db deve construir sua própria base de dados agora?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+#, fuzzy
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages."
+msgstr ""
+"Esta versão de man-db é incompatível com sua base de dados existente de "
+"descrições de páginas de manual, portanto estas base de dados precisam ser "
+"reconstruídas. Isto pode levar algum tempo, dependendo de quantas páginas "
+"você possui instaladas; isso cocrrerá em segundo plano (background), "
+"possivelmente deixando a instalação de outros pacotes mais lenta. Você quer "
+"que isso aconteça agora?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
@@ -114,42 +134,19 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-msgid "Should mandb rebuild its database now?"
-msgstr "mandb deve reconstruir sua base de dados agora?"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages. Do you "
-"want this to happen now?"
-msgstr ""
-"Esta versão de man-db é incompatível com sua base de dados existente de "
-"descrições de páginas de manual, portanto estas base de dados precisam ser "
-"reconstruídas. Isto pode levar algum tempo, dependendo de quantas páginas "
-"você possui instaladas; isso cocrrerá em segundo plano (background), "
-"possivelmente deixando a instalação de outros pacotes mais lenta. Você quer "
-"que isso aconteça agora?"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
-msgid ""
-"If you do not rebuild the database now, it will be rebuilt the next time /"
-"etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-"user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not be "
-"able to display any output."
-msgstr ""
-"Caso você não reconstrua a base de dados agora, ela será reconstruída na "
-"próxima vez que /etc/cron.weekly/mandb for executado, ou você pode fazer "
-"isso você mesmo usando 'mandb -c' como o usuário 'man'. Até que isso "
-"aconteça, os comandos 'whatis' e 'apropos' não irão exibir qualquer saída."
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Mudanças incompatíveis como essa deverão raramente ocorrer."
+
+#~ msgid "Should mandb rebuild its database now?"
+#~ msgstr "mandb deve reconstruir sua base de dados agora?"
+
+#~ msgid ""
+#~ "If you do not rebuild the database now, it will be rebuilt the next time /"
+#~ "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+#~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
+#~ "be able to display any output."
+#~ msgstr ""
+#~ "Caso você não reconstrua a base de dados agora, ela será reconstruída na "
+#~ "próxima vez que /etc/cron.weekly/mandb for executado, ou você pode fazer "
+#~ "isso você mesmo usando 'mandb -c' como o usuário 'man'. Até que isso "
+#~ "aconteça, os comandos 'whatis' e 'apropos' não irão exibir qualquer saída."
