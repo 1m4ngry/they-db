@@ -1,3 +1,14 @@
+man-db (2.4.1-3) unstable; urgency=low
+
+  * Drop privileges in display_pages() when trying to display a page from a
+    user manpath. (This isn't a security problem, as privileges were still
+    correctly dropped while running external programs like pagers. However,
+    it meant that non-world-readable user manpaths were inaccessible using a
+    setuid man.)
+  * Recode this changelog to UTF-8.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon,  6 Jan 2003 03:25:29 +0000
+
 man-db (2.4.1-2) unstable; urgency=low
 
   * Fix some cases of uninitialized mandata structs (closes: #151873).
@@ -110,7 +121,7 @@ man-db (2.4.0-4) unstable; urgency=low
   * Make sure the loop that scans for per-system manpaths if $SYSTEM is set
     always makes progress (closes: #151270).
   * Install man/THANKS.
-  * Update David MartÌnez' e-mail address.
+  * Update David Mart√≠nez' e-mail address.
 
  -- Colin Watson <cjwatson@debian.org>  Wed,  3 Jul 2002 22:52:13 +0000
 
@@ -250,8 +261,8 @@ man-db (2.3.20-13) unstable; urgency=low
   * Add Danish translation (thanks, Morten Brix Pedersen; closes: #122674).
   * Add Danish debconf translation (thanks, Claus Hindsgaul and Rune B.
     Broberg; closes: #126606).
-  * Update Spanish debconf translation (thanks, JosÈ Luis Gonz·lez
-    Gonz·lez).
+  * Update Spanish debconf translation (thanks, Jos√© Luis Gonz√°lez
+    Gonz√°lez).
   * Delete spurious backslashes in the less prompt string (closes: #122355).
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 27 Jan 2002 03:10:06 +0000
@@ -501,7 +512,7 @@ man-db (2.3.19-1) unstable; urgency=medium
       which should help to clean up the effects of old bugs like the above.
       This can be disabled with --no-purge.
 
-  * Add Spanish debconf translation (thanks, Carlos Valdivia Yag¸e;
+  * Add Spanish debconf translation (thanks, Carlos Valdivia Yag√ºe;
     closes: #102156).
   * Add 'mandb --no-purge' invocation in cron.daily, so that apropos and
     whatis will continue to work mostly as expected. Since --create isn't
@@ -1440,7 +1451,7 @@ man-db (2.3.10-65) frozen unstable; urgency=low
     catpages were purged weekly, which is no more the case since 2.3.10-60
     Also lowered (from 7 to 6) the days of non-access to purge catpages,
     because the weekly access for rebuilding the database would always keep
-    the atime lower than 7. (Thanx to Nicol·s Lichtmaier for having tampered
+    the atime lower than 7. (Thanx to Nicol√°s Lichtmaier for having tampered
     me untill I noticed that :-)
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Tue,  7 Apr 1998 23:27:32 +0300
@@ -1452,7 +1463,7 @@ man-db (2.3.10-64) frozen unstable; urgency=low
   * corrected typo in menu entry (closes: #20169)
   * corrected linkage of zsoelin which included -ldb2 (unused).
   * added Tom Christiansen's example of manpage.
-  * added corrections to spanish message catalog (Nicol·s Lichtmaier and
+  * added corrections to spanish message catalog (Nicol√°s Lichtmaier and
     Luis Francisco Gonzalez).
   * corrected propagation of option -L in whatis/apropos.
 
