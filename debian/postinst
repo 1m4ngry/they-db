@@ -69,7 +69,8 @@ fi
 
 build_db=0
 
-if [ ! -f $catdir/index.db ] && [ ! -f $catdir/index.bt ]; then
+if dpkg --compare-versions "$2" lt 2.3.16 || \
+   ([ ! -f $catdir/index.db ] && [ ! -f $catdir/index.bt ]); then
     # If the build-database question was never asked, this is probably a
     # fresh install, or maybe we're reconfiguring. The default is to build
     # the database.

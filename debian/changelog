@@ -2,6 +2,8 @@ man-db (2.4.2-17) UNRELEASED; urgency=low
 
   * debian/postinst, debian/postrm: Replace XSIish uses of 'test' with more
     portable code (thanks, David Weinehall; see #256279).
+  * Synchronize logic for whether to ask build-database or rebuild-database
+    between config and postinst (closes: #246545).
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 28 Jun 2004 01:10:10 +0100
 
