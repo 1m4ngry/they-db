@@ -1,3 +1,12 @@
+man-db (2.4.1-10) unstable; urgency=low
+
+  * Ignore LANGUAGE if a locale is explicitly specified using the
+    -L/--locale option (closes: #187751).
+  * Clarify section 3 as "program libraries" rather than "system libraries"
+    (closes: #196588).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 28 Jun 2003 00:27:37 +0100
+
 man-db (2.4.1-9) unstable; urgency=medium
 
   * Fix detection of decompression programs so that man doesn't attempt to
