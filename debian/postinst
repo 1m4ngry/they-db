@@ -9,35 +9,9 @@
 
 oldcatdir=/var/catman
 catdir=/var/cache/man
-conffile=/etc/manpath.config
-chconfig=/usr/share/man-db/chconfig
-
-if [ ! -s $conffile ]; then
-    cp /usr/share/doc/man-db/examples/manpath.config $conffile
-fi
-
-if [ ! -e /usr/bin/pager ]; then
-    ln -sf /bin/more /usr/sbin/man-pager
-    update-alternatives --install /usr/bin/pager pager /usr/sbin/man-pager 1
-fi
 
 if [ -e /etc/cron.daily/man.moved-by-preinst ]; then
     rm /etc/cron.daily/man.moved-by-preinst
-fi
-
-if dpkg --compare-versions "$2" lt-nl 2.3.10-69j; then
-    # before running mandb -c  must build correct conffile
-    md5=`sed 's/\#.*$//' $conffile | tr -s '\t ' '  ' | sort -u | md5sum`
-    if `grep -q $md5 /usr/share/man-db/config_md5 `; then
-	cp /usr/share/doc/man-db/examples/manpath.config /etc
-    else
-	if [ -x "$chconfig" ]; then
-	    $chconfig $conffile
-	else
-	    echo "  Cannot update $conffile."
-	    echo "  It is suggested to run command $chconfig ."
-	fi
-    fi
 fi
 
 if dpkg --compare-versions "$2" lt 2.3.16; then

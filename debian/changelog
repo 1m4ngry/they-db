@@ -1,3 +1,32 @@
+man-db (2.3.17.1-3) unstable; urgency=low
+
+  * Move the wrapper from /usr/bin/man-wrapper to /usr/lib/man-db/wrapper,
+    since there's no reason to execute it directly. This also means we can
+    lose man-wrapper(1), which wasn't terribly informative anyway.
+  * Make "bad symlink" output quieter (2.3.17.1-1 made it noisier by
+    mistake).
+  * Use the latin1 character set again for the C and POSIX locales.
+  * Updated Japanese translations (thanks, UCHIDA Norihiro; closes: #76774).
+    The ja_JP.ujis directory is still present, as a Debian diff can't remove
+    it. I'll remove it in the next upstream release.
+  * The order of locale variable checking was corrected some time ago by
+    calling setlocale(LC_ALL, ""). Added support for the case where
+    LC_MESSAGES is set differently from other categories, and for selecting
+    multiple locale preferences with LANGUAGE (thanks, Claudio S. Suarez
+    Sanchez and Tomohiro KUBOTA; closes: #40743).
+  * Correct first line of /etc/manpath.config (closes: #94090).
+  * Make /etc/manpath.config a dpkg-handled conffile and dispose of the hack
+    to convert old configuration files to the FHS.
+    /usr/share/man-db/chconfig is still there if people want to use it.
+  * util-linux (essential) has provided /usr/bin/pager since version 2.7.1-1
+    in September 1997. I think we can safely assume it's there now.
+  * Don't preserve the configure script any more; just generate it each
+    time. It should go in the next upstream tarball.
+  * Updated --version output, and fixed configure to find the version number
+    properly.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 17 Apr 2001 15:23:30 +0100
+
 man-db (2.3.17.1-2) unstable; urgency=low
 
   * Really fix makefile permissions. It looks like makefile was only in the

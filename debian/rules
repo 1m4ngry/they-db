@@ -39,9 +39,7 @@ build-stamp: GNUmakefile
 
 clean: GNUmakefile
 	dh_testdir
-	cp -fp configure configure.safe
-	-$(MAKE) -i distclean
-	mv -f configure.safe configure
+	-$(MAKE) nls="$(NLS)" -i distclean
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
 	dh_clean
@@ -59,17 +57,18 @@ install-stamp: build
 	# until such time as it can be fixed.
 	install -m755 src/man		$(dtmp)/usr/lib/man-db
 	install -m755 src/mandb		$(dtmp)/usr/lib/man-db
+	install -m755 src/wrapper	$(dtmp)/usr/lib/man-db/wrapper
 	install -m755 src/manpath	$(dtmp)/usr/bin
 	install -m755 src/catman	$(dtmp)/usr/bin
 	install -m755 src/whatis	$(dtmp)/usr/bin
 	install -m755 src/apropos	$(dtmp)/usr/bin
-	install -m755 src/wrapper	$(dtmp)/usr/bin/man-wrapper
-	ln -sf man-wrapper		$(dtmp)/usr/bin/man
-	ln -sf man-wrapper		$(dtmp)/usr/bin/mandb
+	ln -sf ../lib/man-db/wrapper	$(dtmp)/usr/bin/man
+	ln -sf ../lib/man-db/wrapper	$(dtmp)/usr/bin/mandb
 	install -m755 src/accessdb	$(dtmp)/usr/sbin
+	install -m644 src/man_db.config	$(dtmp)/etc/manpath.config
 	# Do safe directories.
 	for x in zsoelim man intl po; do \
-		$(MAKE) -C $$x install prefix=../$(dtmp)/usr; \
+		$(MAKE) nls="$(NLS)" -C $$x install prefix=../$(dtmp)/usr; \
 	done
 	install -m755 tools/chconfig	$(dtmp)/usr/share/$(package)
 	# now do manual changes needed by debian
@@ -77,8 +76,9 @@ install-stamp: build
 	mv $(dtmp)/usr/share/man/de_DE.88591 $(dtmp)/usr/share/man/de
 	mv $(dtmp)/usr/share/man/es_ES.88591 $(dtmp)/usr/share/man/es
 	mv $(dtmp)/usr/share/man/it_IT.88591 $(dtmp)/usr/share/man/it
-	mv $(dtmp)/usr/share/man/ja_JP.ujis  $(dtmp)/usr/share/man/ja
+	mv $(dtmp)/usr/share/man/ja_JP.eucJP $(dtmp)/usr/share/man/ja
 	rm -rf $(dtmp)/usr/share/man/de_DE.ascii
+	rm -rf $(dtmp)/usr/share/man/ja_JP.ujis
 	touch install-stamp
 
 binary-indep: build install
@@ -87,16 +87,9 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installdocs
-	dh_installman debian/man-wrapper.1
 	dh_installexamples debian/manpage.example
-	install -m644 src/man_db.config	\
+	install -m644 src/man_db.config \
 		$(dtmp)/usr/share/doc/$(package)/examples/manpath.config
-	# calculates md5 of manpath.config, and add to config_md5.
-	sed 's/\#.*$$//' \
-		  $(dtmp)/usr/share/doc/$(package)/examples/manpath.config |\
-		tr -s '\t ' '  ' | sort -u | md5sum |\
-		cat debian/config_md5 - | sort -u \
-		> $(dtmp)/usr/share/$(package)/config_md5
 	dh_installchangelogs docs/ChangeLog
 	dh_installcron
 	install -m644 debian/overrides \
