@@ -1,3 +1,10 @@
+man-db (2.3.20-18) unstable; urgency=medium
+
+  * Add French debconf translation (thanks, Philippe Batailler;
+    closes: #138375).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 15 Mar 2002 01:46:57 +0000
+
 man-db (2.3.20-17) unstable; urgency=low
 
   * Add Japanese debconf translation (thanks, Tomohiro KUBOTA;

@@ -1,0 +1,98 @@
+Template: man-db/install-setuid
+Type: boolean
+Default: false
+Description: Do you want man and mandb to be installed setuid man?
+ The man and mandb program can be installed with the set-user-id bit set,
+ so that they will run with the permissions of the 'man' user. This allows
+ ordinary users to benefit from the caching of preformatted manual pages
+ ('cat pages'), and means that the database of man page descriptions is
+ automatically kept up to date by people reading man pages. Storing cat
+ pages, in particular, may aid performance on slower machines.
+ .
+ Cached man pages only work if you are using a "normal"-width terminal (66
+ to 80 characters wide). This is to avoid one user causing cat pages to be
+ saved at widths that would be inconvenient for other users. In a future
+ release this will be configurable. Until then, if you use a wide terminal,
+ you can force man pages to be formatted to 80 characters anyway by setting
+ MANWIDTH=80.
+ .
+ Enabling this feature may be a security risk, so it is disabled by
+ default. If in doubt, I suggest you leave it disabled.
+Description-fr: Voulez-vous installer les programmes man et mandb pour l'utilisateur « man » ?
+ On peut positionner le bit « set-user-id » des programmes man et mandb de
+ manière qu'ils s'exécutent avec les droits de l'utilisateur « man ». Les
+ utilisateurs ordinaires peuvent ainsi bénéficier du cache des pages de
+ manuel pré-formatées (« catpage ») ; cela permet aussi que la base de
+ données des descriptions de page soit maintenue à jour par ceux qui lisent
+ le manuel.
+ Le cache des pages peut aussi améliorer les performances des machines 
+ lentes.
+ .
+ Il faut utiliser un terminal d'une largeur « normale » (de 66 à 80 caractères
+ par ligne) pour que le cache des pages fonctionne. On évite ainsi qu'un
+ utilisateur ne cache des pages dans un format inutilisable par un autre
+ utilisateur. En attendant une version où l'on pourra choisir une largeur,
+ vous pouvez, si vous utilisez un grand écran, formater les pages pour
+ 80 caractères avec le paramètre MANWIDTH=80.
+ .
+ Cette fonctionnalité peut comporter un risque pour la sécurité du système ;
+ elle n'est pas installée par défaut. Si vous avez un doute, je vous
+ propose de faire de même.
+
+Template: man-db/build-database
+Type: boolean
+Default: true
+Description: Should mandb build its database now?
+ You do not yet have a database of manual page descriptions. Building one
+ may take some time, depending on how many pages you have installed; it
+ will happen in the background, possibly slowing down the installation of
+ other packages. Do you want this to happen now?
+ .
+ If you do not build the database now, it will be built the next time
+ /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
+ user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
+ be able to display any output.
+Description-fr: Voulez-vous construire la base de données maintenant ?
+ Aucune base de données des pages de manuel n'existe encore. Selon le nombre
+ de pages installées, cela peut prendre du temps ; cela se passe en
+ arrière-plan et cela peut ralentir l'installation des autres paquets.
+ Voulez-vous lancer maintenant le programme mandb ?
+ .
+ Si vous ne construisez pas maintenant la base de données, elle sera
+ construite à la prochaine exécution de /etc/cron.weekly/mandb ou bien vous
+ pourrez le faire vous-même en lançant « mandb -c » en tant que utilisateur 
+ « man ».
+ Pendant ce temps, les commandes « whatis » et « apropos » ne pourront rien
+ afficher.
+
+Template: man-db/rebuild-database
+Type: boolean
+Default: true
+Description: Should mandb rebuild its database now?
+ This version of man-db is incompatible with your existing database of
+ manual page descriptions, so that database needs to be rebuilt. This may
+ take some time, depending on how many pages you have installed; it will
+ happen in the background, possibly slowing down the installation of other
+ packages. Do you want this to happen now?
+ .
+ If you do not rebuild the database now, it will be rebuilt the next time
+ /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
+ user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
+ be able to display any output.
+ .
+ Incompatible changes like this should happen rarely.
+Description-fr: Voulez-vous reconstruire la base de données maintenant ?
+ Cette version de man-db est incompatible avec votre base de données
+ actuelle des descriptions de pages et celle-ci doit être reconstruite.
+ Selon le nombre de pages installées, cela peut prendre du temps ; comme
+ cela se passe en arrière-plan, cela peut ralentir l'installation des autres
+ paquets. Voulez-vous lancer maintenant le programme mandb ?
+ .
+ Si vous ne construisez pas maintenant la base de données, elle sera
+ construite à la prochaine exécution de /etc/cron.weekly/mandb ou bien vous
+ pourrez le faire vous-même en lançant « mandb -c » en tant qu'utilisateur
+ « man ».
+ Pendant ce temps, les commandes « whatis » et « apropos » ne pourront rien
+ afficher.
+ .
+ De telles incompatibilités n'arrivent que rarement.
