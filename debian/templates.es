@@ -28,12 +28,13 @@ Description-es: ¿Quiere que man y man-db se instalen setuid man?
  ayudar particularmente a mejorar el rendimiento en máquinas lentas.
  .
  El caché de las páginas de manual preformateadas sólo funciona si está
- usando un terminal de anchura "normal" (entre 66 y 80 carácteres de ancho).
+ usando un terminal de anchura "normal" (entre 66 y 80 caracteres de ancho).
  La razón de ser de este comportamiento es evitar que algún usuario guarde
  páginas de manual preformateadas con anchuras que puedan resultar molestas
- para otros usuarios. Versiones futuras de este paquete serán configurables;
- hasta entonces, si usa un terminal ancho, puede obligar a formatear a
- 80 carácteres estableciendo MANWIDTH=80 como variable de entorno.
+ para otros usuarios. Las versiones futuras de este paquete serán
+ configurables; hasta entonces, si usa un terminal ancho, puede obligar a
+ formatear a 80 caracteres estableciendo MANWIDTH=80 como variable de
+ entorno.
  .
  Esta práctica puede representar un riesgo de seguridad, por lo que está
  deshabilitada por defecto. Si tiene dudas, le sugiero que la deje sin
@@ -61,8 +62,8 @@ Description-es: ¿Quiere que mandb construya su base de datos ahora?
  .
  Si no construye la base de datos ahora, se hará la próxima vez que se
  ejecute /etc/cron.weekly/mandb, o puede hacerlo manualmente usando
- 'mandb -c' como usuario man. Hasta entonces, las órdenes 'whatis' y
- 'apropos' no podrán mostrar nada.
+ «mandb -c» como usuario man. Hasta entonces, las órdenes «whatis» y
+ «apropos» no podrán mostrar nada.
 
 Template: man-db/rebuild-database
 Type: boolean
@@ -90,7 +91,7 @@ Description-es: ¿Quiere que mandb reconstruya su base de datos ahora?
  .
  Si no reconstruye la base de datos ahora, se hará la próxima vez que se
  ejecute /etc/cron.weekly/mandb, o puede hacerlo manualmente usando
- 'mandb -c' como usuario man. Hasta entonces, las órdenes 'whatis' y
- 'apropos' no podrán mostrar nada.
+ «mandb -c» como usuario man. Hasta entonces, las órdenes «whatis» y
+ «apropos» no podrán mostrar nada.
  .
- Cambios incompatibles como éste sólo ocurren muy esporádicamente.
+ Los cambios incompatibles como éste sólo ocurren muy esporádicamente.
