@@ -1,3 +1,11 @@
+man-db (2.4.1-2) unstable; urgency=low
+
+  * Fix some cases of uninitialized mandata structs (closes: #151873).
+  * Restore the undocumented(7) message; 2.4.1 implements it using a
+    configure flag which I forgot to add.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 23 Dec 2002 01:06:57 +0000
+
 man-db (2.4.1-1) unstable; urgency=low
 
   * The "no, the apropos segfaults weren't my fault" release.

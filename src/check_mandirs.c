@@ -382,7 +382,8 @@ void test_manfile (char *file, const char *path)
 	struct stat buf;
 	size_t len;
 
-	memset (&lg, '\0', sizeof (struct lexgrog));
+	memset (&lg, 0, sizeof (struct lexgrog));
+	memset (&info, 0, sizeof (struct mandata));
 
 	manpage = filename_info (file, &info, NULL);
 	if (!manpage)
@@ -836,6 +837,8 @@ static int count_glob_matches (const char *name, const char *ext,
 		struct mandata info;
 		struct stat statbuf;
 		char *buf;
+
+		memset (&info, 0, sizeof (struct mandata));
 
 		if (stat (*walk, &statbuf) == -1) {
 			if (debug)
