@@ -1079,7 +1079,8 @@ int main (int argc, char *argv[])
 				else
 					exit_status = NOT_FOUND;
 				if (exit_status == NOT_FOUND) {
-					if (!section && maybe_section)
+					if (!section && maybe_section &&
+					    isdigit (nextarg[0]))
 						gripe_no_name (nextarg);
 					else
 						gripe_no_man (nextarg, section);
@@ -2743,6 +2744,13 @@ static int try_section (const char *path, const char *sec, const char *name,
 		 */
 		ult = ult_src (*np, path, NULL,
 			       SO_LINK | SOFT_LINK | HARD_LINK);
+		if (!ult) {
+			/* already warned */
+			if (debug)
+				fprintf (stderr,
+					 "try_section(): bad link %s\n", *np);
+			continue;
+		}
 		if (STREQ (ult, *np))
 			info->id = ULT_MAN;
 		else

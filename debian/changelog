@@ -1,3 +1,12 @@
+man-db (2.4.0-5) unstable; urgency=low
+
+  * Fix segfault when man is asked to display a page that is a dangling
+    symlink (closes: #151974).
+  * Improve error message when asked to display a nonexistent page whose
+    name begins with 'n' or 'l' (which are also section names).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat,  6 Jul 2002 21:34:04 +0100
+
 man-db (2.4.0-4) unstable; urgency=low
 
   * Make sure the loop that scans for per-system manpaths if $SYSTEM is set
