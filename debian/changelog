@@ -1,6 +1,8 @@
 man-db (2.4.2-20) UNRELEASED; urgency=low
 
   * Suggest less (closes: #280096).
+  * Update debconf translations:
+    - Russian (thanks, Yuri Kozlov; part of #268584).
 
  -- Colin Watson <cjwatson@debian.org>  Sun,  7 Nov 2004 14:24:58 +0000
 
