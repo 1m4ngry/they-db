@@ -9,9 +9,3 @@ static __inline__ int do_prompt (char *name);
 
 /* convert_name.c */
 extern char *convert_name (char *name, char *alternate);
-
-/* globbing.c */
-extern char **look_for_file(char *path, char *sec, char *name, int cat);
-
-/* check_mandirs.c */
-extern char *make_filename(char *path, char *name, struct mandata *in, char *type);

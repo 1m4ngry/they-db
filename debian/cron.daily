@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Last modification: Sat, 23 Jun 2001 15:34:11 +0100
+# Last modification: Thu,  5 Jul 2001 03:32:35 +0100
 # man-db cron daily
 
 # expunge old catman pages which have not been read in a week
@@ -10,4 +10,13 @@ if [ -d /var/cache/man ]; then
 	--oknodo --chuid man --nicelevel 10 -- -c \
 	"find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | \
 	 xargs -r0 rm -f"
+fi
+
+# regenerate man database
+if [ -x /usr/bin/mandb ]; then
+    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
+    # but we want to start it like one.
+    start-stop-daemon --start --pidfile /dev/null \
+		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
+		      --nicelevel 10 -- --no-purge >/dev/null 2>/dev/null
 fi

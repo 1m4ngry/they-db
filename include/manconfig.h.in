@@ -16,37 +16,7 @@
    avoided. */
    
 #define STD_SECTIONS { \
-	"1", \
-	"n", "l", "8", "3", "2", \
-	"5", "4", "9", "6", "7", \
-	"1x", "3x", "5x", "6x", "8x", \
-	"1bind", "3bind", "5bind", "7bind", "8bind", \
-	"1cn", "8cn", \
-	"1m", \
-	"1mh", "5mh", "8mh", \
-	"1netpbm", "3netpbm", "5netpbm", \
-	"1p", \
-	"3blt", \
-	"3curses", "3ncurses", "3form", "3menu", \
-	"3db", "3gdbm", \
-	"3f", \
-	"3gk", \
-	"3mm", \
-	"3paper", \
-	"3pm", \
-	"3perl", \
-	"3pq", \
-	"3pub", \
-	"3qt", \
-	"3readline", \
-	"3t", \
-	"3tk", "3tcl", "3tclx", \
-	"3tix", \
-	"5mm", \
-	"7l", \
-	"7nr", \
-	"8c", \
-	NULL \
+	"1", "n", "l", "8", "3", "2", "5", "4", "9", "6", "7", NULL \
 }
 
 /* Some system's man pages require default pre-processing with perhaps tbl
@@ -253,15 +223,11 @@
 
 /* If running checker, support the garbage detector, else don't */
 #ifdef __CHECKER__
-extern void __chkr_garbage_detector(void);
+extern void __chkr_garbage_detector (void);
 #  define chkr_garbage_detector() __chkr_garbage_detector()
 #else
 #  define chkr_garbage_detector()
 #endif
-
-/* Don't define debug at all, else you'll either engage all debug messages (1)
-   or you'll stop the utilities from being runtime debuggable (0) */
-/* #define debug	0 */
 
 /* This structure definition is only really needed if COMP_SRC==1, but it is
    used in external declarations quite freely, so it's included
@@ -286,64 +252,47 @@ struct compression {
 
 /* some library function declarations */
 #include <stddef.h>	/* for size_t */
-extern VOID *xmalloc(size_t n);
-extern VOID *xrealloc(void *p, size_t n);
-extern __inline__ char *xstrdup(const char *string);
+extern VOID *xmalloc (size_t n);
+extern VOID *xrealloc (VOID *p, size_t n);
+extern __inline__ char *xstrdup (const char *string);
 
 /* ver.c */
 #ifndef STATIC_VER
-extern __inline__ void ver(void);
+extern __inline__ void ver (void);
 #endif /* !STATIC_VER */
 
 /* compression.c */
-extern struct compression *comp_info(char *filename);
-extern struct compression *comp_file(char *filename);
-extern char *decompress(char *filename, struct compression *comp);
-extern __inline__ void remove_ztemp(void);
-extern __inline__ char *get_ztemp(void);
-
-/* security.c */
-extern __inline__ void drop_effective_privs(void);
-extern __inline__ void regain_effective_privs(void);
-extern int do_system_drop_privs(const char *command);
-extern int remove_with_dropped_privs(const char *filename);
-extern void init_security(void);
-
-/* check_mandirs.c */
-extern void test_manfile(char *file, const char *path);
-extern void update_db_time(void);
-extern void reset_db_time(void);
-extern short create_db(const char *manpath);
-extern short update_db(const char *manpath);
+extern struct compression *comp_info (char *filename);
+extern struct compression *comp_file (char *filename);
+extern char *decompress (char *filename, struct compression *comp);
+extern __inline__ void remove_ztemp (void);
+extern __inline__ char *get_ztemp (void);
 
 /* straycats.c */
-extern int straycats(char *mandir);
+extern int straycats (char *mandir);
 
 /* lexgrog.l */
 struct lexgrog;
-extern int find_name(char *file, char *filename, struct lexgrog *p_lg);
+extern int find_name (char *file, char *filename, struct lexgrog *p_lg);
 
 /* util.c */
-extern char *strappend(char *, ...);
-extern int is_newer(char *fa, char *fb);
-extern int is_directory(char *path);
-extern __inline__ int do_system(const char *command);
-extern char *mkdbname(const char *path);
+extern char *strappend (char *, ...);
+extern int is_newer (char *fa, char *fb);
+extern int is_directory (char *path);
+extern __inline__ int do_system (const char *command);
+extern char *mkdbname (const char *path);
 
 #if !defined(HAVE_BASENAME)
-extern char *basename();
+extern char *basename ();
 #else /* HAVE_BASENAME */
-extern char *basename(const char *path);
+extern char *basename (const char *path);
 #endif /* !HAVE_BASENAME */
 
 #ifndef HAVE_STRSEP
-extern char *strsep(char **stringp, const char *delim);
+extern char *strsep (char **stringp, const char *delim);
 #endif /* !HAVE_STRSEP */
 
-#ifndef debug
 extern int debug; 		/* shows whether -d issued */
-#endif /* !debug */
-
 extern int quiet;		/* be quiet(er) if 1 */
 extern char *program_name;	/* the basename of the program (as called) */
 
@@ -361,6 +310,10 @@ extern char *program_name;	/* the basename of the program (as called) */
 #define CHILD_FAIL	3	/* child failed */
 #define INTERRUPTED	4	/* Interrupted by signal */
 #define NOT_FOUND	16	/* No action was taken */
+
+/* System or user catpaths? Allow bitwise disjunctions of these. */
+#define SYSTEM_CAT	1
+#define USER_CAT	2
 
 /* string macros */
 #define STREQ(a,b)	(strcmp(a,b) == 0)
@@ -391,8 +344,8 @@ enum	{ TBL_FILTER=0	/* tbl */
 	, MAX_FILTERS	/* delimiter */
 	};
 
-typedef struct lexgrog	{
-	int	type;
-	char * whatis;
-	char * filters;
-}lexgrog;
+typedef struct lexgrog {
+	int type;
+	char *whatis;
+	char *filters;
+} lexgrog;

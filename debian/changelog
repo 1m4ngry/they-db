@@ -1,3 +1,55 @@
+man-db (2.3.19-1) unstable; urgency=medium
+
+  * The "laptop envy (damn tbm for having a nicer one than me)" release.
+
+  * New upstream release. Highlights:
+    - Security fix: make sure decisions about whether to drop privileges are
+      never taken based on the user configuration file ~/.manpath.
+    - The ordering of manual sections is now configurable at run-time, using
+      SECTION directives in the configuration file. This should kill the
+      last traces of the old 9term(1) bug (closes: #3766, yay!).
+    - man will no longer try to keep its database caches up to date, even if
+      it's setuid. No more speed problems, we hope! Instead, it will fall
+      back to file globbing if database lookups fail. Whatis references will
+      no longer work if the database isn't up to date enough to contain
+      them, but I filed bugs on all packages this affects a while ago.
+    - The globbing is done per-section, so newly installed manual pages will
+      be noticed properly now (closes: #10106).
+    - Thanks to some code from another man program, manual pages are now
+      formatted to an appropriate line length when viewed on a terminal.
+      Non-standard sizes aren't saved as cat pages. Page lengths are already
+      resized with recent versions of groff (closes: #25410, #53993).
+    - mandb(8) now documents how whatis parsing might fail (closes: #77727).
+    - Whatis parsing treats fill requests correctly (closes: #97916) and
+      ignores the no-op groff request '.' (closes: #101330).
+    - Avoid infinite recursion if the database is corrupted such that an
+      entry points to itself, which I believe shouldn't happen any more
+      anyway (closes: #102181).
+    - Let mandb update system databases as root as well as the man user
+      (closes: #102250).
+    - Downgrade warning if a manpath element doesn't exist to a debugging
+      message (closes: #102402); likewise for the warning about relying on
+      whatis refs being deprecated (see #102678).
+    - Fixed some details of parsing NAME sections with multiple names in man
+      pages with multiple symlinks to them (closes: #102678).
+    - mandb knows how to delete obsolete entries from the database now,
+      which should help to clean up the effects of old bugs like the above.
+      This can be disabled with --no-purge.
+
+  * Add Spanish debconf translation (thanks, Carlos Valdivia Yagüe;
+    closes: #102156).
+  * Add 'mandb --no-purge' invocation in cron.daily, so that apropos and
+    whatis will continue to work mostly as expected. Since --create isn't
+    used any more, it should be quite fast. This should alleviate most
+    problems caused by turning off automatic database updates. A cron.weekly
+    entry remains which also purges old database entries.
+  * Add SECTION entries for 3pm and 3perl to make sure Perl modules come
+    before core (this was formerly set at compile-time).
+  * The .deb doesn't contain setuid binaries any more, so remove the lintian
+    overrides.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu,  5 Jul 2001 16:13:37 +0100
+
 man-db (2.3.18-10) unstable; urgency=low
 
   * Fix handling of symlinks pointing outside a mantree to relative .so

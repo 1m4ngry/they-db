@@ -2,5 +2,4 @@ etc
 usr/bin
 usr/lib/man-db
 usr/sbin
-usr/share/lintian/overrides
 usr/share/man-db

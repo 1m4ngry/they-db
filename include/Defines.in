@@ -74,7 +74,7 @@ apropos = $(shell echo apropos |sed '$(transform)')
 manpath = $(shell echo manpath |sed '$(transform)')
 zsoelim = $(shell echo zsoelim |sed '$(transform)')
 
-config_file = $(sysconfdir)/manpath.config
+config_file = $(sysconfdir)/man_db.conf
 sections_file = $(sysconfdir)/man/sections.list
 message_catalogue = man_db
 

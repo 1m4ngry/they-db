@@ -48,17 +48,18 @@ extern char *strcpy();
 #include "manconfig.h"
 #include "libdb/mydbm.h" /* for full definition of MAN_DB */
 
+#undef MAX
 #define MAX(a,b)	((a)>(b)?a:b)
 
 /* take path, add db name and return */
-char *mkdbname(const char *path)
+char *mkdbname (const char *path)
 {
 	static char *name;
-	size_t len = strlen(path);
+	size_t len = strlen (path);
 
 	name = (char *) xrealloc (name, sizeof MAN_DB + len);
 	(void) strcpy (name, path);
-	(void) strcpy (name+len, MAN_DB);
+	(void) strcpy (name + len, MAN_DB);
 
 	return name;
 }
@@ -85,12 +86,9 @@ int is_newer (char *fa, char *fb)
 	int fa_stat;
 	int fb_stat;
 	int status = 0;
-#ifndef debug
-	extern int debug;
-#endif
 
 	if (debug)
-		fprintf(stderr, "is_newer: a=%s, b=%s", fa, fb);
+		fprintf (stderr, "is_newer: a=%s, b=%s", fa, fb);
 
 	fa_stat = stat (fa, &fa_sb);
 	if (fa_stat != 0)
@@ -102,25 +100,25 @@ int is_newer (char *fa, char *fb)
 
 	if (status != 0) {
 		if (debug)
-			fprintf(stderr, " (%d)\n", -status);
+			fprintf (stderr, " (%d)\n", -status);
 		return -status;
 	}
 
 	if (fa_sb.st_size == 0)
-		status |= 2;		
+		status |= 2;
 
 	if (fb_sb.st_size == 0)
 		status |= 4;
 
 	/* tar and similar archivers modify the st_mtime of output files.
-	   It is possible to end up with a catfile *seemingly* newer than
-	   a freshly untarred man file.  To get around this, we use 
-	   st_mtime or st_ctime, whichever is greatest (newest). */
-	   
+	 * It is possible to end up with a catfile *seemingly* newer than
+	 * a freshly untarred man file.  To get around this, we use
+	 * st_mtime or st_ctime, whichever is greatest (newest). */
+
 	status |= (MAX(fa_sb.st_mtime, fa_sb.st_ctime) > fb_sb.st_mtime);
-	
+
 	if (debug)
-		fprintf(stderr, " (%d)\n", status);
+		fprintf (stderr, " (%d)\n", status);
 	return status;
 }
 
@@ -143,10 +141,6 @@ int is_directory (char *path)
 /* wrapper for system() */
 int do_system (const char *command)
 {
-#ifndef debug
-	extern int debug;
-#endif
-
   	/*
   	 * If we're debugging, don't really execute the command -- you never
   	 * know what might be in that mangled string :-O.

@@ -3,6 +3,7 @@
  *
  * Copyright (c) 1990, 1991, John W. Eaton.
  * Copyright (C), 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (c) 2001 Colin Watson.
  *
  * You may distribute under the terms of the GNU General Public
  * License as specified in the file COPYING that comes with this
@@ -15,6 +16,8 @@
  * Austin, Texas  78712
  *
  * Mostly written/re-written by Wilf, some routines by Markus Armbruster.
+ *
+ * CJW: Various robustness and security fixes.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -52,22 +55,21 @@ extern pid_t vfork();
 #  include <sys/param.h>
 #endif
 
-#  ifndef PATH_MAX
-#    ifdef _POSIX_VERSION
-#      define PATH_MAX _POSIX_PATH_MAX
-#    else /* !_POSIX_VERSION */
-#      ifdef MAXPATHLEN
-#        define PATH_MAX MAXPATHLEN
-#      else /* !MAXPATHLEN */
-#        define PATH_MAX 1024
-#      endif /* MAXPATHLEN */
-#    endif /* _POSIX_VERSION */
-#  endif /* !PATH_MAX */
+#ifndef PATH_MAX
+#  ifdef _POSIX_VERSION
+#    define PATH_MAX _POSIX_PATH_MAX
+#  else /* !_POSIX_VERSION */
+#    ifdef MAXPATHLEN
+#      define PATH_MAX MAXPATHLEN
+#    else /* !MAXPATHLEN */
+#      define PATH_MAX 1024
+#    endif /* MAXPATHLEN */
+#  endif /* _POSIX_VERSION */
+#endif /* !PATH_MAX */
 
-	char wd[PATH_MAX];
-	char *cwd = wd;
+char wd[PATH_MAX];
+char *cwd = wd;
 
-		
 #ifndef PIPE_BUF
 #  if defined(_POSIX_VERSION) && defined(_POSIX_PIPE_MAX)
 #    define PIPE_MAX _POSIX_PIPE_MAX
@@ -118,8 +120,11 @@ extern int errno;
 #include "lib/error.h"
 #include "lib/cleanup.h"
 #include "hashtable.h"
+#include "check_mandirs.h"
+#include "globbing.h"
 #include "ult_src.h"
 #include "manp.h"
+#include "security.h"
 #include "man.h"
 
 #ifdef SECURE_MAN_UID
@@ -146,12 +151,12 @@ extern uid_t euid;
 #  define STDERR_FILENO 2
 #endif
 
-char * lang;
+char *lang;
 struct lt {
-	char *	lang;
-	char *	device;
-	char *	charset;
-} lang_table[] =	{
+	char *lang;
+	char *device;
+	char *charset;
+} lang_table[] = {
 
 	/* LESSCHARSET=latin1 means '0x80-0xff is displayable'. */
 	/* It does not mean 'ISO-8859-1 charset'. */
@@ -190,7 +195,7 @@ struct lt {
 #define TFMT_PROG "./mandb_tfmt"
 #undef ALT_EXT_FORMAT	/* allow external formatters located in cat hierarchy */
 
-static int global_manpath = -1;		/* global or user manual page hierarchy? */
+static int global_manpath = -1;	/* global or user manual page hierarchy? */
 static int skip;		/* page exists but has been skipped */
 
 #if defined _AIX || defined __sgi
@@ -220,17 +225,15 @@ popen (const char *cmd, const char *type)
 	FILE *stream;
 
 	/* check type */
-	if (type && (type[0] == 'r')) {
+	if (type && (type[0] == 'r'))
 		for_reading = 1;
-	} else if (type && (type[0] == 'w')) {
+	else if (type && (type[0] == 'w'))
 		for_reading = 0;
-	} else {
+	else
 		return NULL;
-	}
 
-	if (pipe (pipe_fd)) {
+	if (pipe (pipe_fd))
 		return NULL;
-	}
 
 	child = vfork ();
 	if (child == -1) {
@@ -240,9 +243,8 @@ popen (const char *cmd, const char *type)
 	} else if (child == 0) {
 		/* if for_reading connect the writing end of pipe to stdout
 		   else the reading end to stdin */
-		if (dup2 (pipe_fd[for_reading], for_reading) == -1) {
+		if (dup2 (pipe_fd[for_reading], for_reading) == -1)
 			_exit (127);
-		}
 
 		/* close pipe fds */
 		close (pipe_fd[0]);
@@ -262,12 +264,13 @@ popen (const char *cmd, const char *type)
 
 	/* extend fd2pid up to index fd if necessary */
 	if (fd > max_fd) {
-		pid_t *new = malloc ((fd+1)*sizeof(pid_t));
+		pid_t *new = malloc ((fd + 1) * sizeof (pid_t));
 		if (new) {
 			/* copy old entries */
-			memcpy (new, fd2pid, (max_fd+1)*sizeof(pid_t));
+			memcpy (new, fd2pid, (max_fd + 1) * sizeof (pid_t));
 			/* zero new entries */
-			memset (new+max_fd+1, 0, (fd-max_fd)*sizeof(pid_t));
+			memset (new+max_fd+1, 0,
+				(fd - max_fd) * sizeof (pid_t));
 			fd2pid = new;
 			max_fd = fd;
 		}
@@ -280,11 +283,10 @@ popen (const char *cmd, const char *type)
 
 		kill (child, SIGKILL);
 
-		if (stream) {
+		if (stream)
 			fclose (stream);
-		} else {
+		else
 			close (fd);
-		}
 
 		do {		/* cope with non-restarting system calls */
 			res = waitpid (child, NULL, 0);
@@ -308,15 +310,13 @@ pclose (FILE *stream)
 	int res;
 	int save;
 
-	if ((fd > max_fd) || !fd2pid[fd]) {
+	if ((fd > max_fd) || !fd2pid[fd])
 		return -1;
-	}
 	child = fd2pid[fd];
 	fd2pid[fd] = 0;
 
-	if (fclose (stream)) {
+	if (fclose (stream))
 		return -1;
-	}
 
 	save = errno;
 	do {			/* cope with non-restarting system calls */
@@ -336,12 +336,12 @@ static FILE *checked_popen (char *command, char *type)
 
 #ifdef SECURE_MAN_UID
 	if (global_manpath)
-		drop_effective_privs();
+		drop_effective_privs ();
 #endif /* SECURE_MAN_UID */
 
 	if (debug) {
-		fprintf(stderr, "popen (\"%s\", \"%s\")\n",
-			command, type);
+		fprintf (stderr, "popen (\"%s\", \"%s\")\n",
+			 command, type);
 		if (strchr (type, 'r'))
 			stream = popen (CAT " </dev/null", type);
 		else
@@ -351,41 +351,44 @@ static FILE *checked_popen (char *command, char *type)
 
 #ifdef SECURE_MAN_UID
 	if (global_manpath)
-		regain_effective_privs();
+		regain_effective_privs ();
 #endif /* SECURE_MAN_UID */
 
 	if (stream == NULL)
-		error (0, 0, _( "can't popen")); 
+		error (0, 0, _("can't popen")); 
 	return stream;
 }
 #endif /* MAN_CATS */
 
-char * lang_dir( char * filename)
+char *lang_dir (char *filename)
 {
 	char *ld;	/* the lang dir: point to static data */
 	char *fm;	/* the first "/man/" dir */
 	char *sm;	/* the second "/man?/" dir */
 
 	ld = "";
-	if ( ! filename ) 
+	if (!filename) 
 		return ld;
 
-	if ( ! (fm = strstr( filename, "/man/")) )
+	fm = strstr (filename, "/man/");
+	if (!fm)
 		return ld;
-	if ( ! (sm = strstr( 3+fm, "/man")) )
+	sm = strstr (fm + 3, "/man");
+	if (!sm)
 		return ld;
-	if ( sm == 4+fm )
+	if (sm == fm + 4)
 		return ld;
-	if ( sm[5] != '/' )
+	if (sm[5] != '/')
 		return ld;
-	if ( ! strchr( "123456789lno", sm[4]) )
+	if (!strchr ("123456789lno", sm[4]))
 		return ld;
 	/* found a lang dir */
 	fm += 5;
-	if ( ! (sm = strchr( fm, '/')) )
+	sm = strchr (fm, '/');
+	if (!sm)
 		return ld;
-	ld = xstrdup ( fm);
-	ld[sm-fm] = '\0';
+	ld = xstrdup (fm);
+	ld[sm - fm] = '\0';
 	if (debug)
 		fprintf (stderr, "found lang dir element %s\n", ld);
 	return ld;
@@ -393,7 +396,8 @@ char * lang_dir( char * filename)
 
 static __inline__ void gripe_system (char *command, int status)
 {
-	error (CHILD_FAIL, 0, _( "command exited with status %d: %s"), status, command);
+	error (CHILD_FAIL, 0, _("command exited with status %d: %s"),
+	       status, command);
 }
 
 
@@ -412,15 +416,12 @@ static int checked_system (char *command)
 extern char *manpathlist[];	/* defined in manp.c     */
 
 /* globals */
-#ifndef debug
-int debug;
-#endif
-
+int debug = 0;
 int quiet = 1;
 char *program_name;
 char *database;
 MYDBM_FILE dbf; 
-char *extension; /* global for globbing.c */
+extern char *extension; /* for globbing.c */
 
 /* locals */
 static char *alt_system_name;
@@ -521,66 +522,66 @@ static void usage (int status)
 {
 #ifdef HAS_TROFF
 #  ifdef TROFF_IS_GROFF
-	char formatter[]="groff";
+	char formatter[] = "groff";
 #  else
-	char formatter[]="troff";
+	char formatter[] = "troff";
 #  endif /* TROFF_IS_GROFF */
 #endif /* HAS_TROFF */
 	
 #ifdef HAS_TROFF
-	printf(_( 
-	       "usage: %s [-c|-f|-k|-w|-tZT device] [-adlhu7V] [-Mpath] [-Ppager] [-Slist]\n"
-	       "           [-msystem] [-pstring] [-Llocale] [-eextension] [section] page ...\n"),
-               program_name);
+	printf (_(
+		"usage: %s [-c|-f|-k|-w|-tZT device] [-adlhu7V] [-Mpath] [-Ppager] [-Slist]\n"
+		"           [-msystem] [-pstring] [-Llocale] [-eextension] [section] page ...\n"),
+		program_name);
 #else
-	printf(_( 
-	       "usage: %s [-c|-f|-k|-w] [-adlhu7V] [-Mpath] [-Ppager] [-Slist] [-msystem]\n"
-               "           [-pstring] [-Llocale] [-eextension] [section] page ...\n"),
-               program_name);
+	printf (_(
+		"usage: %s [-c|-f|-k|-w] [-adlhu7V] [-Mpath] [-Ppager] [-Slist] [-msystem]\n"
+		"           [-pstring] [-Llocale] [-eextension] [section] page ...\n"),
+		program_name);
 #endif
 
-	puts(_( 
-	       "-a, --all                   find all matching manual pages.\n"
-               "-d, --debug                 emit debugging messages.\n"
-               "-e, --extension             limit search to extension type `extension'.\n"
-               "-f, --whatis                equivalent to whatis.\n"
-               "-k, --apropos               equivalent to apropos.\n"
-               "-w, --where, --location     print physical location of man page(s).\n"
-               "-l, --local-file            interpret `page' argument(s) as local filename(s).\n"
-               "-u, --update                force a cache consistency check.\n"
-               "-r, --prompt string         provide the `less' pager with a prompt\n"
-               "-c, --catman                used by catman to reformat out of date cat pages.\n"
-               "-7, --ascii                 display ASCII translation of certain latin1 chars."));
+	puts (_(
+		"-a, --all                   find all matching manual pages.\n"
+		"-d, --debug                 emit debugging messages.\n"
+		"-e, --extension             limit search to extension type `extension'.\n"
+		"-f, --whatis                equivalent to whatis.\n"
+		"-k, --apropos               equivalent to apropos.\n"
+		"-w, --where, --location     print physical location of man page(s).\n"
+		"-l, --local-file            interpret `page' argument(s) as local filename(s).\n"
+		"-u, --update                force a cache consistency check.\n"
+		"-r, --prompt string         provide the `less' pager with a prompt\n"
+		"-c, --catman                used by catman to reformat out of date cat pages.\n"
+		"-7, --ascii                 display ASCII translation of certain latin1 chars."));
 #ifdef HAS_TROFF
-	printf(_(
-	       "-t, --troff                 use %s to format pages.\n"
-	       "-T, --troff-device device   use %s with selected device.\n"),
-	       formatter, formatter);
+	printf (_(
+		"-t, --troff                 use %s to format pages.\n"
+		"-T, --troff-device device   use %s with selected device.\n"),
+		formatter, formatter);
 # ifdef TROFF_IS_GROFF
 #  ifdef ENABLE_HTML
-	puts(_("-H, --html                  use lynx or argument to display html output.\n"));
+	puts (_("-H, --html                  use lynx or argument to display html output.\n"));
 #  endif
-	puts(_("-Z, --ditroff               use groff and force it to produce ditroff."));
-	puts(_("-X, --gxditview             use groff and display through gditview (X11):"));
-	puts(_("                            -X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12."));
+	puts (_("-Z, --ditroff               use groff and force it to produce ditroff."));
+	puts (_("-X, --gxditview             use groff and display through gditview (X11):"));
+	puts (_("                            -X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12."));
 # endif /* TROFF_IS_GROFF */
 #endif /* HAS_TROFF */
 
-	puts(_(
-	       "-D, --default               reset all options to their default values.\n"
-               "-M, --manpath path          set search path for manual pages to `path'.\n"
-               "-P, --pager pager           use program `pager' to display output.\n"
-               "-S, --sections list         use colon separated section list.\n"
-	       "-m, --systems system        search for man pages from other unix system(s).\n"
-	       "-L, --locale locale         define the locale for this particular man search.\n"
-	       "-p, --preprocessor string   string indicates which preprocessors to run."));
-	puts(  "                             e - [n]eqn   p - pic    t - tbl\n"
-               "                             g - grap     r - refer  v - vgrind");
-        puts(_(
-               "-V, --version               show version.\n"
-               "-h, --help                  show this usage message."));
+	puts (_(
+		"-D, --default               reset all options to their default values.\n"
+		"-M, --manpath path          set search path for manual pages to `path'.\n"
+		"-P, --pager pager           use program `pager' to display output.\n"
+		"-S, --sections list         use colon separated section list.\n"
+		"-m, --systems system        search for man pages from other unix system(s).\n"
+		"-L, --locale locale         define the locale for this particular man search.\n"
+		"-p, --preprocessor string   string indicates which preprocessors to run."));
+	puts ("                             e - [n]eqn   p - pic    t - tbl\n"
+              "                             g - grap     r - refer  v - vgrind");
+        puts (_(
+		"-V, --version               show version.\n"
+		"-h, --help                  show this usage message."));
 
-	       exit (status);
+	exit (status);
 }
 
 /*
@@ -590,53 +591,114 @@ static void usage (int status)
 static void gripe_no_name (char *section)
 {
 	if (section)
-		fprintf (stderr, _( "What manual page do you want from section %s?\n"), section);
+		fprintf (stderr,
+			 _("What manual page do you want from section %s?\n"),
+			 section);
 	else
-		fputs ( _( "What manual page do you want?\n"), stderr);
+		fputs (_("What manual page do you want?\n"), stderr);
 
 	exit (FAIL);
 }
 
 static struct termios tms;
-static int tms_set=0;
+static int tms_set = 0;
 
-void set_term()
+void set_term ()
 {
-	if ( tms_set ) tcsetattr( 0, TCSANOW, &tms);
+	if (tms_set)
+		tcsetattr (0, TCSANOW, &tms);
 }
 
 void get_term()
 {
-	if ( isatty( 1) ) {
-		if (debug) fprintf(stderr, "is a tty\n");
-		tcgetattr( 0, &tms);
-		if ( ! tms_set++ )
-			atexit( set_term);
+	if (isatty (1)) {
+		if (debug)
+			fprintf(stderr, "is a tty\n");
+		tcgetattr (0, &tms);
+		if (!tms_set++)
+			atexit (set_term);
 	}
+}
+
+/* Line length detection code adapted from Andries Brouwer's man. */
+
+/* Try to determine the line length to use.
+ * Preferences: 1. MANWIDTH, 2. ioctl, 3. COLUMNS, 4. 80
+ *
+ * joey, 950902
+ */
+
+#include <sys/ioctl.h>
+
+static int line_length = 80;
+
+static void store_line_length (void)
+{
+	char *columns;
+	int width;
+
+	line_length = 80;
+
+	columns = getenv ("MANWIDTH");
+	if (columns != NULL) {
+		int width = atoi (columns);
+		if (width > 0) {
+			line_length = width;
+			return;
+		}
+	}
+
+#ifdef TIOCGWINSZ
+	if (isatty(0) && isatty(1)) { /* Jon Tombs */
+		struct winsize wsz;
+
+		if (ioctl (0, TIOCGWINSZ, &wsz))
+			perror ("TIOCGWINSZ failed\n");
+		else if (wsz.ws_col) {
+			line_length = wsz.ws_col;
+			return;
+		}
+	}
+#endif
+
+	columns = getenv ("COLUMNS");
+	if (columns != NULL) {
+		width = atoi (columns);
+		if (width > 0)
+			line_length = width;
+	}
+}
+
+static int get_roff_line_length (void)
+{
+	if (!troff && (line_length < 66 || line_length > 80))
+		return line_length * 9 / 10;
+	else
+		return 0;
 }
 
 /*
  * changed these messages from stdout to stderr,
  * (Fabrizio Polacco) Fri, 14 Feb 1997 01:30:07 +0200
  */
-static __inline__ void gripe_no_man(char *name, char *sec)
+static __inline__ void gripe_no_man (char *name, char *sec)
 {
 	if (troff) {
-		fprintf ( stderr, _( "No source manual entry for %s"), name);
+		fprintf (stderr, _("No source manual entry for %s"), name);
 	} else {
 
 /* On AIX and IRIX, fall back to the vendor supplied browser */
 #if defined _AIX || defined __sgi
 
-		putenv("MANPATH=");  /* reset the MANPATH variable */
-		execv("/usr/bin/man", global_argv);
+		putenv ("MANPATH=");  /* reset the MANPATH variable */
+		execv ("/usr/bin/man", global_argv);
 #else
-		fprintf ( stderr, _( "No manual entry for %s"), name);
+		fprintf (stderr, _("No manual entry for %s"), name);
 #endif
 	}
 
 	if (sec)
-		fprintf ( stderr, _( " in section %s\n"), sec);
+		fprintf (stderr, _(" in section %s\n"), sec);
 	else
 		putc ('\n', stderr);
 }
@@ -645,21 +707,21 @@ static __inline__ void gripe_no_man(char *name, char *sec)
 static void do_extern (char *argv[])
 {
 	/* privs are already dropped */
-	argv[0] = basename(external);
-	execv(external, argv);
-	exit(FATAL);
+	argv[0] = basename (external);
+	execv (external, argv);
+	exit (FATAL);
 }
 
 /* lookup $MANOPT and if available, put in *argv[] format for getopt() */
-static __inline__ char **manopt_to_env(int *argc)
+static __inline__ char **manopt_to_env (int *argc)
 {
 	char *manopt, *opt_start, **argv;
-	
-	manopt = getenv("MANOPT");
+
+	manopt = getenv ("MANOPT");
 	if (manopt == NULL || *manopt == '\0')
 		return NULL;
 
-	opt_start = manopt = xstrdup(manopt);
+	opt_start = manopt = xstrdup (manopt);
 
 	/* allocate space for the program name */
 	*argc = 0;
@@ -679,7 +741,7 @@ static __inline__ char **manopt_to_env(int *argc)
 							 sizeof (char *));
 					argv[(*argc)++] = opt_start;
 				}
-				while (isspace(*(manopt + 1)))
+				while (isspace (*(manopt + 1)))
 					*++manopt = '\0';
 				opt_start = manopt + 1;
 				break;
@@ -696,27 +758,27 @@ static __inline__ char **manopt_to_env(int *argc)
 	if (*opt_start)
 		argv[(*argc)++] = opt_start;
 	argv[*argc] = NULL;			
-		
+
 	return argv;
 }
 
 /* return char array with 'less' special chars escaped */
-static __inline__ char *escape_special(char *string)
+static __inline__ char *escape_special (char *string)
 {
 	static char *escaped_string; 
 	char *ptr;
 
 	/* 2*strlen will always be long enough to hold the escaped string */
-	ptr = escaped_string = (char *) xrealloc ( escaped_string, 
-						  2 * strlen(string) + 1);
+	ptr = escaped_string = (char *) xrealloc (escaped_string, 
+						  2 * strlen (string) + 1);
 	
 	while (*string) {
-		if (*string == '?' || 
-		    *string == ':' || 
+		if (*string == '?' ||
+		    *string == ':' ||
 		    *string == '.' ||
-		    *string == '%' || 
+		    *string == '%' ||
 		    *string == '\\')
-				    	*ptr++ = '\\';
+			*ptr++ = '\\';
 		    	
 		*ptr++ = *string++;
 	}
@@ -731,30 +793,32 @@ static int need_to_rerun(void)
 {						
 	int rerun = 0;
 	char **mp;
-	
+
 	for (mp = manpathlist; *mp; mp++) {
 		char *catpath;
 
-		if ( (catpath = global_catpath(*mp)) ) {
-			database = mkdbname(catpath);
-			free(catpath);
-			global_manpath = 1;
+		global_manpath = is_global_mandir (*mp);
+		if (!global_manpath)
+			drop_effective_privs ();
+
+		catpath = get_catpath
+			(*mp, global_manpath ? SYSTEM_CAT : USER_CAT);
+		if (catpath) {
+			database = mkdbname (catpath);
+			free (catpath);
 		} else {
-			database = mkdbname(*mp);
-			global_manpath = 0;
-			drop_effective_privs();
+			database = mkdbname (*mp);
 		}
 
 		if (update)
-			reset_db_time();
+			reset_db_time ();
 
 		/* if no change or couldn't update (EOF), forget it */
-		if (update_db(*mp) > 0)
+		if (update_db (*mp) > 0)
 			rerun = 1;
 
 		if (!global_manpath)
-			regain_effective_privs();
-
+			regain_effective_privs ();
 	}
 
 	/* only ever need to do this once */
@@ -784,27 +848,28 @@ int local_man_loop (char *argv)
 			if (debug)
 				fprintf (stderr, "chdir %s\n", cwd);
 			if (chdir (cwd)) {
-				error (0, errno, _( "can't chdir to %s"), cwd);
+				error (0, errno, _("can't chdir to %s"), cwd);
 				return 0;
 			}
 		}
 
-		if ( (comp = comp_info(argv)) )
+		comp = comp_info (argv);
+		if (comp)
 			(void) decompress(argv, comp);
 #endif /* COMP_SRC */
 		lang = lang_dir (argv);
-		if (!display (NULL, argv, NULL, basename(argv))) {
-			if ( local_mf )
+		if (!display (NULL, argv, NULL, basename (argv))) {
+			if (local_mf)
 				error (0, errno, "%s", argv);
 			exit_status = NOT_FOUND;
 		}
 
 #ifdef COMP_SRC
-		remove_ztemp();
+		remove_ztemp ();
 #endif /* COMP_SRC */
 	}
 	local_man_file = local_mf;
-	return (exit_status);
+	return exit_status;
 }
 
 int main (int argc, char *argv[])
@@ -813,10 +878,9 @@ int main (int argc, char *argv[])
 	char **argv_env, *tmp;
 	char *nextarg, *multiple_locale;
 	extern int optind;
-	void (int_handler)( int);
+	void (int_handler) (int);
 
-
-	umask(022);
+	umask (022);
 	/* initialise the locale */
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
@@ -840,33 +904,34 @@ int main (int argc, char *argv[])
 	global_argv = argv;
 #endif
 
-	program_name = xstrdup(basename((argv[0])));
+	program_name = xstrdup (basename (argv[0]));
 
 	{ /* opens base streams in case someone like "info" closed them */
 		struct stat buf;
-		if ( (fileno(stdin) < 0)
-		|| ((fstat( fileno(stdin), &buf) < 0) && (errno == EBADF)) ) 
-			freopen( "/dev/null", "r", stdin);
-		if ( (fileno(stdout) < 0)
-		|| ((fstat( fileno(stdout), &buf) < 0) && (errno == EBADF)) ) 
-			freopen( "/dev/null", "w", stdout);
-		if ( (fileno(stderr) < 0)
-		|| ((fstat( fileno(stderr), &buf) < 0) && (errno == EBADF)) ) 
-			freopen( "/dev/null", "w", stderr);
+		if (fileno (stdin) < 0 ||
+		    ((fstat (fileno (stdin), &buf) < 0) && (errno == EBADF))) 
+			freopen ("/dev/null", "r", stdin);
+		if (fileno (stdout) < 0 ||
+		    ((fstat (fileno (stdout), &buf) < 0) && (errno == EBADF)))
+			freopen ("/dev/null", "w", stdout);
+		if (fileno (stderr) < 0 ||
+		    ((fstat (fileno (stderr), &buf) < 0) && (errno == EBADF)))
+			freopen ("/dev/null", "w", stderr);
 	}
 
 	/* This will enable us to do some profiling and know
 	where gmon.out will end up. Must chdir(cwd) before we return */
 #  ifdef HAVE_GETCWD
-	if (!getcwd(cwd, PATH_MAX - 1))
+	if (!getcwd (cwd, PATH_MAX - 1))
 #  else /* not HAVE_GETCWD */
-	if (!getwd(cwd))
+	if (!getwd (cwd))
 #  endif
 		cwd[0] = '\0';
 
 	/* First of all, find out if $MANOPT is set. If so, put it in 
 	   *argv[] format for getopt to play with. */
-	if ( (argv_env = manopt_to_env (&argc_env)) ) {
+	argv_env = manopt_to_env (&argc_env);
+	if (argv_env) {
 		man_getopt (argc_env, argv_env);
 		optind = 0;
 	}
@@ -876,41 +941,52 @@ int main (int argc, char *argv[])
 
 #ifdef SECURE_MAN_UID
 	/* record who we are and drop effective privs for later use */
-	init_security();
+	init_security ();
 #endif
 
-	read_config_file();
+	if (!catman)
+		store_line_length();
+
+	read_config_file ();
 
 	/* if the user wants whatis or apropos, give it to them... */
 	if (external)
 		do_extern (argv);
 
 	get_term(); /* stores terminal settings */
-	if (debug) fprintf(stderr, "real user = %d; effective user = %d\n", ruid, euid);
+	if (debug)
+		fprintf (stderr, "real user = %d; effective user = %d\n",
+			 ruid, euid);
 
 #ifdef HAVE_SETLOCALE
 	/* close this locale and reinitialise incase a new locale was 
 	   issued as an argument or in $MANOPT */
 	if (locale) {
-		if ((internal_locale = setlocale(LC_ALL, locale)) == NULL)
+		internal_locale = setlocale (LC_ALL, locale);
+		if (internal_locale == NULL)
 			internal_locale = locale;
 
 		internal_locale = xstrdup (internal_locale);
-if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", locale, internal_locale);
+		if (debug)
+			fprintf(stderr,
+				"main(): locale= %s,internal_locale= %s\n",
+				locale, internal_locale);
 		if (internal_locale) {
-			extern int  _nl_msg_cat_cntr;
+			extern int _nl_msg_cat_cntr;
 			setenv ("LANGUAGE", internal_locale, 1);
 			++_nl_msg_cat_cntr;
 		}
 	}
 
 #endif /* HAVE_SETLOCALE */
-	
-	if ( htmlout )
-		pager = (html_pager == NULL ?  WEB_BROWSER : html_pager);
-	if (pager == NULL)
-		if ((pager = getenv ("PAGER")) == NULL)
+
+	if (htmlout)
+		pager = (html_pager == NULL ? WEB_BROWSER : html_pager);
+	if (pager == NULL) {
+		pager = getenv ("PAGER");
+		if (pager == NULL)
 			pager = get_def("pager", PAGER);
+	}
 	if (*pager == '\0')
 		pager = get_def("cat", CAT);
 
@@ -918,7 +994,7 @@ if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", locale, i
 #ifdef LESS_PROMPT
 		prompt_string = LESS_PROMPT;
 #else
-		prompt_string = _( 
+		prompt_string = _(
 				" Manual page $MAN_PN "
 				"?ltline %lt?L/%L.:byte %bB?s/%s..?e (END):"
 				"?pB %pB\\\\%..");
@@ -930,12 +1006,14 @@ if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", locale, i
 	if (optind == argc)
 		gripe_no_name (NULL);
 
-	signal( SIGINT, int_handler);
+	signal (SIGINT, int_handler);
 
 	/* man issued with `-l' option */
 	if (local_man_file) {
-		for (;  optind < argc;  ++optind)
-			exit_status = local_man_loop( argv[optind]);
+		while (optind < argc) {
+			exit_status = local_man_loop (argv[optind]);
+			optind++;
+		}
 		exit (exit_status);
 	}
 
@@ -943,10 +1021,11 @@ if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", locale, i
 		char tmp_locale[3];
 		int idx;
 
-		manp = add_nls_manpath(manpath (alt_system_name), 
-				       internal_locale);
+		manp = add_nls_manpath (manpath (alt_system_name), 
+					internal_locale);
 		/* Handle multiple :-separated locales in LANGUAGE */
-		for (idx = strlen (internal_locale) - 1; idx; ) {
+		idx = strlen (internal_locale) - 1;
+		while (idx) {
 			while (idx && internal_locale[idx] != ':')
 				idx--;
 			if (internal_locale[idx] == ':')
@@ -959,32 +1038,32 @@ if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", locale, i
 			if (idx) idx--;
 			if (debug)
 				fprintf (stderr, "checking for locale %s\n",
-						 tmp_locale);
+					 tmp_locale);
 			manp = add_nls_manpath (manp, tmp_locale);
 		}
 	} else
-		free(manpath(NULL));
+		free (manpath (NULL));
 
-	create_pathlist(xstrdup(manp), manpathlist);
+	create_pathlist (xstrdup (manp), manpathlist);
 
 	if (debug)
-		fprintf(stderr, "*manpath search path* = %s\n", manp);
+		fprintf (stderr, "*manpath search path* = %s\n", manp);
 
 	/* finished manpath processing, regain privs */
-	regain_effective_privs();
+	regain_effective_privs ();
 
 	section_list = get_section_list ();
 
 	if (optind == argc - 1) {
-		tmp = is_section ( argv[optind] );
+		tmp = is_section (argv[optind]);
 		if (tmp)
 			gripe_no_name (tmp);
 	}
 
 #ifdef MAN_DB_UPDATES
-	/* If `-a' or consistency check forced `-u', do it now. */
-	if (update || findall)
-		(void) need_to_rerun();
+	/* If `-u', do it now. */
+	if (update)
+		(void) need_to_rerun ();
 #endif /* MAN_DB_UPDATES */
 
 	while (optind < argc) {
@@ -995,9 +1074,12 @@ if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", locale, i
       		 * is_section returns NULL.
       		 */
 		if (optind < argc) {
-			if (tmp = is_section (nextarg)) {
+			tmp = is_section (nextarg);
+			if (tmp) {
 				section = tmp;
-				if (debug)	fprintf (stderr, "\nsection: %s\n", section);
+				if (debug)
+					fprintf (stderr, "\nsection: %s\n",
+						 section);
 				continue;
 			}
 		}
@@ -1007,39 +1089,40 @@ if (debug) fprintf(stderr, "main(): locale= %s,internal_locale= %s\n", locale, i
 		status = man (nextarg);
 
 		/* clean out the memory cache for each man page */
-		free_hashtab();
+		free_hashtab ();
 
 		if (!status && !catman) {
-			if ( !skip ) {
-				if ( strchr( nextarg, '/') )
-					exit_status = local_man_loop( nextarg);
+			if (!skip) {
+				if (strchr (nextarg, '/'))
+					exit_status = local_man_loop (nextarg);
 				else
 					exit_status = NOT_FOUND;
-				if ( exit_status == NOT_FOUND)
-					gripe_no_man(nextarg, section);
+				if (exit_status == NOT_FOUND)
+					gripe_no_man (nextarg, section);
 			}
 		} else {
 			if (debug)
 				fprintf(stderr,
 					"\nFound %d man pages\n", status);
 			if (catman) {
-				printf("%s", nextarg);
+				printf ("%s", nextarg);
 				if (section)
-					printf("(%s)", section);
+					printf ("(%s)", section);
 				if (optind != argc)
-					fputs(", ", stdout);
+					fputs (", ", stdout);
 				else
-					fputs(".\n", stdout);
-			} 
-					
+					fputs (".\n", stdout);
+			}
 		}
 
-		chkr_garbage_detector();
+		chkr_garbage_detector ();
 	}
+
+	drop_effective_privs ();
 
 	/* For profiling */
 	if (cwd[0])
-		chdir(cwd);
+		chdir (cwd);
 
 	exit (exit_status);
 }
@@ -1068,7 +1151,8 @@ static void man_getopt (int argc, char *argv[])
 				pager = optarg;
 				break;
 		    	case 'S':
-				if (*optarg) colon_sep_section_list = optarg;
+				if (*optarg)
+					colon_sep_section_list = optarg;
 				break;
 			case 'V':
 				ver();
@@ -1083,9 +1167,7 @@ static void man_getopt (int argc, char *argv[])
 				catman = 1;
 				break;
 		    	case 'd':
-#ifndef debug
 				debug = 1;
-#endif
 				break;
 		    	case 'f':
 				external = WHATIS;
@@ -1148,11 +1230,12 @@ static void man_getopt (int argc, char *argv[])
 				break;
 			case 'D':
 		    		/* discard all preset options */
-		    		local_man_file = findall = update = catman = debug
-		    			 = troff = gxditview
-		    			 = print_where = ascii = 0;
+		    		local_man_file = findall = update = catman =
+					debug = troff = print_where =
+					ascii = 0;
 #ifdef TROFF_IS_GROFF
 				ditroff = 0;
+				gxditview = NULL;
 #endif
 		    		roff_device = extension = pager = locale
 		    			     = colon_sep_section_list
@@ -1171,14 +1254,14 @@ static void man_getopt (int argc, char *argv[])
 	/* check for incompatible options */
 	if (troff + whatis + apropos + catman + print_where > 1) {
 		error (0, 0,
-		       strappend(NULL,
-		       		 troff ? "-[tTZ] " : "",
-		       		 whatis ? "-f " : "",
-		       		 apropos ? "-k " : "",
-		       		 catman ? "-c " : "",
-		       		 print_where ? "-w " : "", 
-		       		 _( ": incompatible options"), NULL));
-		usage(FAIL);
+		       strappend (NULL,
+				  troff ? "-[tTZ] " : "",
+				  whatis ? "-f " : "",
+				  apropos ? "-k " : "",
+				  catman ? "-c " : "",
+				  print_where ? "-w " : "", 
+				  _(": incompatible options"), NULL));
+		usage (FAIL);
 	}
 }
 
@@ -1194,7 +1277,7 @@ static __inline__ char *is_section (char *name)
 	char **vs;
 
 	for (vs = section_list; *vs; vs++)
-		if ((strcmp (*vs, name) == 0)) 
+		if (strcmp (*vs, name) == 0) 
 			return name;
 	return NULL;
 }
@@ -1210,15 +1293,16 @@ static char *get_preprocessors_from_file (char *file)
 	if (*file == '\0')
 		return NULL;
 
-	if ((fp = fopen (file, "r"))) {
+	fp = fopen (file, "r");
+	if (fp) {
 		if (fgets (line, sizeof (line), fp)) {
 			if (!memcmp (line, PP_COOKIE, 4)) {
 				int len;
-				directive = line+4;
+				directive = line + 4;
 				/* strip trailing newline */
 				len = strlen (directive);
-				if (len && (directive[len-1] = '\n'))
-					directive[len-1] = 0;
+				if (len && (directive[len - 1] == '\n'))
+					directive[len - 1] = 0;
 			}
 		}
 		fclose (fp);
@@ -1253,14 +1337,14 @@ static char *get_preprocessors (char *file)
 	} else if ((pp_string = getenv ("MANROFFSEQ"))) {
 		pp_source = "environment";
 		save_cat = 0;
-	} else if ( !dbfilters ) {
+	} else if (!dbfilters) {
 		pp_string = DEFAULT_MANROFFSEQ;
 		pp_source = "default";
 		save_cat = 1;
 	} else {
 		pp_string = "";
 		pp_source = "no filters";
-		save_cat = 0;
+		save_cat = 1;
 	}
 
 	if (debug)
@@ -1275,66 +1359,68 @@ static char *get_preprocessors (char *file)
 static char *stdin_tmpfile;
 static int stdin_tmpfile_fd;
 
-static void remove_stdintmp(void)
+static void remove_stdintmp (void)
 {
 	if (stdin_tmpfile) {
 		if (stdin_tmpfile_fd >= 0)
-			close(stdin_tmpfile_fd);
-		(void) remove_with_dropped_privs(stdin_tmpfile);
+			close (stdin_tmpfile_fd);
+		(void) remove_with_dropped_privs (stdin_tmpfile);
 	}
 	stdin_tmpfile = NULL;
 }
 
-static __inline__ void create_stdintmp(void)
+static __inline__ void create_stdintmp (void)
 {
 	/* This is basically copied from create_ztemp() in compression.c;
 	 * it therefore shouldn't introduce any new security holes -- PMM
 	 */
-	int oldmask = umask(022);
-	drop_effective_privs();
+	int oldmask = umask (022);
+	drop_effective_privs ();
 	errno = 0;				/* failing tempname() might fail to set errno */
-	stdin_tmpfile = tempnam(NULL, "sman");
+	stdin_tmpfile = tempnam (NULL, "sman");
 	if (stdin_tmpfile)
-		stdin_tmpfile_fd = open(stdin_tmpfile, O_WRONLY|O_CREAT|O_TRUNC|O_EXCL, 0644);
+		stdin_tmpfile_fd = open (stdin_tmpfile,
+					 O_WRONLY | O_CREAT | O_TRUNC | O_EXCL,
+					 0644);
 	if (!stdin_tmpfile || (stdin_tmpfile_fd < 0))
-		error (FATAL, errno, _( "can't create a temporary filename"));
-	regain_effective_privs();
-	umask(oldmask);
-	atexit( remove_stdintmp);
+		error (FATAL, errno, _("can't create a temporary filename"));
+	regain_effective_privs ();
+	umask (oldmask);
+	atexit (remove_stdintmp);
 }
 
 /* Determine roff_device and LESSCHARSET */
 static void determine_lang_table (char *lang)
 {
 	int j;
-	if (( ! lang ) || ( ! *lang )) {
+	if (!lang || !*lang) {
 		/* English manpages */
-		for ( j=0; lang_table[j].lang; j++ ) {
-			if (( strncmp( lang_table[j].lang, internal_locale
-				      , strlen(lang_table[j].lang)) == 0)
-			    || ( lang_table[j].lang[0] == '*' )) {
-				if (!strcmp(lang_table[j].device, "latin1")) {
+		for (j = 0; lang_table[j].lang; j++) {
+			if (strncmp (lang_table[j].lang, internal_locale,
+				     strlen (lang_table[j].lang) == 0)
+			    || lang_table[j].lang[0] == '*') {
+				if (!strcmp (lang_table[j].device, "latin1")) {
 					roff_device = "latin1";
-					putenv("LESSCHARSET=latin1");
+					putenv ("LESSCHARSET=latin1");
 				} else {
 					roff_device = "ascii";
-					putenv("LESSCHARSET=ascii");
+					putenv ("LESSCHARSET=ascii");
 				}
 				break;
 			}
 		}
 	} else {
 		int j;
-		for ( j=0; lang_table[j].lang; j++ ) {
-			if (( strncmp( lang_table[j].lang, lang
-				, strlen( lang_table[j].lang)) == 0 )
-			||  ( lang_table[j].lang[0] == '*' )) {
+		for (j = 0; lang_table[j].lang; j++) {
+			if (strncmp (lang_table[j].lang, lang,
+				     strlen (lang_table[j].lang) == 0)
+			    || lang_table[j].lang[0] == '*') {
 				roff_device = lang_table[j].device;
-				putenv( strappend ( 0
-					,"LESSCHARSET="
-					, lang_table[j].charset
-					, 0));
-				j = sizeof(lang_table)/sizeof(struct lt) - 2;
+				putenv (strappend (NULL, "LESSCHARSET=",
+						   lang_table[j].charset,
+						   NULL));
+				j = sizeof (lang_table) / sizeof (struct lt)
+					- 2;
 			}
 		}
 	}
@@ -1358,63 +1444,75 @@ static __inline__ char *make_roff_command (char *dir, char *file)
 		 * I can't think of a better way to do this :-<
 		 * [this code seems remarkably hairy for what it does...]
 		 */
-		/* get_preprocessors uses 128 byte buffer, no point using more here */
+		/* get_preprocessors uses 128 byte buffer, no point using
+		 * more here
+		 */
 #define STDIN_SNARFLEN 128
 		char bf[STDIN_SNARFLEN];
 		int ct = 0;		       /* number of bytes in bf[] */
 		int ctot, r;
-		/* Ignore SIGPIPE; we want to be notified by write returning EPIPE. */
-		RETSIGTYPE (*old_handler)() = signal(SIGPIPE, SIG_IGN);
+		/* Ignore SIGPIPE; we want to be notified by write returning
+		 * EPIPE.
+		 */
+		RETSIGTYPE (*old_handler)() = signal (SIGPIPE, SIG_IGN);
 
-		/* read data into bf; we don't want to use the stream stuff because
-		 * we don't want data to be lost in the buffers, not read here or
-		 * by the system()-run pipeline.
+		/* read data into bf; we don't want to use the stream stuff
+		 * because we don't want data to be lost in the buffers, not
+		 * read here or by the system()-run pipeline.
 		 */
 		do {
 			errno = 0;
-			r = read(STDIN_FILENO, bf+ct, (128-ct));
+			r = read (STDIN_FILENO, bf + ct, (128 - ct));
 			if (r != -1)
 				ct += r;
-			/* stop on EOF (r==0), bf full (ct==128) or error (errno not 0 or EINTR) */
-		} while (r != 0 && ct < STDIN_SNARFLEN && (errno == 0 || errno == EINTR));
+			/* stop on EOF (r==0), bf full (ct==128) or error
+			 * (errno not 0 or EINTR)
+			 */
+		} while (r != 0 && ct < STDIN_SNARFLEN &&
+			 (errno == 0 || errno == EINTR));
 
 		if (errno != 0)
-			error(FATAL, errno, _( "error trying to read from stdin"));
+			error (FATAL, errno,
+			       _("error trying to read from stdin"));
 
-		create_stdintmp();
+		create_stdintmp ();
 		/* write bf to stdin_tmpfile_fd */
 		ctot = ct;
 		do {
 			errno = 0;
-			r = write(stdin_tmpfile_fd, bf+(ctot-ct), ct);
+			r = write (stdin_tmpfile_fd, bf + (ctot - ct), ct);
 			if (r != -1)
 				ct -= r;
 		} while (ct > 0 && (errno == 0 || errno == EINTR));
 		if (errno != 0)
-			error(FATAL, errno, _( "error writing to temporary file %s"), stdin_tmpfile);
+			error(FATAL, errno,
+			      _("error writing to temporary file %s"),
+			      stdin_tmpfile);
 
-		close(stdin_tmpfile_fd);
-		stdin_tmpfile_fd = -1;	    /* ensure we don't try to close it again */
-		signal(SIGPIPE, old_handler);
+		close (stdin_tmpfile_fd);
+		/* ensure we don't try to close it again */
+		stdin_tmpfile_fd = -1;
+		signal (SIGPIPE, old_handler);
 
-		pp_string = get_preprocessors(stdin_tmpfile);
-	}
-	else
-		pp_string = get_preprocessors(file);
+		pp_string = get_preprocessors (stdin_tmpfile);
+	} else
+		pp_string = get_preprocessors (file);
 
 #ifdef ALT_EXT_FORMAT
 	/* Check both external formatter locations */
-	if (global_manpath && dir) {
-		char *catpath = global_catpath (dir);
+	if (dir) {
+		char *catpath = get_catpath
+			(dir, global_manpath ? SYSTEM_CAT : USER_CAT);
 
 		/* If we have an alternate catpath */
-		if (strcmp(catpath, dir) != 0) {
-			fmt_prog = strappend(catpath, "/",
-				    	     troff ? TFMT_PROG : NFMT_PROG, 
-				    	     NULL);
+		if (catpath) {
+			fmt_prog = strappend (catpath, "/",
+					      troff ? TFMT_PROG : NFMT_PROG, 
+					      NULL);
 			if (access (fmt_prog, X_OK)) {
 				free (fmt_prog);
-				fmt_prog = xstrdup(troff ? TFMT_PROG : NFMT_PROG);
+				fmt_prog = xstrdup (troff ? TFMT_PROG :
+							    NFMT_PROG);
 				if (access (fmt_prog, X_OK)) {
 					free (fmt_prog);
 					fmt_prog = NULL;
@@ -1422,15 +1520,14 @@ static __inline__ char *make_roff_command (char *dir, char *file)
 			}
 		/* If we don't */
 		} else {
-			free (catpath);
 #endif /* ALT_EXT_FORMAT */
 
-			fmt_prog = xstrdup(troff ? TFMT_PROG : NFMT_PROG);
+			fmt_prog = xstrdup (troff ? TFMT_PROG : NFMT_PROG);
 			if (access (fmt_prog, X_OK)) {
 				free (fmt_prog);
 				fmt_prog = NULL;
 			}
-			
+
 #ifdef ALT_EXT_FORMAT
 		}
 	} else
@@ -1438,20 +1535,22 @@ static __inline__ char *make_roff_command (char *dir, char *file)
 #endif /* ALT_EXT_FORMAT */
 	
 	if (debug && fmt_prog)
-		fprintf(stderr, "External formatter %s\n", fmt_prog);
+		fprintf (stderr, "External formatter %s\n", fmt_prog);
 				
 	if (!fmt_prog) {
 		/* we don't have an external formatter script */
 		char *dev;	/* either " -T<mumble>" or "" */
 		int using_tbl = 0;
 
-		/* load the roff_device value dependent on the language dir in path */
-		if ( ! roff_device && ! troff ) {
+		/* Load the roff_device value dependent on the language dir
+		 * in the path.
+		 */
+		if (!roff_device && !troff)
 			determine_lang_table (lang);
-		}
+
 		/* tell grops to guess the page size */
-		if ( roff_device && strcmp( roff_device, "ps") == 0 )
-			roff_device = strappend( NULL, "ps -P-g ", NULL);
+		if (roff_device && strcmp (roff_device, "ps") == 0)
+			roff_device = strappend (NULL, "ps -P-g ", NULL);
 		if (gxditview && roff_device)
 			dev = strappend (NULL, " -X -T", roff_device, NULL);
 		else if (gxditview)
@@ -1462,17 +1561,37 @@ static __inline__ char *make_roff_command (char *dir, char *file)
 			dev = "";
 
 		if (*file)
-			command = strappend (NULL, get_def("soelim", SOELIM),
+			command = strappend (NULL, get_def ("soelim", SOELIM),
 					     " '", file, "'", NULL); 
-		else {
+		else
 			/* Reading from stdin: use cat to pick up the part we
 			 * read in to figure out the format pipeline.
 			 * ? is '-' as a cat argument standard?
 			 * If not we could try "(cat tempfile; cat) | SOELIM..."
 			 */
-			command = strappend(NULL, get_def("cat", CAT), " ",
-					    stdin_tmpfile, " - | ",
-					    get_def("soelim", SOELIM), NULL);
+			command = strappend (NULL, get_def ("cat", CAT), " ",
+					     stdin_tmpfile, " - | ",
+					     get_def ("soelim", SOELIM), NULL);
+
+		/* Preformatted pages get standard 80-character lines. */
+		if (!catman) {
+			int roff_line_length = get_roff_line_length();
+			if (roff_line_length) {
+				char ll_macro[32], *new_command;
+				if (debug)
+					fprintf (stderr,
+						 "Using %d-character lines\n",
+						 roff_line_length);
+				sprintf (ll_macro, ".ll %d.%di",
+					 roff_line_length / 10,
+					 roff_line_length % 10);
+				new_command = strappend (NULL, "(echo '",
+							 ll_macro, "'; ",
+							 command, ")", NULL);
+				free (command);
+				command = new_command;
+				save_cat = 0;
+			}
 		}
 
 		do {
@@ -1483,46 +1602,47 @@ static __inline__ char *make_roff_command (char *dir, char *file)
                            errors set filter to "" */
 			switch (*pp_string) {
 			case 'e':
-				filter = troff ? get_def("eqn", EQN) 
-					       : get_def("neqn", NEQN);
+				filter = troff ? get_def ("eqn", EQN) 
+					       : get_def ("neqn", NEQN);
 				wants_dev = 1;
 				break;
 			case 'g':
-				filter = get_def("grap", GRAP);
+				filter = get_def ("grap", GRAP);
 				break;
 			case 'p':
-				filter = get_def("pic", PIC);
+				filter = get_def ("pic", PIC);
 				break;
 			case 't':
-				filter = get_def("tbl", TBL);
+				filter = get_def ("tbl", TBL);
 				using_tbl = 1;
 				break;
 			case 'v':
-				filter = get_def("vgrind", VGRIND);
+				filter = get_def ("vgrind", VGRIND);
 				break;
 			case 'r':
-				filter = get_def("refer", REFER);
+				filter = get_def ("refer", REFER);
 				break;
 			case 0:
 				/* done with preprocessors, now add roff */
 #ifdef TROFF_IS_GROFF
 				if (troff && ditroff) 
-					filter = strappend(NULL, 
-							   get_def("troff", TROFF), 
-							   " -Z", NULL);
+					filter = strappend (NULL, 
+							    get_def ("troff",
+								     TROFF), 
+							    " -Z", NULL);
 				else
 #endif
                                 if (troff) {
 #ifdef HAS_TROFF
-                                  filter = get_def("troff", TROFF);
+					filter = get_def ("troff", TROFF);
 #else
-                                  assert (0);
+					assert (0);
 #endif
                                 } else {
 #ifdef NROFF_MISSING
-                                  assert (0);
+					assert (0);
 #else
-                                  filter = get_def("nroff", NROFF);
+					filter = get_def ("nroff", NROFF);
 #endif
                                 }
 
@@ -1540,8 +1660,10 @@ static __inline__ char *make_roff_command (char *dir, char *file)
 						     NULL);
 			} else {
 				assert (*pp_string); /* didn't fail on roff */
-				error (0, 0, _( "ignoring unknown preprocessor `%c'"), *pp_string);
-			      }
+				error (0, 0,
+				       _("ignoring unknown preprocessor `%c'"),
+				       *pp_string);
+			}
 		} while (*pp_string++);
 
 #ifndef GNU_NROFF
@@ -1550,7 +1672,8 @@ static __inline__ char *make_roff_command (char *dir, char *file)
 			command = strappend (command, " | ", COL, NULL);
 #endif /* GNU_NROFF */
 
-		if (roff_device || gxditview) free (dev);
+		if (roff_device || gxditview)
+			free (dev);
 	} else {
 		/* use external formatter script, it takes arguments
 		   input file, preprocessor string, and (optional)
@@ -1569,28 +1692,25 @@ static char *make_display_command (char *file, char *title)
 	char *command;
 
 	command = strappend (NULL, "{ export MAN_PN LESS; MAN_PN=\'",
-			     escape_special(title),
+			     escape_special (title),
 			     "\'; LESS=\"" LESS_OPTS, prompt_string,
 			     "\"; ", NULL);
 	if (file) {
-	  if (ascii) {
-	    command = strappend (command, get_def("cat", CAT), 
-	    			   " '", file,
-	      			   "' |", get_def("tr", TR TR_SET1 TR_SET2),
-	      			   " |", pager, "; }", NULL);
-	      			   
-	  } else {
-	    command = strappend (command, pager, " '", file, 
-				   "'; }", NULL);
-	  }
+		if (ascii)
+			command = strappend (command, get_def ("cat", CAT), 
+					     " '", file, "' |",
+					     get_def ("tr", TR TR_SET1 TR_SET2),
+					     " |", pager, "; }", NULL);
+		else
+			command = strappend (command, pager, " '", file, 
+					     "'; }", NULL);
 	} else {
-	  if (ascii) {
-	    command = strappend (command, get_def("tr", TR TR_SET1 TR_SET2),
-	    			   " |", pager, "; }", NULL);
-	      			   
-	  } else {
-	    command = strappend (command, pager, "; }", NULL);
-	  }
+		if (ascii)
+			command = strappend (command,
+					     get_def ("tr", TR TR_SET1 TR_SET2),
+					     " |", pager, "; }", NULL);
+		else
+			command = strappend (command, pager, "; }", NULL);
 	}
 
 	return command;
@@ -1603,8 +1723,8 @@ static char *tmp_cat_filename (char *cat_file)
 	char *name = xmalloc (strlen (cat_file) + 12);
 	char *base;
 	strcpy (name, cat_file);
-	base = basename(name);
-	sprintf (base, "%d", getpid());
+	base = basename (name);
+	sprintf (base, "%d", getpid ());
 	return name;
 }
 
@@ -1614,20 +1734,30 @@ static char *tmp_cat_filename (char *cat_file)
  */
 static int commit_tmp_cat (char *cat_file, char *tmp_cat, int delete)
 {
-	int status;
+	int status = 0;
 
-	if (!delete) {
+	if (!delete && global_manpath && euid == 0) {
+		if (debug) {
+			fprintf (stderr, "fixing temporary cat's ownership\n");
+			status = 0;
+		} else {
+			struct passwd *man_owner = get_man_owner ();
+			status = chown (tmp_cat, man_owner->pw_uid, -1);
+			if (status)
+				error (0, errno, _("can't chown %s"), tmp_cat);
+		}
+	}
+
+	if (!delete && !status) {
 		if (debug) {
 			fprintf (stderr, "fixing temporary cat's mode\n");
 			status = 0;
 		} else {
 			status = chmod (tmp_cat, CATMODE);
 			if (status)
-				error(0, errno, _( "can't chmod %s"), tmp_cat);
+				error (0, errno, _("can't chmod %s"), tmp_cat);
 		}
-	} else
-		status = 0;
-
+	}
 
 	if (!delete && !status) {
 		if (debug) {
@@ -1635,17 +1765,18 @@ static int commit_tmp_cat (char *cat_file, char *tmp_cat, int delete)
 				 cat_file);
 			status = 0;
 		} else {
-			if ((status = rename (tmp_cat, cat_file)))
-				error (0, errno, _( "can't rename %s to %s"), tmp_cat, cat_file);
+			status = rename (tmp_cat, cat_file);
+			if (status)
+				error (0, errno, _("can't rename %s to %s"),
+				       tmp_cat, cat_file);
 		}
 	}
 
 	if (delete || status) {
 		if (debug)
 			fprintf (stderr, "unlinking temporary cat\n");
-		else
-			if (unlink (tmp_cat))
-				error (0, errno, _( "can't unlink %s"), tmp_cat);
+		else if (unlink (tmp_cat))
+			error (0, errno, _("can't unlink %s"), tmp_cat);
 	}
 
 	return status;
@@ -1664,9 +1795,8 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 #  endif
 
 	tmp_cat_file = tmp_cat_filename (cat_file);
-	if (!debug) {
-		push_cleanup ((void (*)())unlink, tmp_cat_file);
-	}
+	if (!debug)
+		push_cleanup ((void (*)()) unlink, tmp_cat_file);
 	created_tmp_cat = 0;
 
 #  ifdef COMP_CAT
@@ -1674,7 +1804,7 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 
 	/* create pipe */
 	if (pipe (pipe_fd)) {
-		error (0, errno, _( "can't create pipe"));
+		error (0, errno, _("can't create pipe"));
 		return NULL;
 	}
 
@@ -1687,7 +1817,7 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 		strcpy (tmp_cat_file, "/dev/null");
 	}
 
-	cat_fd = open (tmp_cat_file, O_WRONLY|O_CREAT|O_TRUNC, CATMODE);
+	cat_fd = open (tmp_cat_file, O_WRONLY | O_CREAT | O_TRUNC, CATMODE);
 	if (cat_fd != -1)
 		created_tmp_cat = 1;
 	else {
@@ -1708,7 +1838,7 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 	fflush (NULL);
 	child = fork ();
 	if (child < 0) {
-		error (0, errno, _( "can't fork"));
+		error (0, errno, _("can't fork"));
 		return NULL;
 	} else if (child == 0) {
 		/* compress reading end of pipe to tmp_cat_file */
@@ -1718,13 +1848,13 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 
 		/* connect standard input to reading end of pipe */
 		if (dup2 (pipe_fd[0], 0) == -1)
-			error (0, errno, _( "can't dup2"));
+			error (0, errno, _("can't dup2"));
 		close (pipe_fd[0]);
 		close (pipe_fd[1]);
 
 		/* set up standard output to write to tmp_cat_file */
 		if (dup2 (cat_fd, 1) == -1)
-			error (0, errno, _( "can't dup2"));
+			error (0, errno, _("can't dup2"));
 		close (cat_fd);
 
 		nice (10);
@@ -1736,14 +1866,14 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 			char *path;
 			char *argv[8];
 			int n;
-			cmd = xstrdup (get_def("compressor", COMPRESSOR));
+			cmd = xstrdup (get_def ("compressor", COMPRESSOR));
 			path = strtok (cmd, " \t\n");
 			argv[0] = basename (path);
-			for (n = 1;  argv[n-1];  ++n) {
+			for (n = 1; argv[n-1]; ++n) {
 				argv[n] = strtok (NULL, " \t\n");
 			}
 			execve (path, argv, envp);
-			error (FATAL, errno, _( "can't exec %s"), path);
+			error (FATAL, errno, _("can't exec %s"), path);
 		}
 	}
 
@@ -1758,9 +1888,8 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 	if (debug) {
 		fprintf (stderr, "saving to temporary cat %s\n", tmp_cat_file);
 		tmp_cat_file = "/dev/null";
-	} else {
-		push_cleanup ((void (*)())unlink, tmp_cat_file);
-	}
+	} else
+		push_cleanup ((void (*)()) unlink, tmp_cat_file);
 	save = fopen (tmp_cat_file, "w");
 #  endif
 
@@ -1770,29 +1899,29 @@ static __inline__ FILE *open_cat_stream (char *cat_file)
 /* Close the cat page stream, return non-zero on error.
    If delete don't update the cat file.
  */
-static __inline__ int close_cat_stream (FILE *cat_stream, char *cat_file, int delete)
+static __inline__ int close_cat_stream (FILE *cat_stream, char *cat_file,
+					int delete)
 {
-	int status;
+	int status = fclose (cat_stream);
 
-	status = fclose (cat_stream);
 #  ifdef COMP_CAT
-	{			/* get compressor's exit status */
-		int comp_status;
+	int comp_status;	/* get compressor's exit status */
 
-		while (waitpid (cat_comp_pid, &comp_status, 0) == -1) {
-			if (errno != EINTR) {
-				error (0, errno, _( "waiting for pid %u"), cat_comp_pid);
-				comp_status = -1;
-				break;
-			}
+	while (waitpid (cat_comp_pid, &comp_status, 0) == -1) {
+		if (errno != EINTR) {
+			error (0, errno, _("waiting for pid %u"),
+			       cat_comp_pid);
+			comp_status = -1;
+			break;
 		}
-
-		if (debug)
-			fprintf (stderr, "compressor exited with status %d\n",
-				 comp_status);
-		status |= comp_status;
 	}
+
+	if (debug)
+		fprintf (stderr, "compressor exited with status %d\n",
+			 comp_status);
+	status |= comp_status;
 #  endif
+
 	if (created_tmp_cat) {
 		status |= commit_tmp_cat (cat_file, tmp_cat_file,
 					  delete || status);
@@ -1806,7 +1935,8 @@ static __inline__ int close_cat_stream (FILE *cat_stream, char *cat_file, int de
  * format a manual page with roff_cmd, display it with disp_cmd, and
  * save it to cat_file
  */
-static int format_display_and_save (char *roff_cmd, char *disp_cmd, char *cat_file)
+static int format_display_and_save (char *roff_cmd, char *disp_cmd,
+				    char *cat_file)
 {
 	FILE *in  = checked_popen (roff_cmd, "r");
 	FILE *out = checked_popen (disp_cmd, "w");
@@ -1835,7 +1965,8 @@ static int format_display_and_save (char *roff_cmd, char *disp_cmd, char *cat_fi
 						    out);
 					outed += n;
 					if (!n && saving)
-						fprintf (stderr, _( "Still saving the page, please wait...\n"));
+						fprintf (stderr,
+							 _("Still saving the page, please wait...\n"));
 					outing = n; /* stop outing on error */
 				}
 
@@ -1846,8 +1977,8 @@ static int format_display_and_save (char *roff_cmd, char *disp_cmd, char *cat_fi
 					saving = n; /* stop saving on error */
 			        }
 
-			} while (   (outing && (outed < inned))
-				 || (saving && (saved < inned)) );
+			} while ((outing && outed < inned)
+			      || (saving && saved < inned));
 		}
 	}
 
@@ -1878,17 +2009,20 @@ static int display (char *dir, char *man_file, char *cat_file, char *title)
 			fprintf (stderr, "chdir %s\n", dir);
 
 		if (chdir (dir)) {
-			error (0, errno, _( "can't chdir to %s"), dir);
+			error (0, errno, _("can't chdir to %s"), dir);
 			return 0;
 		}
 	}
 
 	/* define roff_cmd */
 	{
-		char *source_file;
+		char *source_file = NULL;
 #ifdef COMP_SRC
-		if ( !man_file || !(source_file = get_ztemp()) )
-			source_file = man_file;
+		if (man_file) {
+			source_file = get_ztemp ();
+			if (!source_file)
+				source_file = man_file;
+		}
 #else
 		source_file = man_file;
 #endif /* COMP_SRC */
@@ -1902,12 +2036,11 @@ static int display (char *dir, char *man_file, char *cat_file, char *title)
 	if (troff) {
 		found = !access (man_file, R_OK);
 		if (found) {
-			if (pause && do_prompt(title))
+			if (pause && do_prompt (title))
 				return 0;
 			checked_system (roff_cmd);
 		}
 	} else {
-
 		int format;
 		char *cmd;
 		int status;
@@ -1920,17 +2053,17 @@ static int display (char *dir, char *man_file, char *cat_file, char *title)
 		   Check there first ala the FSSTND, and display if newer
 		   than man_file, if older, ignore it altogether */
 
-		if (!local_man_file && global_manpath) {
-			catpath = global_catpath(dir);
+		if (!local_man_file) {
+			catpath = get_catpath
+				(dir, global_manpath ? SYSTEM_CAT : USER_CAT);
 
-			assert (catpath);
 			assert (dir);
 
-			if (man_file && strcmp(catpath, dir) != 0) {
+			if (man_file && catpath) {
 				/* we may have a FSSTND cat != cat_file */
 				char *std_cat_file;
 	
-				std_cat_file = convert_name(man_file, NULL);
+				std_cat_file = convert_name (man_file, NULL);
 				status = is_newer (man_file, std_cat_file);
 	
 				if (status != -2 && !(status & 1) == 1) {
@@ -1942,10 +2075,11 @@ static int display (char *dir, char *man_file, char *cat_file, char *title)
 			} else
 				format = 1;
 
-			free (catpath);
+			if (catpath)
+				free (catpath);
 		} else
 			format = 1;
-		
+
 		if (!man_file) {
 			assert (cat_file);
 			format = 0;
@@ -1953,7 +2087,7 @@ static int display (char *dir, char *man_file, char *cat_file, char *title)
 			assert (man_file);
 			save_cat = 0;
 			format = 1;
-		} else if (format) {
+		} else if (format && save_cat) {
 			int status;
 			char *cat_dir;
 			char *tmp;
@@ -1963,18 +2097,21 @@ static int display (char *dir, char *man_file, char *cat_file, char *title)
 
 			/* don't save if we haven't a cat directory */
 			cat_dir = xstrdup (cat_file);
-			if ((tmp = strrchr (cat_dir, '/'))) *tmp = 0;
+			tmp = strrchr (cat_dir, '/');
+			if (tmp)
+				*tmp = 0;
 			save_cat = is_directory (cat_dir) == 1;
 			if (debug && !save_cat)
-				fprintf(stderr, "cat dir %s does not exist\n",
-					cat_dir);
+				fprintf (stderr, "cat dir %s does not exist\n",
+					 cat_dir);
 			free (cat_dir);
 		}
 
-		/* if we're trying to read stdin via '-l -' then man_file will be ""
-		* which access() obviously barfs on, but all is well because the
-		* roff_cmd will have been created to expect input via stdin.
-		* So we special-case this to avoid the bogus access() check.
+		/* if we're trying to read stdin via '-l -' then man_file
+		 * will be "" which access() obviously barfs on, but all is
+		 * well because the roff_cmd will have been created to
+		 * expect input via stdin. So we special-case this to avoid
+		 * the bogus access() check.
 		*/
 		if (format == 1 && *man_file == '\0')
 			found = 1;
@@ -1982,139 +2119,152 @@ static int display (char *dir, char *man_file, char *cat_file, char *title)
 			found = !access (format ? man_file : cat_file, R_OK);
 
 		if (debug)
-			fprintf(stderr, "format: %d, save_cat: %d, found: %d\n",
-				format, save_cat, found);
+			fprintf (stderr,
+				 "format: %d, save_cat: %d, found: %d\n",
+				 format, save_cat, found);
 
-		if (found) {
-			if (print_where) {
-				if (man_file)
-					printf ("%s ", man_file);
-				if (cat_file && !format)
-					printf ("%s ", cat_file);
-				putchar ('\n');
-			} else if (catman) {
-				if (format) {
-					if (!save_cat) {
-						error (0, 0, _( "\ncannot write to %s in catman mode"), cat_file);
-					} else {
-						char *tmpcat = tmp_cat_filename (cat_file);
-						cmd = strappend (NULL, roff_cmd,
-#ifdef COMP_CAT	
-								 " | ",
-								 get_def("compressor", COMPRESSOR),
-								 " >",
-#else
-								 " >",
-#endif /* COMP_CAT */
-								 tmpcat, NULL);
-						/* save the cat as real user
-						   (1) required for user man hierarchy
-						   (2) else depending on ruid's privs
-						       is ok, effectively disables
-						       catman for non-root.
-						 */
-						push_cleanup ((void (*)())unlink, tmpcat);
-						status = do_system_drop_privs (cmd);
-						if (status) gripe_system (cmd, status);
-						free (cmd);
+		if (!found) {
+			if (roff_cmd)
+				free (roff_cmd);
+			return found;
+		}
 
-						commit_tmp_cat (cat_file, tmpcat, status);
-						pop_cleanup ();
-						free (tmpcat);
-					}
-				}
-
-			} else if (format) {
-				/* no cat or out of date */
-				char *disp_cmd;
-
-				if (pause && do_prompt(title)) {
-					if (roff_cmd)
-						free (roff_cmd);
-					if (local_man_file)
-						return 1;
-					else
-						return 0;
-				}
-
-				fprintf (stderr, _( "Reformatting %s, please wait...\n"), title);
-				disp_cmd = make_display_command (NULL, title);
-	
-#ifdef MAN_CATS
-				if (save_cat) {
-					/* save cat */
-					format_display_and_save (roff_cmd,
-								 disp_cmd,
-								 cat_file);
-				} else 
-#endif /* MAN_CATS */
-					{
-					/* don't save cat */
+		if (print_where) {
+			if (man_file)
+				printf ("%s ", man_file);
+			if (cat_file && !format)
+				printf ("%s ", cat_file);
+			putchar ('\n');
+		} else if (catman) {
+			if (format) {
+				if (!save_cat) {
+					error (0, 0,
+					       _("\ncannot write to "
+						 "%s in catman mode"),
+					       cat_file);
+				} else {
+					char *tmpcat =
+						tmp_cat_filename (cat_file);
 					cmd = strappend (NULL, roff_cmd,
-							 " | ", disp_cmd, NULL);
+#ifdef COMP_CAT	
+							 " | ",
+							 get_def ("compressor",
+								  COMPRESSOR),
+							 " >",
+#else
+							 " >",
+#endif /* COMP_CAT */
+							 tmpcat, NULL);
+					/* save the cat as real user
+					 * (1) required for user man hierarchy
+					 * (2) else depending on ruid's privs
+					 *     is ok, effectively disables
+					 *     catman for non-root.
+					 */
+					push_cleanup ((void (*)()) unlink,
+						      tmpcat);
 					status = do_system_drop_privs (cmd);
-					/* some shells report broken pipe, ignore it */
-					if (status && 
-					    (status != 256*(SIGPIPE + 0x80)) )
-						gripe_system (disp_cmd, status);
+					if (status)
+						gripe_system (cmd, status);
 					free (cmd);
+
+					commit_tmp_cat (cat_file, tmpcat,
+							status);
+					pop_cleanup ();
+					free (tmpcat);
 				}
+			}
 
-				free (disp_cmd);
+		} else if (format) {
+			/* no cat or out of date */
+			char *disp_cmd;
 
-			} else {
-				/* display preformatted cat */
-#if defined(COMP_SRC)
-				struct compression *comp;
-
-				if (pause && do_prompt(title)) {
-					if (roff_cmd)
-						free (roff_cmd);
+			if (pause && do_prompt (title)) {
+				if (roff_cmd)
+					free (roff_cmd);
+				if (local_man_file)
+					return 1;
+				else
 					return 0;
-				}
+			}
 
-				comp = comp_info (cat_file);
-				if (comp) {
-					char *disp_cmd;
+			fprintf (stderr,
+				 _("Reformatting %s, please wait...\n"),
+				 title);
+			disp_cmd = make_display_command (NULL, title);
 
-					disp_cmd = make_display_command (NULL, title);
-					cmd = strappend (NULL, comp->prog,
-							 " '", cat_file,
-							 "' | ", disp_cmd, NULL);
-					free(disp_cmd);
-				} else 
-					cmd = make_display_command (cat_file, 
-								    title);
-#elif defined(COMP_CAT)
-				char *disp_cmd;
-
-				if (pause && do_prompt(title)) {
-					if (roff_cmd)
-						free (roff_cmd);
-					return 0;
-				}
-
-				disp_cmd = make_display_command (NULL, title);
-				cmd = strappend (NULL, 
-						 get_def("decompressor", DECOMPRESSOR),
-						 " '", cat_file,
-						 "' | ", disp_cmd, NULL);
-				free (disp_cmd);
-#else /* !(COMP_SRC || COMP_CAT) */
-				if (pause && do_prompt(title)) {
-					if (roff_cmd)
-						free (roff_cmd);
-					return 0;
-				}
-
-				cmd = make_display_command (cat_file, title);
-#endif /* COMP_SRC */
+#ifdef MAN_CATS
+			if (save_cat) {
+				/* save cat */
+				format_display_and_save (roff_cmd,
+							 disp_cmd,
+							 cat_file);
+			} else 
+#endif /* MAN_CATS */
+				{
+				/* don't save cat */
+				cmd = strappend (NULL, roff_cmd,
+						 " | ", disp_cmd, NULL);
 				status = do_system_drop_privs (cmd);
 				/* some shells report broken pipe, ignore it */
-				if (status && (status != (SIGPIPE + 0x80) << 8))
-					gripe_system (cmd, status);
+				if (status && status != 256 * (SIGPIPE + 0x80))
+					gripe_system (disp_cmd, status);
 				free (cmd);
 			}
+
+			free (disp_cmd);
+
+		} else {
+			/* display preformatted cat */
+#if defined(COMP_SRC)
+			struct compression *comp;
+
+			if (pause && do_prompt (title)) {
+				if (roff_cmd)
+					free (roff_cmd);
+				return 0;
+			}
+
+			comp = comp_info (cat_file);
+			if (comp) {
+				char *disp_cmd;
+
+				disp_cmd = make_display_command (NULL, title);
+				cmd = strappend (NULL, comp->prog,
+						 " '", cat_file,
+						 "' | ", disp_cmd, NULL);
+				free(disp_cmd);
+			} else 
+				cmd = make_display_command (cat_file, title);
+#elif defined(COMP_CAT)
+			char *disp_cmd;
+
+			if (pause && do_prompt(title)) {
+				if (roff_cmd)
+					free (roff_cmd);
+				return 0;
+			}
+
+			disp_cmd = make_display_command (NULL, title);
+			cmd = strappend (NULL, 
+					 get_def("decompressor", DECOMPRESSOR),
+					 " '", cat_file,
+					 "' | ", disp_cmd, NULL);
+			free (disp_cmd);
+#else /* !(COMP_SRC || COMP_CAT) */
+			if (pause && do_prompt(title)) {
+				if (roff_cmd)
+					free (roff_cmd);
+				return 0;
+			}
+
+			cmd = make_display_command (cat_file, title);
+#endif /* COMP_SRC */
+			status = do_system_drop_privs (cmd);
+			/* some shells report broken pipe, ignore it */
+			if (status && (status != (SIGPIPE + 0x80) << 8))
+				gripe_system (cmd, status);
+			free (cmd);
 		}
 	}
 
@@ -2134,11 +2284,12 @@ static char *find_cat_file (char *path, char *man_file, char *sec)
 
 	/* could do this with `global' */
 
-	cat_path = global_catpath(man_file);
-	cat_file = convert_name(man_file, cat_path);
+	cat_path = get_catpath
+		(man_file, global_manpath ? SYSTEM_CAT : USER_CAT);
+	cat_file = convert_name (man_file, cat_path);
 
 	if (cat_path)
-		free(cat_path);
+		free (cat_path);
 
 	return cat_file;
 }
@@ -2164,7 +2315,7 @@ static int try_section (char *path, char *sec, char *name)
   	 * Look for man page source files.
   	 */
 
-	names = look_for_file(path, sec, name, 0);
+	names = look_for_file (path, sec, name, 0);
 	if (!names)
 		/*
     		 * No files match.  
@@ -2174,17 +2325,20 @@ static int try_section (char *path, char *sec, char *name)
 #endif /* NROFF_MISSING */
 	{
 		if (catman) {
-			free(title);
+			free (title);
 			return ++found;
 		}
-		
+
 		if (!troff) {
 			names = look_for_file (path, sec, name, 1);
 
 			if (names)
-				for (np = names; *np; np++)
+				for (np = names; *np; np++) {
 					found += display (path, NULL, *np, 
 							  title);
+					if (found && !findall)
+						break;
+				}
 		}
 	}
 #ifndef NROFF_MISSING
@@ -2192,14 +2346,38 @@ static int try_section (char *path, char *sec, char *name)
 		for (np = names; *np ; np++) {
 			char *man_file;
 			char *cat_file;
+			struct mandata info;
+			char *info_buffer;
 
-			if ( (man_file = ult_src (*np, path, NULL, SO_LINK|SOFT_LINK|HARD_LINK)) == NULL) {
+			info_buffer = filename_info (*np, &info);
+			if (!info_buffer)
+				continue;
+			if (strcmp (info.ext, sec) && is_section (info.ext)) {
+				/* This extension is mentioned in the config
+				 * file, and so is a section in its own
+				 * right. Leave it for whenever that section
+				 * is scanned.
+				 */
+				if (debug)
+					fprintf (stderr,
+						 "%s is in subsection %s\n",
+						 *np, info.ext);
+				free (info_buffer);
+				continue;
+			}
+			free (info_buffer);
+
+			man_file = ult_src (*np, path, NULL,
+					    SO_LINK | SOFT_LINK | HARD_LINK);
+			if (man_file == NULL) {
 				free (title);
 				return 0;
 			}
 
 			if (debug)
-				fprintf (stderr, "found ultimate source file %s\n", man_file);
+				fprintf (stderr,
+					 "found ultimate source file %s\n",
+					 man_file);
 			lang = lang_dir (man_file);
 
 			cat_file = find_cat_file (path, man_file, sec);
@@ -2208,9 +2386,12 @@ static int try_section (char *path, char *sec, char *name)
 #ifdef COMP_SRC
 			/* if ult_src() produced a ztemp file, we need to 
 			   remove it (and unexist it) before proceeding */
-			remove_ztemp();
+			remove_ztemp ();
 #endif /* COMP_SRC */
-			/* free(man_file); can't free this, it's static !! */
+			/* free (man_file); can't free this, it's static !! */
+
+			if (found && !findall)
+				break;
 		}
 	}
 #endif /* NROFF_MISSING */
@@ -2221,14 +2402,17 @@ static int try_section (char *path, char *sec, char *name)
 
 #ifdef MAN_DB_UPDATES
 /* wrapper to dbdelete which deals with opening/closing the db */
-static void dbdelete_wrapper(char *page, struct mandata *info)
+static void dbdelete_wrapper (char *page, struct mandata *info)
 {
-	if ( !catman && (dbf = MYDBM_RWOPEN(database)) ) {
-		if ( dbdelete(page, info) == 1)
-			if (debug)
-				fprintf(stderr, "%s(%s) not in db!\n",
-					page, info->ext);
-		MYDBM_CLOSE(dbf);
+	if (!catman) {
+		dbf = MYDBM_RWOPEN (database);
+		if (dbf) {
+			if (dbdelete (page, info) == 1)
+				if (debug)
+					fprintf (stderr, "%s(%s) not in db!\n",
+						 page, info->ext);
+			MYDBM_CLOSE(dbf);
+		}
 	}
 }
 #endif /* MAN_DB_UPDATES */
@@ -2246,9 +2430,9 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 
 	if (debug) {
 		fprintf (stderr, "trying a db located file.\n");
-		dbprintf(in);
+		dbprintf (in);
 	}
-		
+
 	/* if the pointer holds some data, this is a reference to the 
 	   real page, use that instead. */
 	if (*in->pointer != '-')
@@ -2264,17 +2448,19 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 #ifdef MAN_DB_UPDATES
 	/* The next piece of code examines the db found manual page
 	   and checks for consistency */
-	file = make_filename(path, name, in, "man");
-	if (lstat(file, &buf) == 0 && buf.st_mtime != in->_st_mtime) {
+	file = make_filename (path, name, in, "man");
+	if (lstat (file, &buf) == 0 && buf.st_mtime != in->_st_mtime) {
 		/* update of this file required */
 		if (debug)
-			fprintf(stderr, "%s needs to be recached: %ld %ld.\n", 
-				file, (long)in->_st_mtime, (long)buf.st_mtime);
-		if ( (dbf = MYDBM_RWOPEN(database)) ) {
-			dbdelete(orig_name, in);
-			test_manfile(file, path);
-			in = dblookup_exact(orig_name, in->ext);
-			MYDBM_CLOSE(dbf);
+			fprintf (stderr, "%s needs to be recached: %ld %ld.\n", 
+				 file, (long)in->_st_mtime,
+				 (long)buf.st_mtime);
+		dbf = MYDBM_RWOPEN (database);
+		if (dbf) {
+			dbdelete (orig_name, in);
+			test_manfile (file, path);
+			in = dblookup_exact (orig_name, in->ext);
+			MYDBM_CLOSE (dbf);
 			if (!in)
 				return 0;
 			if (*in->pointer != '-')
@@ -2284,9 +2470,9 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 		} else {
 			if (errno == EACCES || errno == EROFS) {
 				if (debug)
-					fprintf(stderr,
-						"database %s is read-only\n",
-						database);
+					fprintf (stderr,
+						 "database %s is read-only\n",
+						 database);
 			} else
 				error (0, errno,
 				       _("can't update index cache %s"),
@@ -2295,10 +2481,10 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 	}
 #endif /* MAN_DB_UPDATES */
 
-	if (in->id == WHATIS_MAN || in->id == WHATIS_CAT)
-		error (OK, 0,
-		       _("warning: %s: relying on whatis refs is deprecated"),
-		       name);
+	if (debug && (in->id == WHATIS_MAN || in->id == WHATIS_CAT))
+		fprintf (stderr,
+			 _("%s: relying on whatis refs is deprecated\n"),
+			 name);
 
 #ifndef NROFF_MISSING /* #ifdef NROFF */
 	/*
@@ -2308,22 +2494,26 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 	title = strappend (NULL, name, "(", in->ext, ")", NULL);
 
 	if (in->id < STRAY_CAT) {	/* There should be a src page */
-		file = make_filename(path, name, in, "man");
+		file = make_filename (path, name, in, "man");
 		if (debug)
-			fprintf(stderr, "Checking physical location: %s\n", file);
+			fprintf (stderr, "Checking physical location: %s\n",
+				 file);
 
 		if (access (file, R_OK) == 0) {
 			char *man_file;
 			char *cat_file;
 
-			if ( (man_file = ult_src( file, path, NULL, SO_LINK|SOFT_LINK|HARD_LINK))
-					== NULL) {
+			man_file = ult_src (file, path, NULL,
+					    SO_LINK | SOFT_LINK | HARD_LINK);
+			if (man_file == NULL) {
 				free (title);
 				return found; /* zero */
 			}
 
 			if (debug)
-				fprintf (stderr, "found ultimate source file %s\n", man_file);
+				fprintf (stderr,
+					 "found ultimate source file %s\n",
+					 man_file);
 			lang = lang_dir (man_file);
 
 			cat_file = find_cat_file (path, man_file, in->ext);
@@ -2332,7 +2522,7 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 #ifdef COMP_SRC
 			/* if ult_src() produced a ztemp file, we need to 
 			   remove it (and unexist it) before proceeding */
-			remove_ztemp();
+			remove_ztemp ();
 #endif /* COMP_SRC */
 
 		} /* else {drop through to the bottom and return 0 anyway} */
@@ -2341,9 +2531,8 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 #endif /* NROFF_MISSING */
 	
 	if (in->id <= WHATIS_CAT) {
-
 		/* The db says we have a stray cat or whatis ref */
-		   
+
 		if (catman) {
 			free (title);
 			return ++found;
@@ -2352,128 +2541,138 @@ static int try_db_section (char *orig_name, char *path, struct mandata *in)
 		/* show this page but force an update later to make sure
 		   we haven't just added the new page */
 		found_a_stray = 1;
-		
-		if (!troff) {
-			file = make_filename(path, name, in, "cat");
-			if (debug)
-				fprintf(stderr, "Checking physical location: %s\n", file);
 
-			if ( access(file, R_OK) != 0 ) {
-				char *catpath;
-				catpath = global_catpath(path);
+		/* If explicitly asked for troff, don't show a stray cat. */
+		if (troff) {
+			free (title);
+			return found;
+		}
 
-				if ( catpath && strcmp(catpath, path) != 0 ) {
-				
-					file = make_filename(catpath, name, 
-							     in, "cat");
-					free(catpath);
-					if (debug)
-						fprintf(stderr, "Checking physical location: %s\n", file);
+		file = make_filename (path, name, in, "cat");
+		if (debug)
+			fprintf (stderr,
+				 "Checking physical location: %s\n",
+				 file);
 
-					if ( access(file, R_OK) != 0 ) {
-						/* don't delete here, 
-						   return==0 will do that */
-						free (title);
-						return found; /* zero */
-					}
-				} else {
-					if (catpath)
-						free(catpath);
+		if (access (file, R_OK) != 0) {
+			char *catpath;
+			catpath = get_catpath
+				(path, global_manpath ? SYSTEM_CAT : USER_CAT);
+
+			if (catpath && strcmp (catpath, path) != 0) {
+				file = make_filename (catpath, name,
+						      in, "cat");
+				free (catpath);
+				if (debug)
+					fprintf (stderr,
+						 "Checking physical "
+						 "location: %s\n",
+						 file);
+
+				if (access (file, R_OK) != 0) {
+					/* don't delete here, 
+					   return==0 will do that */
 					free (title);
 					return found; /* zero */
 				}
+			} else {
+				if (catpath)
+					free (catpath);
+				free (title);
+				return found; /* zero */
 			}
-
-			found += display (path, NULL, file, title);
 		}
+
+		found += display (path, NULL, file, title);
 	}
 	free (title);
 	return found;
 }
 
 /* test for existence, if fail: call dbdelete_wrapper, else return amount */
-static int exist_check(char *name, char *manpath, struct mandata *loc)
+static int exist_check (char *name, char *manpath, struct mandata *loc)
 {
 	int exists;
 
-	exists = try_db_section(name, manpath, loc);
-			
+	exists = try_db_section (name, manpath, loc);
+
 #ifdef MAN_DB_UPDATES
-	if ( !exists && !skip ) {
-		if (debug) fprintf(stderr, "dbdelete_wrapper =%s =%s\n", name, loc);
-		dbdelete_wrapper(name, loc);
+	if (!exists && !skip) {
+		if (debug)
+			fprintf (stderr, "dbdelete_wrapper =%s =%s\n",
+				 name, loc);
+		dbdelete_wrapper (name, loc);
 	}
 #endif /* MAN_DB_UPDATES */
 
 	return exists;
 }
-	
+
 /* db wrapper for try_db_section(). If db not accessable, return -1, 
    otherwise return amount of pages found/displayed */
-static int try_db(char *manpath, char *sec, char *name)
+static int try_db (char *manpath, char *sec, char *name)
 {
 	int found = 0;
 	struct nlist *in_cache;
 	struct mandata *loc, *data, *store[ENTRIES], *exact_ext = NULL;
 	struct mandata **exact_sec = store;
+	char *catpath;
 
 	/* find out where our db for this manpath should be */
-	
-	if (global_manpath) {
-		char *catpath;
 
-		catpath = global_catpath(manpath);
-		assert(catpath);
-		database = mkdbname(catpath);
-		free(catpath);
+	catpath = get_catpath (manpath, global_manpath ? SYSTEM_CAT : USER_CAT);
+	if (catpath) {
+		database = mkdbname (catpath);
+		free (catpath);
 	} else
-		database = mkdbname(manpath);
+		database = mkdbname (manpath);
 
-	in_cache = lookup(manpath); /* have we looked here already? */
+	in_cache = lookup (manpath); /* have we looked here already? */
 	
-	if ( !in_cache ) {
-		dbf = MYDBM_RDOPEN(database);
-		if (dbf && dbver_rd(dbf)) {
-			MYDBM_CLOSE(dbf);
+	if (!in_cache) {
+		dbf = MYDBM_RDOPEN (database);
+		if (dbf && dbver_rd (dbf)) {
+			MYDBM_CLOSE (dbf);
 			dbf = NULL;
 		}
 		if (dbf) {
 			if (debug)
-				fprintf(stderr,
-					"Succeeded in opening %s O_RDONLY\n",
-					database);
+				fprintf (stderr,
+					 "Succeeded in opening %s O_RDONLY\n",
+					 database);
 
 			/* if section is set, only return those that match,
 			   otherwise NULL retrieves all available */
-			data = dblookup_all(name, section);
-			(void) install_db_ptr(manpath, data); 
-			MYDBM_CLOSE(dbf);
+			data = dblookup_all (name, section);
+			(void) install_db_ptr (manpath, data); 
+			MYDBM_CLOSE (dbf);
 #ifdef MAN_DB_CREATES
 		} else if (!global_manpath) {
 			/* create one */
-			free_hashtab();
+			free_hashtab ();
 			if (debug)
-				fprintf(stderr, 
-					"Failed to open %s O_RDONLY\n",
-					database);
+				fprintf (stderr, 
+					 "Failed to open %s O_RDONLY\n",
+					 database);
 			/* create_db should really return EOF on failure. */
 			if (create_db (manpath) == 0) {
-				data = infoalloc();
-				data->next = NULL; data->addr = NULL;
-				(void) install_db_ptr(manpath, data);
+				data = infoalloc ();
+				data->next = NULL;
+				data->addr = NULL;
+				(void) install_db_ptr (manpath, data);
 				return -1;
 			}
 			return -2;
 #endif /* MAN_DB_CREATES */
 		} else {
 			if (debug)
-				fprintf(stderr, 
-					"Failed to open %s O_RDONLY\n",
-					database);
-			data = infoalloc();
+				fprintf (stderr, 
+					 "Failed to open %s O_RDONLY\n",
+					 database);
+			data = infoalloc ();
 			data->next = (struct mandata *) NULL;
 			data->addr = NULL;
-			(void) install_db_ptr(manpath, data);
+			(void) install_db_ptr (manpath, data);
 			return -1; /* indicate failure to open db */
 		}
 	} else
@@ -2486,16 +2685,16 @@ static int try_db(char *manpath, char *sec, char *name)
 	/* We already tried (and failed) to open this db before */
 	if (!data->addr)
 		return -1;
-		
+
 	/* cycle through the mandata structures (there's usually only 
 	   1 or 2) and see what we have w.r.t. the current section */
 	for (loc = data; loc; loc = loc->next) {
-		if (!extension || strcmp(extension, loc->ext) == 0
-			       || strcmp(extension, 
-					 loc->ext + strlen(sec)) == 0) {
-			if (strcmp(loc->ext, sec) == 0)
+		if (!extension || strcmp (extension, loc->ext) == 0
+			       || strcmp (extension, 
+					  loc->ext + strlen (sec)) == 0) {
+			if (strcmp (loc->ext, sec) == 0)
 				exact_ext = loc;
-			else if (strncmp(loc->ext, sec, strlen(sec) ) == 0)
+			else if (strncmp (loc->ext, sec, strlen (sec)) == 0)
 				*(exact_sec++) = loc;
 		}
 	}
@@ -2505,12 +2704,20 @@ static int try_db(char *manpath, char *sec, char *name)
 
 	/* first see if we have the right extension */
 	if (exact_ext)
-		found = exist_check(name, manpath, exact_ext);
+		found = exist_check (name, manpath, exact_ext);
 
 	/* if (not or -a) and (we have a correct section), show that */
 	if (findall || !found) {
 		for (exact_sec = store; *exact_sec; exact_sec++) {
-			found += exist_check(name, manpath, *exact_sec);
+			if (debug)
+				fprintf (stderr,
+					 "extension = %s, "
+					 "requested section = %s\n",
+					 (*exact_sec)->ext, sec);
+			if (!strcmp ((*exact_sec)->ext, sec) ||
+			    !is_section ((*exact_sec)->ext))
+				found += exist_check (name, manpath,
+						      *exact_sec);
 			if (found && !findall)
 				break;
 		}
@@ -2522,7 +2729,7 @@ static int try_db(char *manpath, char *sec, char *name)
 /* try to locate the page under the specified manpath, in the desired section,
    with the supplied name. glob if necessary. Initially try to find it via
    a db cache access, if that fails, search the filesystem. */
-static int locate_page(char *manpath, char *sec, char *name)
+static int locate_page (char *manpath, char *sec, char *name)
 {
 	int found, db_ok;
 
@@ -2531,33 +2738,30 @@ static int locate_page(char *manpath, char *sec, char *name)
 
 	   global: if setuid, use privs; don't create db.
 	   user  : if setuid, drop privs; allow db creation. */
-	   
-	if (is_global_mandir(manpath)) {
-		global_manpath = 1;
-	} else {
-		global_manpath = 0;
-		drop_effective_privs();
-	}
-		
+
+	global_manpath = is_global_mandir (manpath);
+	if (!global_manpath)
+		drop_effective_privs ();
+
 	if (debug)
 		fprintf (stderr, "searching in %s, section %s\n", 
 			 manpath, sec);
 
-	db_ok = try_db(manpath, sec, name);
+	db_ok = try_db (manpath, sec, name);
 
 #ifdef MAN_DB_CREATES
 	if (db_ok == -2) /* we created a db in the last call */
-		db_ok = try_db(manpath, sec, name);
+		db_ok = try_db (manpath, sec, name);
 #endif /* MAN_DB_CREATES */
 
 	if (db_ok <= 0)  /* we failed to find/open a db, or we found nothing */
 		found = try_section (manpath, sec, name);
 	else
 		found = db_ok;
-	
+
 	if (!global_manpath)
-		regain_effective_privs();
-		
+		regain_effective_privs ();
+
 	return found;
 }
 
@@ -2583,36 +2787,37 @@ static int man (char *name)
 
 	if (section) {
 		char **mp;
-		
+
 		for (mp = manpathlist; *mp; mp++) {
-			found += locate_page(*mp, section, name);
-			if (found && !findall)   /* i.e. only do this section... */
+			found += locate_page (*mp, section, name);
+			if (found && !findall)
+				/* i.e. only do this section... */
 				return found;
 		}
 	} else {
 		char **sp;
-		
-		/* sections in manpath are only 1 char */
-		for (sp = section_list; *sp && !sp[0][1]; sp++) {
+
+		for (sp = section_list; *sp; sp++) {
 			char **mp;
-			
+
 			for (mp = manpathlist; *mp; mp++) {
 				found += locate_page(*mp, *sp, name);
-				if (found && !findall)   /* i.e. only do this section... */
+				if (found && !findall)
+					/* i.e. only do this section... */
 					return found;
 			}
 		}
 	}
-	
+
 #ifdef MAN_DB_UPDATES
 	/* check to see if any of the databases need updating */
-	if ((!found || found_a_stray) && update_required) {
+	if ((!found || found_a_stray) && update && update_required) {
 		/* must free_hashtab() here in case testmandirs() 
 		   wants to use it */
-		free_hashtab();
+		free_hashtab ();
 	
-		if ( need_to_rerun() )
-			return man(name);
+		if (need_to_rerun ())
+			return man (name);
 	}
 #endif /* MAN_DB_UPDATES */
 
@@ -2623,13 +2828,21 @@ static int man (char *name)
 static __inline__ char **get_section_list (void)
 {
 	int i = 0;
+	char **config_sections;
 	char **sections = NULL;
 	char *sec;
+
+	/* Section list from configuration file, or STD_SECTIONS if it's
+	 * empty.
+	 */
+	config_sections = get_sections ();
+	if (!*config_sections)
+		config_sections = std_sections;
 
 	if (colon_sep_section_list == NULL)
 		colon_sep_section_list = getenv ("MANSECT");
 	if (colon_sep_section_list == NULL || *colon_sep_section_list == '\0')
-		return std_sections;
+		return config_sections;
 
 	for (sec = strtok(colon_sep_section_list, ":"); sec; 
 	     sec = strtok(NULL, ":")) {
@@ -2644,7 +2857,7 @@ static __inline__ char **get_section_list (void)
 	} else {
 		if (sections)
 			free (sections);
-		return std_sections;
+		return config_sections;
 	}
 }
 
@@ -2657,32 +2870,34 @@ static __inline__ int do_prompt (char *name)
 	int ch;
 
 	skip = 0;
-	if (isatty (STDOUT_FILENO) && isatty (STDIN_FILENO)) {
-		fprintf (stderr, _( 
-		         "--Man-- next: %s "
-		         "[ view (return) | skip (Ctrl-D) | quit (Ctrl-C) ]\n"), 
-		         name);
-		fflush (stderr);
+	if (!isatty (STDOUT_FILENO) || !isatty (STDIN_FILENO))
+		return 0;
 
-		do {
-			ch=getchar();
-			switch( ch ) {
-				case '\n':
-					return 0;
-				case EOF:
-					skip = 1;
-					return 1;
-				default:
-					break;
-			}
-		} while (1);
-	}
+	fprintf (stderr, _( 
+		 "--Man-- next: %s "
+		 "[ view (return) | skip (Ctrl-D) | quit (Ctrl-C) ]\n"), 
+		 name);
+	fflush (stderr);
+
+	do {
+		ch = getchar();
+		switch (ch) {
+			case '\n':
+				return 0;
+			case EOF:
+				skip = 1;
+				return 1;
+			default:
+				break;
+		}
+	} while (1);
+
 	return 0;
 }
 
-void (int_handler)( int signo)
+void int_handler (int signo)
 {
 	if (debug)
 		fprintf (stderr, "\ninterrupt signal %d handler\n", signo);
-	exit( INTERRUPTED);
+	exit (INTERRUPTED);
 }

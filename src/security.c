@@ -15,6 +15,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
+#include <assert.h>
 #include <errno.h>
 
 #ifndef STDC_HEADERS
@@ -42,6 +43,7 @@ extern int errno;
 #include "manconfig.h"
 #include "lib/error.h"
 #include "lib/cleanup.h"
+#include "security.h"
 
 #ifdef SECURE_MAN_UID
 
@@ -97,24 +99,42 @@ uid_t ruid;				/* initial real user id */
 uid_t euid;				/* initial effective user id */
 uid_t uid;				/* current euid */
 
+static struct passwd *man_owner;
+
 /* Keep a count of how many times we've dropped privileges, and only regain
  * them if regain_effective_privs() is called an equal number of times.
  */
 static int priv_drop_count = 0;
 
-static __inline__ void gripe_set_euid()
+static __inline__ void gripe_set_euid ()
 {
-	error (FATAL, errno, _( "can't set effective uid"));
+	error (FATAL, errno, _("can't set effective uid"));
 }
 
-void init_security(void)
+void init_security (void)
 {
-	ruid = getuid();
-	uid = euid = geteuid();
+	ruid = getuid ();
+	uid = euid = geteuid ();
 	if (debug)
-		fprintf(stderr, "ruid=%d, euid=%d\n", (int) ruid, (int) euid);
+		fprintf (stderr, "ruid=%d, euid=%d\n", (int) ruid, (int) euid);
 	priv_drop_count = 0;
-	drop_effective_privs();
+	drop_effective_privs ();
+}
+
+/* Return a pointer to the password entry structure for MAN_OWNER. This
+ * structure will be statically stored.
+ */
+struct passwd *get_man_owner (void)
+{
+	if (man_owner)
+		return man_owner;
+
+	man_owner = getpwnam (MAN_OWNER);
+	if (!man_owner)
+		error (FAIL, 0, _("the setuid man user \"%s\" does not exist"),
+		       MAN_OWNER);
+	assert (man_owner);
+	return man_owner;
 }
 
 #endif /* SECURE_MAN_UID */
@@ -129,13 +149,13 @@ void drop_effective_privs (void)
 #ifdef SECURE_MAN_UID
 	if (uid != ruid) {
 		if (debug)
-			fputs("drop_effective_privs()\n", stderr);
+			fputs ("drop_effective_privs()\n", stderr);
 #  ifdef POSIX_SAVED_IDS
 		if (SET_EUID (ruid))
 #  else
 		if (SWAP_UIDS (euid, ruid))
 #  endif 
-			gripe_set_euid();
+			gripe_set_euid ();
 
 		uid = ruid;
 	}
@@ -143,9 +163,7 @@ void drop_effective_privs (void)
 
 	priv_drop_count++;
 	if (debug)
-		fprintf(stderr, "++priv_drop_count = %d\n", priv_drop_count);
-
-	return;
+		fprintf (stderr, "++priv_drop_count = %d\n", priv_drop_count);
 }
 
 /* 
@@ -157,8 +175,8 @@ void regain_effective_privs (void)
 	if (priv_drop_count) {
 		priv_drop_count--;
 		if (debug)
-			fprintf(stderr, "--priv_drop_count = %d\n",
-				priv_drop_count);
+			fprintf (stderr, "--priv_drop_count = %d\n",
+				 priv_drop_count);
 		if (priv_drop_count)
 			return;
 	}
@@ -166,40 +184,38 @@ void regain_effective_privs (void)
 #ifdef SECURE_MAN_UID
 	if (uid != euid) {
 		if (debug)
-			fputs("regain_effective_privs()\n", stderr);
+			fputs ("regain_effective_privs()\n", stderr);
 #  ifdef POSIX_SAVED_IDS
 		if (SET_EUID (euid))
 #  else
 		if (SWAP_UIDS (ruid, euid))
 #  endif
-			gripe_set_euid();
+			gripe_set_euid ();
 
 		uid = euid;
 	}
 #endif /* SECURE_MAN_UID */
-
-	return;
 }
 
 /* remove() a file after dropping privs. If already dropped, just remove and 
    return, don't regain any privs! */
-int remove_with_dropped_privs(const char *filename)
+int remove_with_dropped_privs (const char *filename)
 {
 	int ret;
 	
 #ifdef SECURE_MAN_UID
 	if (uid != ruid) {
-		drop_effective_privs();
+		drop_effective_privs ();
 		ret = remove (filename);
 		if (debug)
-			fprintf(stderr, "remove(\"%s\")\n", filename);
-		regain_effective_privs();
+			fprintf (stderr, "remove(\"%s\")\n", filename);
+		regain_effective_privs ();
 	} else
 #endif /* SECURE_MAN_UID */
 		ret = remove (filename);
 
 	if (ret != 0)
-		error (0, errno, _( "can't remove %s"), filename);
+		error (0, errno, _("can't remove %s"), filename);
 
 	return ret;
 }
@@ -225,9 +241,9 @@ int do_system_drop_privs (const char *command)
 		return do_system (command);
 	else {
 		int status;
-		drop_effective_privs();
+		drop_effective_privs ();
 		status = do_system (command);
-		regain_effective_privs();
+		regain_effective_privs ();
 		return status;
 	}
 	
@@ -244,15 +260,15 @@ int do_system_drop_privs (const char *command)
 		status = 0;
 	} else if (child == 0) {
 		pop_all_cleanups ();
-		if (SWAP_UIDS(ruid, ruid))
-			gripe_set_euid();
+		if (SWAP_UIDS (ruid, ruid))
+			gripe_set_euid ();
 		exit (do_system (command));
 	} else {
 		pid_t res;
 		int save = errno;
 		do {	/* cope with non-restarting system calls */
 			res = waitpid (child, &status, 0);
-		} while ((res == -1) && (errno == EINTR));
+		} while (res == -1 && errno == EINTR);
 		if (res == -1)
 			status = -1;
 		else
