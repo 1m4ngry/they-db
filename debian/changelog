@@ -1,3 +1,9 @@
+man-db (2.4.2-22) UNRELEASED; urgency=low
+
+  * Depend on debconf | debconf-2.0.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 13 Jan 2005 08:58:46 +0000
+
 man-db (2.4.2-21) unstable; urgency=low
 
   * Teach encodings layer about Turkish.

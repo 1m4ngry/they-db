@@ -114,7 +114,7 @@ endif
 	chown man:root $(dtmp)/var/cache/man
 	chmod 2755     $(dtmp)/var/cache/man
 	dh_shlibdeps
-	dh_gencontrol -- -V'debconf-depends=debconf (>= $(MINDEBCONFVER))'
+	dh_gencontrol -- -V'debconf-depends=debconf (>= $(MINDEBCONFVER)) | debconf-2.0'
 	dh_md5sums
 	dh_builddeb
 
