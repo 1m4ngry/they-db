@@ -1,3 +1,11 @@
+man-db (2.4.1-13) unstable; urgency=medium
+
+  * Fix segfault caused by an unchecked strcpy() while resolving hard links.
+  * Provide -8 and -B as separate flex arguments. flex 2.5.31 is stricter
+    about this.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 15 Aug 2003 22:38:50 +0100
+
 man-db (2.4.1-12) unstable; urgency=high
 
   * SECURITY: Fix overly permissive DEFINE command. DEFINE directives that

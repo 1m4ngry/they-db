@@ -2830,7 +2830,7 @@ static int try_section (const char *path, const char *sec, const char *name,
 	for (np = names; np && *np; np++) {
 		struct mandata *info = infoalloc ();
 		char *info_buffer = filename_info (*np, info, name);
-		char *ult;
+		const char *ult;
 		if (!info_buffer)
 			continue;
 		info->addr = info_buffer;
@@ -2873,7 +2873,8 @@ static int display_filesystem (struct candidate *candp)
 			return 0;
 		return display (candp->path, NULL, filename, title, NULL);
 	} else {
-		char *man_file, *cat_file;
+		const char *man_file;
+		char *cat_file;
 		int found;
 
 		man_file = ult_src (filename, candp->path, NULL,
@@ -2893,7 +2894,6 @@ static int display_filesystem (struct candidate *candp)
 			fprintf (stderr, "will try cat file %s\n", cat_file);
 		found = display (candp->path, man_file, cat_file, title, NULL);
 		free (cat_file);
-		/* Be careful not to free man_file, as it's static. */
 		free (title);
 
 #ifdef COMP_SRC
@@ -3012,7 +3012,7 @@ static int display_database (struct candidate *candp)
 				 file);
 
 		if (access (file, R_OK) == 0) {
-			char *man_file;
+			const char *man_file;
 			char *cat_file;
 
 			man_file = ult_src (file, candp->path, NULL,

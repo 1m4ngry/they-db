@@ -374,7 +374,8 @@ char *filename_info (const char *file, struct mandata *info,
    store it in the db along with any references found in the whatis. */
 void test_manfile (char *file, const char *path)
 {
-	char *base_name, *ult;
+	char *base_name;
+	const char *ult;
 	struct lexgrog lg;
 	char *manpage;
 	struct mandata info, *exists;
