@@ -34,7 +34,6 @@ Portions are copyrighted by Colin Watson.
    GNU General Public License for more details.
 
    A copy of the GNU General Public License is available in
-   /usr/share/common-license/GPL (as installed by package base-files);
+   /usr/share/common-licenses/GPL (as installed by package base-files);
    if not, write to the Free Software Foundation, Inc.,
    59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-

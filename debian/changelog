@@ -1,3 +1,11 @@
+man-db (2.4.0-8) unstable; urgency=low
+
+  * Recover if /var/cache/man has been deleted (closes: #159665).
+  * Get rid of spurious "fopen: no such file or directory" message.
+  * Fix '/usr/share/common-license' typo.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri,  6 Sep 2002 22:59:55 +0100
+
 man-db (2.4.0-7) unstable; urgency=medium
 
   * Fix segfault with uninitialized info.name and info.filter when scanning

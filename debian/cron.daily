@@ -2,6 +2,15 @@
 #
 # man-db cron daily
 
+set -e
+
+if ! [ -d /var/cache/man ]; then
+    # Recover from deletion, per FHS.
+    mkdir -p /var/cache/man
+    chown man:root /var/cache/man
+    chmod 2755 /var/cache/man
+fi
+
 # expunge old catman pages which have not been read in a week
 if [ -d /var/cache/man ]; then
   cd /
@@ -22,3 +31,5 @@ if [ -x /usr/bin/mandb ]; then
 		      --startas /usr/bin/mandb --oknodo --chuid man \
 		      -- --no-purge --quiet
 fi
+
+exit 0
