@@ -63,6 +63,23 @@ Description-de: Möchten Sie man und mandb mit dem setuid-Flag installieren?
  Das Einschalten dieses Features kann ein Sicherheitsrisiko sein. Daher ist
  es standardmäßig abgeschaltet. Wenn Sie sich nicht sicher sind, sollten
  Sie daher mit »Nein« antworten.
+Description-es: ¿Quiere que man y man-db se instalen 'setuid man'?
+ Los programas man y mandb se pueden instalar setuid man, de forma que se
+ ejecutarán con los permisos del usuario 'man'. Esto permite a los usuarios
+ normales beneficiarse del caché de las páginas de manual preformateadas
+ ('cat pages'), lo cual puede contribuir a mejorar el rendimiento en
+ máquinas lentas.
+ .
+ El caché de las páginas de manual preformateadas sólo funciona si está
+ usando un terminal de 80 caracteres de ancho, para evitar que algún
+ usuario guarde páginas de manual preformateadas con anchuras que puedan
+ resultar molestas para otros usuarios. Si usa un terminal ancho, puede
+ obligar a que las páginas de manual se formateen a 80 caracteres de ancho
+ estableciendo MANWIDTH=80 como variable de entorno.
+ .
+ Esta práctica puede representar un riesgo de seguridad, por lo que está
+ deshabilitada por defecto. Si tiene dudas, le sugiero que la deje sin
+ habilitar.
 Description-fr: Faut-il exécuter les programmes man et mandb avec les droits de l'utilisateur « man » ?
  Les programmes man et mandb peuvent s'exécuter avec les droits de
  l'utilisateur « man ». Les utilisateurs ordinaires peuvent ainsi
@@ -213,6 +230,16 @@ Description-de: Soll man-db seine Datenbank jetzt aufbauen?
  können auch als Benutzer »man« »mandb -c« per Hand aufrufen. Solange die
  Datenbank nicht auf eine dieser Arten erstellt wurde, zeigen die Befehle
  »whatis« und »apropos« keine Ausgabe an.
+Description-es: ¿Quiere que mandb construya su base de datos ahora?
+ Todavía no tiene una base de datos de descripciones de páginas de manual.
+ Construir una puede llevar algún tiempo, dependiendo de cuántas páginas de
+ manual haya instalado; se realizará en segundo plano, por lo que es
+ posible que haga más lenta la instalación de otros paquetes.
+ .
+ Si no construye la base de datos ahora, se hará la próxima vez que se
+ ejecute «/etc/cron.weekly/mandb», o puede hacerlo manualmente usando
+ «mandb -c» como usuario man. Hasta entonces, las órdenes «whatis» y
+ «apropos» no podrán mostrar nada.
 Description-fr: Faut-il construire la base de données des pages de manuel maintenant ?
  Aucune base de données des pages de manuel n'existe encore. Selon le
  nombre de pages installées, sa construction peut prendre du temps ; elle
@@ -335,6 +362,19 @@ Description-de: Soll man-db seine Datenbank jetzt aufbauen?
  »whatis« und »apropos« keine Ausgabe an.
  .
  Solche inkompatiblen Änderungen sollten nur selten vorkommen.
+Description-es: ¿Quiere que mandb construya su base de datos ahora?
+ Esta versión de man-db es incompatible con la base de datos de
+ descripciones de páginas de manual existente en su sistema, por lo que se
+ debe rehacer. Puede llevar algún tiempo, dependiendo de cuántas páginas de
+ manual haya instalado; se realizará en segundo plano, por lo que es
+ posible que se haga más lenta la instalación de otros paquetes.
+ .
+ Si no construye la base de datos ahora, se hará la próxima vez que se
+ ejecute «/etc/cron.weekly/mandb», o puede hacerlo manualmente usando
+ «mandb -c» como usuario man. Hasta entonces, las órdenes «whatis» y
+ «apropos» no podrán mostrar nada.
+ .
+ Los cambios incompatibles como éste sólo ocurren muy esporádicamente.
 Description-fr: Faut-il construire la base de données des pages de manuel maintenant ?
  Cette version de man-db est incompatible avec l'actuelle base de données
  des descriptions de pages, qui doit être reconstruite. Selon le nombre de
