@@ -17,11 +17,20 @@ elif dpkg --compare-versions "$2" lt 2.4.0-1; then
     # At 2.4.0-1, the database version number changed to 2.4.1 and we
     # moved from libdb2 to libdb3.
     # Set the seen flag to false in case people answered this for the
-    # previous transition.
-    db_fset man-db/rebuild-database seen false
+    # previous transition, but only if it hasn't been asked already in
+    # the current upgrade.
+    db_fget man-db/rebuild-database seen_in_2.4.0-1_upgrade
+    if [ "$RET" = false ]; then
+	db_fset man-db/rebuild-database seen false
+    fi
     db_input medium man-db/rebuild-database || true
+    rebuilding=1
 fi
 
 db_go
+
+if [ "$rebuilding" = 1 ]; then
+    db_fset man-db/rebuild-database seen_in_2.4.0-1_upgrade true
+fi
 
 exit 0

@@ -112,6 +112,10 @@ fi
 
 #DEBHELPER#
 
+# The upgrade is complete, so no more concern about this question being
+# asked twice. Clean up the flag.
+db_fset man-db/rebuild-database seen_in_2.4.0-1_upgrade false
+
 db_stop
 
 exit 0

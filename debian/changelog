@@ -1,3 +1,9 @@
+man-db (2.4.0-2) unstable; urgency=low
+
+  * Don't ask rebuild-database question twice on upgrade (closes: #151131).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 27 Jun 2002 10:00:01 +0000
+
 man-db (2.4.0-1) unstable; urgency=low
 
   * New upstream release.
