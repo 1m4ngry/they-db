@@ -51,7 +51,7 @@ fi
 
 if dpkg --compare-versions "$2" lt 2.3.18; then
     # /usr/local/man now mapped to /var/cache/man/oldlocal
-    if [ -d $catdir/local -a ! -d $catdir/oldlocal ]; then
+    if [ -d $catdir/local ] && [ ! -d $catdir/oldlocal ]; then
 	mv -f $catdir/local $catdir/oldlocal
     fi
 fi
