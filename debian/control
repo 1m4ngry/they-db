@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 3.0.0), flex, gettext, groff, libdb3-dev
 Package: man-db
 Architecture: any
 Depends: groff-base (>= 1.17-2) | groff (>> 1.15-3.ja.3), bsdmainutils, debconf (>= 0.5), dpkg (>= 1.9.0), ${shlibs:Depends}
-Suggests: groff, groff-x11
+Suggests: groff
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
 Replaces: man, nlsutils

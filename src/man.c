@@ -619,6 +619,7 @@ static char *add_roff_line_length (char *filter, int *save_cat)
 static int find_in_path (const char *name)
 {
 	char *path = xstrdup (getenv ("PATH"));
+	char *pathtok = path;
 	const char *element;
 	int ret = 0;
 
@@ -626,8 +627,8 @@ static int find_in_path (const char *name)
 		/* Eh? Oh well. */
 		return 0;
 
-	for (element = strsep (&path, ":"); element;
-	     element = strsep (&path, ":")) {
+	for (element = strsep (&pathtok, ":"); element;
+	     element = strsep (&pathtok, ":")) {
 		char *filename;
 		struct stat st;
 

@@ -1,3 +1,10 @@
+man-db (2.4.1-5) unstable; urgency=low
+
+  * Fix a segfault in the $PATH-searching code (closes: #182661).
+  * Remove obsolete Suggests: groff-x11.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 27 Feb 2003 10:26:30 +0000
+
 man-db (2.4.1-4) unstable; urgency=low
 
   * Only emit the message pointing to undocumented(7) if the name the user
