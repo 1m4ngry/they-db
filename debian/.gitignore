@@ -1,0 +1,5 @@
+files
+man-db
+templates
+*.debhelper
+*.substvars

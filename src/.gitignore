@@ -1,0 +1,12 @@
+.depend
+Makefile
+accessdb
+apropos
+catman
+lexgrog
+man
+mandb
+manpath
+man_db.conf
+whatis
+wrapper
