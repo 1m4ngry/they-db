@@ -1,3 +1,10 @@
+man-db (2.4.2-8) unstable; urgency=low
+
+  * Shorten the man-db/install-setuid template so that it doesn't overflow a
+    25-line terminal (see #231083).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun,  8 Feb 2004 17:28:10 +0000
+
 man-db (2.4.2-7) unstable; urgency=low
 
   * Fix lexgrog to handle *roff requests immediately after ".SH NAME"

@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-17 22:14+0000\n"
+"POT-Creation-Date: 2004-02-08 17:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,13 +33,12 @@ msgstr "Você quer que man e mandb sejam instalados com setuid?"
 #. Type: boolean
 #. Description
 #: ../templates.master:4
+#, fuzzy
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
-"('cat pages'), and means that the database of man page descriptions is "
-"automatically kept up to date by people reading man pages. Storing cat "
-"pages, in particular, may aid performance on slower machines."
+"('cat pages'), which may aid performance on slower machines."
 msgstr ""
 "Os programas man e mandb podem ser instalados com bit set-user-id ligado, "
 "assim eles serão executados com as permissões do usuário 'man'. Isto permite "
@@ -52,13 +51,12 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:4
+#, fuzzy
 msgid ""
-"Cached man pages only work if you are using a \"normal\"-width terminal (66 "
-"to 80 characters wide). This is to avoid one user causing cat pages to be "
-"saved at widths that would be inconvenient for other users. In a future "
-"release this will be configurable. Until then, if you use a wide terminal, "
-"you can force man pages to be formatted to 80 characters anyway by setting "
-"MANWIDTH=80."
+"Cached man pages only work if you are using an 80-column terminal, to avoid "
+"one user causing cat pages to be saved at widths that would be inconvenient "
+"for other users. If you use a wide terminal, you can force man pages to be "
+"formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
 "Páginas de manual em cache funcionarão somente se você usa um -width \"normal"
 "\" de terminal (de 66 a 80 caracteres). Isto é para evitar usuários fazendo "
@@ -80,13 +78,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:25
+#: ../templates.master:21
 msgid "Should mandb build its database now?"
 msgstr "man-db deve construir sua própria base de dados agora?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:25
+#: ../templates.master:21
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -101,7 +99,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:25
+#: ../templates.master:21
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
@@ -115,13 +113,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:39
+#: ../templates.master:35
 msgid "Should mandb rebuild its database now?"
 msgstr "mandb deve reconstruir sua base de dados agora?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:39
+#: ../templates.master:35
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -138,7 +136,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:39
+#: ../templates.master:35
 msgid ""
 "If you do not rebuild the database now, it will be rebuilt the next time /"
 "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
@@ -152,6 +150,6 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:39
+#: ../templates.master:35
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Mudanças incompatíveis como essa deverão raramente ocorrer."
