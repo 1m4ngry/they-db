@@ -40,9 +40,7 @@ build-stamp: GNUmakefile
 clean: GNUmakefile
 	dh_testdir
 	cp -fp configure configure.safe
-	cp -fp GNUmakefile GNUmakefile.safe
 	-$(MAKE) -i distclean
-	mv -f GNUmakefile.safe makefile
 	mv -f configure.safe configure
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
