@@ -1,3 +1,16 @@
+man-db (2.3.20-2) unstable; urgency=medium
+
+  * lexgrog: Stop the '.' no-op request from eating text on the next line
+    (it caused problems before .SH NAME), and trim whitespace better.
+    Urgency medium to match the recent groff upload that tickles this.
+  * man: Drop privileges throughout local_man_loop() (closes: #111939).
+  * Various documentation updates, including referring to man(7) from man(1)
+    and adding some more advice to manpage.example* (thanks, Andreas Dilger;
+    closes: #112281).
+  * Policy version 3.5.6.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 19 Sep 2001 02:18:20 +0100
+
 man-db (2.3.20-1) unstable; urgency=low
 
   * New upstream release.
