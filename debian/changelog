@@ -1,3 +1,11 @@
+man-db (2.4.2-2) unstable; urgency=low
+
+  * mandb only complains if it failed to do anything on create, not on
+    update (closes: #211977).
+  * Teach encodings layer about Galician, Indonesian, Croatian, and Slovak.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 21 Sep 2003 14:38:27 +0100
+
 man-db (2.4.2-1) unstable; urgency=low
 
   * New upstream release.
