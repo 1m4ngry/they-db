@@ -1,6 +1,7 @@
 man-db (2.4.2-20) UNRELEASED; urgency=low
 
   * Suggest less, since we have special support for it (closes: #280096).
+  * Add support for cross-building (closes: #284856).
   * Update debconf translations:
     - Russian (thanks, Yuri Kozlov; part of #268584).
 
