@@ -67,12 +67,9 @@ else
     install -d -o man -g root -m 02755 $catdir
 fi
 
-# Clean up old btree databases from before 2.4.2-1.
-find /var/cache/man -name index.bt -print0 | xargs -0r rm -f
-
 build_db=0
 
-if [ ! -f $catdir/index.db ]; then
+if [ ! -f $catdir/index.db ] && [ ! -f $catdir/index.bt ]; then
     # If the build-database question was never asked, this is probably a
     # fresh install, or maybe we're reconfiguring. The default is to build
     # the database.
@@ -88,6 +85,9 @@ if [ ! -f $catdir/index.db ]; then
 	fi
     fi
 elif dpkg --compare-versions "$2" lt 2.4.2-1; then
+    # Clean up old btree databases from before 2.4.2-1. They're useless now.
+    find /var/cache/man -name index.bt -print0 | xargs -0r rm -f
+
     db_get man-db/rebuild-database
     if [ "$RET" = true ]; then
 	build_db=1

@@ -65,7 +65,7 @@
 	MAN_DB_UPDATES	- to allow man to update databases
 	MAN_CATS	- to allow man to create/update cat files */
 
-#define MAN_DB_CREATES
+#undef MAN_DB_CREATES
 #define MAN_DB_UPDATES
 #define MAN_CATS
 

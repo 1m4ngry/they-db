@@ -1,3 +1,18 @@
+man-db (2.4.2-3) unstable; urgency=low
+
+  * Make upgrades from before 2.4.2-1 pay attention to the rebuild-database
+    question rather than build-database, even though the names of database
+    files have changed (closes: #213799).
+  * Silence errors from mandb via man when there are unwriteable directories
+    on the manpath (closes: #213832).
+  * In fact, while we're at it, turn off MAN_DB_CREATES so that man never
+    tries to create databases that don't already exist. Users can still run
+    mandb to create them themselves for the benefit of apropos and whatis if
+    it's appropriate, but filesystem lookup should normally be enough for
+    reading man pages.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 10 Oct 2003 21:07:37 +0100
+
 man-db (2.4.2-2) unstable; urgency=low
 
   * mandb only complains if it failed to do anything on create, not on
