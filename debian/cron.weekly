@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-# Last modification: Wed, 13 Jun 2001 14:41:48 +0100
 # man-db cron weekly
 
 # regenerate man database
@@ -8,6 +7,6 @@ if [ -x /usr/bin/mandb ]; then
     # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
     # but we want to start it like one.
     start-stop-daemon --start --pidfile /dev/null \
-		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
-		      >/dev/null 2>/dev/null
+		      --startas /usr/bin/mandb --oknodo --chuid man \
+		      -- --quiet
 fi

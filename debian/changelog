@@ -1,3 +1,15 @@
+man-db (2.4.0-6) unstable; urgency=low
+
+  * Use --quiet in cron jobs rather than redirecting mandb's stdout and
+    stderr to /dev/null (closes: #133185).
+  * Point the cron jobs and postinst at /usr/bin/mandb rather than
+    /usr/lib/man-db/mandb. At some point /usr/lib/man-db is going to go
+    away, as it's no longer necessary; make sure to bring /etc/cron.*/man-db
+    up to date if you've changed them manually.
+  * Compare $DEBIAN_FRONTEND case-insensitively (closes: #154764).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri,  9 Aug 2002 01:42:17 +0100
+
 man-db (2.4.0-5) unstable; urgency=low
 
   * Fix segfault when man is asked to display a page that is a dangling

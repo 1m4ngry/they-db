@@ -92,21 +92,22 @@ elif dpkg --compare-versions "$2" lt 2.4.0-1; then
 fi
 
 if [ $build_db -eq 1 ]; then
-    if [ "$DEBIAN_FRONTEND" = Noninteractive ]; then
+    frontend=`echo "$DEBIAN_FRONTEND" | tr '[:upper:]' '[:lower:]'`
+    if [ "$frontend" = noninteractive ]; then
 	# Run in the foreground. In this case, chances are we're being run
 	# from debootstrap, which will have problems if mandb runs
 	# backgrounded for too long (bug #100616).
 	# start-stop-daemon isn't available when running from debootstrap.
 	echo "Building database of manual pages ..." >&2
 	perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
-	         exec "/usr/lib/man-db/mandb", "-cq"';
+	         exec "/usr/bin/mandb", "-cq"';
     else
 	echo "Building database of manual pages in the background." >&2
 	# --pidfile /dev/null so it always starts; mandb isn't really a
 	# daemon, but we want to start it like one.
 	start-stop-daemon --start --pidfile /dev/null --background \
-			  --startas /usr/lib/man-db/mandb --oknodo \
-			  --chuid man -- -cq >/dev/null 2>/dev/null
+			  --startas /usr/bin/mandb --oknodo --chuid man \
+			  -- --create --quiet >/dev/null 2>/dev/null
     fi
 fi
 
