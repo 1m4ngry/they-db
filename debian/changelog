@@ -1,3 +1,10 @@
+man-db (2.3.20-17) unstable; urgency=low
+
+  * Add Japanese debconf translation (thanks, Tomohiro KUBOTA;
+    closes: #138110).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 13 Mar 2002 11:08:42 +0000
+
 man-db (2.3.20-16) unstable; urgency=low
 
   * Adjust Spanish debconf translation (thanks, David Martinez Moreno;
