@@ -1,5 +1,6 @@
 man-db (2.4.2-18) UNRELEASED; urgency=low
 
+  * Fix out-of-order declarations in whatis.c (closes: #240089).
   * Update debconf translations:
     - Dutch (thanks, cobaco; closes: #260294).
 
