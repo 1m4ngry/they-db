@@ -1,0 +1,82 @@
+Template: man-db/install-setuid
+Type: boolean
+Default: false
+Description: Do you want man and mandb to be installed setuid man?
+ The man and mandb program can be installed with the set-user-id bit set,
+ so that they will run with the permissions of the 'man' user. This allows
+ ordinary users to benefit from the caching of preformatted manual pages
+ ('cat pages'), and means that the database of man page descriptions is
+ automatically kept up to date by people reading man pages. Storing cat
+ pages, in particular, may aid performance on slower machines.
+ .
+ Enabling this feature may be a security risk, so it is disabled by
+ default. If in doubt, I suggest you leave it disabled.
+Description-de: Möchten Sie man und mandb mit dem setuid-Flag installieren?
+ Die Programme "man" und "mandb" können so installiert werden, dass das
+ "set-user-id-Bit" gesetzt ist und die Programme daher mit den Rechten des
+ Benutzers "man" laufen. Das bewirkt, dass normale Benutzer in den Genuss
+ von vorformatierten Handbuchseiten (sogenannten "cat-Seiten") kommen und
+ die Datenbank der Handbuchbeschreibungen automatisch durch die Benutzer
+ dieser Seiten auf dem neuesten Stand gehalten werden. Besonders das Benutzen
+ von cat-Seiten kann auf langsameren Computern einen Performance-Gewinn beim
+ Benutzen der Handbuchseiten bringen.
+ .
+ Auf der anderen Seite kann das Einschalten dieser Feature ein Sicherheitsrisiko
+ sein. Daher ist es standardmäßig abgeschaltet. Wenn Sie sich nicht sicher sind,
+ sollten Sie daher mit "Nein" antworten.
+
+Template: man-db/build-database
+Type: boolean
+Default: true
+Description: Should mandb build its database now?
+ You do not yet have a database of manual page descriptions. Building one
+ may take some time, depending on how many pages you have installed; it
+ will happen in the background, possibly slowing down the installation of
+ other packages. Do you want this to happen now?
+ .
+ If you do not build the database now, it will be built the next time
+ /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
+ user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
+ be able to display any output.
+Description-de: Soll man-db seine Datenbank jetzt neu aufbauen?
+ Sie verfügen noch nicht über eine Datenbank mit Handbuchbeschreibungen.
+ Es benötigt eine gewisse Zeit, diese Datenbank neu aufzubauen. Dies
+ geschieht im Hintergrund und kann daher die Installation anderer Pakete
+ verlangsamen. Möchten Sie die Datenbank jetzt erstellen?
+ .
+ Wenn Sie die Datenbank jetzt nicht erstellen möchten, wird sie das
+ nächste mal, wenn /etc/cron.weekly/mandb aufgerufen wird, automatisch
+ erstellt. Sie können auch als Benutzer "man" "mandb -c" per Hand aufrufen.
+ Solange die Datenbank nicht auf eine dieser Arten erstellt wurde,
+ funktionieren die Befehle "whatis" und "apropos" nicht richtig.
+
+Template: man-db/rebuild-database
+Type: boolean
+Default: true
+Description: Should mandb rebuild its database now?
+ This version of man-db is incompatible with your existing database of
+ manual page descriptions, so that database needs to be rebuilt. This may
+ take some time, depending on how many pages you have installed; it will
+ happen in the background, possibly slowing down the installation of other
+ packages. Do you want this to happen now?
+ .
+ If you do not rebuild the database now, it will be rebuilt the next time
+ /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
+ user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
+ be able to display any output.
+ .
+ Incompatible changes like this should happen rarely.
+Description-de: Soll man-db seine Datenbank jetzt neu aufbauen?
+ Diese Version von man-db ist inkompatibel zu Ihrer alten Datenbank mit
+ Handbuchbeschreibungen. Daher muss die Datenbank neu aufgebaut werden.
+ Dies benötigt eine gewisse Zeit. Da es im Hintergrund geschieht, kann die
+ Installation anderer Pakete dadurch verlangsamt werden. Möchten Sie die
+ Datenbank jetzt erstellen?
+ .
+ Wenn Sie die Datenbank jetzt nicht erstellen möchten, wird sie das
+ nächste mal, wenn /etc/cron.weekly/mandb aufgerufen wird, automatisch
+ erstellt. Sie können auch als Benutzer "man" "mandb -c" per Hand aufrufen.
+ Solange die Datenbank nicht auf eine dieser Arten erstellt wurde,
+ funktionieren die Befehle "whatis" und "apropos" nicht richtig.
+ .
+ Solche inkompatiblen Änderungen sollten nur selten vorkommen.

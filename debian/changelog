@@ -1,3 +1,15 @@
+man-db (2.3.19-4) unstable; urgency=low
+
+  * Look up the correct character set each time a page is displayed, not
+    just the first time (closes: #104350).
+  * Check for more translations of the NAME section (cs, fi, hu, nl, and pl,
+    plus of course Latin; closes: #104352).
+  * Add debconf translations:
+    - German (thanks, Sebastian Rittau; closes: #104295).
+    - Brazilian Portugese (thanks, Andre Luis Lopes; closes: #105359).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 16 Jul 2001 16:48:07 +0100
+
 man-db (2.3.19-3) unstable; urgency=low
 
   * Allow whatis entries to point to themselves. This sometimes happens when
