@@ -1,3 +1,11 @@
+man-db (2.4.1-7) unstable; urgency=low
+
+  * Return 0 from xcopy() if the source file doesn't exist, so that mandb
+    creates databases when asked to update missing ones instead of bailing
+    out (closes: #187314).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 12 Apr 2003 16:44:54 +0100
+
 man-db (2.4.1-6) unstable; urgency=low
 
   * Fix stupid mistake in xcopy()'s error handling. Thanks to Adam Conrad
