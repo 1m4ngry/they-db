@@ -135,6 +135,26 @@ Description-ja: man ¤È mandb ¤ò setuid man ¤Ê¾õÂÖ¤Ç¥¤¥ó¥¹¥È¡¼¥ë¤·¤Þ¤¹¤«?
  ¥»¥­¥å¥ê¥Æ¥£¾å¤ÎÌäÂê¤¬¤¢¤ë¤«¤âÃÎ¤ì¤Ê¤¤¤Î¤Ç¡¢¤³¤Îµ¡Ç½¤Ï¥Ç¥Õ¥©¥ë¥È¤Ç¤Ï
  Ìµ¸ú¤È¤Ê¤Ã¤Æ¤¤¤Þ¤¹¡£Ê¬¤«¤é¤Ê¤±¤ì¤Ð¡¢Ìµ¸ú¤Î¤Þ¤Þ¤Ë¤·¤Æ¤ª¤¯¤Î¤ò¤ª¤¹¤¹¤á
  ¤·¤Þ¤¹¡£
+Description-nl: Wilt u man en mandb installeren met setuid man?
+ De man en mandb programma's kunnen geinstalleerd worden met de set-user-id
+ bit ingesteld zodat ze uitgevoerd worden als de gebruiker 'man'. Dit geeft
+ gewone gebruikers de gelegenheid om van de tijdelijke opslag van
+ voorgegeformatteerde handleiding pagina's ('cat pages') gebruik te maken.
+ Dit betekent ook dat de database met man-pagina beschrijvingen automatisch
+ aktueel gehouden wordt door de gebruikers die man-pagina's lezen. Het
+ opslaan van cat-pagina's in het bijzonder kan de prestaties op tragere
+ systemen helpen.
+ .
+ Tijdelijk opgeslagen man-pagina's werken enkel wanneer u een
+ "normale"-breedte terminal (66 tot 80 karakters breed) gebruikt. Dit
+ vermijdt dat één gebruiker cat-pagina's opslaat met breedtes die niet
+ geschikt zijn voor andere gebruikers. In toekomstige versies zal dit
+ instelbaar zijn. Tot dan kunt u het weergeven van man-pagina's, op bredere
+ terminals, met een breedte van 80 karakters afdwingen door het instellen
+ van MANWIDTH=80.
+ .
+ Het activeren van deze optie kan een veiligheidsrisico zijn; daarom staat
+ deze optie standaard uit. Bij twijfel kunt u deze optie best uit laten.
 Description-pt_BR: Você quer que man e mandb sejam instalados com setuid?
  Os programas man e mandb podem ser instalados com bit set-user-id ligado,
  assim eles serão executados com as permissões do usuário 'man'. Isto
@@ -254,6 +274,17 @@ Description-ja: mandb ¤Ï¡¢¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
  Æ°¤·¤¿»þ¤Ë¹½ÃÛ¤µ¤ì¤Þ¤¹¡£¡Öman¡×¥æ¡¼¥¶¤Ç¡Ömandb -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â
  ¹½ÃÛ¤Ç¤­¤Þ¤¹¡£¤½¤ì¤Þ¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Þ¥ó¥É¤È¡Öapropos¡×¥³¥Þ¥ó¥É¤Ï
  Àµ¤·¤¯Æ°ºî¤·¤Þ¤»¤ó¡£
+Description-nl: mandb-database nu opbouwen?
+ U heeft nog geen man-pagina-beschrijvingsdatabase. Het opbouwen van deze
+ database kan enige tijd duren, afhankelijk van hoeveel man-pagina's u
+ geïnstalleerd heeft; dit gebeurt in de achtergrond en kan de installatie
+ van andere pakketten vertragen. Wilt u dat dit nu gebeurt?
+ .
+ Indien u de database nu niet opbouwt zal deze bij de volgende uitvoering
+ van /etc/cron.weekly/mandb opgebouwd worden. U kunt de database op elk
+ moment ook zelf (her)opbouwen door 'mandb -c' uit te voeren als de
+ gebruiker 'man'. In de tussentijd zullen de 'whatis' en 'apropos'
+ commando's geen uitvoer weergeven.
 Description-pt_BR: man-db deve construir sua própria base de dados agora?
  Você ainda não posui uma base de dados de descrição de páginas de manual.
  Construir uma agora requer algum tempo, dependendo de quantas páginas você
@@ -378,6 +409,20 @@ Description-ja: mandb ¤Ï¡¢¤¤¤Þ¥Ç¡¼¥¿¥Ù¡¼¥¹¤òºÆ¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?
  .
  º£²ó¤Î¤è¤¦¤Ë¡¢¥Ð¡¼¥¸¥ç¥ó¥¢¥Ã¥×¤ËÈ¼¤Ã¤Æ¸ß´¹À­¤¬¤Ê¤¯¤Ê¤ë¤³¤È¤Ï¡¢¤Þ¤ì¤Ë
  ¤·¤«µ¯¤³¤é¤Ê¤¤¤Ï¤º¤Ç¤¹¡£
+Description-nl: mandb-database nu heropbouwen?
+ Deze nieuwe versie van man-db is incompatibel met uw bestaande
+ man-pagina-beschrijvingsdatabase, en dus moet deze heropgebouwd worden.
+ Dit kan enige tijd duren, afhankelijk van hoeveel man-pagina's u
+ geïnstalleerd heeft; dit gebeurt in de achtergrond, en kan de installatie
+ van andere pakketten vertragen. Wilt u dat dit nu gebeurt?
+ .
+ Indien u de database nu niet heropbouwt zal deze bij de volgende
+ uitvoering van /etc/cron.weekly/mandb heropgebouwd worden. U kunt de
+ database op elk moment ook zelf heropbouwen door 'mandb -c' uit te voeren
+ als de gebruiker 'man'. In de tussentijd zullen de 'whatis' en 'apropos'
+ commando's geen uitvoer weergeven.
+ .
+ Incompatibele veranderingen zoals deze komen zelden voor.
 Description-pt_BR: mandb deve reconstruir sua base de dados agora?
  Esta versão de man-db é incompatível com sua base de dados existente de
  descrições de páginas de manual, portanto estas base de dados precisam ser

@@ -1,3 +1,9 @@
+man-db (2.4.2-4) unstable; urgency=low
+
+  * Add Dutch debconf translation (thanks, cobaco; closes: #216309).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 18 Oct 2003 01:06:37 +0100
+
 man-db (2.4.2-3) unstable; urgency=low
 
   * Make upgrades from before 2.4.2-1 pay attention to the rebuild-database
