@@ -1,3 +1,15 @@
+man-db (2.4.0-7) unstable; urgency=medium
+
+  * Fix segfault with uninitialized info.name and info.filter when scanning
+    stray cats (thanks, Brendan O'Dea).
+  * Fix database corruption when deleting one of a group of pages with the
+    same name from the database. Existing corruption isn't repaired
+    automatically; if you get "bad fetch on multi key" errors, run 'mandb
+    --create' as the 'man' user to rebuild the database from scratch
+    (closes: #159451).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue,  3 Sep 2002 20:41:56 +0100
+
 man-db (2.4.0-6) unstable; urgency=low
 
   * Use --quiet in cron jobs rather than redirecting mandb's stdout and
