@@ -108,7 +108,8 @@ struct list {
 
 static struct list *namestore, *tailstore;
 
-#define SECTION		-4
+#define SECTION		-5
+#define DEFINE_USER	-4
 #define DEFINE		-3
 #define MANDB_MAP_USER	-2
 #define MANDB_MAP	-1
@@ -164,12 +165,23 @@ static struct list *iterate_over_list (struct list *prev, char *key, int flag)
 	return NULL;
 }
 
+/* Must not return DEFINEs set in ~/.manpath. This is used to fetch
+ * definitions used in raised-privilege code; if in doubt, be conservative!
+ */
 char *get_def (char *thing, char *def)
 {
 	char *config_def = get_from_list (thing, DEFINE);
 	return config_def ? config_def : def;
 }
-	
+
+char *get_def_user (char *thing, char *def)
+{
+	char *config_def = get_from_list (thing, DEFINE_USER);
+	if (!config_def)
+		config_def = get_from_list (thing, DEFINE);
+	return config_def ? config_def : def;
+}
+
 static void print_list (void)
 {
 	struct list *list;
@@ -213,9 +225,10 @@ char **get_sections (void)
 	return sections;
 }
 
-static void add_def (char *thing, char *config_def, int flag)
+static void add_def (char *thing, char *config_def, int flag, int user)
 {
-	add_to_list (thing, flag == 2 ? config_def : "", DEFINE);
+	add_to_list (thing, flag == 2 ? config_def : "",
+		     user ? DEFINE_USER : DEFINE);
 
 	if (debug)
 		fprintf (stderr, "Defined `%s' as `%s'.\n", thing, config_def);
@@ -747,7 +760,7 @@ static void add_to_dirlist (FILE *config, int user)
 			add_mandb_map (key, cont, c, user);
 		else if ((c = sscanf (bp, "DEFINE %49s %511[^\n]",
 				      key, cont)) > 0)
-			add_def (key, cont, c);
+			add_def (key, cont, c, user);
 		else if (sscanf (bp, "SECTION %511[^\n]", cont) == 1)
 			add_sections (cont);
 		else if (sscanf (bp, "SECTIONS %511[^\n]", cont) == 1)

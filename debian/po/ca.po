@@ -15,7 +15,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2003-05-18 03:32+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-07-30 22:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,12 +25,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Description
-#: ../templates:4
+#: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "Voleu que man i mandb s'instal·len setuid man?"
 
 #. Description
-#: ../templates:4
+#: ../templates.master:4
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
@@ -47,7 +48,7 @@ msgstr ""
 "l'emmagatzemament de pàgines cat pot ajudar el rendiment en màquines lentes."
 
 #. Description
-#: ../templates:4
+#: ../templates.master:4
 msgid ""
 "Cached man pages only work if you are using a \"normal\"-width terminal (66 "
 "to 80 characters wide). This is to avoid one user causing cat pages to be "
@@ -64,7 +65,7 @@ msgstr ""
 "preformatejat a 80 caràcters de les pàgines de manual establint MANWIDTH=80."
 
 #. Description
-#: ../templates:4
+#: ../templates.master:4
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, I suggest you leave it disabled."
@@ -74,12 +75,12 @@ msgstr ""
 "deshabiliteu."
 
 #. Description
-#: ../templates:25
+#: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "Hauria de construir ara mandb la seva base de dades?"
 
 #. Description
-#: ../templates:25
+#: ../templates.master:25
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -93,7 +94,7 @@ msgstr ""
 "això ara?"
 
 #. Description
-#: ../templates:25
+#: ../templates.master:25
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
@@ -106,12 +107,12 @@ msgstr ""
 "\"apropos\" no podran mostrar cap eixida."
 
 #. Description
-#: ../templates:39
+#: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "Hauria de reconstruir ara mandb la seva base de dades?"
 
 #. Description
-#: ../templates:39
+#: ../templates.master:39
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -127,7 +128,7 @@ msgstr ""
 "això ara?"
 
 #. Description
-#: ../templates:39
+#: ../templates.master:39
 msgid ""
 "If you do not rebuild the database now, it will be rebuilt the next time /"
 "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
@@ -140,6 +141,6 @@ msgstr ""
 "\"apropos\" no podran mostrar cap eixida."
 
 #. Description
-#: ../templates:39
+#: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Canvis incompatibles com aquest passen molt rarament."

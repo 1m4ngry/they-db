@@ -1,3 +1,11 @@
+man-db (2.4.1-12) unstable; urgency=high
+
+  * SECURITY: Fix overly permissive DEFINE command. DEFINE directives that
+    affect code running with raised privileges are now disabled in
+    ~/.manpath.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri,  1 Aug 2003 22:29:44 +0100
+
 man-db (2.4.1-11) unstable; urgency=high
 
   * Fix several security problems reported on BugTraq (closes: #203475):
