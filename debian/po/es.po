@@ -52,8 +52,8 @@ msgstr ""
 "Los programas man y mandb se pueden instalar setuid man, de forma que se "
 "ejecutarán con los permisos del usuario 'man'. Esto permite a los usuarios "
 "normales beneficiarse del caché de las páginas de manual preformateadas "
-"('cat pages'), lo cual puede contribuir a mejorar el rendimiento en "
-"máquinas lentas."
+"('cat pages'), lo cual puede contribuir a mejorar el rendimiento en máquinas "
+"lentas."
 
 #. Type: boolean
 #. Description
@@ -65,11 +65,11 @@ msgid ""
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
 "El caché de las páginas de manual preformateadas sólo funciona si está "
-"usando un terminal de 80 caracteres de ancho, para evitar que algún "
-"usuario guarde páginas de manual preformateadas con anchuras que puedan "
-"resultar molestas para otros usuarios. Si usa un terminal ancho, puede "
-"obligar a que las páginas de manual se formateen a 80 caracteres de ancho "
-"estableciendo MANWIDTH=80 como variable de entorno."
+"usando un terminal de 80 caracteres de ancho, para evitar que algún usuario "
+"guarde páginas de manual preformateadas con anchuras que puedan resultar "
+"molestas para otros usuarios. Si usa un terminal ancho, puede obligar a que "
+"las páginas de manual se formateen a 80 caracteres de ancho estableciendo "
+"MANWIDTH=80 como variable de entorno."
 
 #. Type: boolean
 #. Description
