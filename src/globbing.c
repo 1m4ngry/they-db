@@ -100,6 +100,7 @@ char **look_for_file (char *path, char *sec, char *name, int cat)
 		status = glob(pattern, 0, NULL, &gbuf);
 	}
 
+#if 0
 	/* Try HPUX style compressed man pages */
 	if (status != 0 || gbuf.gl_pathc == 0) {
 		*pattern = '\0';
@@ -132,6 +133,7 @@ char **look_for_file (char *path, char *sec, char *name, int cat)
 			fprintf(stderr, "globbing pattern: %s\n", pattern);
 		status = glob(pattern, 0, NULL, &gbuf);
 	}
+#endif
 
 	free(pattern);
 	return ( (status != 0 || gbuf.gl_pathc == 0) ? 

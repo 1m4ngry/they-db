@@ -1,3 +1,31 @@
+man-db (2.3.18-10) unstable; urgency=low
+
+  * Fix handling of symlinks pointing outside a mantree to relative .so
+    links, which should then be interpreted as pointing back inside the
+    mantree (ugh). ult_src() relied on a restriction I removed in 2.3.17.1-5
+    (closes: #101559).
+  * Fix format string bug in zsoelim (closes: #102001).
+  * Use start-stop-daemon instead of su in cron.daily too (closes: #101892).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 23 Jun 2001 16:07:39 +0100
+
+man-db (2.3.18-9) unstable; urgency=high
+
+  * While configuring, if the database is missing and we aren't setuid,
+    don't build it; it will probably get out of date quickly anyway. This
+    involves substantial debconf rearrangements, and I examine the seen flag
+    so I need debconf (>= 0.5). Urgency high because the boot-floppies were
+    having trouble with mandb starting in the background (closes: #100616).
+  * When starting mandb in the background, use start-stop-daemon rather than
+    su to avoid spurious syslog output. --nicelevel needs dpkg (>= 1.8.0).
+
+  * manpath(1): s/semicolon/colon/ (thanks, Gordon Sadler; closes: #100362).
+  * Comment out code supporting the man page hierarchy organization of other
+    operating systems, as it sometimes misfires on Debian (e.g. dpkg(8) vs.
+    dpkg.rb(1)). This will be solved more neatly upstream (closes: #99766).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 13 Jun 2001 16:08:04 +0100
+
 man-db (2.3.18-8) unstable; urgency=medium
 
   * Fix infinite loop in pathappend() if man pages are present for both a

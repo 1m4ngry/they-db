@@ -5,9 +5,7 @@
 oldcatdir=/var/catman
 catdir=/var/cache/man
 maybesetuid='man mandb'
-
-# For now we depend on debconf. If this causes problems with base system
-# interdependencies I'm willing to consider making it optional.
+conffile=/etc/manpath.config
 
 . /usr/share/debconf/confmodule
 db_version 2.0
@@ -29,17 +27,17 @@ if [ "$RET" = true ]; then
     # wrapper.
     owner=man:root
     mode=4755
-    wrapper=1
+    issetuid=1
 else
     # man and mandb are not to be installed setuid, and we install symlinks
     # directly to the executables.
     owner=root:root
     mode=0755
-    wrapper=0
+    issetuid=0
 fi
 
 for x in $maybesetuid; do
-    if [ $wrapper -eq 1 ]; then target=wrapper; else target=$x; fi
+    if [ $issetuid -eq 1 ]; then target=wrapper; else target=$x; fi
     # No statoverrides available or none exist for us ...
     if [ ! -x /usr/sbin/dpkg-statoverride ] || \
 	    ! dpkg-statoverride --list /usr/lib/man-db/$x >/dev/null; then
@@ -74,17 +72,21 @@ fi
 build_db=0
 
 if [ ! -f $catdir/index.bt ]; then
-    if dpkg --compare-versions "$2" lt 2.3.16; then
+    # If the build-database question was never asked, this is probably a
+    # fresh install, or maybe we're reconfiguring. The default is to build
+    # the database if and only if we aren't setuid.
+    db_fget man-db/build-database seen
+    if [ "$RET" = true ]; then
+	if [ $issetuid -eq 0 ]; then
+	    build_db=1
+	fi
+    else
+	# This should probably only fire when upgrading from less than
+	# 2.3.16, but it doesn't really matter.
 	db_get man-db/build-database
 	if [ "$RET" = true ]; then
 	    build_db=1
 	fi
-    else
-	# Um. At this point all bets are off. The config script won't have
-	# asked the question, so we can't db_get it ... but the database
-	# should never be missing when upgrading from >= 2.3.16. In this
-	# case, bad luck, the database gets built.
-	build_db=1
     fi
 elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
     db_get man-db/rebuild-database
@@ -93,8 +95,12 @@ elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
     fi
 fi
 
-if [ "$build_db" -eq 1 ]; then
-    nice su man -c 'mandb -c 2>/dev/null >/dev/null' &
+if [ $build_db -eq 1 ]; then
+    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
+    # but we want to start it like one.
+    start-stop-daemon --start --pidfile /dev/null \
+		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
+		      --background --nicelevel 10 -- -c >/dev/null 2>/dev/null
 fi
 
 #DEBHELPER#

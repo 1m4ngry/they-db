@@ -64,7 +64,7 @@ install-stamp: build
 	set -e; for x in zsoelim man intl po; do \
 		$(MAKE) -C $$x install prefix=../$(dtmp)/usr; \
 	done
-	install -m755 tools/chconfig	$(dtmp)/usr/share/$(package)
+	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)
 	# now do manual changes needed by debian
 	# change locale names
 	mv $(dtmp)/usr/share/man/de_DE.88591 $(dtmp)/usr/share/man/de

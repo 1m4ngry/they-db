@@ -1,9 +1,13 @@
 #!/bin/sh
 #
-# Last modification: Fri, 18 May 2001 13:54:15 +0100
+# Last modification: Wed, 13 Jun 2001 14:41:48 +0100
 # man-db cron weekly
 
 # regenerate man database
 if [ -x /usr/bin/mandb ]; then
-    nice su man -c 'mandb 2>/dev/null >/dev/null'
+    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
+    # but we want to start it like one.
+    start-stop-daemon --start --pidfile /dev/null \
+		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
+		      --nicelevel 10 >/dev/null 2>/dev/null
 fi

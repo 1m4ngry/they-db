@@ -1,10 +1,13 @@
 #!/bin/sh
 #
-# Last modification: Fri, 15 May 1998 08:53:07 +0300
+# Last modification: Sat, 23 Jun 2001 15:34:11 +0100
 # man-db cron daily
 
 # expunge old catman pages which have not been read in a week
 if [ -d /var/cache/man ]; then
   cd /
-  nice su man -c "find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | xargs -r0 rm -f"
+  start-stop-daemon --start --pidfile /dev/null --startas /bin/sh \
+	--oknodo --chuid man --nicelevel 10 -- -c \
+	"find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | \
+	 xargs -r0 rm -f"
 fi
