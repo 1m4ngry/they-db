@@ -66,7 +66,7 @@ fi
 # Old packages removed catpages on upgrade. The preinst hack should have
 # avoided this, but let's be sure.
 if [ ! -d $catdir ]; then
-    install -d -g root -m 02755 -o man $catdir
+    install -d -o man -g root -m 02755 $catdir
 fi
 
 build_db=0

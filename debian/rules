@@ -83,7 +83,7 @@ binary-arch: build install
 	dh_installdocs
 	install -m644 manual/man_db.cat \
 		$(dtmp)/usr/share/doc/man-db/man-db-manual.txt
-	dh_installexamples docs/manpage.example
+	dh_installexamples docs/manpage.example*
 	install -m644 $(dtmp)/etc/manpath.config \
 		$(dtmp)/usr/share/doc/$(package)/examples/manpath.config
 	dh_installchangelogs docs/ChangeLog
@@ -93,6 +93,8 @@ binary-arch: build install
 	dh_compress
 	dh_fixperms
 	dh_installdeb
+	chown man:root $(dtmp)/var/cache/man
+	chmod 2755     $(dtmp)/var/cache/man
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums

@@ -3,3 +3,4 @@ usr/bin
 usr/lib/man-db
 usr/sbin
 usr/share/man-db
+var/cache/man

@@ -1,3 +1,21 @@
+man-db (2.3.19-5) unstable; urgency=low
+
+  * Improve creation of temporary files by using mkstemp() rather than
+    tempnam(), and by falling back to /tmp if $TMPDIR is unwriteable
+    (closes: #92459, #102330).
+  * Clean up manpage.example, and install new examples of man pages written
+    in POD and DocBook SGML (closes: #96781).
+  * Include /var/cache/man directory in the .deb. I probably won't install
+    anything beneath that manually, as it's better that mandb creates them
+    on the fly as required (closes: #75868).
+  * Part of 2.3.18-7 accidentally got lost in 2.3.19-1. Here it is again:
+    - configure.in falls back to standard paths for col, grap, lynx, and
+      vgrind, so we don't need those as build dependencies any more.
+  * Make lexgrog no longer misfire on lowercase versions of the various
+    groff requests that indicate the use of tbl, eqn, etc.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon,  6 Aug 2001 02:04:17 +0100
+
 man-db (2.3.19-4) unstable; urgency=low
 
   * Look up the correct character set each time a page is displayed, not

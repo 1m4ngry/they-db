@@ -103,7 +103,7 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_PATH_PROG(cat, cat)
-AC_PATH_PROG(lynx, lynx)
+AC_PATH_PROG(lynx, lynx, /usr/bin/lynx)
 AC_PATH_PROG(tr, tr)
 AC_PATH_PROG(grep, grep)
 AC_PATH_PROGS(pager, pager less more)
@@ -214,10 +214,10 @@ then
 	(test "$nroff_device" && neqn="$eqn -T$nroff_device" || neqn="$eqn -Tascii")
 fi
 AC_PATH_PROGS(tbl, tbl gtbl)
-AC_PATH_PROGS(col, col gcol)
-AC_PATH_PROGS(vgrind, vgrind gvgrind)
+AC_PATH_PROGS(col, col gcol, /usr/bin/col)
+AC_PATH_PROGS(vgrind, vgrind gvgrind, /usr/bin/vgrind)
 AC_PATH_PROGS(refer, refer grefer)
-AC_PATH_PROGS(grap, grap)
+AC_PATH_PROGS(grap, grap, /usr/bin/grap)
 AC_PATH_PROGS(pic, pic gpic)
 test "$pic" && pic="$pic -S"
 AC_PATH_PROG(gzip, gzip)
@@ -409,7 +409,7 @@ AC_CHECK_FUNC(regcomp, [AC_DEFINE(POSIX_REGEX)],
 AC_CHECK_FUNC(fnmatch, [AC_DEFINE(HAVE_FNMATCH_H)], LIBOBJS="$LIBOBJS fnmatch.o")
 AC_CHECK_FUNC(globfree, [AC_DEFINE(HAVE_GLOB_H)], LIBOBJS="$LIBOBJS glob.o")
 AC_CHECK_FUNC(getopt_long, [AC_DEFINE(HAVE_GETOPT_H)], LIBOBJS="$LIBOBJS getopt.o getopt1.o")
-AC_REPLACE_FUNCS(flock putenv realpath rename basename tempnam waitpid strstr strsep strcspn strspn)
+AC_REPLACE_FUNCS(flock putenv realpath rename basename waitpid strstr strsep strcspn strspn)
 dnl
 MAN_ECHO_VAR(CC)
 MAN_ECHO_VAR(CPP)

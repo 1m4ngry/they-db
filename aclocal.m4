@@ -121,22 +121,22 @@ do
   then
     for lib in $2
     do
-      AC_VAR_PUSHDEF([man_tr_bdb], [man_cv_bdb_header_${head}_lib_${lib}])dnl
+      AS_VAR_PUSHDEF([man_tr_bdb], [man_cv_bdb_header_${head}_lib_${lib}])dnl
       man_saved_LIBS=LIBS
       LIBS="$LIBS -l$lib"
       AC_CACHE_CHECK([for dbopen from <${head}> in -l${lib}], man_tr_bdb,
          [AC_TRY_LINK([#include <$head>], [dbopen("foo", 0, 0, 0, (void *) 0)],
-                      [AC_VAR_SET(man_tr_bdb, yes)],
-                      [AC_VAR_SET(man_tr_bdb, no)])
+                      [AS_VAR_SET(man_tr_bdb, yes)],
+                      [AS_VAR_SET(man_tr_bdb, no)])
          ])
-      AS_IF([test AC_VAR_GET(man_tr_bdb) = yes],
+      AS_IF([test AS_VAR_GET(man_tr_bdb) = yes],
             [AC_MSG_RESULT(yes)
              $3
              db=yes],
             [AC_MSG_RESULT(no)
              LIBS="$man_saved_LIBS"
              db=no])
-      AC_VAR_POPDEF([man_tr_bdb])dnl
+      AS_VAR_POPDEF([man_tr_bdb])dnl
       test "$db" = "yes" && break
     done
   fi
@@ -166,7 +166,7 @@ AC_DEFUN([AC_ISC_POSIX],
 # Ulrich Drepper <drepper@cygnus.com>, 1995.
 #
 # This file can be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU Public License
+# be used in projects which are not available under the GNU General Public License
 # but which still want to provide support for the GNU gettext functionality.
 # Please note that the actual code is *not* freely available.
 
@@ -516,7 +516,7 @@ strdup strtoul tsearch __argz_count __argz_stringify __argz_next])
 # Ulrich Drepper <drepper@cygnus.com>, 1996.
 #
 # This file can be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU Public License
+# be used in projects which are not available under the GNU General Public License
 # but which still want to provide support for the GNU gettext functionality.
 # Please note that the actual code is *not* freely available.
 
@@ -679,7 +679,7 @@ AC_DEFUN([AM_LANGINFO_CODESET],
 # Ulrich Drepper <drepper@cygnus.com>, 1995.
 #
 # This file can be copied and used freely without restrictions.  It can
-# be used in projects which are not available under the GNU Public License
+# be used in projects which are not available under the GNU General Public License
 # but which still want to provide support for the GNU gettext functionality.
 # Please note that the actual code is *not* freely available.
 
