@@ -1,3 +1,10 @@
+man-db (2.4.2-14) unstable; urgency=low
+
+  * Add Turkish debconf translation (thanks, Recai Oktas and Mehmet Turker;
+    closes: #239143).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 23 Mar 2004 20:14:20 +0000
+
 man-db (2.4.2-13) unstable; urgency=medium
 
   * When sorting located man pages for display, sort by pure section, then

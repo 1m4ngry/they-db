@@ -74,6 +74,24 @@ Description-pt_BR: O man e o mandb devem ser instalados 'setuid man'?
  Habilitar este recurso pode ser um risco de seguran�a, por isso o mesmo
  est� desabilitado por padr�o. Em caso de d�vidas, � sugerido que voc�
  mantenho-o desabilitado.
+Description-tr: man ve mandb'nin 'setuid man' olarak kurulmasını ister misiniz?
+ man kullanıcısı izinleri ile çalışması için man ve mandb
+ uygulamaları set-user-id biti ile kurulabilir. Bu, normal
+ kullanıcıların önceden biçimlendirilmiş yardım sayfalarının
+ önbelleğe alınması avantajından yararlanmalarını sağlar ('cat
+ pages'). Önbellek kullanımı, yavaş makinelerde performans artışına
+ yardımcı olabilir.
+ .
+ Önbelleğe alınmış man sayfaları sadece eğer 80 sütun genişlikte
+ bir terminal kullanıyorsanız çalışır. Bu, bir kullanıcı için
+ görüntülenmiş sayfaların diğer kullanıcılarla uyumlu olmayan
+ genişliklerde kaydedilmemesi içindir. Eğer geniş bir terminal
+ kullanıyorsanız MANWIDTH=80 ayarıyla man sayfalarını 80 sütun
+ genişliğinde biçimlendirmeye zorlayabilirsiniz.
+ .
+ Bu özelliği açmak bir güvenlik riski oluşturabilir, bu yüzden
+ etkinleştirilmedi. Eğer kararsızsanız böyle bırakmanızı tavsiye
+ ederiz.
 Description-uk: Чи потрібно встановлювати mandb з атрибутом 'setuid man'?
  Програми man та mandb можуть бути
  інстальовані з встановленим бітом
@@ -153,6 +171,17 @@ Description-pt_BR: O man-db deve construir sua pr�pria base de dados agora?
  executado, ou voc� poder� fazer isso voc� mesmo usando o comando 'mandb
  -c' como o usu�rio 'man'. At� que isso seja feito, os comandos 'whatis' e
  'apropos' n�o ser�o capazes de exibir nenhuma sa�da.
+Description-tr: mandb kendi veritabanını şimdi yaratsın mı?
+ Henüz kılavuz (manual) sayfa açıklamaları için bir veritabanınız
+ yok. Bir veritabanı yaratmak kurulu sayfaların sayısına bağlı olarak
+ bir miktar zaman alabilir. Bu işlem arka planda yapılacak ve muhtemelen
+ diğer paketlerin kurulumunu da yavaşlatacaktır.
+ .
+ Eğer veritabanını şimdi yaratmazsanız bir dahaki sefere /etc/cron
+ weekly/mandb çalıştığı zaman otomatik olarak yaratılacaktır. Bu
+ işlemi 'mandb -c' komutunu kullanarak kendiniz de yapabilirsiniz. Şu an
+ için 'whatis' ve 'apropos' komutları herhangi bir çıktı
+ görüntüleyemeyecektir.
 Description-uk: Чи потрібно зараз створити базу даних mandb?
  Ви поки що не маєте бази даних описів
  сторінок керівництва. Її побудова може
@@ -236,6 +265,21 @@ Description-pt_BR: O man-db deve construir sua pr�pria base de dados agora?
  'apropos' n�o ser�o capazes de exibir nenhuma sa�da.
  .
  Mudan�as incompat�veis como essa dever�o ocorrer raramente.
+Description-tr: mandb kendi veritabanını şimdi yaratsın mı?
+ man-db'nin bu sürümü kılavuz sayfa açıklamalarına ait sisteminizde
+ mevcut veritabanıyla uyumsuz. Bu yüzden veritabanının tekrar
+ oluşturulması gerekiyor. Bir veritabanı yaratmak kurulu sayfaların
+ sayısına bağlı olarak bir miktar zaman alabilir. Bu işlem arka planda
+ yapılacak ve muhtemelen diğer paketlerin kurulumunu da
+ yavaşlatacaktır.
+ .
+ Eğer veritabanını şimdi yaratmazsanız bir dahaki sefere /etc/cron
+ weekly/mandb çalıştığı zaman otomatik olarak yaratılacaktır. Bu
+ işlemi 'mandb -c' komutunu kullanarak kendiniz de yapabilirsiniz. Şu an
+ için 'whatis' ve 'apropos' komutları herhangi bir çıktı
+ görüntüleyemeyecektir.
+ .
+ Bunun gibi uyumsuz değişiklikler nadiren olmaktadır.
 Description-uk: Чи потрібно зараз створити базу даних mandb?
  Ця версія man-db несумісна з існуючою базою
  даних сторінок описів сторінок
