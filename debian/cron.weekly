@@ -9,5 +9,5 @@ if [ -x /usr/bin/mandb ]; then
     # but we want to start it like one.
     start-stop-daemon --start --pidfile /dev/null \
 		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
-		      --nicelevel 10 >/dev/null 2>/dev/null
+		      >/dev/null 2>/dev/null
 fi

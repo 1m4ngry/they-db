@@ -1,3 +1,10 @@
+man-db (2.3.20-6) unstable; urgency=low
+
+  * Oops, meant to remove --nicelevel from cron.weekly and the postinst too.
+  * Weaken versioned dependency on dpkg.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 10 Oct 2001 21:23:21 +0100
+
 man-db (2.3.20-5) unstable; urgency=low
 
   * Add Russian debconf translation (thanks, Ilgiz Kalmetev;
