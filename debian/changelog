@@ -1,3 +1,11 @@
+man-db (2.4.2-19) UNRELEASED; urgency=low
+
+  * Fix database creation problems on systems with badly broken clocks set
+    before the epoch (thanks to Martin Pitt for the hint; fixes #252425
+    harder).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 22 Jul 2004 14:47:10 +0100
+
 man-db (2.4.2-18) unstable; urgency=low
 
   * Fix out-of-order declarations in whatis.c (closes: #240089).
