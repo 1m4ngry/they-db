@@ -18,27 +18,26 @@ Description: Do you want man and mandb to be installed setuid man?
  .
  Enabling this feature may be a security risk, so it is disabled by
  default. If in doubt, I suggest you leave it disabled.
-Description-ca: Voleu que man i mandb siguin instal·lats amb setuid?
+Description-ca: Voleu que man i mandb s'instal·len setuid man?
  Els programes man i mandb poden ser instal·lats amb el bit set-user-id
- establert, per a que aquests s'executin amb els permissos de l'usuari
- 'man'.  Això permetrà als usuaris ordinaris beneficiar-se des de la
- memòria cau del preformatejat de les pàgines del manual ('cat pages') i
- del mitjà amb el que la base de dades de les descripcions per a les
- pàgines del manual són automàticament actualitzades per la gent que les
- llegeix.  En particular, l'emmagatzemament de pàgines cat pot ajudar en
- màquines lentes.
+ establert per a que aquests s'executin amb els permissos de l'usuari
+ "man". Això permetrà als usuaris ordinaris beneficiar-se des de la
+ memòria cau del preformatejat de les pàgines de manual ("cat pages") i
+ significa que la base de dades de les descripcions de les pàgines de manual
+ són automàticament actualitzades per la gent que les llegeix. En particular,
+ l'emmagatzemament de pàgines cat pot ajudar el rendiment en màquines lentes.
  .
- La memòria cau de les pàgines del manual sols funciona si useu un terminal
- "normal" (de 66 a 80 caràcters d'amplada).  Això és així per a evitar el
- que un usuari faci pàgines cat que siguin desades en una amplada que
- seria del tot inoportuna per a d'altres usuaris.  En futures versions això
- es podrà configurar.  Fins llabors, si useu un terminal ample, podeu forçar
- el preformatejat a 80 caràcters de les pàgines del manual establint
+ La memòria cau de les pàgines de manual sols funciona si useu un terminal
+ d'amplada "normal" (de 66 a 80 caràcters). Això és així per a evitar el que
+ un usuari faci pàgines cat que siguin desades en una amplada que puga ser
+ inconvenient per a d'altres usuaris. En futures versions això es podrà
+ configurar. Fins llavors, si useu un terminal ample, podeu forçar el
+ preformatejat a 80 caràcters de les pàgines de manual establint
  MANWIDTH=80.
  .
  Habilitar aquesta característica pot causar un risc de seguretat, pel que
- per defecte està deshabilitat.  Si teniu cap dubte, jo us suggereixo que
- ho deshabiliteu.
+ per defecte està deshabilitat. Si teniu cap dubte, vos suggerim que ho
+ deshabiliteu.
 
 Template: man-db/build-database
 Type: boolean
@@ -54,16 +53,16 @@ Description: Should mandb build its database now?
  user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
  be able to display any output.
 Description-ca: Hauria de construir ara mandb la seva base de dades?
- Encara no teniu cap base de dades de les descripcions de les pàgines del
- manual.  El construir-ne una pot pendres el seu temps, depenent de quantes
- pàgines del manual tingueu instal·lades; això segurament passarà en un
- segon pla i possiblement alentirà la instal·lació d'altres paquets.
- Desitgeu que es faci això ara?
+ Encara no teniu una base de dades de les descripcions de les pàgines de
+ manual. El construir-ne una pot trigar una estona, depenent de quantes
+ pàgines de manual tingueu instal·lades; això es farà en segon pla i
+ possiblement alentirà la instal·lació d'altres paquets. Voleu que es faci
+ això ara?
  .
- Si no construiu ara la base de dades, aquesta serà construïda la pròxima
- vegada que s'executi /etc/cron.weekly/mandb o podeu fer-la manualment amb
- 'mandb -c' com a usuari 'man'.  Mentrestant, els comandaments 'whatis' i
- 'apropos' no podran mostrar cap eixida.
+ Si no construïu ara la base de dades, aquesta serà construïda la pròxima
+ vegada que s'executi /etc/cron.weekly/mandb, o podeu fer-ho manualment amb
+ "mandb -c" com a usuari "man".  Mentrestant, les ordres "whatis" i "apropos"
+ no podran mostrar cap eixida.
 
 Template: man-db/rebuild-database
 Type: boolean
@@ -83,15 +82,15 @@ Description: Should mandb rebuild its database now?
  Incompatible changes like this should happen rarely.
 Description-ca: Hauria de reconstruir ara mandb la seva base de dades?
  Aquesta versió de man-db és incompatible amb la vostra base de dades de
- les descripcions de les pàgines del manual, aquesta base de dades
- necessita ser recontruida.  Això pot pedres el seu temps, depenent de
- quantes pàgines del manual tingueu instal·lades; això segurament passarà
- en un segon pla i possiblement alentirà la instal·lació d'altres paquets.
- Desitgeu que es faci això ara?
+ les descripcions de les pàgines de manual, pel que aquesta base de dades
+ necessita ser recontruida.  Això pot trigar una estona, depenent de
+ quantes pàgines de manual tingueu instal·lades; això es farà en un segon
+ pla i possiblement alentirà la instal·lació d'altres paquets.
+ Voleu que es faci això ara?
  .
- Si no construiu ara la base de dades, aquesta serà construïda la pròxima
- vegada que s'executi /etc/cron.weekly/mandb o podeu fer-la manualment amb
- 'mandb -c' com a usuari 'man'.  Mentrestant, els comandaments 'whatis' i
- 'apropos' no podran mostrar cap eixida.
+ Si no reconstruïu ara la base de dades, aquesta serà reconstruïda la
+ pròxima vegada que s'executi /etc/cron.weekly/mandb o podeu fer-ho
+ manualment amb "mandb -c" com a usuari "man".  Mentrestant, les ordres
+ "whatis" i "apropos" no podran mostrar cap eixida.
  .
  Canvis incompatibles com aquest passen molt rarament.

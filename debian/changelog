@@ -1,3 +1,15 @@
+man-db (2.3.20-20) unstable; urgency=low
+
+  * Fix Catalan debconf translation (thanks, Jordi Mallach;
+    closes: #140294).
+  * Always build the database on fresh installations. Bug #100616 is now
+    avoided by starting mandb in the foreground if DEBIAN_FRONTEND =
+    Noninteractive; I originally thought this was also set when using the
+    noninteractive frontend normally outside the installer, which apparently
+    isn't the case.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 15 May 2002 23:07:58 +0100
+
 man-db (2.3.20-19) unstable; urgency=low
 
   * debconf translations:

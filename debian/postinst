@@ -79,12 +79,10 @@ build_db=0
 if [ ! -f $catdir/index.bt ]; then
     # If the build-database question was never asked, this is probably a
     # fresh install, or maybe we're reconfiguring. The default is to build
-    # the database if and only if we aren't setuid.
+    # the database.
     db_fget man-db/build-database seen
-    if [ "$RET" = true ]; then
-	if [ $issetuid -eq 0 ]; then
-	    build_db=1
-	fi
+    if [ "$RET" = false ]; then
+	build_db=1
     else
 	# This should probably only fire when upgrading from less than
 	# 2.3.16, but it doesn't really matter.
@@ -101,11 +99,21 @@ elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
 fi
 
 if [ $build_db -eq 1 ]; then
+    if [ "$DEBIAN_FRONTEND" = Noninteractive ]; then
+	# Run in the foreground. In this case, chances are we're being run
+	# from debootstrap, which will have problems if mandb runs
+	# backgrounded for too long (bug #100616).
+	BACKGROUND=
+	echo "Building database of manual pages ..." >&2
+    else
+	BACKGROUND=--background
+	echo "Building database of manual pages in the background." >&2
+    fi
     # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
     # but we want to start it like one.
     start-stop-daemon --start --pidfile /dev/null \
 		      --startas /usr/lib/man-db/mandb --oknodo --chuid man \
-		      --background -- -c >/dev/null 2>/dev/null
+		      $BACKGROUND -- -c >/dev/null 2>/dev/null
 fi
 
 #DEBHELPER#

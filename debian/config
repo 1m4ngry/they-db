@@ -4,21 +4,13 @@
 db_version 2.0
 
 db_input medium man-db/install-setuid || true
-db_go
 
-db_get man-db/install-setuid
-
-if [ "$RET" = false ] && dpkg --compare-versions "$2" lt 0; then
-    # Fresh install. If we aren't setuid, the default is not to bother
-    # building the database right now, as it will get out of date anyway.
-    db_set man-db/build-database false
-    db_input low man-db/build-database || true
-elif dpkg --compare-versions "$2" lt 2.3.16; then
+if dpkg --compare-versions "$2" lt 2.3.16; then
     # All versions before 2.3.17.1-1 removed cat page hierarchies on
     # upgrade. Since then a preinst hack means upgrades from 2.3.16 or later
     # won't do this, but the hack is nasty enough that I don't want to
     # extend it back beyond then. Thus, we may need to build the database
-    # from scratch on old upgrades. This also covers setuid fresh installs.
+    # from scratch on old upgrades. This also covers fresh installs.
     db_input low man-db/build-database || true
 elif dpkg --compare-versions "$2" lt 2.3.17.1-5; then
     # At 2.3.17.1-5, the database version number changed to 2.3.2.
