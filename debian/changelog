@@ -1,3 +1,10 @@
+man-db (2.4.2-11) unstable; urgency=low
+
+  * Update Brazilian Portuguese debconf translation (thanks, Andre Luis
+    Lopes; closes: #235501).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon,  1 Mar 2004 00:08:30 +0000
+
 man-db (2.4.2-10) unstable; urgency=low
 
   * Update debconf translations:

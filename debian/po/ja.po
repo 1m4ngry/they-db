@@ -37,7 +37,12 @@ msgid ""
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
-msgstr "man プログラムと mandb プログラムは、「man」ユーザの権限恩恵を受けるために、set-user-id ビットをセットした状態でインストールすることができます。そうすると、通常のユーザがフォーマット済みのマニュアルページ (「cat ページ」) のキャッシングを使うことができ、遅いマシンでのパフォーマンスの向上に役立ちます。"
+msgstr ""
+"man プログラムと mandb プログラムは、「man」ユーザの権限恩恵を受けるために、"
+"set-user-id ビットをセットした状態でインストールすることができます。そうする"
+"と、通常のユーザがフォーマット済みのマニュアルページ (「cat ページ」) の"
+"キャッシングを使うことができ、遅いマシンでのパフォーマンスの向上に役立ちま"
+"す。"
 
 #. Type: boolean
 #. Description
@@ -47,7 +52,11 @@ msgid ""
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
-msgstr "ほかのユーザにとって不便な幅に整形されたページが保存されてしまうのを防ぐため、キャッシュされたマニュアルページは、80 文字幅の端末を使っているときのみ動作します。幅の広い端末を使っている場合、MANWIDTH=80 と設定することでマニュアルページが 80 文字幅で整形されるように強制できます。"
+msgstr ""
+"ほかのユーザにとって不便な幅に整形されたページが保存されてしまうのを防ぐた"
+"め、キャッシュされたマニュアルページは、80 文字幅の端末を使っているときのみ動"
+"作します。幅の広い端末を使っている場合、MANWIDTH=80 と設定することでマニュア"
+"ルページが 80 文字幅で整形されるように強制できます。"
 
 #. Type: boolean
 #. Description
@@ -55,7 +64,10 @@ msgstr "ほかのユーザにとって不便な幅に整形されたページが保存されてしまうのを防ぐ
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
-msgstr "これを有効にするとセキュリティ上の問題が発生するかもしれないため、この機能はデフォルトでは無効となっています。よくわからなければ、無効のままにしておくことをお勧めします。"
+msgstr ""
+"これを有効にするとセキュリティ上の問題が発生するかもしれないため、この機能は"
+"デフォルトでは無効となっています。よくわからなければ、無効のままにしておくこ"
+"とをお勧めします。"
 
 #. Type: boolean
 #. Description
@@ -65,7 +77,11 @@ msgid ""
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
 "packages."
-msgstr "マニュアルページの記述のデータベースがまだありません。どれだけのマニュアルページをインストールしたかに依存して、この構築には多少の時間がかかります。構築はバックグラウンドで行うので、ほかのパッケージのイ ンストール過程が遅くなるかもしれません。"
+msgstr ""
+"マニュアルページの記述のデータベースがまだありません。どれだけのマニュアル"
+"ページをインストールしたかに依存して、この構築には多少の時間がかかります。構"
+"築はバックグラウンドで行うので、ほかのパッケージのイ ンストール過程が遅くなる"
+"かもしれません。"
 
 #. Type: boolean
 #. Description
@@ -81,7 +97,12 @@ msgid ""
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
 "background, possibly slowing down the installation of other packages."
-msgstr "man-db のこのバージョンは、いまこのマシンに存在しているマニュアルページの記述のデータベースと互換性がないので、データベースを再構築する必要があります。どれだけのマニュアルページをインストールしたかに依存して、この構築には多少の時間がかかります。構築はバックグラウンドで行うので、ほかのパッケージのインストール過程が遅くなるかもしれません。"
+msgstr ""
+"man-db のこのバージョンは、いまこのマシンに存在しているマニュアルページの記述"
+"のデータベースと互換性がないので、データベースを再構築する必要があります。ど"
+"れだけのマニュアルページをインストールしたかに依存して、この構築には多少の時"
+"間がかかります。構築はバックグラウンドで行うので、ほかのパッケージのインス"
+"トール過程が遅くなるかもしれません。"
 
 #. Type: boolean
 #. Description
@@ -91,10 +112,15 @@ msgid ""
 "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
 "'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
 "to display any output."
-msgstr "いまデータベースを構築しなければ、次回に /etc/cron.weekly/mandb が起動したときに構築されます。「man」ユーザで「mandb -c」を実行することでも構築できます。それまでの間、「whatis」コマンドと「apropos」コマンドは正しく動作しません。"
+msgstr ""
+"いまデータベースを構築しなければ、次回に /etc/cron.weekly/mandb が起動したと"
+"きに構築されます。「man」ユーザで「mandb -c」を実行することでも構築できます。"
+"それまでの間、「whatis」コマンドと「apropos」コマンドは正しく動作しません。"
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
 msgid "Incompatible changes like this should happen rarely."
-msgstr "今回のように、バージョンアップに伴って互換性がなくなることは、まれにしか起こらないはずです。"
+msgstr ""
+"今回のように、バージョンアップに伴って互換性がなくなることは、まれにしか起こ"
+"らないはずです。"
