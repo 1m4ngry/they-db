@@ -1,3 +1,9 @@
+man-db (2.3.20-11) unstable; urgency=low
+
+  * French translation update (thanks, Laurent Pelecq).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 25 Nov 2001 19:58:44 +0000
+
 man-db (2.3.20-10) unstable; urgency=medium
 
   * copy_datum() explicitly null-terminates data returned by libdb2, which
