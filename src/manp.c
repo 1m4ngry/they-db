@@ -125,7 +125,7 @@ static __inline__ char *has_mandir (const char *p);
 static __inline__ char *fsstnd (const char *path);
 static char *def_path (int flag);
 static void add_dir_to_list (char **lp, const char *dir);
-static char **add_dir_to_path_list (char **mp, const char *p);
+static char **add_dir_to_path_list (char **mphead, char **mp, const char *p);
 
 
 static void add_to_list (const char *key, const char *cont, int flag)
@@ -347,6 +347,10 @@ static __inline__ void gripe_not_directory (const char *dir)
 		error (0, 0, _("warning: %s isn't a directory"), dir);
 }
 
+static void gripe_overlong_list (void)
+{
+	error (FAIL, 0, _("manpath list too long"));
+}
 
 /* accept a manpath list, separated with ':', return the associated 
    catpath list */
@@ -724,19 +728,24 @@ static void add_to_dirlist (FILE *config, int user)
 		while (isspace (*bp))
 			bp++;
 
+		/* TODO: would like a (limited) replacement for sscanf()
+		 * here that allocates its own memory. At that point check
+		 * everything that sprintf()s manpath et al!
+		 */
 		if (*bp == '#' || *bp == '\0')
 			continue;
 		else if (strncmp (bp, "NO", 2) == 0)
 			continue;	/* mach any word starting with NO */
 		else if (sscanf (bp, "MANBIN %*s") == 1)
 			continue;
-		else if (sscanf (bp, "MANDATORY_MANPATH %s", key) == 1)
+		else if (sscanf (bp, "MANDATORY_MANPATH %49s", key) == 1)
 			add_mandatory (key);	
-		else if (sscanf (bp, "MANPATH_MAP %s %s", key, cont) == 2) 
+		else if (sscanf (bp, "MANPATH_MAP %49s %511s", key, cont) == 2) 
 			add_manpath_map (key, cont);
-		else if ((c = sscanf (bp, "MANDB_MAP %s %s", key, cont)) > 0) 
+		else if ((c = sscanf (bp, "MANDB_MAP %49s %511s",
+				      key, cont)) > 0) 
 			add_mandb_map (key, cont, c, user);
-		else if ((c = sscanf (bp, "DEFINE %50s %511[^\n]",
+		else if ((c = sscanf (bp, "DEFINE %49s %511[^\n]",
 				      key, cont)) > 0)
 			add_def (key, cont, c);
 		else if (sscanf (bp, "SECTION %511[^\n]", cont) == 1)
@@ -933,8 +942,11 @@ static __inline__ char *get_manpath (char *path)
 static void add_dir_to_list (char **lp, const char *dir)
 {
 	int status;
+	int pos = 0;
 
 	while (*lp != NULL) {
+		if (pos > MAXDIRS - 1)
+			gripe_overlong_list ();
 		if (!strcmp (*lp, dir)) {
 			if (debug)
 				fprintf (stderr,
@@ -943,6 +955,7 @@ static void add_dir_to_list (char **lp, const char *dir)
 			return;
 		}
 		lp++;
+		pos++;
 	}
 
 	/* Not found -- add it. */
@@ -992,11 +1005,14 @@ static __inline__ char *has_mandir (const char *path)
 	return NULL;
 }
 
-static __inline__ char **add_dir_to_path_list (char **mp, const char *p)
+static char **add_dir_to_path_list (char **mphead, char **mp, const char *p)
 {
 	int status;
 	char wd[PATH_MAX];
 	char *cwd = wd;
+
+	if (mp - mphead > MAXDIRS - 1)
+		gripe_overlong_list ();
 
 	status = is_directory (p);
 
@@ -1027,15 +1043,17 @@ static __inline__ char **add_dir_to_path_list (char **mp, const char *p)
 void create_pathlist (const char *manp, char **mp)
 {
 	const char *p, *end;
+	char **mphead = mp;
 
 	/* Expand the manpath into a list for easier handling. */
 
 	for (p = manp;; p = end + 1) {
 		end = strchr (p, ':');
 		if (end)
-			mp = add_dir_to_path_list (mp, xstrndup (p, end - p));
+			mp = add_dir_to_path_list (mphead, mp,
+						   xstrndup (p, end - p));
 		else {
-			mp = add_dir_to_path_list (mp, p);
+			mp = add_dir_to_path_list (mphead, mp, p);
 			break;
 		}
 	}

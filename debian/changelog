@@ -1,3 +1,15 @@
+man-db (2.4.1-11) unstable; urgency=high
+
+  * Fix several security problems reported on BugTraq (closes: #203475):
+    - Limit sscanf() calls to the appropriate buffer size while reading
+      configuration file.
+    - Allocate strings dynamically while finding the ultimate source of man
+      pages, avoiding a couple of buffer overflows.
+    - Die gracefully if MANPATH contains too many elements, as a stopgap
+      measure until proper list handling can be added.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 30 Jul 2003 22:52:05 +0100
+
 man-db (2.4.1-10) unstable; urgency=low
 
   * Ignore LANGUAGE if a locale is explicitly specified using the
