@@ -9,6 +9,13 @@ Description: Do you want man and mandb to be installed setuid man?
  automatically kept up to date by people reading man pages. Storing cat
  pages, in particular, may aid performance on slower machines.
  .
+ Cached man pages only work if you are using a "normal"-width terminal (66
+ to 80 characters wide). This is to avoid one user causing cat pages to be
+ saved at widths that would be inconvenient for other users. In a future
+ release this will be configurable. Until then, if you use a wide terminal,
+ you can force man pages to be formatted to 80 characters anyway by setting
+ MANWIDTH=80.
+ .
  Enabling this feature may be a security risk, so it is disabled by default.
  If in doubt, I suggest you leave it disabled.
 

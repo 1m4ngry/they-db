@@ -1,3 +1,16 @@
+man-db (2.3.20-12) unstable; urgency=medium
+
+  * Add some text to the install-setuid debconf note to explain that cat
+    pages only work with "normal" terminal widths, to avoid the denial of
+    service attack where you cause a cat page to be saved for a
+    one-character-wide terminal, and that you can override its terminal
+    width detection using $MANWIDTH. This alleviates #121997, although
+    there's still a wishlist there to allow the width of cat pages on the
+    system to be configurable.
+  * Remove po/fr.gmo in the clean target: binary files can't go in the diff.
+
+ -- Colin Watson <cjwatson@debian.org>  Sat,  1 Dec 2001 19:41:54 +0000
+
 man-db (2.3.20-11) unstable; urgency=low
 
   * French translation update (thanks, Laurent Pelecq).
