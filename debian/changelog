@@ -1,3 +1,14 @@
+man-db (2.4.0-11) unstable; urgency=low
+
+  * Remove weak alias foolishness from lib/strnlen.c, so that man-db can
+    build on BSD.
+  * Add advice to the "No manual entry for %s" message to the effect that
+    help for undocumented features can be found in undocumented(7). This is
+    an experimental Debian-specific hack for now to help with #39830, but
+    can be pushed upstream in time.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 14 Nov 2002 01:04:03 +0000
+
 man-db (2.4.0-10) unstable; urgency=low
 
   * datum.dsize needs to be size_t, not int. This broke s390x, which is
