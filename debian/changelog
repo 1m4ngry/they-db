@@ -1,3 +1,9 @@
+man-db (2.4.2-20) UNRELEASED; urgency=low
+
+  * Suggest less (closes: #280096).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun,  7 Nov 2004 14:24:58 +0000
+
 man-db (2.4.2-19) unstable; urgency=low
 
   * Fix database creation problems on systems with badly broken clocks set
