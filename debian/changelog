@@ -1,3 +1,12 @@
+man-db (2.3.20-9) unstable; urgency=low
+
+  * Drop privileges when reading temporary file to find the list of
+    preprocessors (closes: #117037).
+  * Axiom: any bug in man-db may be fixed by additional calls to
+    drop_effective_privs().
+
+ -- Colin Watson <cjwatson@debian.org>  Thu,  8 Nov 2001 11:34:53 +0000
+
 man-db (2.3.20-8) unstable; urgency=low
 
   * Force build-time pager detection to return /usr/bin/pager, even if for
