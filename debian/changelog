@@ -1,3 +1,10 @@
+man-db (2.3.20-7) unstable; urgency=high
+
+  * Drop privileges throughout format_display(), and fix use of freed memory
+    while printing the resulting error message (closes: #117168).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 26 Oct 2001 15:10:05 +0100
+
 man-db (2.3.20-6) unstable; urgency=low
 
   * Oops, meant to remove --nicelevel from cron.weekly and the postinst too.
