@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-30 22:59+0100\n"
+"POT-Creation-Date: 2003-11-17 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,13 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "Vil du have, at man og mandb bliver installeret 'setuid man'?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -46,6 +48,7 @@ msgstr ""
 "automatisk holdes opdateret, når folk læser manualsiderne. Især kan cat-"
 "sider kan gøre visningen hurtigere på langsomme maskiner."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -63,6 +66,7 @@ msgstr ""
 "du, hvis du bruger en 'bred' terminal, tvinge manualsider til at blive "
 "formateret til 80 karakter alligevel ved at sætte MANWIDTH=80."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -73,11 +77,13 @@ msgstr ""
 "standard slået fra. Hvis du er i tvivl, foreslår jeg at du lader den være "
 "slået fra."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "Skal mandb opbygge sin database nu?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -91,6 +97,7 @@ msgstr ""
 "installeret. Det vil ske i baggrunden, og kan midlertidigt gøre "
 "installationen af andre pakker langsommere. Vil du have, at det sker nu?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -104,11 +111,13 @@ msgstr ""
 "brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' ikke "
 "kunne vise noget."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "Skal mandb genopbygge sin database nu?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -124,6 +133,7 @@ msgstr ""
 "installeret. Det vil ske i baggrunden, og kan midlertidigt gøre "
 "installationen af andre pakker langsommere. Vil du have, at det sker nu?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -137,6 +147,7 @@ msgstr ""
 "brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' ikke "
 "kunne vise noget."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."

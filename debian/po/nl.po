@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mandb\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-30 22:59+0100\n"
+"POT-Creation-Date: 2003-11-17 22:14+0000\n"
 "PO-Revision-Date: 2003-10-12 13:58+0100\n"
 "Last-Translator: Bart Cornelis <cobaco@linux.be>\n"
 "Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian..org>\n"
@@ -23,11 +23,13 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "Wilt u man en mandb installeren met setuid man?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -47,6 +49,7 @@ msgstr ""
 "opslaan van cat-pagina's in het bijzonder kan de prestaties op tragere "
 "systemen helpen."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -64,6 +67,7 @@ msgstr ""
 "kunt u het weergeven van man-pagina's, op bredere terminals, met een breedte "
 "van 80 karakters afdwingen door het instellen van MANWIDTH=80."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -73,11 +77,13 @@ msgstr ""
 "Het activeren van deze optie kan een veiligheidsrisico zijn; daarom staat "
 "deze optie standaard uit. Bij twijfel kunt u deze optie best uit laten."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "mandb-database nu opbouwen?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -91,6 +97,7 @@ msgstr ""
 "geïnstalleerd heeft; dit gebeurt in de achtergrond en kan de installatie van "
 "andere pakketten vertragen. Wilt u dat dit nu gebeurt?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -105,11 +112,13 @@ msgstr ""
 "'man'. In de tussentijd zullen de 'whatis' en 'apropos' commando's geen "
 "uitvoer weergeven."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "mandb-database nu heropbouwen?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -125,6 +134,7 @@ msgstr ""
 "gebeurt in de achtergrond, en kan de installatie van andere pakketten "
 "vertragen. Wilt u dat dit nu gebeurt?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -139,6 +149,7 @@ msgstr ""
 "'man'. In de tussentijd zullen de 'whatis' en 'apropos' commando's geen "
 "uitvoer weergeven."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."

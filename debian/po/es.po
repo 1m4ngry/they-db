@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-30 22:59+0100\n"
+"POT-Creation-Date: 2003-11-17 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,13 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "¿Quiere que man y man-db se instalen setuid man?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -47,6 +49,7 @@ msgstr ""
 "manual por los usuarios. Este sistema puede ayudar particularmente a mejorar "
 "el rendimiento en máquinas lentas."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -65,6 +68,7 @@ msgstr ""
 "configurables; hasta entonces, si usa un terminal ancho, puede obligar a "
 "formatear a 80 caracteres estableciendo MANWIDTH=80 como variable de entorno."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -75,11 +79,13 @@ msgstr ""
 "deshabilitada por defecto. Si tiene dudas, le sugiero que la deje sin "
 "habilitar."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "¿Quiere que mandb construya su base de datos ahora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -93,6 +99,7 @@ msgstr ""
 "manual haya instalado; se realizará en segundo plano, por lo que es posible "
 "que haga más lenta la instalación de otros paquetes. ¿Quiere hacerlo ahora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -106,11 +113,13 @@ msgstr ""
 "c» como usuario man. Hasta entonces, las órdenes «whatis» y «apropos» no "
 "podrán mostrar nada."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "¿Quiere que mandb reconstruya su base de datos ahora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -126,6 +135,7 @@ msgstr ""
 "instalado; se realizará en segundo plano, por lo que es posible que se haga "
 "más lenta la instalación de otros paquetes. ¿Quiere hacerlo ahora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -139,6 +149,7 @@ msgstr ""
 "c» como usuario man. Hasta entonces, las órdenes «whatis» y «apropos» no "
 "podrán mostrar nada."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."

@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-30 22:59+0100\n"
+"POT-Creation-Date: 2003-11-17 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,13 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "Möchten Sie man und mandb mit dem setuid-Flag installieren?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -48,6 +50,7 @@ msgstr ""
 "Seiten kann auf langsameren Computern einen Geschwindigkeitsvorteil beim "
 "Benutzen der Handbuchseiten bringen."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -65,6 +68,7 @@ msgstr ""
 "Breite der Handbuchseiten von 80 Zeichen durch Setzen der Umgebungsvariable "
 "MANWIDTH=80 erzwingen."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -75,11 +79,13 @@ msgstr ""
 "es standardmäßig abgeschaltet. Wenn Sie sich nicht sicher sind, sollten Sie "
 "daher mit \"Nein\" antworten."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "Soll man-db seine Datenbank jetzt aufbauen?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -93,6 +99,7 @@ msgstr ""
 "im Hintergrund und kann daher die Installation anderer Pakete verlangsamen. "
 "Möchten Sie die Datenbank jetzt erstellen?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -107,11 +114,13 @@ msgstr ""
 "auf eine dieser Arten erstellt wurde, zeigen die Befehle \"whatis\" und "
 "\"apropos\" keine Ausgabe an."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "Soll man-db seine Datenbank jetzt neu aufbauen?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -127,6 +136,7 @@ msgstr ""
 "Installation anderer Pakete dadurch verlangsamt werden. Möchten Sie die "
 "Datenbank jetzt neu erstellen?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -141,6 +151,7 @@ msgstr ""
 "Datenbank nicht auf eine dieser Arten erneuert wurde, zeigen die Befehle "
 "\"whatis\" und \"apropos\" keine Ausgabe an."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."

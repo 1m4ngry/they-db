@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-30 22:59+0100\n"
+"POT-Creation-Date: 2003-11-17 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,13 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "Voleu que man i mandb s'instal·len setuid man?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -47,6 +49,7 @@ msgstr ""
 "automàticament actualitzades per la gent que les llegeix. En particular, "
 "l'emmagatzemament de pàgines cat pot ajudar el rendiment en màquines lentes."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -64,6 +67,7 @@ msgstr ""
 "configurar. Fins llavors, si useu un terminal ample, podeu forçar el "
 "preformatejat a 80 caràcters de les pàgines de manual establint MANWIDTH=80."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -74,11 +78,13 @@ msgstr ""
 "per defecte està deshabilitat. Si teniu cap dubte, vos suggerim que ho "
 "deshabiliteu."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "Hauria de construir ara mandb la seva base de dades?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -93,6 +99,7 @@ msgstr ""
 "possiblement alentirà la instal·lació d'altres paquets. Voleu que es faci "
 "això ara?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -106,11 +113,13 @@ msgstr ""
 "\"mandb -c\" com a usuari \"man\".  Mentrestant, les ordres \"whatis\" i "
 "\"apropos\" no podran mostrar cap eixida."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "Hauria de reconstruir ara mandb la seva base de dades?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -127,6 +136,7 @@ msgstr ""
 "possiblement alentirà la instal·lació d'altres paquets. Voleu que es faci "
 "això ara?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -140,6 +150,7 @@ msgstr ""
 "\"mandb -c\" com a usuari \"man\".  Mentrestant, les ordres \"whatis\" i "
 "\"apropos\" no podran mostrar cap eixida."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."

@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-30 22:59+0100\n"
+"POT-Creation-Date: 2003-11-17 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,13 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "Você quer que man e mandb sejam instalados com setuid?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -47,6 +49,7 @@ msgstr ""
 "páginas de manual. Guardar páginas cat, em particular, pode ajudar na "
 "performance em máquinas mais lentas."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -64,6 +67,7 @@ msgstr ""
 "você usar um terminal largo, você pode forçar as páginas de manual serem "
 "formatadas para 80 caracteres de qualquer forma defininfo MANWIDTH=80."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -74,11 +78,13 @@ msgstr ""
 "mensagem é mostrada por padrão. Em caso de dúvidas, sugiro que você deixe "
 "essa opção desabilitada."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "man-db deve construir sua própria base de dados agora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -93,6 +99,7 @@ msgstr ""
 "possivelmente deixando a instalação de outros pacotes mais lenta. Você quer "
 "que isso aconteça agora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -106,11 +113,13 @@ msgstr ""
 "isso você mesmo usando 'mandb -c' como o usuário 'man'. Até que isso ocorra, "
 "os comandos 'whatis' e 'apropos' não poderão exibir qualquer saída."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "mandb deve reconstruir sua base de dados agora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -127,6 +136,7 @@ msgstr ""
 "possivelmente deixando a instalação de outros pacotes mais lenta. Você quer "
 "que isso aconteça agora?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -140,6 +150,7 @@ msgstr ""
 "isso você mesmo usando 'mandb -c' como o usuário 'man'. Até que isso "
 "aconteça, os comandos 'whatis' e 'apropos' não irão exibir qualquer saída."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."

@@ -1,3 +1,13 @@
+man-db (2.4.2-5) unstable; urgency=low
+
+  * Fix build with uClibc, which doesn't have canonicalize_file_name()
+    (thanks, Erik Andersen; closes: #216631).
+  * Speed up mandb's purging of obsolete entries by lots, after noticing
+    that it was calling fnmatch() an obscene number of times. The directory
+    cache is now kept sorted and binary-searched on lookup.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Nov 2003 22:35:30 +0000
+
 man-db (2.4.2-4) unstable; urgency=low
 
   * Add Dutch debconf translation (thanks, cobaco; closes: #216309).

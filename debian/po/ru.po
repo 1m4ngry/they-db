@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-30 22:59+0100\n"
+"POT-Creation-Date: 2003-11-17 22:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,13 @@ msgstr ""
 "Content-Type: text/plain; charset=KOI8-R\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid "Do you want man and mandb to be installed setuid man?"
 msgstr "Вы хотите установить setuid man для man и mandb?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -48,6 +50,7 @@ msgstr ""
 "страниц  снижает  требования  к производительности, что особенно важно для "
 "старых машин."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -66,6 +69,7 @@ msgstr ""
 "принудительно форматировать страницы по 80 символов в строке установкой "
 "MANWIDTH=80."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:4
 msgid ""
@@ -75,11 +79,13 @@ msgstr ""
 "Включение  этой  возможности является угрозой бещопасности, поэтому по "
 "умолчанию  она  выключена. Если не знаете, что делать, то оставьте как есть."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid "Should mandb build its database now?"
 msgstr "Построить базу данных mandb сейчас?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -94,6 +100,7 @@ msgstr ""
 "процессе,  что  может  замедлить  установку остальных пакетов. Вас это "
 "устраивает?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:25
 msgid ""
@@ -107,11 +114,13 @@ msgstr ""
 "c'  от  имени  пользователя  'man'.  До этого момента команды 'whatis' и "
 "'apropos' работать не смогут."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Should mandb rebuild its database now?"
 msgstr "Перестроить базу данных mandb сейчас?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -127,6 +136,7 @@ msgstr ""
 "страниц; создание базы производится в фоновом процессе, что может замедлить "
 "установку остальных пакетов. Вас это устраивает?"
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid ""
@@ -140,6 +150,7 @@ msgstr ""
 "c'  от  имени  пользователя  'man'.  До этого момента команды 'whatis' и "
 "'apropos' работать не смогут."
 
+#. Type: boolean
 #. Description
 #: ../templates.master:39
 msgid "Incompatible changes like this should happen rarely."
