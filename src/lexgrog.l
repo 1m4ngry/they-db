@@ -82,6 +82,7 @@ static const char *fname;
 static char filters[MAX_FILTERS];
 
 static int fill_mode;
+static int waiting_for_quote;
 
 #ifdef TEST
 
@@ -117,6 +118,7 @@ static const char args[] = "mcwfhV";
 %option warn
 %option noyywrap nounput
 
+%x MAN_PRENAME
 %x MAN_NAME
 %x CAT_NAME
 %x CAT_FILE
@@ -173,13 +175,13 @@ vgrind_request	\.vS
 %%
 
  /* begin NAME section processing */
-<MAN_FILE>{sec_request}{blank_eol}+{name_sec}{blank_eol}*	BEGIN (MAN_NAME);
+<MAN_FILE>{sec_request}{blank_eol}+{name_sec}{blank}*		BEGIN (MAN_PRENAME);
 <CAT_FILE>{empty}{2,}{name}{blank}*{indent}			BEGIN (CAT_NAME);
 
  /* general text matching */
-<MAN_FILE>\.[^Ss\r\n].*{next}				|
+<MAN_FILE>\.[^Ss\r\n].*					|
 <MAN_FILE>\..{0,3}{dbl_quote}?.{0,4}{dbl_quote}? 	|
-<MAN_FILE>{comment}.*{next}				|
+<MAN_FILE>{comment}.*					|
 <CAT_FILE>.{1,9}					|
 <CAT_FILE>[ ]*						|
 <CAT_FILE>{eol}{2,}					|
@@ -206,6 +208,20 @@ vgrind_request	\.vS
 					yyterminate ();
 				}
 
+ /* Skip over initial spacing in NAME section. This is evil. */
+<MAN_PRENAME>{bol}\.sp{blank}*		|
+<MAN_PRENAME>{bol}\.br{blank}*		|
+<MAN_PRENAME>{bol}\.LP{blank}*		|
+<MAN_PRENAME>{bol}\.P[Pp]{blank}*	|
+<MAN_PRENAME>{bol}\.P{blank}*
+
+<MAN_PRENAME>{empty}{eol}		yyless (1);
+
+<MAN_PRENAME>.|{eol}		{
+					yyless (0);
+					BEGIN (MAN_NAME);
+				}
+
 <MAN_NAME>{bol}{sec_request}{blank}*	| 	/* Another section */
 <MAN_NAME>{bol}\.X{upper}{blank}+	|	/* special - hpux */
 <MAN_NAME>{bol}\.sp{blank}*		|	/* vertical spacing */
@@ -226,6 +242,12 @@ vgrind_request	\.vS
 
  /* ROFF request removal */
 <MAN_NAME>{
+ /* some include quoting; dealing with this is unpleasant */
+	{bol}{typeface}{blank}+\"	{
+						newline_found ();
+						waiting_for_quote = 1;
+					}
+
 	{bol}{typeface}{blank}+		|	/* type face commands */
 	{bol}\.IX{blank}.*		|	/* .IX line */
 	{next}{comment}.*		{	/* per line comments */
@@ -346,6 +368,8 @@ static void add_char_to_whatis (unsigned char c)
 {
 	if (p_name - newname + 1 >= MAX_NAME)
 		too_big ();
+	else if (waiting_for_quote && c == '"')
+		waiting_for_quote = 0;
 	else
 		*p_name++ = c;
 }
@@ -371,6 +395,7 @@ static void newline_found (void)
 		else
 			add_char_to_whatis ((char) 0x11);
 	}
+	waiting_for_quote = 0;
 }
 
 int find_name (const char *file, const char *filename, lexgrog *p_lg)
@@ -421,6 +446,7 @@ int find_name (const char *file, const char *filename, lexgrog *p_lg)
 	memset (filters, '_', sizeof (filters));
 
 	fill_mode = 1;
+	waiting_for_quote = 0;
 
 	if (p_lg->type)
 		BEGIN (CAT_FILE);

@@ -1,3 +1,11 @@
+man-db (2.4.2-7) unstable; urgency=low
+
+  * Fix lexgrog to handle *roff requests immediately after ".SH NAME"
+    properly rather than interpreting them as plain text, and add a grotty
+    heuristic hack to strip quotes from request arguments (closes: #222426).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 28 Jan 2004 00:30:57 +0000
+
 man-db (2.4.2-6) unstable; urgency=low
 
   * Increment groff-base dependency to 1.17.2-2, when the ascii8 device was
