@@ -1,3 +1,12 @@
+man-db (2.3.18-2) unstable; urgency=medium
+
+  * man would segfault if the argument to -S contained only colons, and
+    incidentally treated an empty argument to -S wrongly. Both cases now use
+    the standard list of sections instead (thanks, Colin Phipps and Stephen
+    Shirley; closes: #97553, #97566).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 15 May 2001 19:36:12 +0100
+
 man-db (2.3.18-1) unstable; urgency=low
 
   * New upstream release, incorporating changes from Wilf's 2.3.11 and
