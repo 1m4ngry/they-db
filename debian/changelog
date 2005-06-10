@@ -1,10 +1,10 @@
-man-db (2.4.2-22) UNRELEASED; urgency=low
+man-db (2.4.2-22) unstable; urgency=low
 
   * Depend on debconf | debconf-2.0.
   * Add debconf translations:
     - Vietnamese (thanks, Clytie Siddall; closes: #309060).
 
- -- Colin Watson <cjwatson@debian.org>  Thu, 13 Jan 2005 08:58:46 +0000
+ -- Colin Watson <cjwatson@debian.org>  Fri, 10 Jun 2005 15:22:16 +0100
 
 man-db (2.4.2-21) unstable; urgency=low
 
