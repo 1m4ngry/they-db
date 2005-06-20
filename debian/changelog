@@ -1,8 +1,8 @@
-man-db (2.4.2-23) UNRELEASED; urgency=low
+man-db (2.4.2-23) unstable; urgency=low
 
   * Update config.guess and config.sub to 2005-04-22 (closes: #315075).
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 20 Jun 2005 14:47:52 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon, 20 Jun 2005 14:49:04 +0100
 
 man-db (2.4.2-22) unstable; urgency=low
 
