@@ -1,4 +1,4 @@
-man-db (2.4.3-1) UNRELEASED; urgency=low
+man-db (2.4.3-1) unstable; urgency=low
 
   * New upstream release.
     - Make most calls to external programs directly rather than going via
@@ -20,7 +20,7 @@ man-db (2.4.3-1) UNRELEASED; urgency=low
     - Update Russian translation (thanks, Yuri Kozlov; closes: #268584).
   * Policy version 3.6.2: no changes required.
 
- -- Colin Watson <cjwatson@debian.org>  Sun,  3 Jul 2005 23:58:10 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon,  4 Jul 2005 00:27:05 +0100
 
 man-db (2.4.2-23) unstable; urgency=low
 
