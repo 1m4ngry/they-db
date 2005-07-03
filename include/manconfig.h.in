@@ -30,13 +30,16 @@
 /* UNIX nroff with GNU tbl.                                                 */
 /*--------------------------------------------------------------------------*/
 
+#ifndef MANCONFIG_H
+#define MANCONFIG_H
+
 /* STD_SECTIONS must contain all of your man hierarchy subdirectories. The
    order is important. Manual pages will be displayed in this order. Ie
    if "1" comes before "2", then a kill(1) will be displayed in preference to
    kill(2), or if `man --all kill', it will be displayed first. Section names 
    may be multi-character, but this is non-standard and probably best 
    avoided. */
-   
+
 #define STD_SECTIONS { \
 	"1", "n", "l", "8", "3", "2", "5", "4", "9", "6", "7", NULL \
 }
@@ -266,7 +269,10 @@ struct compression {
 	 */
 	const char *prog;
 	const char *ext;
-	char *file;
+	/* The following should be freed when discarding an instance of this
+	 * structure.
+	 */
+	char *stem;
 };
 
 /* depending on the compiler ... */
@@ -296,7 +302,7 @@ extern __inline__ void ver (void);
 #endif /* !STATIC_VER */
 
 /* compression.c */
-extern struct compression *comp_info (const char *filename);
+extern struct compression *comp_info (const char *filename, int want_stem);
 extern struct compression *comp_file (const char *filename);
 extern char *decompress (const char *filename, const struct compression *comp);
 extern __inline__ void remove_ztemp (void);
@@ -311,10 +317,11 @@ extern int find_name (const char *file, const char *filename,
 		      struct lexgrog *p_lg);
 
 /* util.c */
+struct pipeline;
 extern char *mkdbname (const char *path);
 extern int is_changed (const char *fa, const char *fb);
 extern int is_directory (const char *path);
-extern __inline__ int do_system (const char *command);
+extern int do_system (struct pipeline *pl);
 extern char *escape_shell (const char *unesc);
 extern int remove_directory (const char *directory);
 extern char *trim_spaces (const char *s);
@@ -360,6 +367,11 @@ extern char *program_name;	/* the basename of the program (as called) */
 #define STREQ(a,b)	(strcmp(a,b) == 0)
 #define STRNEQ(a,b,d)	(strncmp(a,b,d) == 0)
 
+/* Functions in <ctype.h> require their argument to be either an unsigned
+ * char promoted to int or EOF. This macro helps get that right.
+ */
+#define CTYPE(func,arg) (func((unsigned char)(arg)))
+
 /* FSSTND directories */
 #define CAT_ROOT	"/var/catman"		/* required by fsstnd() */
 #define MAN_ROOT	"/usr" 			/* required by fsstnd() */
@@ -390,3 +402,5 @@ typedef struct lexgrog {
 	char *whatis;
 	char *filters;
 } lexgrog;
+
+#endif /* MANCONFIG_H */

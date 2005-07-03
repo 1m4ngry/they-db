@@ -60,6 +60,7 @@ extern int errno;
 
 #include "manconfig.h"
 #include "lib/error.h"
+#include "lib/pipeline.h"
 #include "security.h"
 #include "ult_src.h"
 
@@ -226,6 +227,7 @@ vgrind_request	\.vS
 <MAN_NAME>{bol}\.X{upper}{blank}+	|	/* special - hpux */
 <MAN_NAME>{bol}\.sp{blank}*		|	/* vertical spacing */
 <MAN_NAME>{bol}\.ig{blank}*		|	/* block comment */
+<MAN_NAME>{bol}\.de[1i]?{blank}*	|	/* macro definition */
 <MAN_NAME>{empty}{bol}.+		|
 <MAN_NAME><<EOF>>		{	/* terminate the string */
 					*p_name = '\0';
@@ -422,7 +424,7 @@ int find_name (const char *file, const char *filename, lexgrog *p_lg)
 
 #ifdef COMP_SRC
 		/* See if we need to decompress the file(s) first. */
-		comp = comp_info (file);
+		comp = comp_info (file, 0);
 		if (comp) {
 			file = decompress (file, comp);
 			if (!file)
@@ -558,6 +560,8 @@ int main (int argc, char **argv)
 	}
 	if (!show_whatis && !show_filters)
 		show_whatis = 1;
+
+	pipeline_install_sigchld ();
 
 	while (optind != argc) {
 		lexgrog lg;

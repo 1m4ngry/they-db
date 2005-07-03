@@ -9,9 +9,17 @@ Luis Francisco Gonzalez <luisgh@cogs.susx.ac.uk>	es_ES.88591
 Nicolás Lichtmaier <nick@feedback.net.ar>		es_ES.88591
 UCHIDA Norihiro <KY4N-UCD@asahi-net.or.jp>		ja_JP.eucJP, ja.po
 Takeo NAKANO <nakano@apm.seikei.ac.jp>			ja_JP.ujis
-Jordi Mallach <jordi@debian.org>			ca.po
+Jordi Mallach <jordi@gnu.org>				ca.po
 Vladimir Michl <Vladimir.Michl@seznam.cz>		cs.po
 Morten Brix Pedersen <morten@wtf.dk>			da.po
 Michael Piefel <piefel@informatik.hu-berlin.de>		de.po
 David Martínez <ender@debian.org>			es.po
+Lauri Nurmi <lanurmi@iki.fi>				fi.po
 Laurent Pelecq <laurent.pelecq@soleil.org>		fr.po
+Giuseppe Sacco <eppesuig@debian.org>			it.po
+UCHIDA Norihiro <KY4N-UCD@asahi-net.or.jp>		ja.po
+Robert Luberda <robert@debian.org>			pl.po
+Alexandre Folle de Menezes <afmenez@terra.com.br>	pt_BR.po
+Eugen Hoanca <eugenh@urban-grafx.ro>			ro.po
+Yuri Kozlov <yuray@id.ru>				ru.po
+Christian Rose <menthos@menthos.com>			sv.po

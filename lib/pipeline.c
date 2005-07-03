@@ -295,6 +295,9 @@ void command_free (command *cmd)
 {
 	int i;
 
+	if (!cmd)
+		return;
+
 	free (cmd->name);
 	for (i = 0; i < cmd->argc; ++i)
 		free (cmd->argv[i]);
@@ -456,7 +459,8 @@ void pipeline_dump (pipeline *p, FILE *stream)
 		if (i < p->ncommands - 1)
 			fputs (" | ", stream);
 	}
-	putc ('\n', stream);
+	fprintf (stream, " [input: %d, output: %d]\n",
+		 p->want_in, p->want_out);
 }
 
 char *pipeline_tostring (pipeline *p)
@@ -480,6 +484,9 @@ char *pipeline_tostring (pipeline *p)
 void pipeline_free (pipeline *p)
 {
 	int i;
+
+	if (!p)
+		return;
 
 	for (i = 0; i < p->ncommands; ++i)
 		command_free (p->commands[i]);
@@ -510,6 +517,11 @@ void pipeline_start (pipeline *p)
 
 	assert (!p->pids);	/* pipeline not started already */
 	assert (!p->statuses);
+
+	if (debug) {
+		fputs ("Starting pipeline: ", stderr);
+		pipeline_dump (p, stderr);
+	}
 
 	/* Add to the table of active pipelines, so that signal handlers
 	 * know what to do with exit statuses. Block SIGCHLD so that we can
@@ -735,6 +747,18 @@ int pipeline_wait (pipeline *p)
 		p->infd = -1;
 	}
 
+	if (p->outfile) {
+		if (fclose (p->outfile))
+			error (0, errno,
+			       _("closing pipeline output stream failed"));
+		p->outfile = NULL;
+		p->outfd = -1;
+	} else if (p->outfd != -1) {
+		if (close (p->outfd))
+			error (0, errno, _("closing pipeline output failed"));
+		p->outfd = -1;
+	}
+
 	while (proc_count > 0) {
 		int r;
 
@@ -749,7 +773,7 @@ int pipeline_wait (pipeline *p)
 		for (i = 0; i < p->ncommands; ++i) {
 			int status;
 
-			if (p->pids[i] == -1 || p->statuses[i] == -1)
+			if (p->pids[i] == -1)
 				continue;
 
 			if (debug)
@@ -805,18 +829,6 @@ int pipeline_wait (pipeline *p)
 			error (FATAL, errno, _("waitpid failed"));
 	}
 
-	if (p->outfile) {
-		if (fclose (p->outfile))
-			error (0, errno,
-			       _("closing pipeline output stream failed"));
-		p->outfile = NULL;
-		p->outfd = -1;
-	} else if (p->outfd != -1) {
-		if (close (p->outfd))
-			error (0, errno, _("closing pipeline output failed"));
-		p->outfd = -1;
-	}
-
 	for (i = 0; i < n_active_pipelines; ++i)
 		if (active_pipelines[i] == p)
 			active_pipelines[i] = NULL;
@@ -831,15 +843,15 @@ int pipeline_wait (pipeline *p)
 
 static void pipeline_sigchld (int signum)
 {
-	int save_errno = errno;
-
 	assert (signum == SIGCHLD);
 
 	++sigchld;
-	if (!queue_sigchld)
-		reap_children (0);
 
-	errno = save_errno;
+	if (!queue_sigchld) {
+		int save_errno = errno;
+		reap_children (0);
+		errno = save_errno;
+	}
 }
 
 void pipeline_install_sigchld (void)

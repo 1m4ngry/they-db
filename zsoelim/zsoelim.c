@@ -829,6 +829,7 @@ extern int errno;
 
 #include "manconfig.h"
 #include "lib/error.h"
+#include "lib/pipeline.h"
 
 #ifdef HAVE_GETOPT_H
 #  include <getopt.h>
@@ -841,16 +842,17 @@ extern int errno;
 static char* so_delete[MAX_SO_DEPTH];
 #endif /* COMP_SRC */
 
-static int open_file(char *filename);
+static int open_file (char *filename);
 
 #ifdef ACCEPT_QUOTES
-#  define ZAP_QUOTES	zap_quotes()
-static void zap_quotes(void);
+#  define ZAP_QUOTES	zap_quotes ()
+static void zap_quotes (void);
 #else
 #  define ZAP_QUOTES
 #endif
 
 char *program_name;
+int debug = 0;
 
 static const struct option long_options[] =
 {
@@ -876,7 +878,7 @@ extern int optind;
 
 
 
-#line 880 "<stdout>"
+#line 882 "<stdout>"
 
 #define INITIAL 0
 #define so 1
@@ -1033,10 +1035,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 136 "zsoelim.l"
+#line 138 "zsoelim.l"
 
 
-#line 1040 "<stdout>"
+#line 1042 "<stdout>"
 
 	if ( (yy_init) )
 		{
@@ -1110,51 +1112,51 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 138 "zsoelim.l"
+#line 140 "zsoelim.l"
 {	
 			no_newline = 1;
 			ECHO;
-			BEGIN(de);	/* Now we're inside of a macro definition: ends with a comment */
+			BEGIN (de);	/* Now we're inside of a macro definition: ends with a comment */
 		}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 144 "zsoelim.l"
+#line 146 "zsoelim.l"
 {	
 			no_newline = 1;
-			BEGIN(so);	/* Now we're in the .so environment */
+			BEGIN (so);	/* Now we're in the .so environment */
 		}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 149 "zsoelim.l"
+#line 151 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;		/* Now we're in the .lf environment */
-			BEGIN(lfnumber);
+			BEGIN (lfnumber);
 		}
 	YY_BREAK
 case 4:
-#line 156 "zsoelim.l"
+#line 158 "zsoelim.l"
 case 5:
 /* rule 5 can match eol */
-#line 157 "zsoelim.l"
+#line 159 "zsoelim.l"
 case 6:
 /* rule 6 can match eol */
-#line 158 "zsoelim.l"
+#line 160 "zsoelim.l"
 case 7:
 /* rule 7 can match eol */
-#line 159 "zsoelim.l"
+#line 161 "zsoelim.l"
 case 8:
 /* rule 8 can match eol */
-#line 160 "zsoelim.l"
+#line 162 "zsoelim.l"
 case 9:
 /* rule 9 can match eol */
-#line 161 "zsoelim.l"
+#line 163 "zsoelim.l"
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 161 "zsoelim.l"
+#line 163 "zsoelim.l"
 {
 				no_newline = 1;
 				ECHO;
@@ -1163,20 +1165,21 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 166 "zsoelim.l"
+#line 168 "zsoelim.l"
 {
 			no_newline = 0;
-			putchar('\n');
+			putchar ('\n');
 			LINE++;
 		}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 173 "zsoelim.l"
+#line 175 "zsoelim.l"
 { 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
-				       _("%s:%d: .so requests nested too deeply or are recursive"),
+				       _("%s:%d: .so requests nested too "
+				         "deeply or are recursive"),
 				       NAME, LINE);
 
 			ZAP_QUOTES;
@@ -1185,18 +1188,21 @@ YY_RULE_SETUP
 
 			no_newline = 0;
 
-			sprintf( temp_name, "%s.gz", yytext);
-			if (open_file(xstrdup(yytext)) && open_file(temp_name)) {
+			sprintf (temp_name, "%s.gz", yytext);
+			if (open_file (xstrdup (yytext)) &&
+			    open_file (temp_name)) {
 #ifndef __alpha
-				error(OK, 0, 
-				      _("%s:%d: warning: failed .so request"), NAME, LINE);
-				printf(".so %s\n", yytext);
+				error (OK, 0, 
+				       _("%s:%d: warning: failed .so request"),
+				       NAME, LINE);
+				printf (".so %s\n", yytext);
 #endif
-				BEGIN(end_request);
+				BEGIN (end_request);
 			} else {
-				printf(".lf 1 %s\n", yytext);
-				yy_switch_to_buffer(yy_create_buffer(yyin,YY_BUF_SIZE) );
-				BEGIN(INITIAL);
+				printf (".lf 1 %s\n", yytext);
+				yy_switch_to_buffer
+					(yy_create_buffer (yyin, YY_BUF_SIZE));
+				BEGIN (INITIAL);
 			}
 
 		}
@@ -1204,38 +1210,39 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 202 "zsoelim.l"
+#line 207 "zsoelim.l"
 {
 			no_newline = 0;
-			BEGIN(INITIAL);
+			BEGIN (INITIAL);
 		}
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 207 "zsoelim.l"
+#line 212 "zsoelim.l"
 {
 			no_newline = 0;
-			error(OK, 0,
-			      _("%s:%d: warning: newline in .so request, ignoring"),
-			      NAME, LINE);
-			putchar('\n');
+			error (OK, 0,
+			       _("%s:%d: warning: newline in .so request, "
+			         "ignoring"),
+			       NAME, LINE);
+			putchar ('\n');
 			LINE++;
-			BEGIN(INITIAL);
+			BEGIN (INITIAL);
 		}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 217 "zsoelim.l"
+#line 223 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
-			BEGIN(INITIAL);
+			BEGIN (INITIAL);
 		}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 223 "zsoelim.l"
+#line 229 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1244,39 +1251,39 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 228 "zsoelim.l"
+#line 234 "zsoelim.l"
 {
 			no_newline = 0;
-			putchar('\n');
+			putchar ('\n');
 			LINE++;
 		}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 235 "zsoelim.l"
+#line 241 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
 			ZAP_QUOTES;
-			LINE = atoi(yytext);
-			BEGIN(lfname);
+			LINE = atoi (yytext);
+			BEGIN (lfname);
 		}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 243 "zsoelim.l"
+#line 249 "zsoelim.l"
 {	/* file names including whitespace ?? */
 			no_newline = 1;
 			ECHO;
-			putchar('\n');
+			putchar ('\n');
 			ZAP_QUOTES;
-			NAME = xstrdup(yytext);
-			BEGIN(end_request); 
+			NAME = xstrdup (yytext);
+			BEGIN (end_request); 
 		}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 252 "zsoelim.l"
+#line 258 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1284,28 +1291,30 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 257 "zsoelim.l"
+#line 263 "zsoelim.l"
 {
 			no_newline = 1;
-			error(OK, 0,
-			      _("%s:%d: warning: malformed .lf request, ignoring"),
-			      NAME, LINE);
-			putchar(*yytext);
-			BEGIN(INITIAL);
+			error (OK, 0,
+			       _("%s:%d: warning: malformed .lf request, "
+			         "ignoring"),
+			       NAME, LINE);
+			putchar (*yytext);
+			BEGIN (INITIAL);
 		}
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 266 "zsoelim.l"
+#line 273 "zsoelim.l"
 {
 			no_newline = 0;
-			error(OK, 0,
-			      _("%s:%d: warning: newline in .lf request, ignoring"),
-			      NAME, LINE);
-			putchar('\n');
+			error (OK, 0,
+			       _("%s:%d: warning: newline in .lf request, "
+			         "ignoring"),
+			       NAME, LINE);
+			putchar ('\n');
 			LINE++;
-			BEGIN(INITIAL);
+			BEGIN (INITIAL);
 			}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
@@ -1314,34 +1323,34 @@ case YY_STATE_EOF(de):
 case YY_STATE_EOF(end_request):
 case YY_STATE_EOF(lfnumber):
 case YY_STATE_EOF(lfname):
-#line 276 "zsoelim.l"
+#line 284 "zsoelim.l"
 {
-		fclose(yyin);
+		fclose (yyin);
 
 #ifdef COMP_SRC
 		if (so_delete[so_stack_ptr])
-			remove(so_delete[so_stack_ptr]);
+			remove (so_delete[so_stack_ptr]);
 #endif
 		if (no_newline)
-			putchar('\n');
+			putchar ('\n');
 
-		if ( --so_stack_ptr < 0 ) {
-			yyterminate();
+		if (--so_stack_ptr < 0) {
+			yyterminate ();
 		} else {
-			yy_delete_buffer(YY_CURRENT_BUFFER );
-			yy_switch_to_buffer(so_stack[so_stack_ptr] );
-			printf(".lf %d %s\n", LINE += 1, NAME);
+			yy_delete_buffer (YY_CURRENT_BUFFER);
+			yy_switch_to_buffer (so_stack[so_stack_ptr]);
+			printf (".lf %d %s\n", LINE += 1, NAME);
 		}
 		no_newline = 0;
-		BEGIN(end_request);
+		BEGIN (end_request);
 	}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 296 "zsoelim.l"
+#line 304 "zsoelim.l"
 ECHO;
 	YY_BREAK
-#line 1345 "<stdout>"
+#line 1354 "<stdout>"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2261,21 +2270,22 @@ void yyfree (void * ptr )
 #undef YY_DECL_IS_OURS
 #undef YY_DECL
 #endif
-#line 296 "zsoelim.l"
+#line 304 "zsoelim.l"
 
 
 
 #ifdef ACCEPT_QUOTES
 /* remove leading and trailing quotes in requests */
-static void zap_quotes(void)
+static void zap_quotes (void)
 {
 	if (*yytext == '"') {
 		if (yytext[yyleng - 1] == '"') {
 			yytext[yyleng - 1] = '\0';
 			yytext++;
 		} else
-			error(OK, 0, _("%s:%d: unterminated quote in roff request"),
-			      NAME, LINE);
+			error (OK, 0,
+			       _("%s:%d: unterminated quote in roff request"),
+			       NAME, LINE);
 	}
 }
 #endif
@@ -2292,40 +2302,40 @@ static void usage (int status)
 }
 
 /* print the version, then exit */
-static __inline__ void ver(void)
+static __inline__ void ver (void)
 {
-	printf(_("%s, version %s, %s\n"), program_name, VERSION, DATE);
-	exit(OK);
+	printf (_("%s, version %s, %s\n"), program_name, VERSION, DATE);
+	exit (OK);
 }
 
 /* initialise the stack and call the parser */
-static void parse_file(void)
+static void parse_file (void)
 {
 	so_stack_ptr = 0;
-	printf(".lf 1 %s\n", NAME);
+	printf (".lf 1 %s\n", NAME);
 	LINE = 1;
-	yylex();
+	yylex ();
 }
 
-int main(int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 	int c, option_index;
 
-	program_name = xstrdup(basename(argv[0]));
+	program_name = xstrdup (basename (argv[0]));
 
-	while ( (c = getopt_long(argc, argv, args,
-				 long_options, &option_index)) != EOF ) {
+	while ((c = getopt_long (argc, argv, args,
+				 long_options, &option_index)) != EOF) {
 		switch (c) {
 			case 'V':
-				ver();
+				ver ();
 				break;
 			case 'C': 
 				break; /* compatibility with GNU soelim */
 			case 'h':
-				usage(OK);
+				usage (OK);
 				break;
 			default:
-				usage(FAIL);
+				usage (FAIL);
 				break;
 		}
 	}
@@ -2333,13 +2343,13 @@ int main(int argc, char *argv[])
 	/* if we have any arguments, parse them in command line order, else
 	   open stdin */
 	if (optind == argc) {
-		so_name[0] = xstrdup("-");
-		parse_file();
+		so_name[0] = xstrdup ("-");
+		parse_file ();
 	} else {
 		while (optind < argc) {
-			if (open_file(argv[optind++]))
+			if (open_file (argv[optind++]))
 				continue;
-			parse_file();
+			parse_file ();
 		}
 	}
 
@@ -2348,7 +2358,7 @@ int main(int argc, char *argv[])
 
 /* This routine is used to open the specified file or uncompress a compressed
    version and open that instead */
-static int open_file(char *filename)
+static int open_file (char *filename)
 {
 	FILE *oldyyin;
 	char *ext;
@@ -2358,18 +2368,21 @@ static int open_file(char *filename)
 	struct stat buf;
 
 	oldyyin = yyin;
-	
+
+	/* WARNING: This is horribly cloned-and-hacked from
+	 * src/compression.c! TODO: Unify this code.
+	 */
+
 /* #ifdef __hpux */
-	ext = strrchr(filename, '.');
-	if (strstr(filename, ".Z/")) { /* The file is in an HPUX directory */
+	ext = strrchr (filename, '.');
+	if (strstr (filename, ".Z/")) { /* The file is in an HPUX directory */
 		is_hpux = 1;
 		is_compr = 0;
 	} else if (ext) {
 		ext++;
 		for (comp = comp_list; comp->ext && !is_compr; comp++) {
-			if (strcmp(comp->ext, ext) == 0) {
-				if (stat(filename, &buf) == 0) {
-					comp->file = --ext;
+			if (strcmp (comp->ext, ext) == 0) {
+				if (stat (filename, &buf) == 0) {
 					is_compr = 1;
 					break;
 				}
@@ -2379,7 +2392,7 @@ static int open_file(char *filename)
 	}
 /* #endif __hpux */
 
-	if( is_hpux || is_compr || !(yyin = fopen( filename, "r" ))) {
+	if (is_hpux || is_compr || !(yyin = fopen (filename, "r"))) {
 
 #ifdef COMP_SRC
 		char *compfile;
@@ -2390,13 +2403,13 @@ static int open_file(char *filename)
 							"", NULL};
 			comp = &hpux_comp;
 			compfile = filename;
-		} else if ( ! is_compr) {
-			compfile = strappend(NULL, filename, ".", NULL);
-			len = strlen(compfile);
-  		
+		} else if (!is_compr) {
+			compfile = strappend (NULL, filename, ".", NULL);
+			len = strlen (compfile);
+
 			for (comp = comp_list; comp->ext; comp++) {
-				compfile = strappend(compfile, comp->ext, NULL);
-				if (stat(compfile, &buf) == 0)
+				compfile = strappend (compfile, comp->ext, NULL);
+				if (stat (compfile, &buf) == 0)
 					break;
 				*(compfile + len) = '\0';
 			}
@@ -2404,28 +2417,37 @@ static int open_file(char *filename)
 			compfile = filename;
 
 		if (comp->ext) {
-			char *command;
+			command *decompress_cmd;
+			pipeline *decompress;
 			int exit_status;
 			int file_fd;
 
 			file_fd = create_tempfile ("zsman", &filename);
 			if (file_fd < 0)
 				error (FATAL, errno, _("can't create a temporary filename"));
-			command = strappend(NULL, comp->prog, " ", compfile, " > ", filename, NULL);
-			exit_status = system(command);
-			close( file_fd);
+			decompress_cmd = command_new_argstr (comp->prog);
+			command_arg (decompress_cmd, compfile);
+			decompress = pipeline_new_commands
+				(decompress_cmd, NULL);
+			decompress->want_out = file_fd;
+			pipeline_start (decompress);
+			exit_status = pipeline_wait (decompress);
+			close (file_fd);
 
 			if (exit_status != 0) {
+				char *decompress_str =
+					pipeline_tostring (decompress);
 				error (OK, 0, _("%s exited with status %d"),
-				       command, exit_status);
-				free(command);
+				       decompress_str, exit_status);
+				free (decompress_str);
+				pipeline_free (decompress);
 				yyin = oldyyin;
 				return 1;
 			}
 
-			free(command);
+			pipeline_free (decompress);
 
-			if( !(yyin = fopen( filename, "r" )) )  {
+			if (!(yyin = fopen (filename, "r")))  {
 				error (OK, errno,
 				       _("open decompressed file: %s"),
 				       filename);
@@ -2455,7 +2477,7 @@ static int open_file(char *filename)
 }
 
 /* for compatibility with systems not having libfl, can't be static */
-int yywrap(void)
+int yywrap (void)
 {
 	return 1;
 }

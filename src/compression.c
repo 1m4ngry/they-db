@@ -60,6 +60,7 @@ extern int errno;
 #ifdef COMP_SRC /* must come after manconfig.h */
 
 #include "lib/error.h"
+#include "lib/pipeline.h"
 #include "security.h"
 #include "comp_src.h"
 
@@ -82,41 +83,50 @@ static __inline__ void create_ztemp (void)
 
 /* Take filename as arg, return structure containing decompressor 
    and extension, or NULL if no comp extension found. 
-   As an added bonus, return address of comp extension in comp->file
-   as this is otherwise unused.
+   If want_stem, set comp->stem to the filename without extension, which
+   the caller should free.
 
    eg.
    	filename = /usr/man/man1/foo.1.gz 
 
 	comp->prog = "/usr/bin/gzip -dc";
    	comp->ext = "gz";
-   	comp->file = filename + 19;				
+   	comp->stem = "/usr/man/man1/foo.1";
  */
-struct compression *comp_info (const char *filename)
+struct compression *comp_info (const char *filename, int want_stem)
 {
-	char *ext;
-	static char buff[10];
-	static struct compression hpux_comp = {GUNZIP " -S \"\"", "", buff};
+	const char *ext;
+	static struct compression hpux_comp = {GUNZIP " -S \"\"", "", NULL};
 
 	ext = strrchr (filename, '.');
 
 	if (ext) {
 		struct compression *comp;
-		ext++;
 		for (comp = comp_list; comp->ext; comp++) {
-			if (strcmp (comp->ext, ext) == 0) {
-				comp->file = --ext;
+			if (strcmp (comp->ext, ext + 1) == 0) {
+				if (want_stem)
+					comp->stem = xstrndup (filename,
+							       ext - filename);
+				else
+					comp->stem = NULL;
 				return comp;
 			}
 		}
 	}
+
 	ext = strstr (filename, ".Z/");
-	if (ext)
+	if (ext) {
+		if (want_stem)
+			hpux_comp.stem = xstrndup (filename, ext - filename);
+		else
+			hpux_comp.stem = NULL;
 		return &hpux_comp;
+	}
+
 	return NULL;
 }
 
-/* take filename w/o comp ext. as arg, return comp->file as a relative
+/* take filename w/o comp ext. as arg, return comp->stem as a relative
    compressed file or NULL if none found */
 struct compression *comp_file (const char *filename)
 {
@@ -133,14 +143,7 @@ struct compression *comp_file (const char *filename)
 		compfile = strappend (compfile, comp->ext, NULL);
 
 		if (stat (compfile, &buf) == 0) {
-			/* TODO: how to make this const? Calling code seems
-			 * to know that it needs to free comp->file after
-			 * calling this function, but this is messy.
-			 *
-			 * Perhaps it would be better to fix the dodgy reuse
-			 * of comp->file above ...
-			 */
-			comp->file = compfile;
+			comp->stem = compfile;
 			return comp;
 		}
 
@@ -155,42 +158,51 @@ struct compression *comp_file (const char *filename)
  */
 char *decompress (const char *filename, const struct compression *comp)
 {
-	char *command;
+	pipeline *pl = pipeline_new ();
+	command *cmd;
 	int status;
 	int save_debug = debug;
-	char *esc_filename, *esc_file;
+
+	if (!comp->prog || !*comp->prog) {
+		/* TODO: Temporary workaround for poor decompression program
+		 * detection, so deliberately left untranslated for now. See
+		 * Debian bug #196097.
+		 */
+		error (0, 0, "missing decompression program for %s", filename);
+		return NULL;
+	}
 
 	if (!file)
 		create_ztemp();
 
-	esc_filename = escape_shell (filename);
-	esc_file = escape_shell (file);
-	/* temporarily drop the debug flag, so that we can continue */
-	command = strappend (NULL, comp->prog, " ", esc_filename,
-			     " > ", esc_file, NULL);
-	free (esc_file);
-	free (esc_filename);
+	cmd = command_new_argstr (comp->prog);
+	command_arg (cmd, filename);
+	pipeline_command (pl, cmd);
+	pl->want_out = file_fd;
 
 	if (debug) {
 #ifdef SECURE_MAN_UID
 		fputs ("The following command done with dropped privs\n",
 		       stderr);
 #endif /* SECURE_MAN_UID */
-		fprintf (stderr, "%s\n", command);
+		pipeline_dump (pl, stderr);
 	}
 
+	/* temporarily drop the debug flag, so that we can continue */
 	debug = 0;
-	status = do_system_drop_privs (command);
+	status = do_system_drop_privs (pl);
 	debug = save_debug;
+	close (file_fd);
+	file_fd = -1;
 
 	if (status) {
+		char *pl_str = pipeline_tostring (pl);
 		remove_ztemp ();
 		error (0, 0, _("command '%s' failed with exit status %d"),
-		       command, status);
-		free (command);
-		return NULL;
+		       pl_str, status);
+		free (pl_str);
 	}
-	free (command);
+	pipeline_free (pl);
 	return file;
 }
 

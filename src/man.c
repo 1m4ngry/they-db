@@ -70,20 +70,7 @@ extern pid_t vfork();
 #  include <sys/param.h>
 #endif
 
-#ifndef PATH_MAX
-#  ifdef _POSIX_VERSION
-#    define PATH_MAX _POSIX_PATH_MAX
-#  else /* !_POSIX_VERSION */
-#    ifdef MAXPATHLEN
-#      define PATH_MAX MAXPATHLEN
-#    else /* !MAXPATHLEN */
-#      define PATH_MAX 1024
-#    endif /* MAXPATHLEN */
-#  endif /* _POSIX_VERSION */
-#endif /* !PATH_MAX */
-
-static char wd[PATH_MAX];
-static char *cwd = wd;
+static char *cwd;
 
 #ifndef PIPE_BUF
 #  if defined(_POSIX_VERSION) && defined(_POSIX_PIPE_MAX)
@@ -141,6 +128,9 @@ extern int errno;
 #include "lib/error.h"
 #include "lib/cleanup.h"
 #include "lib/hashtable.h"
+#include "lib/pipeline.h"
+#include "lib/getcwdalloc.h"
+#include "lib/pathsearch.h"
 #include "check_mandirs.h"
 #include "filenames.h"
 #include "globbing.h"
@@ -205,33 +195,29 @@ struct candidate {
 #define CANDIDATE_DATABASE   1
 
 #ifdef MAN_CATS
-static FILE *checked_popen (const char *command, const char *type)
+static pipeline *checked_popen (pipeline *p, const char *type)
 {
-	FILE *stream;
-
 #ifdef SECURE_MAN_UID
 	if (global_manpath)
 		drop_effective_privs ();
 #endif /* SECURE_MAN_UID */
 
-	if (debug) {
-		fprintf (stderr, "popen (\"%s\", \"%s\")\n",
-			 command, type);
-		if (strchr (type, 'r'))
-			stream = popen (CAT " </dev/null", type);
-		else
-			stream = popen (CAT " >/dev/null", type);
-	} else
-		stream = popen (command, type);
+	if (debug)
+		fprintf (stderr, "start pipeline (\"%s\")\n", type);
+
+	if (strchr (type, 'r'))
+		p->want_out = -1;
+	else
+		p->want_in = -1;
+
+	pipeline_start (p);
 
 #ifdef SECURE_MAN_UID
 	if (global_manpath)
 		regain_effective_privs ();
 #endif /* SECURE_MAN_UID */
 
-	if (stream == NULL)
-		error (0, 0, _("can't popen")); 
-	return stream;
+	return p;
 }
 #endif /* MAN_CATS */
 
@@ -273,20 +259,20 @@ static char *lang_dir (const char *filename)
 	return ld;
 }
 
-static __inline__ void gripe_system (const char *command, int status)
+static __inline__ void gripe_system (pipeline *p, int status)
 {
 	error (CHILD_FAIL, 0, _("command exited with status %d: %s"),
-	       status, command);
+	       status, pipeline_tostring (p));
 }
 
 
-static int checked_system (const char *command)
+static int checked_system (pipeline *p)
 {
 	int status;
 
-	status = do_system_drop_privs (command);
+	status = do_system_drop_privs (p);
 	if (status != 0)
-		gripe_system (command, status);
+		gripe_system (p, status);
 
 	return status;
 }
@@ -302,6 +288,7 @@ char *database;
 MYDBM_FILE dbf; 
 extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
+extern int optind;
 
 /* locals */
 static const char *alt_system_name;
@@ -336,7 +323,7 @@ static int found_a_stray;		/* found a straycat */
 
 #ifdef MAN_CATS
 static char *tmp_cat_file;	/* for open_cat_stream(), close_cat_stream() */
-static int cat_comp_pid;			/* dto. */
+static int tmp_cat_fd;
 static int created_tmp_cat;			/* dto. */
 static int man_modtime;		/* modtime of man page, for commit_tmp_cat() */
 #endif
@@ -571,59 +558,19 @@ static int get_roff_line_length (void)
 		return 0;
 }
 
-static char *add_roff_line_length (const char *filter, int *save_cat)
+static void add_roff_line_length (command *cmd, int *save_cat)
 {
 	int length = get_roff_line_length ();
 	if (length) {
-		char options[64];
+		char optionll[32], optionlt[32];
 		if (debug)
 			fprintf (stderr, "Using %d-character lines\n", length);
 		*save_cat = 0;
-		sprintf (options, " -rLL=%dn -rLT=%dn", length, length);
-		return strappend (NULL, filter, options, NULL);
+		sprintf (optionll, "-rLL=%dn", length);
+		sprintf (optionlt, "-rLT=%dn", length);
+		command_args (cmd, optionll, optionlt, NULL);
 	}
-	return xstrdup (filter);
 }
-
-#ifdef UNDOC_COMMAND
-/* Return non-zero if name is found as an executable regular file on the
- * $PATH.
- */
-static int find_in_path (const char *name)
-{
-	char *path = xstrdup (getenv ("PATH"));
-	char *pathtok = path;
-	const char *element;
-	int ret = 0;
-
-	if (!path)
-		/* Eh? Oh well. */
-		return 0;
-
-	for (element = strsep (&pathtok, ":"); element;
-	     element = strsep (&pathtok, ":")) {
-		char *filename;
-		struct stat st;
-
-		if (!*element)
-			element = cwd;
-
-		filename = strappend (NULL, element, "/", name, NULL);
-		if (stat (filename, &st) == -1)
-			continue;
-
-		if (S_ISREG (st.st_mode) && access (filename, X_OK) == 0) {
-			ret = 1;
-			break;
-		}
-
-		free (filename);
-	}
-
-	free (path);
-	return ret;
-}
-#endif /* UNDOC_COMMAND */
 
 /*
  * changed these messages from stdout to stderr,
@@ -651,7 +598,7 @@ static __inline__ void gripe_no_man (const char *name, const char *sec)
 		putc ('\n', stderr);
 
 #ifdef UNDOC_COMMAND
-	if (find_in_path (name))
+	if (pathsearch_executable (name))
 		fprintf (stderr,
 			 _("See '%s' for help when manual pages are not "
 			   "available.\n"), UNDOC_COMMAND);
@@ -659,13 +606,30 @@ static __inline__ void gripe_no_man (const char *name, const char *sec)
 }
 
 /* fire up the appropriate external program */
-static void do_extern (char *argv[])
+static void do_extern (int argc, char *argv[])
 {
+	pipeline *p;
+	command *cmd;
+
+	cmd = command_new (external);
+	/* Please keep these in the same order as they are in whatis.c. */
+	if (debug)
+		command_arg (cmd, "-d");
+	if (alt_system_name)
+		command_args (cmd, "-s", alt_system_name, NULL);
+	if (manp)
+		command_args (cmd, "-M", manp, NULL);
+	if (locale)
+		command_args (cmd, "-L", locale, NULL);
+	if (user_config_file)
+		command_args (cmd, "-C", user_config_file, NULL);
+	while (optind < argc)
+		command_arg (cmd, argv[optind++]);
+	p = pipeline_new_commands (cmd, NULL);
+
 	/* privs are already dropped */
-	char *external_copy = xstrdup (external);
-	argv[0] = basename (external_copy);
-	execv (external, argv);
-	exit (FATAL);
+	pipeline_start (p);
+	exit (pipeline_wait (p));
 }
 
 /* lookup $MANOPT and if available, put in *argv[] format for getopt() */
@@ -697,7 +661,7 @@ static __inline__ char **manopt_to_env (int *argc)
 							 sizeof (char *));
 					argv[(*argc)++] = opt_start;
 				}
-				while (isspace (*(manopt + 1)))
+				while (CTYPE (isspace, *(manopt + 1)))
 					*++manopt = '\0';
 				opt_start = manopt + 1;
 				break;
@@ -751,56 +715,33 @@ static __inline__ const char *escape_less (const char *string)
  */
 static int run_mandb (int create, const char *manpath, const char *filename)
 {
-	int status;
-	pid_t child = fork ();
+	pipeline *mandb_pl = pipeline_new ();
+	command *mandb_cmd = command_new ("mandb");
 
-	if (child < 0)
-		error (FATAL, errno, _("fork failed"));
-	else if (child == 0) {
-		char *argv[5];
-		int argc = 0;
+	if (debug)
+		command_arg (mandb_cmd, "-d");
+	else
+		command_arg (mandb_cmd, "-q");
 
-		argv[argc++] = xstrdup ("mandb");
-		if (debug)
-			argv[argc++] = xstrdup ("-d");
-		else
-			argv[argc++] = xstrdup ("-q");
+	if (filename)
+		command_args (mandb_cmd, "-f", filename, NULL);
+	else if (create)
+		command_arg (mandb_cmd, "-c");
+	else
+		command_arg (mandb_cmd, "-p");
 
-		if (filename) {
-			argv[argc++] = xstrdup ("-f");
-			argv[argc++] = xstrdup (filename);
-		} else if (create)
-			argv[argc++] = xstrdup ("-c");
-		else
-			argv[argc++] = xstrdup ("-p");
+	if (manpath)
+		command_arg (mandb_cmd, manpath);
 
-		if (manpath)
-			argv[argc++] = xstrdup (manpath);
-		argv[argc++] = NULL;
+	pipeline_command (mandb_pl, mandb_cmd);
 
-		if (debug) {
-			char **p;
-			fputs ("running mandb:", stderr);
-			for (p = argv; *p; ++p)
-				fprintf (stderr, " %s", *p);
-			putc ('\n', stderr);
-		}
-
-		execv (MANDB, argv);
-
-		error (FATAL, 0, _("can't execute %s"), MANDB);
-	} else {
-		pid_t res;
-		do {
-			res = waitpid (child, &status, 0);
-		} while ((res == -1) && (errno == EINTR));
-
-		if (res == -1)
-			error (FATAL, 0,
-			       _("can't get mandb command's exit status"));
+	if (debug) {
+		fputs ("running mandb: ", stderr);
+		pipeline_dump (mandb_pl, stderr);
 	}
 
-	return status;
+	pipeline_start (mandb_pl);
+	return pipeline_wait (mandb_pl);
 }
 #endif /* MAN_DB_CREATES || MAN_DB_UPDATES */
 
@@ -844,7 +785,7 @@ static int local_man_loop (const char *argv)
 		}
 
 #ifdef COMP_SRC
-		comp = comp_info (argv);
+		comp = comp_info (argv, 0);
 		if (comp)
 			if (!decompress(argv, comp))
 				exit_status = CHILD_FAIL;
@@ -883,7 +824,6 @@ int main (int argc, char *argv[])
 	char **argv_env;
 	const char *tmp;
 	char *multiple_locale = NULL;
-	extern int optind;
 
 	program_name = xstrdup (basename (argv[0]));
 
@@ -927,8 +867,11 @@ int main (int argc, char *argv[])
 
 	/* This will enable us to do some profiling and know
 	where gmon.out will end up. Must chdir(cwd) before we return */
-	if (!getcwd (cwd, PATH_MAX - 1))
+	cwd = getcwd_allocated ();
+	if (!cwd) {
+		cwd = xmalloc (1);
 		cwd[0] = '\0';
+	}
 
 	/* First of all, find out if $MANOPT is set. If so, put it in 
 	   *argv[] format for getopt to play with. */
@@ -946,6 +889,10 @@ int main (int argc, char *argv[])
 	init_security ();
 #endif /* SECURE_MAN_UID */
 
+	signal (SIGINT, int_handler);
+
+	pipeline_install_sigchld ();
+
 	if (!catman)
 		store_line_length();
 
@@ -953,7 +900,7 @@ int main (int argc, char *argv[])
 
 	/* if the user wants whatis or apropos, give it to them... */
 	if (external)
-		do_extern (argv);
+		do_extern (argc, argv);
 
 	get_term (); /* stores terminal settings */
 #ifdef SECURE_MAN_UID
@@ -1026,8 +973,6 @@ int main (int argc, char *argv[])
 
 	if (optind == argc)
 		gripe_no_name (NULL);
-
-	signal (SIGINT, int_handler);
 
 	/* man issued with `-l' option */
 	if (local_man_file) {
@@ -1159,7 +1104,7 @@ int main (int argc, char *argv[])
 				exit_status = status;
 				if (exit_status == NOT_FOUND) {
 					if (!section && maybe_section &&
-					    isdigit (nextarg[0]))
+					    CTYPE (isdigit, nextarg[0]))
 						gripe_no_name (nextarg);
 					else
 						gripe_no_man (nextarg, section);
@@ -1482,13 +1427,13 @@ static __inline__ void create_stdintmp (void)
 	atexit (remove_stdintmp);
 }
 
-/* Return command (malloced string) to format file to stdout */
-static char *make_roff_command (const char *dir, const char *file,
-				const char *dbfilters)
+/* Return pipeline to format file to stdout. */
+static pipeline *make_roff_command (const char *dir, const char *file,
+				    const char *dbfilters)
 {
 	const char *pp_string;
 	char *fmt_prog;
-	char *command = NULL;
+	pipeline *p = pipeline_new ();
 
 #ifndef ALT_EXT_FORMAT
 	dir = dir; /* not used unless looking for formatters in catdir */
@@ -1601,62 +1546,34 @@ static char *make_roff_command (const char *dir, const char *file,
 				
 	if (!fmt_prog) {
 		/* we don't have an external formatter script */
-		char *dev;	/* either " -T<mumble>" or "" */
 		int using_tbl = 0;
+		command *cmd;
 		const char *output_encoding = NULL, *locale_charset = NULL;
 
 		if (*file) {
-			char *esc_file = escape_shell (file);
-			command = strappend (command,
-					     get_def ("soelim", SOELIM), " ",
-					     esc_file, NULL);
-			free (esc_file);
+			cmd = command_new_argstr (get_def ("soelim", SOELIM));
+			command_arg (cmd, file);
+			pipeline_command (p, cmd);
 		} else {
-			char *esc_tmpfile = escape_shell (stdin_tmpfile);
 			/* Reading from stdin: use cat to pick up the part we
 			 * read in to figure out the format pipeline.
 			 * ? is '-' as a cat argument standard?
 			 * If not we could try "(cat tempfile; cat) | SOELIM..."
 			 */
-			command = strappend (command,
-					     get_def ("cat", CAT), " ",
-					     esc_tmpfile, " - | ",
-					     get_def ("soelim", SOELIM), NULL);
-			free (esc_tmpfile);
-		}
-
-		/* Preformatted pages get standard 80-character lines. */
-		if (!catman) {
-			/* This code is for groff < 1.18. groff >= 1.18 uses
-			 * a different mechanism; see add_roff_line_length().
-			 * However, this does no harm, so it's here for
-			 * backward compatibility.
-			 */
-			int roff_line_length = get_roff_line_length();
-			if (roff_line_length) {
-				char ll_macro[32], *new_command;
-				if (debug)
-					fprintf (stderr,
-						 "Using %d-character lines\n",
-						 roff_line_length);
-				sprintf (ll_macro, ".ll %dn",
-					 roff_line_length);
-				new_command = strappend (NULL, "(echo '",
-							 ll_macro, "'; ",
-							 command, ")", NULL);
-				free (command);
-				command = new_command;
-				save_cat = 0;
-			}
+			cmd = command_new_argstr (get_def ("cat", CAT));
+			command_args (cmd, stdin_tmpfile, "-", NULL);
+			pipeline_command (p, cmd);
+			pipeline_command_argstr (p,
+						 get_def ("soelim", SOELIM));
 		}
 
 		/* Load the roff_device value dependent on the language dir
 		 * in the path.
 		 */
 		if (!troff) {
-			const char *page_encoding, *source_encoding,
-				   *roff_encoding;
-			const char *cat_charset;
+			char *page_encoding;
+			const char *source_encoding, *roff_encoding;
+			char *cat_charset;
 
 #define STRC(s, otherwise) ((s) ? (s) : (otherwise))
 
@@ -1712,10 +1629,10 @@ static char *make_roff_command (const char *dir, const char *file,
 			 */
 			if (roff_encoding &&
 			    !STREQ (page_encoding, roff_encoding))
-				command = strappend (command,
-						     " | iconv -c -f ",
-						     page_encoding, " -t ",
-						     roff_encoding, NULL);
+				pipeline_command_args (p, "iconv", "-c",
+						       "-f", page_encoding,
+						       "-t", roff_encoding,
+						       NULL);
 
 			output_encoding = get_output_encoding (roff_device);
 			if (!output_encoding)
@@ -1733,136 +1650,157 @@ static char *make_roff_command (const char *dir, const char *file,
 				putenv (strappend (NULL, "LESSCHARSET=",
 						   less_charset, NULL));
 			}
+
+			free (page_encoding);
+			free (cat_charset);
 		}
 
-		/* tell grops to guess the page size */
-		if (roff_device && strcmp (roff_device, "ps") == 0)
-			roff_device = strappend (NULL, "ps -P-g ", NULL);
-		if (gxditview && roff_device)
-			dev = strappend (NULL, " -X -T", roff_device, NULL);
-		else if (gxditview)
-			dev = strappend (NULL, " -TX", gxditview, NULL);
-		else if (roff_device)
-			dev = strappend (NULL, " -T", roff_device, NULL);
-		else
-			dev = xstrdup ("");
-
 		do {
-			const char *filter = NULL;
+			command *cmd = NULL;
 			int wants_dev = 0; /* filter wants a dev argument */
 
-			/* set filter according to *pp_string, on
-                           errors set filter to "" */
+			/* set cmd according to *pp_string, on
+                           errors leave cmd as NULL */
 			switch (*pp_string) {
 			case 'e':
-				filter = troff ? get_def ("eqn", EQN) 
-					       : get_def ("neqn", NEQN);
+				if (troff)
+					cmd = command_new_argstr
+						(get_def ("eqn", EQN));
+				else
+					cmd = command_new_argstr
+						(get_def ("neqn", NEQN));
 				wants_dev = 1;
 				break;
 			case 'g':
-				filter = get_def ("grap", GRAP);
+				cmd = command_new_argstr
+					(get_def ("grap", GRAP));
 				break;
 			case 'p':
-				filter = get_def ("pic", PIC);
+				cmd = command_new_argstr
+					(get_def ("pic", PIC));
 				break;
 			case 't':
-				filter = get_def ("tbl", TBL);
+				cmd = command_new_argstr
+					(get_def ("tbl", TBL));
 				using_tbl = 1;
 				break;
 			case 'v':
-				filter = get_def ("vgrind", VGRIND);
+				cmd = command_new_argstr
+					(get_def ("vgrind", VGRIND));
 				break;
 			case 'r':
-				filter = get_def ("refer", REFER);
+				cmd = command_new_argstr
+					(get_def ("refer", REFER));
 				break;
 			case 0:
 				/* done with preprocessors, now add roff */
-#ifdef TROFF_IS_GROFF
-				if (troff && ditroff) 
-					/* TODO: leak */
-					filter = strappend (NULL, 
-							    get_def ("troff",
-								     TROFF), 
-							    " -Z", NULL);
-				else
-#endif
                                 if (troff)
-					filter = get_def ("troff", TROFF);
-                                else {
-					filter = get_def ("nroff", NROFF);
+					cmd = command_new_argstr
+						(get_def ("troff", TROFF));
+                                else
+					cmd = command_new_argstr
+						(get_def ("nroff", NROFF));
+
 #ifdef TROFF_IS_GROFF
-					/* TODO: leak */
-					filter = add_roff_line_length
-						(filter, &save_cat);
+				if (troff && ditroff)
+					command_arg (cmd, "-Z");
+				else if (!troff)
+					add_roff_line_length (cmd, &save_cat);
 #endif
-				}
 
 				wants_dev = 1;
 				break;
 			}
 
-			if (filter && *filter) {
-				command = strappend (command,
-						     " | ",
-						     filter,
-						     wants_dev ? dev : "",
-						     NULL);
-			} else {
+			if (!cmd) {
 				assert (*pp_string); /* didn't fail on roff */
 				error (0, 0,
 				       _("ignoring unknown preprocessor `%c'"),
 				       *pp_string);
+				continue;
 			}
+
+			if (wants_dev) {
+				if (gxditview)
+					command_arg (cmd, "-X");
+
+				if (roff_device) {
+					char *tmpdev = strappend (NULL, "-T",
+								  roff_device,
+								  NULL);
+					command_arg (cmd, tmpdev);
+					free (tmpdev);
+					if (STREQ (roff_device, "ps"))
+						/* Tell grops to guess the
+						 * page size.
+						 */
+						command_arg (cmd, "-P-g");
+				} else if (gxditview) {
+					char *tmpdev = strappend (NULL, "-TX",
+								  gxditview,
+								  NULL);
+					command_arg (cmd, tmpdev);
+					free (tmpdev);
+				}
+			}
+
+			pipeline_command (p, cmd);
 		} while (*pp_string++);
 
 		if (!different_encoding && output_encoding && locale_charset &&
 		    !STREQ (output_encoding, locale_charset))
-			command = strappend (command, " | iconv -c -f ",
-					     output_encoding, " -t ",
-					     locale_charset, NULL);
+			pipeline_command_args (p, "iconv", "-c",
+					       "-f", output_encoding,
+					       "-t", locale_charset, NULL);
 
+		if (!troff && *COL) {
+			/* get rid of special characters if not writing to a
+			 * terminal
+			 */
+			if (!isatty (fileno (stdout))) {
+				save_cat = 0;
+				setenv ("GROFF_NO_SGR", "1", 1);
+				pipeline_command_args (p, COL, "-b", NULL);
+			}
 #ifndef GNU_NROFF
-		/* tbl needs col */
-		if (using_tbl && !troff && *COL)
-			command = strappend (command, " | ", COL, NULL);
+			/* tbl needs col */
+			else if (using_tbl && !troff && *COL)
+				pipeline_command_args (p, COL, NULL);
 #endif /* GNU_NROFF */
-
-		free (dev);
+		}
 	} else {
 		/* use external formatter script, it takes arguments
 		   input file, preprocessor string, and (optional)
 		   output device */
-		char *esc_file = escape_shell (file);
-		char *esc_pp   = escape_shell (pp_string);
-		command = strappend (fmt_prog, " ", esc_file, " ", esc_pp, " ",
-				     roff_device ? roff_device : "", NULL);
-		free (esc_pp);
-		free (esc_file);
+		command *cmd = command_new_args (fmt_prog, file, pp_string,
+						 NULL);
+		if (roff_device)
+			command_arg (cmd, roff_device);
+		pipeline_command (p, cmd);
 	}
 
-	return command;
+	return p;
 }
 
-/* Return command (statically allocated string) to run a browser on a
- * given file, observing http://www.tuxedo.org/~esr/BROWSER/.
+/* Return pipeline to run a browser on a given file, observing
+ * http://www.tuxedo.org/~esr/BROWSER/.
  *
  * (Actually, I really implement
  * http://www.dwheeler.com/browse/secure_browser.html, but it's
  * backward-compatible.)
+ *
+ * TODO: Is there any way to use the pipeline library better here?
  */
-static char *make_browser (const char *command, const char *file)
+static pipeline *make_browser (const char *command, const char *file)
 {
-	static char *browser;
-	static int browser_len = 0;
+	pipeline *p;
+	char *browser;
 	int command_len = strlen (command) * 2 + strlen (file) + 1;
 	int found_percent_s = 0;
 	char *percent;
 	char *esc_file;
 
-	if (command_len > browser_len) {
-		browser_len = command_len;
-		browser = xrealloc (browser, browser_len + 1);
-	}
+	browser = xmalloc (command_len + 1);
 	*browser = '\0';
 
 	percent = strchr (command, '%');
@@ -1900,7 +1838,11 @@ static char *make_browser (const char *command, const char *file)
 		free (esc_file);
 	}
 
-	return browser;
+	p = pipeline_new ();
+	pipeline_command_args (p, "/bin/sh", "-c", browser, NULL);
+	free (browser);
+
+	return p;
 }
 
 static void setenv_less (const char *title)
@@ -1945,57 +1887,86 @@ static void setenv_less (const char *title)
 	free (less_opts);
 }
 
-/* Return command (malloced string) to display file, NULL means stdin */
-static char *make_display_command (const char *file, const char *title)
+/* Return pipeline to display file. NULL means stdin.
+ *
+ * TODO: htmlout case is pretty weird now. I'd like the intelligence to be
+ * somewhere other than format_display.
+ */
+static pipeline *make_display_command (const char *file, const char *title)
 {
-	char *command;
-	char *esc_file = escape_shell (file);
+	pipeline *p;
+	command *cmd;
 
 	setenv_less (title);
 
 	if (file) {
-		if (ascii)
-			command = strappend (NULL, get_def_user ("cat", CAT), 
-					     " ", esc_file, " |",
-					     get_def_user ("tr",
-							   TR TR_SET1 TR_SET2),
-					     " |", pager, NULL);
+		if (ascii) {
+			p = pipeline_new ();
+			cmd = command_new_argstr (get_def_user ("cat", CAT));
+			command_arg (cmd, file);
+			pipeline_command (p, cmd);
+			pipeline_command_argstr
+				(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
+			pipeline_command_argstr (p, pager);
+		}
 #ifdef TROFF_IS_GROFF
 		else if (htmlout)
-			/* The filename needs to be substituted in later. */
-			command = xstrdup (html_pager);
+			/* format_display deals with html_pager */
+			p = NULL;
 #endif
-		else
-			command = strappend (NULL, pager, " ", esc_file, NULL);
+		else {
+			p = pipeline_new ();
+			cmd = command_new_argstr (pager);
+			command_arg (cmd, file);
+			pipeline_command (p, cmd);
+		}
 	} else {
-		if (ascii)
-			command = strappend (NULL,
-					     get_def_user ("tr",
-							   TR TR_SET1 TR_SET2),
-					     " |", pager, NULL);
+		if (ascii) {
+			p = pipeline_new ();
+			pipeline_command_argstr
+				(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
+			pipeline_command_argstr (p, pager);
+		}
 #ifdef TROFF_IS_GROFF
 		else if (htmlout)
-			command = xstrdup (html_pager);
+			/* format_display deals with html_pager */
+			p = NULL;
 #endif
-		else
-			command = xstrdup (pager);
+		else {
+			p = pipeline_new ();
+			pipeline_command_argstr (p, pager);
+		}
 	}
 
-	free (esc_file);
-
-	return command;
+	return p;
 }
 
 
 /* return a (malloced) temporary name in cat_file's directory */
 static char *tmp_cat_filename (const char *cat_file)
 {
-	char *name = xmalloc (strlen (cat_file) + 12);
-	char *base;
-	strcpy (name, cat_file);
-	base = basename (name);
-	sprintf (base, "%d", getpid ());
-	return name;
+	char *name;
+
+	if (debug) {
+		name = xstrdup ("/dev/null");
+		tmp_cat_fd = open (name, O_WRONLY);
+	} else {
+		char *slash;
+		name = xstrdup (cat_file);
+		slash = strrchr (name, '/');
+		if (slash)
+			*(slash + 1) = '\0';
+		else
+			*name = '\0';
+		name = strappend (name, "catXXXXXX", NULL);
+		tmp_cat_fd = mkstemp (name);
+	}
+
+	if (tmp_cat_fd == -1) {
+		free (name);
+		return NULL;
+	} else
+		return name;
 }
 
 
@@ -2077,41 +2048,23 @@ static int commit_tmp_cat (const char *cat_file, const char *tmp_cat,
 
 #ifdef MAN_CATS
 
-/* Return stream to write formatted manual page to for saving as cat file */
-static __inline__ FILE *open_cat_stream (const char *cat_file)
+/* Return pipeline to write formatted manual page to for saving as cat file.
+ * The pipeline is started if COMP_CAT is defined.
+ */
+static pipeline *open_cat_stream (const char *cat_file)
 {
-	FILE *save;
+	pipeline *cat_p;
 #  ifdef COMP_CAT
-	pid_t child;
-	int pipe_fd[2];
-	int cat_fd;
+	command *comp_cmd;
 #  endif
 
-	tmp_cat_file = tmp_cat_filename (cat_file);
-	if (!debug)
-		push_cleanup ((cleanup_fun) unlink, tmp_cat_file);
 	created_tmp_cat = 0;
 
-#  ifdef COMP_CAT
-	/* write to a pipe that compresses into tmp_cat_file */
+	if (debug)
+		fprintf (stderr, "creating temporary cat for %s\n", cat_file);
 
-	/* create pipe */
-	if (pipe (pipe_fd)) {
-		error (0, errno, _("can't create pipe"));
-		return NULL;
-	}
-
-	/* Create the cat file out here so that we can deal with errors
-	 * properly.
-	 */
-	if (debug) {
-		fprintf (stderr, "compressing to temporary cat %s\n",
-			 tmp_cat_file);
-		strcpy (tmp_cat_file, "/dev/null");
-	}
-
-	cat_fd = open (tmp_cat_file, O_WRONLY | O_CREAT | O_TRUNC, CATMODE);
-	if (cat_fd != -1)
+	tmp_cat_file = tmp_cat_filename (cat_file);
+	if (tmp_cat_file)
 		created_tmp_cat = 1;
 	else {
 		if (!debug && (errno == EACCES || errno == EROFS)) {
@@ -2119,101 +2072,63 @@ static __inline__ FILE *open_cat_stream (const char *cat_file)
 			 * return NULL and let the caller sort it out.
 			 */
 			if (debug)
-				fprintf (stderr, "can't write to %s\n",
-					 tmp_cat_file);
+				fprintf (stderr,
+					 "can't write to temporary cat "
+					 "for %s\n", cat_file);
 			return NULL;
 		} else
-			error (FATAL, errno, _("can't create %s"),
-			       tmp_cat_file);
+			error (FATAL, errno,
+			       _("can't create temporary cat for %s"),
+			       cat_file);
 	}
+
+	if (!debug)
+		push_cleanup ((cleanup_fun) unlink, tmp_cat_file);
+
+#  ifdef COMP_CAT
+	/* write to a pipe that compresses into tmp_cat_file */
 
 	/* fork the compressor */
-	fflush (NULL);
-	child = fork ();
-	if (child < 0) {
-		error (0, errno, _("can't fork"));
-		return NULL;
-	} else if (child == 0) {
-		/* compress reading end of pipe to tmp_cat_file */
-		char *const envp[] = { NULL };
-
-		pop_all_cleanups ();
-
-		/* connect standard input to reading end of pipe */
-		if (dup2 (pipe_fd[0], 0) == -1)
-			error (0, errno, _("can't dup2"));
-		close (pipe_fd[0]);
-		close (pipe_fd[1]);
-
-		/* set up standard output to write to tmp_cat_file */
-		if (dup2 (cat_fd, 1) == -1)
-			error (0, errno, _("can't dup2"));
-		close (cat_fd);
-
-		nice (10);
-
-		/* compress standard input to standard output */
-		/* @@@ disgusting: have to split COMPRESSOR into argv */
-		{
-			char *cmd;
-			char *path;
-			char *argv[8];
-			int n;
-			cmd = xstrdup (get_def ("compressor", COMPRESSOR));
-			path = strtok (cmd, " \t\n");
-			argv[0] = basename (path);
-			for (n = 1; argv[n-1]; ++n) {
-				argv[n] = strtok (NULL, " \t\n");
-			}
-			execve (path, argv, envp);
-			error (FATAL, errno, _("can't exec %s"), path);
-		}
-	}
-
-	/* connect save to the writing end of pipe */
-	close (pipe_fd[0]);
-	save = fdopen (pipe_fd[1], "w");
-	close (cat_fd);
-
-	cat_comp_pid = child;
+	cat_p = pipeline_new ();
+	comp_cmd = command_new_argstr (get_def ("compressor", COMPRESSOR));
+	comp_cmd->nice = 10;
+	pipeline_command (cat_p, comp_cmd);
+	cat_p->want_in = -1;
+	cat_p->want_out = tmp_cat_fd;
+	pipeline_start (cat_p);
+	close (tmp_cat_fd);
 #  else
 	/* write directly to tmp_cat_file */
-	if (debug) {
-		fprintf (stderr, "saving to temporary cat %s\n", tmp_cat_file);
-		tmp_cat_file = "/dev/null";
-	} else
-		push_cleanup ((void (*)()) unlink, tmp_cat_file);
-	save = fopen (tmp_cat_file, "w");
+
+	/* fake up a pipeline structure */
+	cat_p = pipeline_new ();
+	cat_p->want_out = tmp_cat_fd;
 #  endif
 
-	return save;
+	return cat_p;
 }
 
 /* Close the cat page stream, return non-zero on error.
    If delete don't update the cat file.
  */
-static __inline__ int close_cat_stream (FILE *cat_stream, const char *cat_file,
-					int delete)
+static int close_cat_stream (pipeline *cat_p, const char *cat_file,
+			     int delete)
 {
-	int status = fclose (cat_stream);
+	int status;
 
 #  ifdef COMP_CAT
-	int comp_status;	/* get compressor's exit status */
-
-	while (waitpid (cat_comp_pid, &comp_status, 0) == -1) {
-		if (errno != EINTR) {
-			error (0, errno, _("waiting for pid %u"),
-			       cat_comp_pid);
-			comp_status = -1;
-			break;
-		}
-	}
+	/* get compressor's exit status */
+	int comp_status = pipeline_wait (cat_p);
 
 	if (debug)
 		fprintf (stderr, "compressor exited with status %d\n",
 			 comp_status);
-	status |= comp_status;
+	status = comp_status;
+#  else
+	status = close (cat_p->want_out);
 #  endif
+
+	pipeline_free (cat_p);
 
 	if (created_tmp_cat) {
 		status |= commit_tmp_cat (cat_file, tmp_cat_file,
@@ -2229,13 +2144,16 @@ static __inline__ int close_cat_stream (FILE *cat_stream, const char *cat_file,
  * format a manual page with format_cmd, display it with disp_cmd, and
  * save it to cat_file
  */
-static int format_display_and_save (const char *format_cmd,
-				    const char *disp_cmd,
+static int format_display_and_save (pipeline *format_cmd,
+				    pipeline *disp_cmd,
 				    const char *cat_file)
 {
-	FILE *in  = checked_popen (format_cmd, "r");
-	FILE *out = checked_popen (disp_cmd, "w");
-	FILE *sav = open_cat_stream (cat_file);
+	pipeline *in_p  = checked_popen (format_cmd, "r");
+	pipeline *out_p = checked_popen (disp_cmd, "w");
+	pipeline *sav_p = open_cat_stream (cat_file);
+	FILE *in  = pipeline_get_outfile (in_p);
+	FILE *out = pipeline_get_infile (out_p);
+	FILE *sav = sav_p ? pipeline_get_infile (sav_p) : NULL;
 	int instat = 1, outstat;
 	RETSIGTYPE (*old_handler)(int) = signal (SIGPIPE, SIG_IGN);
 
@@ -2277,9 +2195,12 @@ static int format_display_and_save (const char *format_cmd,
 		}
 	}
 
-	if (in)  instat  = pclose (in);
-	if (sav) close_cat_stream (sav, cat_file, instat);
-	if (out) outstat = pclose (out);
+	if (in_p)
+		instat = pipeline_wait (in_p);
+	if (sav_p)
+		close_cat_stream (sav_p, cat_file, instat);
+	if (out_p)
+		outstat = pipeline_wait (out_p);
 	signal (SIGPIPE, old_handler);
 	return instat;
 }
@@ -2288,24 +2209,27 @@ static int format_display_and_save (const char *format_cmd,
 /* Format a manual page with format_cmd and display it with disp_cmd.
  * Handle temporary file creation if necessary.
  */
-static void format_display (const char *format_cmd, const char *disp_cmd,
+static void format_display (pipeline *format_cmd, pipeline *disp_cmd,
 			    const char *man_file)
 {
-	char *command;
+	pipeline *p;
 	int status;
 
 	drop_effective_privs ();
 
 #ifdef TROFF_IS_GROFF
 	if (format_cmd && htmlout) {
-		char old_cwd[PATH_MAX];
+		char *old_cwd;
 		char *htmldir;
 		char *man_file_copy, *man_base, *man_ext;
-		char *htmlfile, *esc_htmlfile;
+		char *htmlfile;
 		char *browser_list, *candidate;
 
-		if (!getcwd (old_cwd, PATH_MAX - 1))
+		old_cwd = getcwd_allocated ();
+		if (!old_cwd) {
+			old_cwd = xmalloc (1);
 			old_cwd[0] = '\0';
+		}
 		htmldir = create_tempdir ("hman");
 		if (chdir (htmldir) == -1)
 			error (FATAL, errno, _("can't change to directory %s"),
@@ -2318,13 +2242,15 @@ static void format_display (const char *format_cmd, const char *disp_cmd,
 		htmlfile = xstrdup (htmldir);
 		htmlfile = strappend (htmlfile, "/", man_base, ".html", NULL);
 		free (man_file_copy);
-		esc_htmlfile = escape_shell (htmlfile);
-		command = strappend (NULL, format_cmd, " > ", esc_htmlfile,
-				     NULL);
+		format_cmd->want_out = open (htmlfile,
+					     O_CREAT | O_EXCL | O_WRONLY,
+					     0644);
+		if (format_cmd->want_out == -1)
+			error (FATAL, errno, _("can't open temporary file %s"),
+			       htmlfile);
 
-		status = do_system_drop_privs (command);
-		/* Some shells report broken pipe; ignore it. */
-		if (status && status != (SIGPIPE + 0x80) * 256) {
+		status = do_system_drop_privs (format_cmd);
+		if (status) {
 			if (chdir (old_cwd) == -1) {
 				error (0, errno,
 				       _("can't change to directory %s"),
@@ -2337,25 +2263,25 @@ static void format_display (const char *format_cmd, const char *disp_cmd,
 				       htmldir);
 			free (htmlfile);
 			free (htmldir);
-			gripe_system (command, status);
+			gripe_system (format_cmd, status);
 		}
-		free (command);
 
-		browser_list = xstrdup (disp_cmd);
+		browser_list = xstrdup (html_pager);
 		for (candidate = strtok (browser_list, ":"); candidate;
 		     candidate = strtok (NULL, ":")) {
 			if (debug)
 				fprintf (stderr, "Trying browser: %s\n",
 					 candidate);
-			command = make_browser (candidate, htmlfile);
-			status = do_system_drop_privs (command);
-			if (!status || status == (SIGPIPE + 0x80) * 256)
+			p = make_browser (candidate, htmlfile);
+			status = do_system_drop_privs (p);
+			pipeline_free (p);
+			if (!status)
 				break;
 		}
 		if (!candidate)
 			error (CHILD_FAIL, 0,
 			       "couldn't execute any browser from %s",
-			       disp_cmd);
+			       html_pager);
 		free (browser_list);
 		if (chdir (old_cwd) == -1) {
 			error (0, errno, _("can't change to directory %s"),
@@ -2370,50 +2296,46 @@ static void format_display (const char *format_cmd, const char *disp_cmd,
 	} else
 #endif /* TROFF_IS_GROFF */
 	    if (format_cmd) {
-		command = strappend (NULL, format_cmd, " | ", disp_cmd, NULL);
-		status = do_system_drop_privs (command);
-		if (status && status != (SIGPIPE + 0x80) * 256)
-			gripe_system (command, status);
-		free (command);
+		p = pipeline_join (format_cmd, disp_cmd);
+		status = do_system_drop_privs (p);
+		if (status)
+			gripe_system (p, status);
+		pipeline_free (p);
 	} else {
-		const char *given_command = disp_cmd;
-		status = do_system_drop_privs (given_command);
+		status = do_system_drop_privs (disp_cmd);
 		if (status && status != (SIGPIPE + 0x80) * 256)
-			gripe_system (given_command, status);
+			gripe_system (disp_cmd, status);
 	}
 
 	regain_effective_privs ();
 }
 
 /* "Display" a page in catman mode, which amounts to saving it. */
-static void display_catman (const char *cat_file, const char *format_cmd)
+static void display_catman (const char *cat_file, pipeline *format_cmd)
 {
 	char *tmpcat = tmp_cat_filename (cat_file);
-	char *esc_tmpcat = escape_shell (tmpcat);
-	char *cmd;
 	int status;
 
 #ifdef COMP_CAT
-	cmd = strappend (NULL, format_cmd, " | ",
-			 get_def ("compressor", COMPRESSOR),
-			 " > ", esc_tmpcat, NULL);
-#else /* !COMP_CAT */
-	cmd = strappend (NULL, format_cmd, " > ", esc_tmpcat, NULL);
+	pipeline_command_argstr (format_cmd,
+				 get_def ("compressor", COMPRESSOR));
 #endif /* COMP_CAT */
+
+	format_cmd->want_out = tmp_cat_fd;
+
 	/* save the cat as real user
 	 * (1) required for user man hierarchy
 	 * (2) else depending on ruid's privs is ok, effectively disables
 	 *     catman for non-root.
 	 */
 	push_cleanup ((cleanup_fun) unlink, tmpcat);
-	status = do_system_drop_privs (cmd);
+	status = do_system_drop_privs (format_cmd);
 	if (status)
-		gripe_system (cmd, status);
-	free (cmd);
+		gripe_system (format_cmd, status);
 
+	close (tmp_cat_fd);
 	commit_tmp_cat (cat_file, tmpcat, status);
 	pop_cleanup();
-	free (esc_tmpcat);
 	free (tmpcat);
 }
 
@@ -2430,7 +2352,7 @@ static int display (const char *dir, const char *man_file,
 {
 	int found;
 	static int pause;
-	char *format_cmd;	/* command to format man_file to stdout */
+	pipeline *format_cmd;	/* command to format man_file to stdout */
 	int display_to_stdout;
 
 	/* if dir is set chdir to it */
@@ -2493,51 +2415,26 @@ static int display (const char *dir, const char *man_file,
 			checked_system (format_cmd);
 		}
 	} else {
-		int format;
+		int format = 1;
 		int status;
-		char *catpath;
 
-		/* cat_file is the alternate cat_file.. */
-		/* If !man_file, we have a straycat
-		   If !cat_file, we can't produce a cat_file, but we
-		   may still have one tucked away under /usr... 
-		   Check there first ala the FSSTND, and display if newer
-		   than man_file, if older, ignore it altogether */
+		/* The caller should already have checked for any
+		 * FSSTND-style (same hierarchy) cat page that may be
+		 * present, and we don't expect to have to update the cat
+		 * page in that case. If by some chance we do have to update
+		 * it, then there's no harm trying; open_cat_stream() will
+		 * refuse gracefully if the file isn't writeable.
+		 */
 
 		if (different_encoding
 #ifdef TROFF_IS_GROFF
 		    || htmlout
 #endif
-			    ) {
-			format = 1;
+		    || local_man_file)
 			save_cat = 0;
-		} else if (!local_man_file) {
-			catpath = get_catpath
-				(dir, global_manpath ? SYSTEM_CAT : USER_CAT);
-
-			assert (dir);
-
-			if (man_file && catpath) {
-				/* we may have a FSSTND cat != cat_file */
-				char *std_cat_file =
-					convert_name (man_file, NULL);
-				status = is_changed (man_file, std_cat_file);
-	
-				if (status != -2 && !(status & 1) == 1) {
-					cat_file = std_cat_file;
-					save_cat = format = 0;
-				} else
-					format = 1;
-				/* @@@ memory leak of std_cat_file */
-			} else
-				format = 1;
-
-			if (catpath)
-				free (catpath);
-		} else
-			format = 1;
 
 		if (!man_file) {
+			/* Stray cat. */
 			assert (cat_file);
 			format = 0;
 		} else if (!cat_file) {
@@ -2580,8 +2477,7 @@ static int display (const char *dir, const char *man_file,
 				 format, save_cat, found);
 
 		if (!found) {
-			if (format_cmd)
-				free (format_cmd);
+			pipeline_free (format_cmd);
 			return found;
 		}
 
@@ -2609,11 +2505,10 @@ static int display (const char *dir, const char *man_file,
 			}
 		} else if (format) {
 			/* no cat or out of date */
-			char *disp_cmd;
+			pipeline *disp_cmd;
 
 			if (pause && do_prompt (title)) {
-				if (format_cmd)
-					free (format_cmd);
+				pipeline_free (format_cmd);
 				if (local_man_file)
 					return 1;
 				else
@@ -2628,6 +2523,7 @@ static int display (const char *dir, const char *man_file,
 #ifdef MAN_CATS
 			if (save_cat) {
 				/* save cat */
+				assert (disp_cmd); /* not htmlout for now */
 				format_display_and_save (format_cmd,
 							 disp_cmd,
 							 cat_file);
@@ -2637,31 +2533,29 @@ static int display (const char *dir, const char *man_file,
 				format_display (format_cmd, disp_cmd,
 						man_file);
 
-			free (disp_cmd);
+			pipeline_free (disp_cmd);
 
 		} else {
 			/* display preformatted cat */
-			char *disp_cmd;
-			char *esc_cat_file;
+			pipeline *disp_cmd;
 #ifdef COMP_SRC
 			struct compression *comp;
 #endif /* COMP_SRC */
 
-			if (format_cmd) {
-				free (format_cmd);
-				format_cmd = NULL;
-			}
+			pipeline_free (format_cmd);
+			format_cmd = NULL;
 
 #if defined(COMP_SRC)
 			if (pause && do_prompt (title))
 				return 0;
 
-			comp = comp_info (cat_file);
+			comp = comp_info (cat_file, 0);
 			if (comp) {
-				esc_cat_file = escape_shell (cat_file);
-				format_cmd = strappend (NULL, comp->prog, " ",
-							esc_cat_file, NULL);
-				free (esc_cat_file);
+				command *cmd;
+				format_cmd = pipeline_new ();
+				cmd = command_new_argstr (comp->prog);
+				command_arg (cmd, cat_file);
+				pipeline_command (format_cmd, cmd);
 				disp_cmd = make_display_command (NULL, title);
 			} else
 				disp_cmd = make_display_command (cat_file,
@@ -2670,12 +2564,15 @@ static int display (const char *dir, const char *man_file,
 			if (pause && do_prompt (title))
 				return 0;
 
-			esc_cat_file = escape_shell (cat_file);
-			format_cmd = strappend (NULL,
-						get_def_user ("decompressor",
-							      DECOMPRESSOR),
-						" ", esc_cat_file, NULL);
-			free (esc_cat_file);
+			format_cmd = pipeline_new ();
+			{
+				command *cmd = command_new_argstr
+					(get_def_user ("decompressor",
+						       DECOMPRESSOR));
+				command_arg (cmd, cat_file);
+				pipeline_command (format_cmd, cmd);
+			}
+
 			disp_cmd = make_display_command (NULL, title);
 #else /* !(COMP_SRC || COMP_CAT) */
 			if (pause && do_prompt (title))
@@ -2684,17 +2581,11 @@ static int display (const char *dir, const char *man_file,
 			disp_cmd = make_display_command (cat_file, title);
 #endif /* COMP_SRC */
 			format_display (format_cmd, disp_cmd, man_file);
-			if (format_cmd) {
-				free (format_cmd);
-				format_cmd = NULL;
-			}
-			if (disp_cmd)
-				free (disp_cmd);
+			pipeline_free (disp_cmd);
 		}
 	}
 
-	if (format_cmd)
-		free (format_cmd);
+	pipeline_free (format_cmd);
 		
 	if (!pause)
 		pause = found;
@@ -2703,19 +2594,88 @@ static int display (const char *dir, const char *man_file,
 }
 
 
-static char *find_cat_file (const char *path, const char *man_file)
+static char *find_cat_file (const char *path, const char *original,
+			    const char *man_file)
 {
+	size_t path_len = strlen (path);
 	char *cat_file, *cat_path;
+	int status;
 
-	/* could do this with `global' */
+	/* Try the FSSTND way first, namely a cat page in the same hierarchy
+	 * as the original path to the man page. We don't create these
+	 * unless no alternate cat hierarchy is available, but will use them
+	 * if they happen to exist already and have the same timestamp as
+	 * the corresponding man page. (In practice I'm betting that this
+	 * means we'll hardly ever use them at all except for user
+	 * hierarchies; but compatibility, eh?)
+	 */
+	cat_file = convert_name (original, 1);
+	if (cat_file) {
+		status = is_changed (original, cat_file);
+		if (status != -2 && !(status & 1) == 1) {
+			if (debug)
+				fprintf (stderr,
+					 "found valid FSSTND cat file %s\n",
+					 cat_file);
+			return cat_file;
+		}
+		free (cat_file);
+	}
 
-	global_manpath = is_global_mandir (path);
+	/* Otherwise, find the cat page we actually want to use or create,
+	 * taking any alternate cat hierarchy into account. If the original
+	 * path and man_file differ (i.e. original was a symlink or .so
+	 * link), try the link target and then the source.
+	 */
+	if (!STREQ (man_file, original)) {
+		global_manpath = is_global_mandir (man_file);
+		cat_path = get_catpath
+			(man_file, global_manpath ? SYSTEM_CAT : USER_CAT);
+
+		if (cat_path) {
+			cat_file = convert_name (cat_path, 0);
+			free (cat_path);
+		} else if (STRNEQ (man_file, path, path_len) &&
+			   man_file[path_len] == '/')
+			cat_file = convert_name (man_file, 1);
+		else
+			cat_file = NULL;
+
+		if (cat_file) {
+			char *cat_dir = xstrdup (cat_file);
+			char *tmp = strrchr (cat_dir, '/');
+			if (tmp)
+				*tmp = 0;
+			if (is_directory (cat_dir)) {
+				if (debug)
+					fprintf (stderr,
+						 "will try cat file %s\n",
+						 cat_file);
+				return cat_file;
+			} else if (debug)
+				fprintf (stderr, "cat dir %s does not exist\n",
+					 cat_dir);
+			free (cat_dir);
+		} else if (debug)
+			fprintf (stderr, "no cat path for %s\n", man_file);
+	}
+
+	global_manpath = is_global_mandir (original);
 	cat_path = get_catpath
-		(man_file, global_manpath ? SYSTEM_CAT : USER_CAT);
-	cat_file = convert_name (man_file, cat_path);
+		(original, global_manpath ? SYSTEM_CAT : USER_CAT);
 
-	if (cat_path)
+	if (cat_path) {
+		cat_file = convert_name (cat_path, 0);
 		free (cat_path);
+	} else
+		cat_file = convert_name (original, 1);
+
+	if (debug) {
+		if (cat_file)
+			fprintf (stderr, "will try cat file %s\n", cat_file);
+		else
+			fprintf (stderr, "no cat path for %s\n", original);
+	}
 
 	return cat_file;
 }
@@ -2959,11 +2919,10 @@ static int display_filesystem (struct candidate *candp)
 				 man_file);
 		lang = lang_dir (man_file);
 
-		cat_file = find_cat_file (candp->path, man_file);
-		if (debug)
-			fprintf (stderr, "will try cat file %s\n", cat_file);
+		cat_file = find_cat_file (candp->path, filename, man_file);
 		found = display (candp->path, man_file, cat_file, title, NULL);
-		free (cat_file);
+		if (cat_file)
+			free (cat_file);
 		free (title);
 
 #ifdef COMP_SRC
@@ -3053,10 +3012,11 @@ static int display_database (struct candidate *candp)
 					 man_file);
 			lang = lang_dir (man_file);
 
-			cat_file = find_cat_file (candp->path, man_file);
+			cat_file = find_cat_file (candp->path, file, man_file);
 			found += display (candp->path, man_file, cat_file,
 					  title, in->filter);
-			free (cat_file);
+			if (cat_file)
+				free (cat_file);
 #ifdef COMP_SRC
 			/* if ult_src() produced a ztemp file, we need to 
 			   remove it (and unexist it) before proceeding */
@@ -3417,7 +3377,7 @@ static int display_pages (struct candidate *candidates)
  */
 static int man (const char *name, int *found)
 {
-	struct candidate *candidates = NULL;
+	struct candidate *candidates = NULL, *cand, *candnext;
 
 	*found = 0;
 	fflush (stdout);
@@ -3448,6 +3408,11 @@ static int man (const char *name, int *found)
 
 	if (*found)
 		*found = display_pages (candidates);
+
+	for (cand = candidates; cand; cand = candnext) {
+		candnext = cand->next;
+		free (cand);
+	}
 
 	return *found ? OK : NOT_FOUND;
 }

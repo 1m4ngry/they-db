@@ -85,6 +85,7 @@ extern char *strrchr();
 #include "libdb/mydbm.h"
 #include "libdb/db_storage.h"
 #include "lib/error.h"
+#include "lib/pipeline.h"
 #include "manp.h"
 
 extern char *manpathlist[];
@@ -117,11 +118,13 @@ extern void regfree();
 static int wildcard;
 static int status = OK;
 
+static const char *section;
+
 #if !defined(APROPOS) && !defined(WHATIS)
 #  error #define WHATIS or APROPOS, so I know who I am
 #endif
 
-static const char args[] = "dvrewhVm:M:fkL:C:";
+static const char args[] = "dvrews:hVm:M:fkL:C:";
 
 static const struct option long_options[] =
 {
@@ -130,6 +133,7 @@ static const struct option long_options[] =
 	{"regex",	no_argument,		0, 'r'},
 	{"exact",	no_argument,		0, 'e'},
 	{"wildcard",	no_argument,		0, 'w'},
+	{"section",	required_argument,	0, 's'},
 	{"help",	no_argument,		0, 'h'},
 	{"version",	no_argument,		0, 'V'},
 	{"systems",	required_argument,	0, 'm'},
@@ -144,13 +148,15 @@ static const struct option long_options[] =
 #ifdef APROPOS
 static void usage (int status)
 {
-	printf (_("usage: %s [-dhV] [-r|-w|-e] [-m systems] [-M manpath] [-C file] keyword ...\n"), program_name);
+	printf (_("usage: %s [-dhV] [-r|-w|-e] [-s section] [-m systems] [-M manpath] [-C file]\n"
+		  "               keyword ...\n"), program_name);
 	printf (_(
 		"-d, --debug                produce debugging info.\n"
 		"-v, --verbose              print verbose warning messages.\n"
 		"-r, --regex                interpret each keyword as a regex (default).\n"
 		"-e, --exact                search each keyword for exact match.\n"
 		"-w, --wildcard             the keyword(s) contain wildcards.\n"
+		"-s, --section section      search only this section.\n"
 		"-m, --systems system       include alternate systems' man pages.\n"
 		"-M, --manpath path         set search path for manual pages to `path'.\n"
 		"-C, --config-file file     use this user configuration file.\n"
@@ -162,12 +168,14 @@ static void usage (int status)
 #else	
 static void usage (int status)
 {
-	printf (_("usage: %s [-dhV] [-r|-w] [-m systems] [-M manpath] [-C file] keyword ...\n"), program_name);
-	printf(_(
+	printf (_("usage: %s [-dhV] [-r|-w] [-s section] [-m systems] [-M manpath] [-C file]\n"
+		  "              keyword ...\n"), program_name);
+	printf (_(
 		"-d, --debug                produce debugging info.\n"
 		"-v, --verbose              print verbose warning messages.\n"
 		"-r, --regex                interpret each keyword as a regex.\n"
 		"-w, --wildcard             the keyword(s) contain wildcards.\n"
+		"-s, --section section      search only this section.\n"
 		"-m, --systems system       include alternate systems' man pages.\n"
 		"-M, --manpath path         set search path for manual pages to `path'.\n"
 		"-C, --config-file file     use this user configuration file.\n"
@@ -185,13 +193,14 @@ static __inline__ int use_grep (char *page, char *manpath)
 	int status;
 
 	if (access (whatis_file, R_OK) == 0) {
-		char *esc_page = escape_shell (page);
-		char *esc_file = escape_shell (whatis_file);
-		const char *flags, *anchor;
-		char *command;
+		pipeline *grep_pl = pipeline_new ();
+		command *grep_cmd;
+		const char *flags;
+		char *anchored_page = NULL;
+
 #if defined(WHATIS)
 		flags = get_def_user ("whatis_grep_flags", WHATIS_GREP_FLAGS);
-		anchor = "^";
+		anchored_page = strappend (NULL, "^", page, NULL);
 #elif defined(APROPOS)
 #ifdef REGEX
 		if (regex)
@@ -201,17 +210,18 @@ static __inline__ int use_grep (char *page, char *manpath)
 #endif
 			flags = get_def_user ("apropos_grep_flags",
 					      APROPOS_GREP_FLAGS);
-		anchor = "";
+		anchored_page = xstrdup (page);
 #endif 	
 
-		command = strappend (NULL, get_def_user ("grep", GREP),
-				     " ", flags,
-				     " ", anchor, esc_page, " ", esc_file,
-				     NULL);
-		status = (system (command) == 0);
-		free (command);
-		free (esc_file);
-		free (esc_page);
+		grep_cmd = command_new_argstr (get_def_user ("grep", GREP));
+		command_argstr (grep_cmd, flags);
+		command_args (grep_cmd, anchored_page, whatis_file, NULL);
+		pipeline_command (grep_pl, grep_cmd);
+
+		status = (do_system (grep_pl) == 0);
+
+		free (anchored_page);
+		pipeline_free (grep_pl);
 	} else {
 		if (debug) {
 			error (0, 0, _("warning: can't read the fallback whatis text database."));
@@ -322,8 +332,8 @@ static char *lower (char *s)
 	p = low = (char *) xmalloc (strlen (s) +1);
 
 	while (*s) {
-		if (isupper (*s))
-			*p++ = tolower (*s++);
+		if (CTYPE (isupper, *s))
+			*p++ = CTYPE (tolower, *s++);
 		else
 			*p++ = *s++;
 	}
@@ -339,7 +349,7 @@ static __inline__ int whatis (char *page)
 	struct mandata *info;
 	int count = 0;
 
-	info = dblookup_all (page, NULL, 0);
+	info = dblookup_all (page, section, 0);
 	while (info) {
 		struct mandata *pinfo;
 			
@@ -393,15 +403,15 @@ static int match (char *lowpage, char *whatis)
 		char *left = p - 1; 
 		char *right = p + len;
 
-		if ((p == begin || (!islower(*left) && *left != '_')) &&
-		    (!*right || (!islower(*right) && *right != '_')) ) {
+		if ((p == begin || (!CTYPE (islower, *left) && *left != '_')) &&
+		    (!*right || (!CTYPE (islower, *right) && *right != '_'))) {
 		    	free (begin);
 		    	return 1;
 		}
 		lowwhatis = p + 1;
 	}
 
-	free(begin);
+	free (begin);
 	return 0;
 }
 
@@ -414,7 +424,7 @@ static int word_fnmatch (char *lowpage, char *whatis)
 	char *begin = lowwhatis, *p;
 
 	for (p = lowwhatis; *p; p++) {
-		if (islower (*p) || *p == '_')
+		if (CTYPE (islower, *p) || *p == '_')
 			continue;
 
 		/* Check for multiple non-word characters in a row. */
@@ -477,6 +487,13 @@ static int apropos (char *page, char *lowpage)
 	end = btree_nextkeydata (dbf, &key, &cont);
 	while (!end) {
 #endif /* !BTREE */
+		char *tab;
+		int match;
+		struct mandata info;
+#ifdef APROPOS
+		char *whatis;
+#endif
+
 		/* bug#4372, NULL pointer dereference in cont.dptr, fix
 		 * by dassen@wi.leidenuniv.nl (J.H.M.Dassen), thanx Ray.
 		 * cjwatson: In that case, complain and exit, otherwise we
@@ -492,44 +509,47 @@ static int apropos (char *page, char *lowpage)
 			       database);
 		}
 
-		if (*key.dptr != '$') {
-			if (*cont.dptr != '\t')		/* a real page */
-			{
-				char *tab;
-				int match;
-#ifdef APROPOS
-				char *whatis;
-#endif
+		if (*key.dptr == '$')
+			goto nextpage;
 
-				tab = strrchr(key.dptr, '\t');
-				if (tab) 
-					 *tab = '\0';
+		if (*cont.dptr == '\t')
+			goto nextpage;
+
+		/* a real page */
+
+		split_content (cont.dptr, &info);
+
+		/* If there's a section given, does it match either the
+		 * section or extension of this page?
+		 */
+		if (section &&
+		    (!STREQ (section, info.sec) && !STREQ (section, info.ext)))
+			goto nextpage;
+
+		tab = strrchr (key.dptr, '\t');
+		if (tab) 
+			 *tab = '\0';
 
 #ifdef APROPOS
-				match = parse_name (lowpage, key.dptr);
-				whatis = strrchr (cont.dptr, '\t');
-				if (!(whatis && *++whatis))
-					whatis = NULL;
-					
-				if (!match && whatis)
-					match = parse_whatis (page, lowpage,
-							      whatis);
+		match = parse_name (lowpage, key.dptr);
+		whatis = xstrdup (info.whatis);
+		if (!match && whatis)
+			match = parse_whatis (page, lowpage, whatis);
+		free (whatis);
 #else /* WHATIS */
-				match = parse_name (page, key.dptr);
+		match = parse_name (page, key.dptr);
 #endif /* APROPOS */
-				if (match) {
-					struct mandata info;
-					split_content (cont.dptr, &info);
-					display (&info, key.dptr);
-					found++;
-					cont.dptr = info.addr;
-				}
-
-				found += match;
-				if (tab)
-					*tab = '\t';
-			}
+		if (match) {
+			display (&info, key.dptr);
+			found++;
+			cont.dptr = info.addr;
 		}
+
+		found += match;
+		if (tab)
+			*tab = '\t';
+
+nextpage:
 #ifndef BTREE
 		nextkey = MYDBM_NEXTKEY (dbf, key);
 		MYDBM_FREE (cont.dptr);
@@ -596,7 +616,7 @@ static void search (char *page)
 		MYDBM_CLOSE (dbf);
 	}
 
-	chkr_garbage_detector();
+	chkr_garbage_detector ();
 
 	if (!found) {
 		printf (_("%s: nothing appropriate.\n"), page);
@@ -662,6 +682,9 @@ int main (int argc, char *argv[])
 #endif
 				wildcard = 1;
 				break;
+			case 's':
+				section = optarg;
+				break;
 			case 'f': /* fall through */
 			case 'k': /* ignore, may be passed by man */
 				break;
@@ -687,9 +710,9 @@ int main (int argc, char *argv[])
 		free (locale);
 		locale = xstrdup (llocale);
 		if (debug)
-			fprintf(stderr,
-				"main(): locale = %s, internal_locale = %s\n",
-				llocale, locale);
+			fprintf (stderr,
+				 "main(): locale = %s, internal_locale = %s\n",
+				 llocale, locale);
 		if (locale) {
 			extern int _nl_msg_cat_cntr;
 			if (locale[2] == '_' )
@@ -699,9 +722,11 @@ int main (int argc, char *argv[])
 		}
 	}
 
+	pipeline_install_sigchld ();
+
 #if defined(REGEX) && defined(APROPOS)
 	/* Become it even if it's null - GNU standards */
-	/* if (getenv("POSIXLY_CORRECT")) */
+	/* if (getenv ("POSIXLY_CORRECT")) */
 	if (!exact && !wildcard)
 		regex = 1;
 #endif
@@ -744,7 +769,7 @@ int main (int argc, char *argv[])
 				       argv[optind], error_string);
 		}
 #endif /* REGEX */
-		search(argv[optind++]);
+		search (argv[optind++]);
 	}
 
 	exit (status);
