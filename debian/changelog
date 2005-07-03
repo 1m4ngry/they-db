@@ -1,3 +1,26 @@
+man-db (2.4.3-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Make most calls to external programs directly rather than going via
+      the shell.
+    - When stdout is not a terminal, man pages will be formatted in plain
+      text without the use of backspace or ANSI formatting characters.
+    - Try harder to find somewhere to store cat pages for symlinked man
+      pages (closes: #129575).
+    - When invoking apropos (man -k) or whatis (man -f) as external
+      programs, man now only passes through command-line options understood
+      by the respective programs (closes: #207436).
+    - Drop versions and/or modifiers from locale names before deciding how
+      to handle them (closes: #241387).
+    - Fix portable shell issues in mkcatdirs (closes: #256279).
+    - Terminate NAME section parsing on encountering a macro definition
+      (closes: #275562).
+    - Add -s/--section option to apropos and whatis (closes: #218407).
+    - Update Polish translation (thanks, Robert Luberda; closes: #245057).
+    - Update Russian translation (thanks, Yuri Kozlov; closes: #268584).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun,  3 Jul 2005 23:58:10 +0100
+
 man-db (2.4.2-23) unstable; urgency=low
 
   * Update config.guess and config.sub to 2005-04-22 (closes: #315075).
