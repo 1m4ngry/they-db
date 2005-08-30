@@ -1,4 +1,4 @@
-man-db (2.4.3-2) UNRELEASED; urgency=low
+man-db (2.4.3-2) unstable; urgency=low
 
   * Use 'col -b -p -x' rather than just 'col -b' when stdout is not a
     terminal. Partly fixes #319952, but col still needs to be fixed to cope
@@ -7,7 +7,7 @@ man-db (2.4.3-2) UNRELEASED; urgency=low
     www-browser package (closes: #321769).
   * Update debian/copyright with the FSF's new address.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 30 Aug 2005 12:20:56 +0100
+ -- Colin Watson <cjwatson@debian.org>  Tue, 30 Aug 2005 13:37:35 +0100
 
 man-db (2.4.3-1) unstable; urgency=low
 
