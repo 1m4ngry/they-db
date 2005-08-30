@@ -1,3 +1,11 @@
+man-db (2.4.3-2) UNRELEASED; urgency=low
+
+  * Use 'col -b -p -x' rather than just 'col -b' when stdout is not a
+    terminal. Partly fixes #319952, but col still needs to be fixed to cope
+    with UTF-8 input.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 30 Aug 2005 12:20:56 +0100
+
 man-db (2.4.3-1) unstable; urgency=low
 
   * New upstream release.
