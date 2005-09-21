@@ -1,4 +1,4 @@
-man-db (2.4.3-3) UNRELEASED; urgency=low
+man-db (2.4.3-3) unstable; urgency=low
 
   * Ignore SIGINT and SIGQUIT in the parent while running subprocesses
     (closes: #328982).
@@ -9,7 +9,7 @@ man-db (2.4.3-3) UNRELEASED; urgency=low
   * Explicitly tell po2debconf to use the 'popular' output encoding, so that
     the woody-compatibility hack works even with po-debconf 0.9.0.
 
- -- Colin Watson <cjwatson@debian.org>  Wed, 21 Sep 2005 11:00:28 +0100
+ -- Colin Watson <cjwatson@debian.org>  Wed, 21 Sep 2005 13:03:47 +0100
 
 man-db (2.4.3-2) unstable; urgency=low
 
