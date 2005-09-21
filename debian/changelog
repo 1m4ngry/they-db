@@ -2,6 +2,10 @@ man-db (2.4.3-3) UNRELEASED; urgency=low
 
   * Ignore SIGINT and SIGQUIT in the parent while running subprocesses
     (closes: #328982).
+  * Improve SIGCHLD handling in pipeline library (closes: #326488):
+    - Queue SIGCHLD for the whole time we're collecting child process
+      statuses; we need to keep a careful count of processes.
+    - Forget any previous errno before calling reap_children.
 
  -- Colin Watson <cjwatson@debian.org>  Wed, 21 Sep 2005 11:00:28 +0100
 
