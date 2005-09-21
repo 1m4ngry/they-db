@@ -54,7 +54,7 @@ clean:
 	-rm -f */*.i
 ifeq ($(PO2DEBCONF),yes)
 	# Compatibility with woody.
-	echo 1 > debian/po/output
+	echo '1 popular' > debian/po/output
 	po2debconf debian/templates.master > debian/templates
 	rm -f debian/po/output
 endif
