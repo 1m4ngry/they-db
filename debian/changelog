@@ -1,3 +1,10 @@
+man-db (2.4.3-3) UNRELEASED; urgency=low
+
+  * Ignore SIGINT and SIGQUIT in the parent while running subprocesses
+    (closes: #328982).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 21 Sep 2005 11:00:28 +0100
+
 man-db (2.4.3-2) unstable; urgency=low
 
   * Use 'col -b -p -x' rather than just 'col -b' when stdout is not a
