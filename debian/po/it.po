@@ -1,0 +1,118 @@
+# man-db po-debconf translation to Italian (it)
+# Copyright (C) 2006 Software in the Public Interest
+# This file is distributed under the same license as the man-db package.
+# Luca Monducci <luca.mo@tiscali.it>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: man-db debconf templates\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-02-10 22:14+0000\n"
+"PO-Revision-Date: 2006-01-01 15:28+0100\n"
+"Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
+"Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid "Should man and mandb be installed 'setuid man'?"
+msgstr "I programmi man e mandb devono essere installati con \"setuid man\"?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid ""
+"The man and mandb program can be installed with the set-user-id bit set, so "
+"that they will run with the permissions of the 'man' user. This allows "
+"ordinary users to benefit from the caching of preformatted manual pages "
+"('cat pages'), which may aid performance on slower machines."
+msgstr ""
+"I programmi man e mandb possono essere installati con il bit set-user-id "
+"attivo in modo che siano eseguiti con i permessi dell'utente \"man\". Questo "
+"permette agli utenti normali di usare la versione in cache delle pagine "
+"di manuale già preformattate (le \"cat page\"), che può incrementare le "
+"prestazioni sulle macchine più lente."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid ""
+"Cached man pages only work if you are using an 80-column terminal, to avoid "
+"one user causing cat pages to be saved at widths that would be inconvenient "
+"for other users. If you use a wide terminal, you can force man pages to be "
+"formatted to 80 columns anyway by setting MANWIDTH=80."
+msgstr ""
+"Le pagine in cache funzionano solo se viene usato un terminale con 80 "
+"colonne, questo per evitare che un utente provochi la creazione delle "
+"\"cat page\" con una larghezza che potrebbe essere scomoda per gli altri. "
+"Se si usa un terminale più largo si può comunque forzare la formattazione "
+"delle pagine a 80 colonne impostando MANWIDTH=80."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4
+msgid ""
+"Enabling this feature may be a security risk, so it is disabled by default. "
+"If in doubt, you should leave it disabled."
+msgstr ""
+"L'attivazione di questa funzione può essere rischiosa per la sicurezza, "
+"quindi normalmente è disattiva. In caso di dubbi si consiglia di lasciarla "
+"disattiva."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:21
+msgid ""
+"You do not yet have a database of manual page descriptions. Building one may "
+"take some time, depending on how many pages you have installed; it will "
+"happen in the background, possibly slowing down the installation of other "
+"packages."
+msgstr ""
+"Ancora non esiste un database con le descrizioni delle pagine di manuale. "
+"La sua creazione può richiedere tempo, dipende da quante pagine sono "
+"installate; la creazione del database avviene in background ed è possibile "
+"che rallenti l'installazione di altri pacchetti."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid "Should mandb build its database now?"
+msgstr "Creare adesso il database di mandb?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages."
+msgstr ""
+"Questa versione di man-db è incompatibile con il database delle descrizioni "
+"delle pagine di manuale esistente, quindi è necessario ricreare il database. "
+"Questa operazione può richiedere tempo, dipende da quante pagine sono "
+"installate; la creazione del database avviene in background ed è possibile "
+"che rallenti l'installazione di altri pacchetti."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
+"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
+"to display any output."
+msgstr ""
+"Se il database non viene creato adesso, verrà comunque creato alla prossima "
+"esecuzione di /etc/cron.weekly/mandb oppure eseguendo \"mandb -c\" con "
+"l'utente \"man\". Nel frattempo i comandi \"whatis\" e \"apropos\" non "
+"possono funzionare."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:35
+msgid "Incompatible changes like this should happen rarely."
+msgstr "Dei cambiamenti incompatibili come questo accadono molto raramente."

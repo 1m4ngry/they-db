@@ -1,3 +1,10 @@
+man-db (2.4.3-4) UNRELEASED; urgency=low
+
+  * Add debconf translations:
+    - Italian (thanks, Luca Monducci; closes: #345533).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon,  2 Jan 2006 00:45:26 +0000
+
 man-db (2.4.3-3) unstable; urgency=low
 
   * Ignore SIGINT and SIGQUIT in the parent while running subprocesses
