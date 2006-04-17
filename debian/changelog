@@ -1,6 +1,7 @@
 man-db (2.4.3-4) UNRELEASED; urgency=low
 
   * Add debconf translations:
+    - Galician (thanks, Jacobo Tarrio; closes: #362133).
     - Italian (thanks, Luca Monducci; closes: #345533).
     - Portuguese (thanks, Miguel Figueiredo; closes: #348788).
     - Swedish (thanks, Daniel Nylander; closes: #339078).
