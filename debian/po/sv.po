@@ -34,26 +34,55 @@ msgstr "Ska man och mandb installeras \"setuid man\"?"
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-msgid "The man and mandb program can be installed with the set-user-id bit set, so that they will run with the permissions of the 'man' user. This allows ordinary users to benefit from the caching of preformatted manual pages ('cat pages'), which may aid performance on slower machines."
-msgstr "Programmen man och mandb kan installeras med set-user-id biten satt så att de kommer att köras med rättigheterna från användaren \"man\". Detta tillåter vanliga användare att dra nytta av mellanlagring av förformaterade manualsidor (\"cat pages\") som kan öka prestandan på långsammare maskiner."
+msgid ""
+"The man and mandb program can be installed with the set-user-id bit set, so "
+"that they will run with the permissions of the 'man' user. This allows "
+"ordinary users to benefit from the caching of preformatted manual pages "
+"('cat pages'), which may aid performance on slower machines."
+msgstr ""
+"Programmen man och mandb kan installeras med set-user-id biten satt så att "
+"de kommer att köras med rättigheterna från användaren \"man\". Detta "
+"tillåter vanliga användare att dra nytta av mellanlagring av förformaterade "
+"manualsidor (\"cat pages\") som kan öka prestandan på långsammare maskiner."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-msgid "Cached man pages only work if you are using an 80-column terminal, to avoid one user causing cat pages to be saved at widths that would be inconvenient for other users. If you use a wide terminal, you can force man pages to be formatted to 80 columns anyway by setting MANWIDTH=80."
-msgstr "Mellanlagrade manualsidor fungerar bara om du använder en 80-kolumners terminal för att undvika att en användare orsakar att sidor sparas med en bredd som inte passar för andra användare. Om du använder en bred terminal kan du tvinga manualsidorna att formateras till 80 kolumner i alla fall genom att sätta MANWIDTH=80."
+msgid ""
+"Cached man pages only work if you are using an 80-column terminal, to avoid "
+"one user causing cat pages to be saved at widths that would be inconvenient "
+"for other users. If you use a wide terminal, you can force man pages to be "
+"formatted to 80 columns anyway by setting MANWIDTH=80."
+msgstr ""
+"Mellanlagrade manualsidor fungerar bara om du använder en 80-kolumners "
+"terminal för att undvika att en användare orsakar att sidor sparas med en "
+"bredd som inte passar för andra användare. Om du använder en bred terminal "
+"kan du tvinga manualsidorna att formateras till 80 kolumner i alla fall "
+"genom att sätta MANWIDTH=80."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:4
-msgid "Enabling this feature may be a security risk, so it is disabled by default. If in doubt, you should leave it disabled."
-msgstr "Aktivera denna funktion kan vara en säkerhetsrisk så den är avstängd som standard. Om du är osäker bör du lämna kvar den avstängd."
+msgid ""
+"Enabling this feature may be a security risk, so it is disabled by default. "
+"If in doubt, you should leave it disabled."
+msgstr ""
+"Aktivera denna funktion kan vara en säkerhetsrisk så den är avstängd som "
+"standard. Om du är osäker bör du lämna kvar den avstängd."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:21
-msgid "You do not yet have a database of manual page descriptions. Building one may take some time, depending on how many pages you have installed; it will happen in the background, possibly slowing down the installation of other packages."
-msgstr "Du har ännu inte en databas för beskrivningar av manualsidor. Att bygga en tar lite tid beroende på hur många sidor du har installerade; det kommer göras i bakgrunden och möjligen göra installationen av andra paket långsammare."
+msgid ""
+"You do not yet have a database of manual page descriptions. Building one may "
+"take some time, depending on how many pages you have installed; it will "
+"happen in the background, possibly slowing down the installation of other "
+"packages."
+msgstr ""
+"Du har ännu inte en databas för beskrivningar av manualsidor. Att bygga en "
+"tar lite tid beroende på hur många sidor du har installerade; det kommer "
+"göras i bakgrunden och möjligen göra installationen av andra paket "
+"långsammare."
 
 #. Type: boolean
 #. Description
@@ -64,18 +93,33 @@ msgstr "Ska mandb bygga sin databas nu?"
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-msgid "This version of man-db is incompatible with your existing database of manual page descriptions, so that database needs to be rebuilt. This may take some time, depending on how many pages you have installed; it will happen in the background, possibly slowing down the installation of other packages."
-msgstr "Denna version av man-db är okompatibel med din existerande databas för beskrivningar av manualsidor så den databasen behöver byggas om. Detta kan ta lite tid beroende på hur många sidor du har installerat, det kommer göras i bakgrunden och möjligen göra installationen av andra paket långsammare."
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages."
+msgstr ""
+"Denna version av man-db är okompatibel med din existerande databas för "
+"beskrivningar av manualsidor så den databasen behöver byggas om. Detta kan "
+"ta lite tid beroende på hur många sidor du har installerat, det kommer göras "
+"i bakgrunden och möjligen göra installationen av andra paket långsammare."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
-msgid "If you do not build the database now, it will be built the next time /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able to display any output."
-msgstr "Om du inte bygger databasen nu kommer den byggas nästa gång som /etc/cron.weekly/mandb körs eller så kan du göra det själv genom att köra \"mandb -c\" som användare \"man\". Under tiden kommer inte kommandona \"whatis\" och \"apropos\" inte kunna visa någon utdata."
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
+"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
+"to display any output."
+msgstr ""
+"Om du inte bygger databasen nu kommer den byggas nästa gång som /etc/cron."
+"weekly/mandb körs eller så kan du göra det själv genom att köra \"mandb -c\" "
+"som användare \"man\". Under tiden kommer inte kommandona \"whatis\" och "
+"\"apropos\" inte kunna visa någon utdata."
 
 #. Type: boolean
 #. Description
 #: ../templates.master:35
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Okompatabla ändringar såsom denna bör sällan hända."
-
