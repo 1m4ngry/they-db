@@ -5,6 +5,7 @@ man-db (2.4.3-4) UNRELEASED; urgency=low
     - Italian (thanks, Luca Monducci; closes: #345533).
     - Portuguese (thanks, Miguel Figueiredo; closes: #348788).
     - Swedish (thanks, Daniel Nylander; closes: #339078).
+  * Use debhelper 4.
 
  -- Colin Watson <cjwatson@debian.org>  Mon,  2 Jan 2006 00:45:26 +0000
 

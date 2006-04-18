@@ -4,8 +4,6 @@
 package = man-db
 dtmp    = debian/$(package)
 
-export DH_COMPAT=3
-
 ifeq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS = -O2 -g -Wall
 LDFLAGS = -g
