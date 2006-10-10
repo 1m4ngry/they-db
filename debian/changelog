@@ -1,4 +1,4 @@
-man-db (2.4.3-4) UNRELEASED; urgency=low
+man-db (2.4.3-4) unstable; urgency=low
 
   * Add debconf translations:
     - Galician (thanks, Jacobo Tarrio; closes: #362133).
@@ -7,7 +7,7 @@ man-db (2.4.3-4) UNRELEASED; urgency=low
     - Swedish (thanks, Daniel Nylander; closes: #339078).
   * Use debhelper 4.
 
- -- Colin Watson <cjwatson@debian.org>  Mon,  2 Jan 2006 00:45:26 +0000
+ -- Colin Watson <cjwatson@debian.org>  Tue, 10 Oct 2006 16:43:27 +0100
 
 man-db (2.4.3-3) unstable; urgency=low
 
