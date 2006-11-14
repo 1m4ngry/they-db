@@ -1,3 +1,11 @@
+man-db (2.4.3-5) UNRELEASED; urgency=low
+
+  * CVE-2006-4250: Fix a buffer overrun if using -H and the designated web
+    browser (argument to -H or $BROWSER) contains multiple %s expansions.
+    Thanks to Jochen Voß for the report.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 14 Nov 2006 11:49:15 -0800
+
 man-db (2.4.3-4) unstable; urgency=low
 
   * Add debconf translations:
