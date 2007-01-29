@@ -77,6 +77,7 @@ install-stamp: build
 	# change locale names
 	mv $(dtmp)/usr/share/man/de_DE.88591	$(dtmp)/usr/share/man/de
 	mv $(dtmp)/usr/share/man/es_ES.88591	$(dtmp)/usr/share/man/es
+	mv $(dtmp)/usr/share/man/fr_FR.88591	$(dtmp)/usr/share/man/fr
 	mv $(dtmp)/usr/share/man/it_IT.88591	$(dtmp)/usr/share/man/it
 	mv $(dtmp)/usr/share/man/ja_JP.eucJP	$(dtmp)/usr/share/man/ja
 	rm -rf $(dtmp)/usr/share/man/de_DE.ascii
