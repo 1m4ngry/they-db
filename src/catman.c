@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Thu Dec  8 00:03:12 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -93,8 +93,8 @@ extern int errno;
 #  include "lib/getopt.h"
 #endif /* HAVE_GETOPT_H */
 
+#include "lib/gettext.h"
 #include <locale.h>
-#include <libintl.h>
 #define _(String) gettext (String)
 
 #include "manconfig.h"
@@ -309,7 +309,6 @@ static int parse_for_sec (const char *manpath, const char *section)
 				struct mandata entry;
 
 				split_content (content.dptr, &entry);
-				content.dptr = entry.addr;
 
 				/* Accept if the entry is an ultimate manual
 				   page and the section matches the one we're
@@ -348,6 +347,10 @@ static int parse_for_sec (const char *manpath, const char *section)
 				    		arg_size = initial_bit;
 				    	}
 				}
+
+				/* == content.dptr, freed below */
+				entry.addr = NULL;
+				free_mandata_elements (&entry);
 			}
 			
 			/* we don't need the content ever again */
@@ -534,5 +537,8 @@ int main (int argc, char *argv[])
 		free (catpath);
 	}
 
+	free_pathlist (manpathlist);
+	free (locale);
+	free (program_name);
 	exit (OK);
 }

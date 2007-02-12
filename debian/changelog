@@ -1,3 +1,37 @@
+man-db (2.4.4-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Drop "Reformatting %s, please wait..." message (LP: #18786,
+      closes: #378781).
+    - Fix "gditview" typo (closes: #317696).
+    - Avoid splitting up a sentence into two translatable pieces
+      (closes: #320111).
+    - Add Russian translation of NAME (thanks, Yuri Kozlov;
+      closes: #338991).
+    - Fix mistaken use of .l instead of .I (thanks, Valéry Perrin;
+      closes: #349208).
+    - Add Danish translation of NAME (thanks, Henning Makholm;
+      closes: #353959).
+    - Skip "exec" at the start of a command, to make old configuration files
+      work (closes: #353959).
+    - Ignore SIGPIPE in child processes (closes: #387864).
+    - Fail with an error message if argv is a character or block device, as
+      we may well hang trying to read from it and it almost certainly isn't
+      what the caller intended anyway (closes: #341706).
+    - Teach lexgrog front-end about pages with multiple name/description
+      pairs (closes: #342834).
+    - Fix a slew of memory leaks, including a nasty per-search leak in
+      apropos (closes: #368749).
+    - Add cross-references to mandb in apropos and whatis documentation
+      (thanks, Phil Endecott; closes: #388755).
+    - Document man -X option (thanks, Sam Morris; closes: #360112).
+    - Don't try to pass -X or -P-g options to eqn, only troff
+      (closes: #327772).
+    - Stop claiming that -d does not display any manual pages (thanks, Dan
+      Jacobson; closes: #340910).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 11 Feb 2007 20:25:02 +0000
+
 man-db (2.4.3-6) unstable; urgency=low
 
   * Add French man pages translation (thanks, Valéry Perrin;

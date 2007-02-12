@@ -1,3 +1,39 @@
+man-db 2.4.4 (12 February 2007)
+===============================
+
+Major changes since man-db 2.4.3:
+
+	man-db is now revision-controlled using bzr
+	(http://bazaar-vcs.org/). See docs/HACKING for the location of the
+	archive (including all CVS history, imported by Canonical).
+
+	Fixes:
+	------
+
+	o SECURITY: Fix a buffer overrun if using -H and the designated web
+	  browser (argument to -H or $BROWSER) contains multiple %s
+	  expansions. This is CVE-2006-4250.
+
+	o Ignore SIGINT and SIGQUIT while running subprocesses, so that
+	  typing Ctrl-C doesn't kill less (broken in 2.4.3).
+
+	o Similarly, ignore SIGPIPE in subprocesses.
+
+	o Various fixes to SIGCHLD handling in pipeline library, preventing
+	  "waitpid failed: No child processes" errors.
+
+	o Skip "exec" in configuration file commands (perhaps left over from
+	  old installations), which the pipeline execution library cannot
+	  handle directly.
+
+	Improvements:
+	-------------
+
+	o Add support for Chinese in the --enable-mb-groff case.
+
+	o lexgrog now handles pages with multiple descriptions more
+	  usefully, by displaying one description per output line.
+
 man-db 2.4.3 (3 July 2005)
 ==========================
 

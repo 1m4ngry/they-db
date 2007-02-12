@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Thu Nov 17 08:29:39 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -61,8 +61,8 @@
 #  include "lib/getopt.h"
 #endif /* HAVE_GETOPT_H */
 
+#include "lib/gettext.h"
 #include <locale.h>
-#include <libintl.h>
 #define _(String) gettext (String)
 
 #include "manconfig.h"

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; see the file COPYING.LIB.  If not,
- * write to the Free Software Foundation, Inc., 59 Temple Place,
- * Suite 330, Boston, MA  02111-1307  USA.
+ * write to the Free Software Foundation, Inc., 51 Franklin St, Fifth
+ * Floor, Boston, MA  02110-1301  USA.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -67,7 +67,7 @@ sighandler (int signo)
   act.sa_handler = SIG_DFL;
   sigemptyset (&act.sa_mask);
   act.sa_flags = 0;
-  if (sigaction (signo, &act, NULL)) {
+  if (xsigaction (signo, &act, NULL)) {
     /* should not happen */
     _exit (FATAL);		/* exit() is taboo from signal handlers! */
   }
@@ -92,7 +92,7 @@ sighandler (int signo)
 static int
 trap_signal (int signo, struct sigaction *oldact)
 {
-  if (sigaction (signo, NULL, oldact)) {
+  if (xsigaction (signo, NULL, oldact)) {
     return -1;
   }
 
@@ -102,7 +102,7 @@ trap_signal (int signo, struct sigaction *oldact)
     act.sa_handler = sighandler;
     sigemptyset (&act.sa_mask);
     act.sa_flags = 0;
-    return sigaction (signo, &act, oldact);
+    return xsigaction (signo, &act, oldact);
   }
 
   return 0;
@@ -127,12 +127,12 @@ static int
 untrap_signal (int signo, struct sigaction *oldact)
 {
   struct sigaction act;
-  if (sigaction (signo, NULL, &act)) {
+  if (xsigaction (signo, NULL, &act)) {
     return -1;
   }
 
   if (act.sa_handler == sighandler) {
-    return sigaction (signo, oldact, NULL);
+    return xsigaction (signo, oldact, NULL);
   }
 
   return 0;
@@ -173,6 +173,8 @@ do_cleanups (void)
   for (i = tos;  i > 0;  --i) {
     stack[i-1].fun (stack[i-1].arg);
   }
+  free (stack);
+  stack = NULL;
 }
 
 

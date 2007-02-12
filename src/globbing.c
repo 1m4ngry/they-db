@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Mon Mar 13 20:27:36 GMT 1995  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -26,9 +26,6 @@
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
-
-/* Need _GNU_SOURCE for FNM_CASEFOLD. */
-#define _GNU_SOURCE
 
 #include <stdio.h>
 
@@ -63,6 +60,7 @@ extern char *strrchr();
 #include "manconfig.h"
 #include "lib/error.h"
 #include "lib/hashtable.h"
+#include "lib/cleanup.h"
 #include "globbing.h"
 
 const char *extension;
@@ -70,7 +68,7 @@ static const char *mandir_layout = MANDIR_LAYOUT;
 
 #ifdef TEST
 
-#  include <libintl.h>
+#  include "lib/gettext.h"
 #  define _(String) gettext (String)
 
 #  ifdef HAVE_GETOPT_H
@@ -126,17 +124,18 @@ static int parse_layout (const char *layout)
 		for (layoutp = upper_layout; *layoutp; layoutp++)
 			*layoutp = CTYPE (toupper, *layoutp);
 
-		if (strstr (layout, "GNU"))
+		if (strstr (upper_layout, "GNU"))
 			flags |= LAYOUT_GNU;
-		if (strstr (layout, "HPUX"))
+		if (strstr (upper_layout, "HPUX"))
 			flags |= LAYOUT_HPUX;
-		if (strstr (layout, "IRIX"))
+		if (strstr (upper_layout, "IRIX"))
 			flags |= LAYOUT_IRIX;
-		if (strstr (layout, "SOLARIS"))
+		if (strstr (upper_layout, "SOLARIS"))
 			flags |= LAYOUT_SOLARIS;
-		if (strstr (layout, "BSD"))
+		if (strstr (upper_layout, "BSD"))
 			flags |= LAYOUT_BSD;
 
+		free (upper_layout);
 		return flags;
 	}
 }
@@ -172,8 +171,10 @@ static struct dirent_hashent *update_directory_cache (const char *path)
 	DIR *dir;
 	struct dirent *entry;
 
-	if (!dirent_hash)
+	if (!dirent_hash) {
 		dirent_hash = hash_create (&dirent_hash_free);
+		push_cleanup ((cleanup_fun) hash_free, dirent_hash);
+	}
 	cache = hash_lookup (dirent_hash, path, strlen (path));
 
 	/* Check whether we've got this one already. */
@@ -242,6 +243,11 @@ static int match_in_directory (const char *path, const char *pattern,
 	char **bsearched;
 	size_t i;
 
+	/* look_for_file declares this static, so it's zero-initialised.
+	 * globfree() can deal with checking it before freeing.
+	 */
+	globfree (pglob);
+
 	pglob->gl_pathc = 0;
 	pglob->gl_pathv = NULL;
 	pglob->gl_offs = 0;
@@ -266,6 +272,7 @@ static int match_in_directory (const char *path, const char *pattern,
 	bsearched = bsearch (&pattern_start, cache->names, cache->names_len,
 			     sizeof *cache->names, &pattern_compare);
 	if (!bsearched) {
+		free (pattern_start.pattern);
 		pglob->gl_pathv[0] = NULL;
 		return 0;
 	}
@@ -315,14 +322,16 @@ char **look_for_file (const char *unesc_hier, const char *sec,
 {
 	char *pattern = NULL, *path = NULL;
 	static glob_t gbuf;
+	static int cleanup_installed = 0;
 	int status = 1;
 	static int layout = -1;
 	char *hier, *name;
 
-	/* As static struct is allocated and contains NULLs we don't need 
-	   to check it before attempting a free. Let globfree() do that */
-
-	globfree (&gbuf);
+	if (!cleanup_installed) {
+		/* appease valgrind */
+		push_cleanup ((cleanup_fun) globfree, &gbuf);
+		cleanup_installed = 1;
+	}
 
 	/* This routine only does a minimum amount of matching. It does not
 	   find cat files in the alternate cat directory. */

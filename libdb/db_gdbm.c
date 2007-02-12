@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Mon Aug  8 20:35:30 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
  */
@@ -37,6 +37,7 @@
 
 #include "manconfig.h"
 #include "lib/hashtable.h"
+#include "lib/cleanup.h"
 #include "mydbm.h"
 
 static struct hashtable *parent_sortkey_hash;
@@ -142,8 +143,10 @@ datum man_gdbm_firstkey (man_gdbm_wrapper wrap)
 	firstkey = keys[0];
 	free (keys);	/* element memory now owned by hashtable */
 
-	if (!parent_sortkey_hash)
+	if (!parent_sortkey_hash) {
 		parent_sortkey_hash = hash_create (&parent_sortkey_hash_free);
+		push_cleanup ((cleanup_fun) hash_free, parent_sortkey_hash);
+	}
 
 	/* Remember this structure for use by nextkey. */
 	hash_install (parent_sortkey_hash,

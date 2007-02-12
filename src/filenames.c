@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -42,7 +42,7 @@ extern char *strrchr();
 #  include <libgen.h>
 #endif /* HAVE_LIBGEN_H */
 
-#include <libintl.h>
+#include "lib/gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"

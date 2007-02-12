@@ -19,7 +19,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * John W. Eaton
  * jwe@che.utexas.edu
@@ -68,10 +68,10 @@ extern char *strcpy();
 /* take path, add db name and return */
 char *mkdbname (const char *path)
 {
-	static char *name;
+	char *name;
 	size_t len = strlen (path);
 
-	name = (char *) xrealloc (name, sizeof MAN_DB + len);
+	name = (char *) xmalloc (sizeof MAN_DB + len);
 	(void) strcpy (name, path);
 	(void) strcpy (name + len, MAN_DB);
 

@@ -4,7 +4,7 @@
  * lexgrog.l: extract 'whatis' info from nroff man / formatted cat pages.
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -20,7 +20,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Wed Oct 12 18:46:11 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  * 
@@ -55,12 +55,13 @@ extern int errno;
 #  include <libgen.h>
 #endif /* HAVE_LIBGEN_H */
 
-#include <libintl.h>
+#include "lib/gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
 #include "lib/error.h"
 #include "lib/pipeline.h"
+#include "descriptions.h"
 #include "security.h"
 #include "ult_src.h"
 
@@ -148,6 +149,7 @@ comment		['.]\\{dbl_quote}
 
  /* Please add to this list if you know how. */
 cs_name		J[Mm][ÉéEe][Nn][Oo]
+da_name		N[Aa][Vv][Nn]
 de_name		B[Ee][Zz][Ee][Ii][Cc][Hh][Nn][Uu][Nn][Gg]
 en_name		N[Aa][Mm][Ee]
 es_name		N[Oo][Mm][Bb][Rr][Ee]
@@ -160,8 +162,9 @@ ja_name		\314\276\301\260
 latin_name	N[Oo][Mm][Ee][Nn]
 nl_name		N[Aa][Aa][Mm]
 pl_name		N[Aa][Zz][Ww][Aa]
+ru_name         \356\341\372\367\341\356\351\345
 sv_name		N[Aa][Mm][Nn]
-name		({cs_name}|{de_name}|{en_name}|{es_name}|{fi_name}|{fr_name}|{hu_name}|{it_name}|{ja_name}|{latin_name}|{nl_name}|{pl_name}|{sv_name})
+name		({cs_name}|{da_name}|{de_name}|{en_name}|{es_name}|{fi_name}|{fr_name}|{hu_name}|{it_name}|{ja_name}|{latin_name}|{nl_name}|{pl_name}|{ru_name}|{sv_name})
 name_sec	{dbl_quote}?{style_change}?{name}{style_change}?({blank}*{dbl_quote})?
 
  /* eptgrv : eqn, pic, tbl, grap, refer, vgrind */
@@ -566,6 +569,7 @@ int main (int argc, char **argv)
 	while (optind != argc) {
 		lexgrog lg;
 		const char *file;
+		int found = 0;
 
 		lg.type = type;
 
@@ -605,16 +609,27 @@ int main (int argc, char **argv)
 		}
 
 		if (file && find_name (file, "-", &lg)) {
-			printf ("%s", argv[optind]);
-			if (show_filters)
-				printf (" (%s)", lg.filters);
-			if (show_whatis)
-				printf (": \"%s\"", lg.whatis);
-			printf ("\n");
-		} else {
+			struct page_description *descs =
+				parse_descriptions (NULL, lg.whatis);
+			const struct page_description *desc;
+			for (desc = descs; desc; desc = desc->next) {
+				found = 1;
+				printf ("%s", argv[optind]);
+				if (show_filters)
+					printf (" (%s)", lg.filters);
+				if (show_whatis)
+					printf (": \"%s - %s\"",
+						desc->name, desc->whatis);
+				printf ("\n");
+			}
+			free_descriptions (descs);
+		}
+
+		if (!found) {
 			printf ("%s: parse failed\n", argv[optind]);
 			some_failed = 1;
 		}
+
 		++optind;
 	}
 

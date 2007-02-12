@@ -1,7 +1,7 @@
 /*
  * encodings.c: locale and encoding handling for man
  *
- * Copyright (C) 2003 Colin Watson.
+ * Copyright (C) 2003, 2004, 2005 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -17,7 +17,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -33,13 +33,14 @@
 #  include <strings.h>
 #endif /* STDC_HEADERS */
 
+#include "lib/gettext.h"
 #include <locale.h>
-#include <libintl.h>
 #ifdef HAVE_LANGINFO_CODESET
 #  include <langinfo.h>
 #endif
 
 #include "manconfig.h"
+#include "lib/pathsearch.h"
 #include "encodings.h"
 
 
@@ -112,6 +113,8 @@ static struct directory_entry directory_table[] = {
 	{ "ru",		"KOI8-R",	"KOI8-R"		}, /* Russian */
 	{ "sk",		"ISO-8859-2",	"ISO-8859-2"		}, /* Slovak */
 	{ "tr",		"ISO-8859-9",	"ISO-8859-9"		}, /* Turkish */
+	{ "zh_CN",	"GB2312",	"GB2312"		}, /* Simplified Chinese */
+	{ "zh_TW",	"BIG5",		"BIG5"			}, /* Traditional Chinese */
 #endif /* MULTIBYTE_GROFF */
 
 	{ NULL,		NULL,		"NULL"			}
@@ -135,7 +138,10 @@ static struct charset_entry charset_table[] = {
 	{ "UTF-8",		"utf8"		},
 
 #ifdef MULTIBYTE_GROFF
+	{ "BIG5",		"nippon"	},
 	{ "EUC-JP",		"nippon"	},
+	{ "GB2312",		"nippon"	},
+	{ "GBK",		"nippon"	},
 #endif /* MULTIBYTE_GROFF */
 
 	{ NULL,			NULL		}
@@ -170,7 +176,7 @@ static struct device_entry device_table[] = {
 
 #ifdef MULTIBYTE_GROFF
 	{ "ascii8",	NULL,		NULL			},
-	{ "nippon",	"EUC-JP",	"EUC-JP"		},
+	{ "nippon",	NULL,		NULL			},
 #endif /* MULTIBYTE_GROFF */
 
 	{ NULL,		NULL,		NULL			}
@@ -202,6 +208,33 @@ static struct less_charset_entry less_charset_table[] = {
 
 static const char *fallback_less_charset = "iso8859";
 
+
+const char *groff_preconv = NULL;
+
+/* Is the groff "preconv" helper available? If so, return its name.
+ * Otherwise, return NULL.
+ */
+const char *get_groff_preconv (void)
+{
+	if (groff_preconv) {
+		if (*groff_preconv)
+			return groff_preconv;
+		else
+			return NULL;
+	}
+
+	if (pathsearch_executable ("gpreconv"))
+		groff_preconv = "gpreconv";
+	else if (pathsearch_executable ("preconv"))
+		groff_preconv = "preconv";
+	else
+		groff_preconv = "";
+
+	if (*groff_preconv)
+		return groff_preconv;
+	else
+		return NULL;
+}
 
 /* Return the assumed encoding of the source man page, based on the
  * directory in which it was found. The caller should attempt to recode from
@@ -386,10 +419,14 @@ static int compatible_encodings (const char *input, const char *output)
 		return 1;
 
 #ifdef MULTIBYTE_GROFF
-	/* Special case for ja_JP.UTF-8, which takes UTF-8 input recoded
-	 * from EUC-JP and produces UTF-8 output. This is rather filthy.
+	/* Special case for some CJK UTF-8 locales, which take UTF-8 input
+	 * recoded from EUC-JP (etc.) and produce UTF-8 output. This is
+	 * rather filthy.
 	 */
-	if (STREQ (input, "EUC-JP") && STREQ (output, "UTF-8"))
+	if ((STREQ (input, "BIG5") ||
+	     STREQ (input, "EUC-JP") ||
+	     STREQ (input, "GB2312") || STREQ (input, "GBK")) &&
+	    STREQ (output, "UTF-8"))
 		return 1;
 #endif /* MULTIBYTE_GROFF */
 
@@ -408,6 +445,9 @@ const char *get_default_device (const char *locale_charset,
 				const char *source_encoding)
 {
 	const struct charset_entry *entry;
+
+	if (get_groff_preconv ())
+		return "utf8";
 
 	if (!locale_charset)
 		return fallback_default_device;
@@ -449,13 +489,16 @@ const char *get_roff_encoding (const char *device, const char *source_encoding)
 #ifdef MULTIBYTE_GROFF
 	/* An ugly special case is needed here. The utf8 device normally
 	 * takes ISO-8859-1 input. However, with the multibyte patch, when
-	 * recoding from EUC-JP it takes UTF-8 input instead. This is evil,
-	 * but there's not much that can be done about it apart from waiting
-	 * for groff 2.0.
+	 * recoding from CJK character sets it takes UTF-8 input instead.
+	 * This is evil, but there's not much that can be done about it
+	 * apart from waiting for groff 2.0.
 	 */
-	if (STREQ (device, "utf8")) {
+	if (STREQ (device, "utf8") && !get_groff_preconv ()) {
 		const char *ctype = setlocale (LC_CTYPE, NULL);
-		if (STREQ (ctype, "ja_JP.UTF-8"))
+		if (STREQ (ctype, "ja_JP.UTF-8") ||
+		    STREQ (ctype, "zh_CN.UTF-8") ||
+		    STREQ (ctype, "zh_SG.UTF-8") ||
+		    STREQ (ctype, "zh_TW.UTF-8"))
 			roff_encoding = "UTF-8";
 	}
 #endif /* MULTIBYTE_GROFF */

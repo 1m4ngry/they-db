@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -48,8 +48,8 @@ extern char *strerror ();
 #  include <libgen.h>
 #endif /* HAVE_LIBGEN_H */
 
+#include "gettext.h"
 #include <locale.h>
-#include <libintl.h>
 #define _(String) gettext (String)
 
 #include "manconfig.h"
@@ -119,17 +119,17 @@ static char *argstr_get_word (const char **argstr)
 {
 	char *out = NULL;
 	const char *litstart = *argstr;
-	int quotemode = 0;
+	enum { NONE, SINGLE, DOUBLE } quotemode = NONE;
 
 	while (**argstr) {
 		char backslashed[2];
 
 		/* If it's just a literal character, go round again. */
-		if ((quotemode == 0 && !strchr (" \t'\"\\", **argstr)) ||
+		if ((quotemode == NONE && !strchr (" \t'\"\\", **argstr)) ||
 		    /* nothing is special in '; terminated by ' */
-		    (quotemode == 1 && **argstr != '\'') ||
+		    (quotemode == SINGLE && **argstr != '\'') ||
 		    /* \ is special in "; terminated by " */
-		    (quotemode == 2 && !strchr ("\"\\", **argstr))) {
+		    (quotemode == DOUBLE && !strchr ("\"\\", **argstr))) {
 			++*argstr;
 			continue;
 		}
@@ -137,7 +137,7 @@ static char *argstr_get_word (const char **argstr)
 		/* Within "", \ is only special when followed by $, `, ", or
 		 * \ (or <newline> in a real shell, but we don't do that).
 		 */
-		if (quotemode == 2 && **argstr == '\\' &&
+		if (quotemode == DOUBLE && **argstr == '\\' &&
 		    !strchr ("$`\"\\", *(*argstr + 1))) {
 			++*argstr;
 			continue;
@@ -160,18 +160,18 @@ static char *argstr_get_word (const char **argstr)
 				return out;
 
 			case '\'':
-				if (quotemode)
-					quotemode = 0;
+				if (quotemode != NONE)
+					quotemode = NONE;
 				else
-					quotemode = 1;
+					quotemode = SINGLE;
 				litstart = ++*argstr;
 				break;
 
 			case '"':
-				if (quotemode)
-					quotemode = 0;
+				if (quotemode != NONE)
+					quotemode = NONE;
 				else
-					quotemode = 2;
+					quotemode = DOUBLE;
 				litstart = ++*argstr;
 				break;
 
@@ -193,7 +193,7 @@ static char *argstr_get_word (const char **argstr)
 		}
 	}
 
-	if (quotemode) {
+	if (quotemode != NONE) {
 		/* Unterminated quoting; give up. */
 		if (out)
 			free (out);
@@ -219,6 +219,19 @@ command *command_new_argstr (const char *argstr)
 		error (FATAL, 0,
 		       _("badly formed configuration directive: '%s'"),
 		       argstr);
+	if (STREQ (arg, "exec")) {
+		/* Some old configuration files have "exec command" rather
+		 * than "command"; this worked fine when being evaluated by
+		 * a shell, but since exec is a shell builtin it doesn't
+		 * work when being executed directly. To work around this,
+		 * we just drop "exec" if it appears at the start of argstr.
+		 */
+		arg = argstr_get_word (&argstr);
+		if (!arg)
+			error (FATAL, 0,
+			       _("badly formed configuration directive: '%s'"),
+			       argstr);
+	}
 	cmd = command_new (arg);
 	free (arg);
 
@@ -535,16 +548,10 @@ void pipeline_start (pipeline *p)
 		sa.sa_handler = SIG_IGN;
 		sigemptyset (&sa.sa_mask);
 		sa.sa_flags = 0;
-		while (sigaction (SIGINT, &sa, &osa_sigint) < 0) {
-			if (errno == EINTR)
-				continue;
+		if (xsigaction (SIGINT, &sa, &osa_sigint) < 0)
 			error (FATAL, errno, "Couldn't ignore SIGINT");
-		}
-		while (sigaction (SIGQUIT, &sa, &osa_sigint) < 0) {
-			if (errno == EINTR)
-				continue;
+		if (xsigaction (SIGQUIT, &sa, &osa_sigint) < 0)
 			error (FATAL, errno, "Couldn't ignore SIGQUIT");
-		}
 	}
 
 	/* Add to the table of active pipelines, so that signal handlers
@@ -626,6 +633,8 @@ void pipeline_start (pipeline *p)
 		if (pid < 0)
 			error (FATAL, errno, _("fork failed"));
 		if (pid == 0) {
+			struct sigaction sa;
+
 			/* child */
 			pop_all_cleanups ();
 
@@ -666,12 +675,13 @@ void pipeline_start (pipeline *p)
 				nice (p->commands[i]->nice);
 
 			/* Restore signals. */
-			while (sigaction (SIGINT, &osa_sigint, NULL) &&
-			       errno == EINTR)
-				;
-			while (sigaction (SIGQUIT, &osa_sigquit, NULL) &&
-			       errno == EINTR)
-				;
+			xsigaction (SIGINT, &osa_sigint, NULL);
+			xsigaction (SIGQUIT, &osa_sigquit, NULL);
+			/* ... but we don't want to know about SIGPIPE. */
+			sa.sa_handler = SIG_IGN;
+			sigemptyset(&sa.sa_mask);
+			sa.sa_flags = 0;
+			xsigaction (SIGPIPE, &sa, NULL);
 
 			execvp (p->commands[i]->name, p->commands[i]->argv);
 			error (EXEC_FAILED_EXIT_STATUS, errno,
@@ -763,6 +773,11 @@ int pipeline_wait (pipeline *p)
 	int ret = 0;
 	int proc_count = p->ncommands;
 	int i;
+
+	if (debug) {
+		fputs ("Waiting for pipeline: ", stderr);
+		pipeline_dump (p, stderr);
+	}
 
 	assert (p->pids);	/* pipeline started */
 	assert (p->statuses);
@@ -875,12 +890,8 @@ int pipeline_wait (pipeline *p)
 
 	if (!--ignored_signals) {
 		/* Restore signals. */
-		while (sigaction (SIGINT, &osa_sigint, NULL) &&
-		       errno == EINTR)
-			;
-		while (sigaction (SIGQUIT, &osa_sigquit, NULL) &&
-		       errno == EINTR)
-			;
+		xsigaction (SIGINT, &osa_sigint, NULL);
+		xsigaction (SIGQUIT, &osa_sigquit, NULL);
 	}
 
 	return ret;
@@ -917,9 +928,6 @@ void pipeline_install_sigchld (void)
 #ifdef SA_RESTART
 	act.sa_flags |= SA_RESTART;
 #endif
-	while (sigaction (SIGCHLD, &act, NULL) == -1) {
-		if (errno == EINTR)
-			continue;
+	if (xsigaction (SIGCHLD, &act, NULL) == -1)
 		error (FATAL, errno, _("can't install SIGCHLD handler"));
-	}
 }

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Mon Aug  8 20:35:30 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
  */
@@ -51,7 +51,7 @@ extern char *strsep();
 extern int errno;
 #endif /* not STDC_HEADERS */
 
-#include <libintl.h>
+#include "lib/gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
@@ -156,6 +156,9 @@ struct mandata *infoalloc (void)
 void free_mandata_elements (struct mandata *pinfo)
 {
 	if (pinfo->addr)
+		/* TODO: this memory appears to be properly owned by the
+		 * caller; why do we free it here?
+		 */
 		free (pinfo->addr);		/* free the 'content' */
 	if (pinfo->name)
 		free (pinfo->name);		/* free the real name */
@@ -253,15 +256,15 @@ datum make_content (struct mandata *in)
 	if (!in->whatis)
 		in->whatis = dash + 1;
 
-	cont.dsize = strlen (dash_if_unset (in->name)) +
-		     strlen (in->ext) +
-		     strlen (in->sec) +
-		  /* strlen (in->_st_mtime) */ + 11 +
-		  /* strlen (in->id) */ + 1 +
-		     strlen (in->pointer) +
-		     strlen (in->filter) +
-		     strlen (in->comp) +
-		     strlen (in->whatis) + 8;
+	cont.dsize = strlen (dash_if_unset (in->name)) + 1 +
+		     strlen (in->ext) + 1 +
+		     strlen (in->sec) + 1 +
+		  /* strlen (in->_st_mtime) */ + 10 + 1 +
+		  /* strlen (in->id) */ + 1 + 1 +
+		     strlen (in->pointer) + 1 +
+		     strlen (in->filter) + 1 +
+		     strlen (in->comp) + 1 +
+		     strlen (in->whatis) + 1;
 	cont.dptr = (char *) xmalloc (cont.dsize);
 #ifdef ANSI_SPRINTF
 	cont.dsize = 1 + sprintf (cont.dptr,

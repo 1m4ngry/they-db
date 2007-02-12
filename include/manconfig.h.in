@@ -19,7 +19,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /*--------------------------------------------------------------------------*/
@@ -114,7 +114,7 @@
 #endif
 
 #ifndef WEB_BROWSER
-#  define WEB_BROWSER	"exec /usr/bin/www-browser"
+#  define WEB_BROWSER	"@browser@"
 #endif
 
 #ifndef TR
@@ -246,7 +246,51 @@
    the -p or -pg flag, to do this manually (needed if you want to know where
    gmon.out ended up), uncomment the following line */
 /* #define __profile__ */
- 
+
+/* GCC version checking borrowed from glibc. */
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#  define GNUC_PREREQ(maj,min) \
+	((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
+#else
+#  define GNUC_PREREQ(maj,min) 0
+#endif
+
+/* Does this compiler support format string checking? */
+#if GNUC_PREREQ(2,0)
+#  define ATTRIBUTE_FORMAT_PRINTF(a,b) \
+	__attribute__ ((__format__ (__printf__, a, b)))
+#else
+#  define ATTRIBUTE_FORMAT_PRINTF(a,b)
+#endif
+
+/* Does this compiler support marking variables as unused? */
+#if GNUC_PREREQ(2,4)
+#  define ATTRIBUTE_UNUSED __attribute__ ((__unused__))
+#else
+#  define ATTRIBUTE_UNUSED
+#endif
+
+/* Does this compiler support malloc return checking? */
+#if GNUC_PREREQ(2,96)
+#  define ATTRIBUTE_MALLOC __attribute__ ((__malloc__))
+#else
+#  define ATTRIBUTE_MALLOC
+#endif
+
+/* Does this compiler support unused result checking? */
+#if GNUC_PREREQ(3,4)
+#  define ATTRIBUTE_WARN_UNUSED_RESULT __attribute__ ((__warn_unused_result__))
+#else
+#  define ATTRIBUTE_WARN_UNUSED_RESULT
+#endif
+
+/* Does this compiler support sentinel checking? */
+#if GNUC_PREREQ(4,0)
+#  define ATTRIBUTE_SENTINEL __attribute__ ((__sentinel__))
+#else
+#  define ATTRIBUTE_SENTINEL
+#endif
+
 /* if testing BTREE db allowing inserts of identical keys, uncomment below */
 /* #define FAST_BTREE */
 
@@ -288,11 +332,16 @@ struct compression {
 
 /* some library function declarations */
 #include <stddef.h>	/* for size_t */
-extern VOID *xmalloc (size_t n);
-extern VOID *xrealloc (VOID *p, size_t n);
-extern __inline__ char *xstrdup (const char *string);
-extern __inline__ char *xstrndup (const char *string, size_t size);
+extern VOID *xmalloc (size_t n) ATTRIBUTE_MALLOC ATTRIBUTE_WARN_UNUSED_RESULT;
+extern VOID *xrealloc (VOID *p, size_t n)
+	ATTRIBUTE_MALLOC ATTRIBUTE_WARN_UNUSED_RESULT;
+extern __inline__ char *xstrdup (const char *string) ATTRIBUTE_MALLOC;
+extern __inline__ char *xstrndup (const char *string, size_t size) 
+	ATTRIBUTE_MALLOC;
 extern const char *xstrsignal (int signum);
+struct sigaction;
+extern int xsigaction (int signum, const struct sigaction *act,
+		       struct sigaction *oldact);
 extern int create_tempfile (const char *template, char **created_filename);
 extern char *create_tempdir (const char *template);
 
@@ -338,7 +387,8 @@ extern char *strsep (char **stringp, const char *delim);
 #  define getcwd(buf,size) getwd (buf)
 #endif
 
-extern char *strappend (char *, ...);
+extern char *strappend (char *, ...)
+	ATTRIBUTE_SENTINEL ATTRIBUTE_WARN_UNUSED_RESULT;
 
 extern int debug; 		/* shows whether -d issued */
 extern int quiet;		/* be quiet(er) if 1 */

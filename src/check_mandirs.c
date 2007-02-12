@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Mon May  2 17:36:33 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
  *
@@ -76,7 +76,7 @@ extern int errno;
 #  include <libgen.h>
 #endif /* HAVE_LIBGEN_H */
 
-#include <libintl.h>
+#include "lib/gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
@@ -670,6 +670,8 @@ static int count_glob_matches (const char *name, const char *ext,
 		if (buf) {
 			if (STREQ (ext, info.ext))
 				++count;
+			if (info.name)
+				free (info.name);
 			free (buf);
 		}
 	}
@@ -863,7 +865,6 @@ short purge_missing (const char *manpath, const char *catpath)
 		}
 
 		split_content (content.dptr, &entry);
-		content.dptr = entry.addr;
 
 		save_debug = debug;
 		debug = 0;	/* look_for_file() is quite noisy */
@@ -894,7 +895,7 @@ short purge_missing (const char *manpath, const char *catpath)
 
 		free (nicekey);
 
-		MYDBM_FREE (content.dptr);
+		free_mandata_elements (&entry);
 		nextkey = MYDBM_NEXTKEY (dbf, key);
 		MYDBM_FREE (key.dptr);
 		key = nextkey;

@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Mon Aug  8 20:35:30 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -36,7 +36,7 @@ extern int errno;
 
 #include <sys/types.h>
 
-#include <libintl.h>
+#include "lib/gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"

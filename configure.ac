@@ -1,9 +1,9 @@
-dnl Process this file with autoconf v2.50a+ to produce a configure script.
+dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl Initialise and check we're in the correct directory.
 dnl
-AC_INIT(man-db, 2.4.3)
-AC_PREREQ(2.50a)
+AC_INIT(man-db, 2.4.4)
+AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR(acinclude.m4)
 AC_CONFIG_AUX_DIR(tools)
 AC_CONFIG_HEADER(config.h)
@@ -12,7 +12,7 @@ AC_ARG_PROGRAM
 dnl
 dnl Define below date and version information to be put into man pages etc.
 dnl
-datemark=20050703
+datemark=20070212
 date=`LANG=C date -d $datemark +'%Y-%m-%d'`
 AC_SUBST(date)dnl
 dnl
@@ -31,8 +31,8 @@ dnl separately 'built' should use --enable and friends. Oh well...
 dnl Current options: setuid, device, db.
 dnl 
 AC_ARG_ENABLE(setuid,
-[  --enable-setuid[=ARG]	  install man setuid to user ARG @<:@ARG=man@:>@
-  --disable-setuid	  don't install man setuid],
+[AS_HELP_STRING([--enable-setuid[=ARG]], [install man setuid to user ARG [ARG=man]])
+AS_HELP_STRING([--disable-setuid], [don't install man setuid])],
 	  [if test "$enableval" = "yes" 
 	   then
 		enableval=man
@@ -53,7 +53,7 @@ AC_ARG_ENABLE(setuid,
 	   man_install_flags="-m 4755 -o man"
 	   AC_DEFINE_UNQUOTED(SECURE_MAN_UID, "$man_owner")])
 AC_ARG_ENABLE(undoc,
-[  --enable-undoc=COMMAND  suggest COMMAND for missing manual pages],
+[AS_HELP_STRING([--enable-undoc=COMMAND], [suggest COMMAND for missing manual pages])],
 	[if test "$enableval" = "yes" || test "$enableval" = "no"
 	 then
 		AC_MSG_ERROR(--enable-undoc requires an argument)
@@ -63,7 +63,7 @@ AC_ARG_ENABLE(undoc,
 				   [Define as the name of a command you want to suggest when a non-existent page is requested.])
 	 fi])
 AC_ARG_ENABLE(mb-groff,
-[  --enable-mb-groff       expect groff with Debian multibyte patch],
+[AS_HELP_STRING([--enable-mb-groff], [expect groff with Debian multibyte patch])],
 	[if test "$enableval" = "yes"
 	 then
 		 AC_MSG_NOTICE([Including support for groff with Debian multibyte patch])
@@ -71,7 +71,7 @@ AC_ARG_ENABLE(mb-groff,
 			   [Define if your groff installation has the Debian multibyte patch.])
 	 fi])
 AC_ARG_WITH(device,
-[  --with-device=DEVICE	  use nroff with the output device DEVICE],
+[AS_HELP_STRING([--with-device=DEVICE], [use nroff with the output device DEVICE])],
 	[if test "$withval" = "yes" || test "$withval" = "no" 
 	 then
 	 	AC_MSG_ERROR(--with-device requires an argument)
@@ -79,8 +79,7 @@ AC_ARG_WITH(device,
 	 	nroff_device=" -T$withval"
 	 fi])
 AC_ARG_WITH(db,
-[  --with-db=LIBRARY	  use database library LIBRARY
-                          (db4, db3, db2, db1, db, gdbm, ndbm)],
+[AS_HELP_STRING([--with-db=LIBRARY], [use database library LIBRARY (db4, db3, db2, db1, db, gdbm, ndbm)])],
 	[if test "$withval" = "yes" || test "$withval" = "no" 
 	 then
 	 	AC_MSG_ERROR(--with-db requires an argument)
@@ -89,22 +88,26 @@ AC_ARG_WITH(db,
 	 fi],
 	 : ${db=no})
 AC_ARG_WITH(config-file,
-[  --with-config-file=CF	  use config file CF @<:@CF=SYSCONFDIR/man_db.conf@:>@],
+[AS_HELP_STRING([--with-config-file=CF], [use config file CF [CF=SYSCONFDIR/man_db.conf]])],
 	[if test "$withval" = "yes" || test "$withval" = "no"
 	 then
 		AC_MSG_ERROR(--with-config-file requires an argument)
 	 else
 		config_file=$withval
+		config_file_basename=${withval##*/}
 	 fi],
-	 : ${config_file=\$\{sysconfdir\}/man_db.conf})
+	 : ${config_file=\$\{sysconfdir\}/man_db.conf}
+	 : ${config_file_basename=man_db.conf})
 dnl
 dnl Finish the argument parsing
 dnl
 AC_SUBST(man_install_flags)dnl
 AC_SUBST(config_file)dnl
+AC_SUBST(config_file_basename)dnl
 dnl
 dnl Check $PATH for the following progs and append suitable options.
 dnl 
+AC_GNU_SOURCE
 AC_PROG_CC
 AC_PROG_CPP
 CFLAGS="$CFLAGS -Wall"
@@ -115,10 +118,11 @@ fi
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_PATH_PROG(cat, cat)
-AC_PATH_PROG(lynx, lynx, /usr/bin/lynx)
+AC_PATH_PROGS(browser, www-browser lynx, /usr/bin/www-browser)
+test -n "$browser" && browser="exec $browser"
 AC_PATH_PROG(tr, tr)
 AC_PATH_PROG(grep, grep)
-AC_PATH_PROG(pager, pager, /usr/bin/pager)
+AC_PATH_PROGS(pager, pager less more, /usr/bin/pager)
 test -n "$pager" && pager="$pager -s"
 dnl
 dnl define below (in list of preference) *roff macros to check for.
@@ -276,8 +280,7 @@ dnl
 dnl Work out which manual page hierarchy scheme might be in use.
 dnl
 AC_ARG_ENABLE(mandirs,
-[  --enable-mandirs=OS	  select manual page hierarchy organization
-                          (GNU, HPUX, IRIX, Solaris, BSD)],
+[AS_HELP_STRING([--enable-mandirs=OS], [select manual page hierarchy organization (GNU, HPUX, IRIX, Solaris, BSD)])],
 	[AC_MSG_NOTICE([Using hierarchy organization(s) $enableval])
 	 AC_DEFINE_UNQUOTED(MANDIR_LAYOUT, "$enableval",
 			    [Define to the manual page hierarchy organization(s) in use.])],
@@ -313,7 +316,7 @@ dnl
 dnl Internationalization support.
 dnl
 AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.12.1)
+AM_GNU_GETTEXT_VERSION([0.15])
 AC_SUBST(LINGUAS)dnl
 dnl
 dnl Checks for structures and compiler characteristics.
@@ -459,9 +462,7 @@ dnl
 AC_CHECK_FUNC(regcomp, [AC_DEFINE(POSIX_REGEX, 1, [Define if you have the regcomp and regexec POSIX regex routines.])],
   [AC_CHECK_FUNC(re_comp, [AC_DEFINE(BSD_REGEX, 1, [Define if you have the re_comp and re_exec BSD regex routines.])],
     [AC_MSG_WARN(no regex routines found, whatis/apropos will ignore -r)])])
-AC_CHECK_FUNC(fnmatch,
-	      [AC_DEFINE(HAVE_FNMATCH_H, 1, [Define if using <fnmatch.h> rather than "lib/fnmatch.h".])],
-	      [AC_LIBOBJ([fnmatch])])
+MAN_FUNC_FNMATCH
 AC_CHECK_FUNC(globfree,
 	      [AC_DEFINE(HAVE_GLOB_H, 1, [Define if using <glob.h> rather than "lib/glob.h".])],
 	      [AC_LIBOBJ([glob])])
@@ -470,6 +471,8 @@ AC_CHECK_FUNC(getopt_long,
 	      [AC_LIBOBJ([getopt])
 	       AC_LIBOBJ([getopt1])])
 AC_REPLACE_FUNCS(flock putenv realpath rename basename waitpid strstr strsep strcspn strspn strnlen mkdtemp mkstemp)
+gt_FUNC_SETENV
+gl_FUNC_GEN_TEMPNAME
 dnl
 dnl MAN_ECHO_VAR(ENV-VARIABLE)
 define(MAN_ECHO_VAR, [AC_MSG_NOTICE([default $1 = "$$1"])])dnl

@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Tue Apr 26 12:56:44 BST 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
@@ -49,7 +49,7 @@ extern char *strchr();
 #  include <libgen.h>
 #endif /* HAVE_LIBGEN_H */
 
-#include <libintl.h>
+#include "lib/gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
@@ -97,7 +97,7 @@ int main (int argc, char *argv[])
 	MYDBM_FILE dbf;
 	datum key;
 
-	program_name = basename (argv[0]);
+	program_name = xstrdup (basename (argv[0]));
 	if (is_directory (FHS_CAT_ROOT) == 1)
 		cat_root = FHS_CAT_ROOT;
 	else if (is_directory (CAT_ROOT) == 1)

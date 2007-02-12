@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #include <string.h>
@@ -33,18 +33,15 @@
 
 #include "config.h"
 
-#include <locale.h>
+#ifdef HAVE_LIBGEN_H
+#  include <libgen.h>
+#endif /* HAVE_LIBGEN_H */
 
-#ifdef ENABLE_NLS
-# include <libintl.h>
-# define _(Text) gettext (Text)
-#else
-# undef bindtextdomain
-# define bindtextdomain(Domain, Directory) /* empty */
-# undef textdomain
-# define textdomain(Domain) /* empty */
-# define _(Text) Text
-#endif
+#include "lib/gettext.h"
+#include <locale.h>
+#define _(Text) gettext (Text)
+
+#include "manconfig.h"
 
 
 /* this list is used to authenticate the program running.
@@ -71,7 +68,6 @@ int main (int argc, char **argv)
 {
 	uid_t ruid;
 	char *fakeroot;
-	char *p;
 	struct passwd *pwd;
 
 	argc = argc; /* not used */
@@ -84,8 +80,7 @@ int main (int argc, char **argv)
 	textdomain (PACKAGE);
 
 	/* this wrapper can be run as "man" or as "mandb" */
-	p = strrchr (argv[0], '/');
-	program_name = (p ? ++p : argv[0]);
+	program_name = xstrdup (basename (argv[0]));
 
 	ruid = getuid ();
 	fakeroot = getenv ("FAKEROOTKEY");

@@ -17,7 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with man-db; if not, write to the Free Software Foundation,
-# Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 # Sat Aug  6 15:46:44 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk):
 
@@ -51,8 +51,8 @@ USE_NLS = @USE_NLS@
 # GNUmakefile and include/Defines are automatic targets, don't add below.
 INCLUDES := config.h $(addprefix include/, manconfig.h comp_src.h)
 CONF = src/man_db.conf
-EVERYTHING = lib intl libdb src zsoelim man po
-ALL = lib intl libdb src zsoelim man po
+EVERYTHING = intl lib libdb src zsoelim man po
+ALL = intl lib libdb src zsoelim man po
 INSTALL = src zsoelim man intl po
 
 include include/Defines
@@ -74,11 +74,11 @@ $(EVERYTHING): $(INCLUDES) $(CONF)
 	$(MAKE) -C $@ $(targets)
 
 # Automatic regeneration targets
-$(srcdir)/configure: configure.in aclocal.m4
+$(srcdir)/configure: configure.ac aclocal.m4
 	-cd $(srcdir) && autoconf
 
 $(srcdir)/config.h.in: stamp-h.in
-$(srcdir)/stamp-h.in: configure.in aclocal.m4
+$(srcdir)/stamp-h.in: configure.ac aclocal.m4
 	-cd $(srcdir) && autoheader && echo timestamp > stamp-h.in
 
 # Use CONFIG_FILES= CONFIG_HEADERS= to force config.status to only
@@ -184,8 +184,8 @@ ifeq ($(srcdir),.)
 _subdirs = $(EVERYTHING) tools docs include manual m4
 
 _all = */README
-_root = ABOUT-NLS README configure *.m4 *.in man-db.*
-_docs = INSTALL.* COPYING* ChangeLog NEWS ToDo manpage.example*
+_root = ABOUT-NLS README configure configure.ac *.m4 *.in man-db.*
+_docs = INSTALL.* COPYING* ChangeLog HACKING NEWS TODO manpage.example*
 _include = *.in
 _lib = Makefile.in *.[ch]
 _libdb = Makefile.in *.[ch]

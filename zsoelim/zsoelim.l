@@ -21,7 +21,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * Added functionality over gsoelim to allow for compressed .so includes.
  *
@@ -74,7 +74,7 @@ extern int errno;
 #define NAME	so_name[so_stack_ptr]
 #define LINE	so_line[so_stack_ptr]
 
-#include <libintl.h>
+#include "lib/gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"

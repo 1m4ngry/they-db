@@ -18,7 +18,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * All of these routines except hash_free() can be found in K&R II.
  *
@@ -180,7 +180,7 @@ void hash_free (struct hashtable *ht)
 
 	if (debug) {
 		fprintf (stderr,
-			 "free_hashtab: %d entries, %d (%d%%) unique\n", 
+			 "hash_free: %d entries, %d (%d%%) unique\n",
 		         ht->unique + ht->identical,
 		         ht->unique,
 			 ht->unique ? (ht->unique * 100) /
@@ -204,5 +204,6 @@ void hash_free (struct hashtable *ht)
 		}
 	}
 
+	free (ht->hashtab);
 	free (ht);
 }

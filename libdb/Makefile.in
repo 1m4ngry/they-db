@@ -17,7 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with man-db; if not, write to the Free Software Foundation,
-# Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 # Wed June  6 15:44:47 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk):
 
@@ -34,7 +34,7 @@ include $(top_srcdir)/include/Defines
 .PHONY: $(DEFAULT_TARGETS)
 
 MANDEFS =
-MANCPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir) -I$(srcdir) -I-
+MANCPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir) -I$(srcdir)
 ifeq ($(USE_NLS),yes)
 MANCPPFLAGS += -I$(top_srcdir)/intl
 endif
@@ -53,10 +53,10 @@ $(library): $(library)($(ALL))
 install uninstall:
 
 clean mostlyclean:
+	rm -rf .depend
 	rm -f *~ core $(ALL) $(library)
 
 distclean: clean
-	rm -rf .depend
 	rm -f Makefile
 
 realclean: distclean

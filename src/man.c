@@ -19,7 +19,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * John W. Eaton
  * jwe@che.utexas.edu
@@ -118,8 +118,8 @@ extern int errno;
 #  include "lib/getopt.h"
 #endif /* HAVE_GETOPT_H */
 
+#include "lib/gettext.h"
 #include <locale.h>
-#include <libintl.h>
 #define _(String) gettext (String)
 
 #include "manconfig.h"
@@ -127,6 +127,7 @@ extern int errno;
 #include "libdb/db_storage.h"
 #include "lib/error.h"
 #include "lib/cleanup.h"
+#include "lib/setenv.h"
 #include "lib/hashtable.h"
 #include "lib/pipeline.h"
 #include "lib/getcwdalloc.h"
@@ -437,7 +438,7 @@ static void usage (int status)
 # ifdef TROFF_IS_GROFF
 	puts (_("-H, --html                  use lynx or argument to display html output.\n"
 		"-Z, --ditroff               use groff and force it to produce ditroff.\n"
-		"-X, --gxditview             use groff and display through gditview (X11):\n"
+		"-X, --gxditview             use groff and display through gxditview (X11):\n"
 		"                            -X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12."));
 # endif /* TROFF_IS_GROFF */
 #endif /* HAS_TROFF */
@@ -572,30 +573,21 @@ static void add_roff_line_length (command *cmd, int *save_cat)
 	}
 }
 
-/*
- * changed these messages from stdout to stderr,
- * (Fabrizio Polacco) Fri, 14 Feb 1997 01:30:07 +0200
- */
 static __inline__ void gripe_no_man (const char *name, const char *sec)
 {
-	if (troff) {
-		fprintf (stderr, _("No source manual entry for %s"), name);
-	} else {
-
-/* On AIX and IRIX, fall back to the vendor supplied browser */
+	/* On AIX and IRIX, fall back to the vendor supplied browser. */
 #if defined _AIX || defined __sgi
-
+	if (!troff) {
 		putenv ("MANPATH=");  /* reset the MANPATH variable */
 		execv ("/usr/bin/man", global_argv);
-#else
-		fprintf (stderr, _("No manual entry for %s"), name);
-#endif
 	}
+#endif
 
 	if (sec)
-		fprintf (stderr, _(" in section %s\n"), sec);
+		fprintf (stderr, _("No manual entry for %s in section %s\n"),
+			 name, sec);
 	else
-		putc ('\n', stderr);
+		fprintf (stderr, _("No manual entry for %s\n"), name);
 
 #ifdef UNDOC_COMMAND
 	if (pathsearch_executable (name))
@@ -784,6 +776,12 @@ static int local_man_loop (const char *argv)
 			return NOT_FOUND;
 		}
 
+		if (S_ISCHR (st.st_mode) || S_ISBLK (st.st_mode)) {
+			/* EINVAL is about the best I can do. */
+			error (0, EINVAL, "%s", argv);
+			return NOT_FOUND;
+		}
+
 #ifdef COMP_SRC
 		comp = comp_info (argv, 0);
 		if (comp)
@@ -842,7 +840,7 @@ int main (int argc, char *argv[])
 	if (internal_locale && strcmp (internal_locale, "C") &&
 	    strcmp (internal_locale, "POSIX")) {
 		multiple_locale = getenv ("LANGUAGE");
-		if (multiple_locale)
+		if (multiple_locale && *multiple_locale)
 			internal_locale = multiple_locale;
 	}
 	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
@@ -980,6 +978,9 @@ int main (int argc, char *argv[])
 			exit_status = local_man_loop (argv[optind]);
 			optind++;
 		}
+		free (cwd);
+		free (internal_locale);
+		free (program_name);
 		exit (exit_status);
 	}
 
@@ -1129,6 +1130,8 @@ int main (int argc, char *argv[])
 
 		chkr_garbage_detector ();
 	}
+	hash_free (db_hash);
+	db_hash = NULL;
 
 	drop_effective_privs ();
 
@@ -1136,6 +1139,10 @@ int main (int argc, char *argv[])
 	if (cwd[0])
 		chdir (cwd);
 
+	free_pathlist (manpathlist);
+	free (cwd);
+	free (internal_locale);
+	free (program_name);
 	exit (exit_status);
 }
 
@@ -1549,6 +1556,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		int using_tbl = 0;
 		command *cmd;
 		const char *output_encoding = NULL, *locale_charset = NULL;
+		char *pp_encoding = NULL;
 
 		if (*file) {
 			cmd = command_new_argstr (get_def ("soelim", SOELIM));
@@ -1567,6 +1575,29 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 						 get_def ("soelim", SOELIM));
 		}
 
+		if (strstr (pp_string, "-*-")) {
+			const char *pp_search = strstr (pp_string, "-*-") + 3;
+			while (*pp_search == ' ')
+				++pp_search;
+			if (STRNEQ (pp_search, "coding:", 7)) {
+				const char *pp_encoding_end;
+				pp_search += 7;
+				while (*pp_search == ' ')
+					++pp_search;
+				pp_encoding_end = strchr (pp_search, ' ');
+				if (pp_encoding_end)
+					pp_encoding = xstrndup
+						(pp_search,
+						 pp_encoding_end - pp_search);
+				else
+					pp_encoding = xstrdup (pp_search);
+				if (debug)
+					fprintf (stderr,
+						 "preprocessor encoding: %s\n",
+						 pp_encoding);
+			}
+		}
+
 		/* Load the roff_device value dependent on the language dir
 		 * in the path.
 		 */
@@ -1574,10 +1605,14 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			char *page_encoding;
 			const char *source_encoding, *roff_encoding;
 			char *cat_charset;
+			const char *groff_preconv;
 
 #define STRC(s, otherwise) ((s) ? (s) : (otherwise))
 
-			page_encoding = get_page_encoding (lang);
+			if (pp_encoding) {
+				page_encoding = xstrdup (pp_encoding);
+			} else
+				page_encoding = get_page_encoding (lang);
 			source_encoding = get_source_encoding (lang);
 			if (debug) {
 				fprintf (stderr, "page_encoding = %s\n",
@@ -1626,8 +1661,15 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			/* We may need to recode:
 			 *   from page_encoding to roff_encoding on input;
 			 *   from output_encoding to locale_charset on output.
+			 * If we have preconv, then use it to recode the
+			 * input to a safe escaped form.
 			 */
-			if (roff_encoding &&
+			groff_preconv = get_groff_preconv ();
+			if (groff_preconv)
+				pipeline_command_args
+					(p, groff_preconv, "-e", page_encoding,
+					 NULL);
+			else if (roff_encoding &&
 			    !STREQ (page_encoding, roff_encoding))
 				pipeline_command_args (p, "iconv", "-c",
 						       "-f", page_encoding,
@@ -1658,6 +1700,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		do {
 			command *cmd = NULL;
 			int wants_dev = 0; /* filter wants a dev argument */
+			int wants_post = 0; /* postprocessor arguments */
 
 			/* set cmd according to *pp_string, on
                            errors leave cmd as NULL */
@@ -1692,6 +1735,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				cmd = command_new_argstr
 					(get_def ("refer", REFER));
 				break;
+			case ' ':
+			case '-':
 			case 0:
 				/* done with preprocessors, now add roff */
                                 if (troff)
@@ -1709,6 +1754,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 #endif
 
 				wants_dev = 1;
+				wants_post = 1;
 				break;
 			}
 
@@ -1721,20 +1767,12 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			}
 
 			if (wants_dev) {
-				if (gxditview)
-					command_arg (cmd, "-X");
-
 				if (roff_device) {
 					char *tmpdev = strappend (NULL, "-T",
 								  roff_device,
 								  NULL);
 					command_arg (cmd, tmpdev);
 					free (tmpdev);
-					if (STREQ (roff_device, "ps"))
-						/* Tell grops to guess the
-						 * page size.
-						 */
-						command_arg (cmd, "-P-g");
 				} else if (gxditview) {
 					char *tmpdev = strappend (NULL, "-TX",
 								  gxditview,
@@ -1744,7 +1782,21 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				}
 			}
 
+			if (wants_post) {
+				if (gxditview)
+					command_arg (cmd, "-X");
+
+				if (roff_device && STREQ (roff_device, "ps"))
+					/* Tell grops to guess the page
+					 * size.
+					 */
+					command_arg (cmd, "-P-g");
+			}
+
 			pipeline_command (p, cmd);
+
+			if (*pp_string == ' ' || *pp_string == '-')
+				break;
 		} while (*pp_string++);
 
 		if (!different_encoding && output_encoding && locale_charset &&
@@ -1769,6 +1821,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				pipeline_command_args (p, COL, NULL);
 #endif /* GNU_NROFF */
 		}
+
+		free (pp_encoding);
 	} else {
 		/* use external formatter script, it takes arguments
 		   input file, preprocessor string, and (optional)
@@ -2517,9 +2571,6 @@ static int display (const char *dir, const char *man_file,
 					return 0;
 			}
 
-			fprintf (stderr,
-				 _("Reformatting %s, please wait...\n"),
-				 title);
 			disp_cmd = make_display_command (NULL, title);
 
 #ifdef MAN_CATS
