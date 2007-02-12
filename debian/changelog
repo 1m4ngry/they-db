@@ -29,6 +29,7 @@ man-db (2.4.4-1) UNRELEASED; urgency=low
       (closes: #327772).
     - Stop claiming that -d does not display any manual pages (thanks, Dan
       Jacobson; closes: #340910).
+  * Policy version 3.7.2: no changes required.
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 11 Feb 2007 20:25:02 +0000
 
