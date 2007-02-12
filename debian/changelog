@@ -1,4 +1,4 @@
-man-db (2.4.4-1) UNRELEASED; urgency=low
+man-db (2.4.4-1) experimental; urgency=low
 
   * New upstream release.
     - Drop "Reformatting %s, please wait..." message (LP: #18786,
@@ -31,7 +31,7 @@ man-db (2.4.4-1) UNRELEASED; urgency=low
       Jacobson; closes: #340910).
   * Policy version 3.7.2: no changes required.
 
- -- Colin Watson <cjwatson@debian.org>  Sun, 11 Feb 2007 20:25:02 +0000
+ -- Colin Watson <cjwatson@debian.org>  Mon, 12 Feb 2007 12:45:53 +0000
 
 man-db (2.4.3-6) unstable; urgency=low
 
