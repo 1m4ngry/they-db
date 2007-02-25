@@ -1,139 +1,127 @@
 #
-#    Translators, if you are not familiar with the PO format, gettext
-#    documentation is worth reading, especially sections dedicated to
-#    this format, e.g. by running:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
+# Catalan translation for man-db package.
+# Copyright (C) 2007 Colin Watson.
+# This file is distributed under the same license as the man-db
+# package.
 #
-#    Some information specific to po-debconf are available at
-#            /usr/share/doc/po-debconf/README-trans
-#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+# Antoni Bella Perez <bella5@teleline.es>, 2002.
+# JordÃ  Polo <jorda@ettin.org>, 2007.
 #
-#    Developers do not need to manually edit POT or PO files.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: 2.4.3-6\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-01-30 04:32+0100\n"
+"PO-Revision-Date: 2007-02-21 23:00+0100\n"
+"Last-Translator: JordÃ  Polo <jorda@ettin.org>\n"
+"Language-Team: CatalÃ  <debian-l10n-catalan@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
-#, fuzzy
+#: ../templates.master:1001
 msgid "Should man and mandb be installed 'setuid man'?"
-msgstr "Voleu que man i mandb s'instal·len setuid man?"
+msgstr "Voleu que man i mandb s'instalÂ·lin Â«setuid manÂ»?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
-#, fuzzy
+#: ../templates.master:1001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
 msgstr ""
-"Els programes man i mandb poden ser instal·lats amb el bit set-user-id "
-"establert per a que aquests s'executin amb els permissos de l'usuari \"man"
-"\". Això permetrà als usuaris ordinaris beneficiar-se des de la memòria cau "
-"del preformatejat de les pàgines de manual (\"cat pages\") i significa que "
-"la base de dades de les descripcions de les pàgines de manual són "
-"automàticament actualitzades per la gent que les llegeix. En particular, "
-"l'emmagatzemament de pàgines cat pot ajudar el rendiment en màquines lentes."
+"Els programes man i mandb poden ser instalÂ·lats amb el bit Â«set-user-idÂ» "
+"establert, per tal d'executar-los amb els permisos de l'usuari Â«manÂ». AixÃ² "
+"permetrÃ  als usuaris regulars beneficiar-se de la memÃ²ria cau de pÃ gines de "
+"manual preformatades (tambÃ© conegudes com Â«cat pagesÂ»), que pot millorar el "
+"rendiment en mÃ quines lentes."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
-#, fuzzy
+#: ../templates.master:1001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"La memòria cau de les pàgines de manual sols funciona si useu un terminal "
-"d'amplada \"normal\" (de 66 a 80 caràcters). Això és així per a evitar el "
-"que un usuari faci pàgines cat que siguin desades en una amplada que puga "
-"ser inconvenient per a d'altres usuaris. En futures versions això es podrà "
-"configurar. Fins llavors, si useu un terminal ample, podeu forçar el "
-"preformatejat a 80 caràcters de les pàgines de manual establint MANWIDTH=80."
+"La memÃ²ria cau de les pÃ gines de manual nomÃ©s funciona si useu un terminal "
+"de 80 columnes d'amplada, per tal d'evitar que es desin pÃ gines cat amb "
+"amplades que podrien resultar incÃ²modes a altres usuaris. Si utilitzeu un "
+"terminal mÃ©s ample, podeu forÃ§ar el format de les pÃ gines de manual a 80 "
+"columnes establint MANWIDTH=80."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
-#, fuzzy
+#: ../templates.master:1001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
 msgstr ""
-"Habilitar aquesta característica pot causar un risc de seguretat, pel que "
-"per defecte està deshabilitat. Si teniu cap dubte, vos suggerim que ho "
-"deshabiliteu."
+"Habilitar aquesta caracterÃ­stica pot representar un risc de seguretat, de "
+"manera que estÃ  desactivada per defecte. Si dubteu, segurament us convingui "
+"deixar-la desactivada."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
-#, fuzzy
+#. Type: boolean
+#. Description
+#: ../templates.master:2001 ../templates.master:3001
+msgid "Should mandb build its database now?"
+msgstr "Hauria de construir ara mandb la seva base de dades?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:2001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
 "packages."
 msgstr ""
-"Encara no teniu una base de dades de les descripcions de les pàgines de "
-"manual. El construir-ne una pot trigar una estona, depenent de quantes "
-"pàgines de manual tingueu instal·lades; això es farà en segon pla i "
-"possiblement alentirà la instal·lació d'altres paquets. Voleu que es faci "
-"això ara?"
+"Encara no teniu una base de dades de les descripcions de les pÃ gines de "
+"manual. Construir-ne una pot trigar una estona, depenent de quantes pÃ gines "
+"de manual tingueu instalÂ·lades; aixÃ² es farÃ  en segon pla i possiblement "
+"alentirÃ  la instalÂ·laciÃ³ d'altres paquets."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid "Should mandb build its database now?"
-msgstr "Hauria de construir ara mandb la seva base de dades?"
-
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-#, fuzzy
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Aquesta versió de man-db és incompatible amb la vostra base de dades de les "
-"descripcions de les pàgines de manual, pel que aquesta base de dades "
-"necessita ser recontruida.  Això pot trigar una estona, depenent de quantes "
-"pàgines de manual tingueu instal·lades; això es farà en un segon pla i "
-"possiblement alentirà la instal·lació d'altres paquets. Voleu que es faci "
-"això ara?"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
+#: ../templates.master:2001 ../templates.master:3001
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
 "'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
 "to display any output."
 msgstr ""
-"Si no construïu ara la base de dades, aquesta serà construïda la pròxima "
-"vegada que s'executi /etc/cron.weekly/mandb, o podeu fer-ho manualment amb "
-"\"mandb -c\" com a usuari \"man\".  Mentrestant, les ordres \"whatis\" i "
-"\"apropos\" no podran mostrar cap eixida."
+"Si no construÃ¯u ara la base de dades, aquesta serÃ  construÃ¯da la propera "
+"vegada que s'executi /etc/cron.weekly/mandb, o si ho feu manualment amb "
+"Â«mandb -cÂ» com a usuari Â«manÂ». Fins que ho feu, les ordres Â«whatisÂ» i "
+"Â«aproposÂ» no podran mostrar cap resultat."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:3001
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages."
+msgstr ""
+"Aquesta versiÃ³ de man-db Ã©s incompatible amb la vostra base de dades de les "
+"descripcions de les pÃ gines de manual, i per tant haurÃ  de ser reconstruÃ¯da. "
+"AixÃ² pot trigar una estona, depenent de quantes pÃ gines de manual tingueu "
+"instalÂ·lades; es farÃ  en un segon pla i possiblement alentirÃ  la "
+"instalÂ·laciÃ³ d'altres paquets."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Canvis incompatibles com aquest passen molt rarament."
 
@@ -146,7 +134,7 @@ msgstr "Canvis incompatibles com aquest passen molt rarament."
 #~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
 #~ "be able to display any output."
 #~ msgstr ""
-#~ "Si no reconstruïu ara la base de dades, aquesta serà reconstruïda la "
-#~ "pròxima vegada que s'executi /etc/cron.weekly/mandb o podeu fer-ho "
+#~ "Si no reconstruÃ¯u ara la base de dades, aquesta serÃ  reconstruÃ¯da la "
+#~ "prÃ²xima vegada que s'executi /etc/cron.weekly/mandb o podeu fer-ho "
 #~ "manualment amb \"mandb -c\" com a usuari \"man\".  Mentrestant, les "
 #~ "ordres \"whatis\" i \"apropos\" no podran mostrar cap eixida."

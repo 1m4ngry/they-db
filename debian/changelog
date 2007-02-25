@@ -1,3 +1,10 @@
+man-db (2.4.4-2) UNRELEASED; urgency=low
+
+  * Update debconf translations:
+    - Catalan (thanks, Jordà Polo; closes: #412304).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 25 Feb 2007 16:54:32 +0000
+
 man-db (2.4.4-1) experimental; urgency=low
 
   * New upstream release.
