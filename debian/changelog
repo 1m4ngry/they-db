@@ -1,3 +1,12 @@
+man-db (2.4.4-3) UNRELEASED; urgency=low
+
+  * Backport from upstream:
+    - lib/pipeline.c (pipeline_start): Don't ignore SIGPIPE in subprocesses;
+      this has undesirable consequences in some situations.
+      (pipeline_wait): Flatten SIGPIPE exit statuses to zero instead.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 22 May 2007 14:04:08 +0100
+
 man-db (2.4.4-2) unstable; urgency=low
 
   * Update debconf translations:
