@@ -6,6 +6,8 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     - Catalan (thanks, Jordà Polo; closes: #430857).
     - Galician (thanks, Jacobo Tarrio; closes: #430861).
     - Swedish (thanks, Daniel Nylander; closes: #430869).
+  * Add debconf translations:
+    - Basque (thanks, Piarres Beobide; closes: #430929).
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 29 Jun 2007 10:11:55 +0100
 

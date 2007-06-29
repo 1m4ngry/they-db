@@ -1,0 +1,100 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Piarres Beobide <pi@beobide.net>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: mandb-debconf\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"PO-Revision-Date: 2007-06-28 11:27+0200\n"
+"Last-Translator: Piarres Beobide <pi@beobide.net>\n"
+"Language-Team: Euskara <Librezale@librezale.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Pootle 0.11\n"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:2001
+msgid "Should man and mandb be installed 'setuid man'?"
+msgstr "man eta mandb 'setuid man' bezala instalatu behar al da?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:2001
+msgid ""
+"The man and mandb program can be installed with the set-user-id bit set, so "
+"that they will run with the permissions of the 'man' user. This allows "
+"ordinary users to benefit from the caching of preformatted manual pages "
+"('cat pages'), which may aid performance on slower machines."
+msgstr ""
+"Man eta mandb programak set-user-id-a ezarririk dutela instala daitezke 'man' "
+"erabiltzailearen baimenekin abiarazi ahal izateko. Honek erabiltzaile arruntei "
+"aurrez eraikitako manual orriez ('cat pages') baliatzeko aukera ematen die, "
+"honekin makina geldoen performantzia hobetzen."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:2001
+msgid ""
+"Cached man pages only work if you are using an 80-column terminal, to avoid "
+"one user causing cat pages to be saved at widths that would be inconvenient "
+"for other users. If you use a wide terminal, you can force man pages to be "
+"formatted to 80 columns anyway by setting MANWIDTH=80."
+msgstr "Katxeaturiko man orrialdeak 80 zutabeko terminal bat erabiltzen baduzu bakarrik funtzionatzen dute erabiltzaile batek beste erabiltzaileei arazoak sor ditzaken zutabe tamaina bat ezarri ez dezan. Terminal zabal bat erabiltzen baduzu, man orrialdeak hala ere 80 zutabetara mugatzea egin dezakezu MANWIDTH=80 ezarriaz. "
+
+#. Type: boolean
+#. Description
+#: ../templates.master:2001
+msgid ""
+"Enabling this feature may be a security risk, so it is disabled by default. "
+"If in doubt, you should leave it disabled."
+msgstr "Ezaugarri hau gaitzea segurtasun arrisku bat izan daiteke, beraz ezgaiturik dago lehenespen gisa. Ziur ez bazaude ezgaiturik utzi beharko zenuke."
+
+#. Type: boolean
+#. Description
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid "Should mandb build its database now?"
+msgstr "Mandb-k bere datubasea orain eraiki behar al du?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
+msgid ""
+"You do not yet have a database of manual page descriptions. Building one may "
+"take some time, depending on how many pages you have installed; it will "
+"happen in the background, possibly slowing down the installation of other "
+"packages."
+msgstr "Oraindik ez duzu man orrialdeen deskribapenen datubaserik eraikirik. Orain eraikitzeak denbora bat har lezake instalaturik dituzun man orrialdeen arabera; bigarren planoan egingo da, ziurrenik beste pakete batzuen instalazioa geldotuaz."
+
+#. Type: boolean
+#. Description
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/man-db runs (automatically or manually). Until then, the "
+"'whatis' and 'apropos' commands will not be able to display any output."
+msgstr "Datubasea ez baduzu orain eraikitzen, berau /etc/cron.weekly/man-db abiarazten den (eskuz edo automatikoki) hurrengo aldian eraikiko da. Ordurarte 'whatis' eta 'apropos' komandoak ez dira erantzunak bistaratzeko gai izango."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4001
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
+"page descriptions, so that database needs to be rebuilt. This may take some "
+"time, depending on how many pages you have installed; it will happen in the "
+"background, possibly slowing down the installation of other packages."
+msgstr "man-db bertsio hau ez da sorturik dagoen manual orrien deskribapenen datubasearekin bateragarria, beraz datubasea berreraiki egin behar da. Honek denbora luzea tardatu dezake instalaturik dituzun man orrien arabera; bigarren planoan egingo da, ziurrenik beste pakete batzuen instalazioa geldotuaz."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4001
+msgid "Incompatible changes like this should happen rarely."
+msgstr "Hau bezalako aldaketa bateraezinak oso gutxitan gertatu beharko lukete."
