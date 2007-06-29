@@ -5,114 +5,71 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: 2004-03-23 10:20+0200\n"
-"Last-Translator: Mehmet Turker <mturker@innova.com.tr>\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"PO-Revision-Date: 2007-06-29 12:36+0300\n"
+"Last-Translator: Mehmet Türker <mturker@innova.com.tr>\n"
 "Language-Team: Turkish <debian-l10n-turkish@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
-"Plural-Forms:  nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=1; plural=0;"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "man ve mandb'nin 'setuid man' olarak kurulmasını ister misiniz?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
-msgid ""
-"The man and mandb program can be installed with the set-user-id bit set, so "
-"that they will run with the permissions of the 'man' user. This allows "
-"ordinary users to benefit from the caching of preformatted manual pages "
-"('cat pages'), which may aid performance on slower machines."
-msgstr ""
-"man kullanıcısı izinleri ile çalışması için man ve mandb uygulamaları set-"
-"user-id biti ile kurulabilir. Bu, normal kullanıcıların önceden "
-"biçimlendirilmiş yardım sayfalarının önbelleğe alınması avantajından "
-"yararlanmalarını sağlar ('cat pages'). Önbellek kullanımı, yavaş makinelerde "
-"performans artışına yardımcı olabilir."
+#: ../templates.master:2001
+msgid "The man and mandb program can be installed with the set-user-id bit set, so that they will run with the permissions of the 'man' user. This allows ordinary users to benefit from the caching of preformatted manual pages ('cat pages'), which may aid performance on slower machines."
+msgstr "man kullanıcısı izinleri ile çalışması için man ve mandb uygulamaları set-user-id biti ile kurulabilir. Bu, normal kullanıcıların önceden biçimlendirilmiş yardım sayfalarının önbelleğe alınması avantajından yararlanmalarını sağlar ('cat pages'). Önbellek kullanımı, yavaş makinelerde performans artışına yardımcı olabilir."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
-msgid ""
-"Cached man pages only work if you are using an 80-column terminal, to avoid "
-"one user causing cat pages to be saved at widths that would be inconvenient "
-"for other users. If you use a wide terminal, you can force man pages to be "
-"formatted to 80 columns anyway by setting MANWIDTH=80."
-msgstr ""
-"Önbelleğe alınmış man sayfaları sadece eğer 80 sütun genişlikte bir terminal "
-"kullanıyorsanız çalışır. Bu, bir kullanıcı için görüntülenmiş sayfaların "
-"diğer kullanıcılarla uyumlu olmayan genişliklerde kaydedilmemesi içindir. "
-"Eğer geniş bir terminal kullanıyorsanız MANWIDTH=80 ayarıyla man sayfalarını "
-"80 sütun genişliğinde biçimlendirmeye zorlayabilirsiniz."
+#: ../templates.master:2001
+msgid "Cached man pages only work if you are using an 80-column terminal, to avoid one user causing cat pages to be saved at widths that would be inconvenient for other users. If you use a wide terminal, you can force man pages to be formatted to 80 columns anyway by setting MANWIDTH=80."
+msgstr "Önbelleğe alınmış man sayfaları sadece eğer 80 sütun genişlikte bir terminal kullanıyorsanız çalışır. Bu, bir kullanıcı için görüntülenmiş sayfaların diğer kullanıcılarla uyumlu olmayan genişliklerde kaydedilmemesi içindir. Eğer geniş bir terminal kullanıyorsanız MANWIDTH=80 ayarıyla man sayfalarını 80 sütun genişliğinde biçimlendirmeye zorlayabilirsiniz."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
-msgid ""
-"Enabling this feature may be a security risk, so it is disabled by default. "
-"If in doubt, you should leave it disabled."
-msgstr ""
-"Bu özelliği açmak bir güvenlik riski oluşturabilir, bu yüzden "
-"etkinleştirilmedi. Eğer kararsızsanız böyle bırakmanızı tavsiye ederiz."
+#: ../templates.master:2001
+msgid "Enabling this feature may be a security risk, so it is disabled by default. If in doubt, you should leave it disabled."
+msgstr "Bu özelliği açmak bir güvenlik riski oluşturabilir, bu yüzden etkinleştirilmedi. Eğer kararsızsanız böyle bırakmanızı tavsiye ederiz."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Henüz kılavuz (manual) sayfa açıklamaları için bir veritabanınız yok. Bir "
-"veritabanı yaratmak kurulu sayfaların sayısına bağlı olarak bir miktar zaman "
-"alabilir. Bu işlem arka planda yapılacak ve muhtemelen diğer paketlerin "
-"kurulumunu da yavaşlatacaktır."
-
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:3001
+#: ../templates.master:4001
 msgid "Should mandb build its database now?"
 msgstr "mandb kendi veritabanını şimdi yaratsın mı?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"man-db'nin bu sürümü kılavuz sayfa açıklamalarına ait sisteminizde mevcut "
-"veritabanıyla uyumsuz. Bu yüzden veritabanının tekrar oluşturulması "
-"gerekiyor. Bir veritabanı yaratmak kurulu sayfaların sayısına bağlı olarak "
-"bir miktar zaman alabilir. Bu işlem arka planda yapılacak ve muhtemelen "
-"diğer paketlerin kurulumunu da yavaşlatacaktır."
+#: ../templates.master:3001
+msgid "You do not yet have a database of manual page descriptions. Building one may take some time, depending on how many pages you have installed; it will happen in the background, possibly slowing down the installation of other packages."
+msgstr "Henüz kılavuz (manual) sayfa açıklamaları için bir veritabanınız yok. Bir veritabanı yaratmak kurulu sayfaların sayısına bağlı olarak bir miktar zaman alabilir. Bu işlem arka planda yapılacak ve muhtemelen diğer paketlerin kurulumunu da yavaşlatacaktır."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
-msgstr ""
-"Eğer veritabanını şimdi yaratmazsanız bir dahaki sefere /etc/cron weekly/"
-"mandb çalıştığı zaman otomatik olarak yaratılacaktır. Bu işlemi 'mandb -c' "
-"komutunu kullanarak kendiniz de yapabilirsiniz. Şu an için 'whatis' ve "
-"'apropos' komutları herhangi bir çıktı görüntüleyemeyecektir."
+#: ../templates.master:3001
+#: ../templates.master:4001
+msgid "If you do not build the database now, it will be built the next time /etc/cron.weekly/man-db runs (automatically or manually). Until then, the 'whatis' and 'apropos' commands will not be able to display any output."
+msgstr "Eğer veritabanını şimdi yaratmazsanız bir dahaki sefere /etc/cron.weekly/man-db çalıştığı zaman yaratılacaktır (otomatik olarak yada elle). Şu an için 'whatis' ve 'apropos' komutları herhangi bir çıktı görüntüleyemeyecektir."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:4001
+msgid "This version of man-db is incompatible with your existing database of manual page descriptions, so that database needs to be rebuilt. This may take some time, depending on how many pages you have installed; it will happen in the background, possibly slowing down the installation of other packages."
+msgstr "man-db'nin bu sürümü kılavuz sayfa açıklamalarına ait sisteminizde mevcut veritabanıyla uyumsuz. Bu yüzden veritabanının tekrar oluşturulması gerekiyor. Bir veritabanı yaratmak kurulu sayfaların sayısına bağlı olarak bir miktar zaman alabilir. Bu işlem arka planda yapılacak ve muhtemelen diğer paketlerin kurulumunu da yavaşlatacaktır."
+
+#. Type: boolean
+#. Description
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Bunun gibi uyumsuz değişiklikler nadiren olmaktadır."
+
