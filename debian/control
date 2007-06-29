@@ -12,7 +12,7 @@ Suggests: groff, less, www-browser
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
 Replaces: man, nlsutils
-Description: The on-line manual pager
+Description: on-line manual pager
  This package provides the man command, the primary way of examining the
  on-line help files (manual pages). Other utilities provided include the
  whatis and apropos commands for searching the manual page database, the

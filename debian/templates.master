@@ -1,3 +1,12 @@
+# These templates have been reviewed by the debian-l10n-english
+# team
+#
+# If modifications/additions/rewording are needed, please ask
+# for an advice to debian-l10n-english@lists.debian.org
+#
+# Even minor modifications require translation updates and such
+# changes should be coordinated with translators and reviewers.
+
 Template: man-db/install-setuid
 Type: boolean
 Default: false
@@ -25,9 +34,9 @@ _Description: Should mandb build its database now?
  other packages.
  .
  If you do not build the database now, it will be built the next time
- /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
- user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
- be able to display any output.
+ /etc/cron.weekly/man-db runs (automatically or manually). Until then,
+ the 'whatis' and 'apropos' commands will not be able to display any
+ output.
 
 Template: man-db/rebuild-database
 Type: boolean
@@ -40,8 +49,8 @@ _Description: Should mandb build its database now?
  packages.
  .
  If you do not build the database now, it will be built the next time
- /etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as
- user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not
- be able to display any output.
+ /etc/cron.weekly/man-db runs (automatically or manually). Until then,
+ the 'whatis' and 'apropos' commands will not be able to display any
+ output.
  .
  Incompatible changes like this should happen rarely.
