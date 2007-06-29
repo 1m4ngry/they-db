@@ -6,6 +6,7 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     - Catalan (thanks, Jordà Polo; closes: #430857).
     - Galician (thanks, Jacobo Tarrio; closes: #430861).
     - Swedish (thanks, Daniel Nylander; closes: #430869).
+    - Vietnamese (thanks, Clytie Siddall; closes: #430945).
   * Add debconf translations:
     - Basque (thanks, Piarres Beobide; closes: #430929).
 
