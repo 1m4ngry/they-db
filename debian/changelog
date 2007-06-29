@@ -10,6 +10,7 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     - Turkish (thanks, Mehmet TURKER; closes: #430910).
   * Add debconf translations:
     - Basque (thanks, Piarres Beobide; closes: #430929).
+    - Tamil (thanks, Tirumurti Vasudevan; closes: #431063).
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 29 Jun 2007 10:11:55 +0100
 
