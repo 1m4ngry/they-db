@@ -30,9 +30,9 @@ msgid ""
 msgstr ""
 "Os programas man e mandb podem ser instalados com o bit set-user-id ligado, "
 "de modo a que corram com as permissões do utilizador 'man'. Isto permite a "
-"vulgares utilizadores beneficiar da cache de páginas de manual pré-"
-"-formatadas ('cat pages'), que podem ajudar na performance em máquinas "
-"mais lentas."
+"vulgares utilizadores beneficiar da cache de páginas de manual pré--"
+"formatadas ('cat pages'), que podem ajudar na performance em máquinas mais "
+"lentas."
 
 #. Type: boolean
 #. Description
@@ -43,11 +43,11 @@ msgid ""
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"As páginas em cache do manual só funcionam se estiver a utilizar um "
-"terminal de 80-colunas, para evitar que um utilizador faça com que as "
-"páginas sejam guardadas com larguras inconvenientes para outros "
-"utilizadores. Se utilizar um terminal largo, pode forçar que as páginas "
-"do manual sejam formatadas à mesma em 80 colunas definindo MANWIDTH=80."
+"As páginas em cache do manual só funcionam se estiver a utilizar um terminal "
+"de 80-colunas, para evitar que um utilizador faça com que as páginas sejam "
+"guardadas com larguras inconvenientes para outros utilizadores. Se utilizar "
+"um terminal largo, pode forçar que as páginas do manual sejam formatadas à "
+"mesma em 80 colunas definindo MANWIDTH=80."
 
 #. Type: boolean
 #. Description
@@ -57,8 +57,8 @@ msgid ""
 "If in doubt, you should leave it disabled."
 msgstr ""
 "Habilitar esta funcionalidade pode ser um risco de segurança, por isso "
-"desabilita-la é a escolha por omissão. "
-"Em caso de dúvida, deve deixa-la desabilitada."
+"desabilita-la é a escolha por omissão. Em caso de dúvida, deve deixa-la "
+"desabilitada."
 
 #. Type: boolean
 #. Description
@@ -106,8 +106,8 @@ msgid ""
 msgstr ""
 "Se não construir agora a base de dados, será construída da próxima vez que "
 "correr /etc/cron.weekly/mandb, ou pode fazê-lo você mesmo utilizando o "
-"comando 'mandb -c' como o utilizador 'man'. Entretanto, os comandos "
-"'whatis' e 'apropos' não conseguirão mostrar nada na saída."
+"comando 'mandb -c' como o utilizador 'man'. Entretanto, os comandos 'whatis' "
+"e 'apropos' não conseguirão mostrar nada na saída."
 
 #. Type: boolean
 #. Description

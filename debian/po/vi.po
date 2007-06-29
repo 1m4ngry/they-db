@@ -3,8 +3,8 @@
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
 # 
 msgid ""
-""
-msgstr "Project-Id-Version: man-db 2.4.4-4\n"
+msgstr ""
+"Project-Id-Version: man-db 2.4.4-4\n"
 "Report-Msgid-Bugs-To: cjwatson@debian.org\n"
 "POT-Creation-Date: 2007-06-27 18:31+0200\n"
 "PO-Revision-Date: 2007-06-28 21:32+0930\n"
@@ -16,82 +16,109 @@ msgstr "Project-Id-Version: man-db 2.4.4-4\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: LocFactoryEditor 1.6.4a6\n"
 
-#: ../templates.master:2001
 #. Type: boolean
 #. Description
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "Có nên cài đặt cả hai gói man và mandb một cách « setuid man » không?"
 
-#: ../templates.master:2001
 #. Type: boolean
 #. Description
-msgid "The man and mandb program can be installed with the set-user-id bit set, so "
+#: ../templates.master:2001
+msgid ""
+"The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
-msgstr "Chương trình man và man-db đều có thể được cài đặt với bit « set-user-id » được đặt, để chạy với quyền của người dùng « man ». Vì thế người dùng chuẩn có lợi dụng khả năng nhớ tạm các trang hướng dẫn đã định dạng sẵn (« trang cat »), mà có thể tăng hiệu suất trên máy chạy chậm hơn."
+msgstr ""
+"Chương trình man và man-db đều có thể được cài đặt với bit « set-user-id » "
+"được đặt, để chạy với quyền của người dùng « man ». Vì thế người dùng chuẩn "
+"có lợi dụng khả năng nhớ tạm các trang hướng dẫn đã định dạng sẵn (« trang "
+"cat »), mà có thể tăng hiệu suất trên máy chạy chậm hơn."
 
-#: ../templates.master:2001
 #. Type: boolean
 #. Description
-msgid "Cached man pages only work if you are using an 80-column terminal, to avoid "
+#: ../templates.master:2001
+msgid ""
+"Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
-msgstr "Khả năng nhớ tạm trang hướng dẫn chỉ hoạt động được nếu bạn có phải sử dụng một thiết bị cuối kiểu 80-cột, để tránh có một người dùng gây ra các trang cat được lưu theo độ rộng bất tiện cho người dùng khác. Nếu bạn sử dụng thiết bị rộng, vẫn còn có thể ép buộc các trang hướng dẫn được định dạng thành 80 cột, bằng cách lập biến « MANWIDTH=80 »."
+msgstr ""
+"Khả năng nhớ tạm trang hướng dẫn chỉ hoạt động được nếu bạn có phải sử dụng "
+"một thiết bị cuối kiểu 80-cột, để tránh có một người dùng gây ra các trang "
+"cat được lưu theo độ rộng bất tiện cho người dùng khác. Nếu bạn sử dụng "
+"thiết bị rộng, vẫn còn có thể ép buộc các trang hướng dẫn được định dạng "
+"thành 80 cột, bằng cách lập biến « MANWIDTH=80 »."
 
+#. Type: boolean
+#. Description
 #: ../templates.master:2001
-#. Type: boolean
-#. Description
-msgid "Enabling this feature may be a security risk, so it is disabled by default. "
+msgid ""
+"Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
-msgstr "Hiệu lực tính năng này có thể rủi ro bảo mật, vậy nó bị tắt theo mặc định. Chưa chắc thì bạn nên để lại nó bị tắt."
+msgstr ""
+"Hiệu lực tính năng này có thể rủi ro bảo mật, vậy nó bị tắt theo mặc định. "
+"Chưa chắc thì bạn nên để lại nó bị tắt."
 
-#: ../templates.master:3001
-#: ../templates.master:4001
 #. Type: boolean
 #. Description
 #. Type: boolean
 #. Description
+#: ../templates.master:3001 ../templates.master:4001
 msgid "Should mandb build its database now?"
 msgstr "Trình mandb nên xây dựng cơ sở dữ liệu ngay bây giờ không?"
 
-#: ../templates.master:3001
 #. Type: boolean
 #. Description
-msgid "You do not yet have a database of manual page descriptions. Building one may "
+#: ../templates.master:3001
+msgid ""
+"You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
 "packages."
-msgstr "Bạn chưa có một cơ sở dữ liệu chứa các mô tả trang hướng dẫn. Tiến trình xây dựng cài đặt như vậy có thể kéo dài một lát, phụ thuộc vào tổng số trang đã cài đặt; nó sẽ chạy trong nền, cũng có thể làm trễ tiến trình cài đặt gói khác."
+msgstr ""
+"Bạn chưa có một cơ sở dữ liệu chứa các mô tả trang hướng dẫn. Tiến trình xây "
+"dựng cài đặt như vậy có thể kéo dài một lát, phụ thuộc vào tổng số trang đã "
+"cài đặt; nó sẽ chạy trong nền, cũng có thể làm trễ tiến trình cài đặt gói "
+"khác."
 
-#: ../templates.master:3001
-#: ../templates.master:4001
 #. Type: boolean
 #. Description
 #. Type: boolean
 #. Description
+#: ../templates.master:3001 ../templates.master:4001
 #| msgid ""
 #| "If you do not build the database now, it will be built the next time /etc/"
 #| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
 #| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
 #| "be able to display any output."
-msgid "If you do not build the database now, it will be built the next time /etc/"
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/man-db runs (automatically or manually). Until then, the "
 "'whatis' and 'apropos' commands will not be able to display any output."
-msgstr "Nếu bạn không xây dựng cơ sở dữ liệu ngay bây giờ, nó sẽ được xây dựng lần kế tiếp chạy (tự động hay thủ công) văn lệnh định kỳ « /etc/cron.weekly/man-db ». Trước khi nó được xây dựng, hai lệnh « whatis » và « apropos » sẽ không thể hiển thị kết xuất."
+msgstr ""
+"Nếu bạn không xây dựng cơ sở dữ liệu ngay bây giờ, nó sẽ được xây dựng lần "
+"kế tiếp chạy (tự động hay thủ công) văn lệnh định kỳ « /etc/cron.weekly/man-"
+"db ». Trước khi nó được xây dựng, hai lệnh « whatis » và « apropos » sẽ "
+"không thể hiển thị kết xuất."
 
-#: ../templates.master:4001
 #. Type: boolean
 #. Description
-msgid "This version of man-db is incompatible with your existing database of manual "
+#: ../templates.master:4001
+msgid ""
+"This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
 "background, possibly slowing down the installation of other packages."
-msgstr "Phiên bản man-db này không tương thích với cơ sở dữ liệu mô tả trang hướng dẫn đã tồn tại của bạn, vì vậy cơ sở dữ liệu đó cần phải được xây dựng lại. Tiến trình này có thể kéo dài một lát, phụ thuộc vào tổng số trang đã cài đặt; nó sẽ chạy trong nền, cũng có thể làm trễ tiến trình cài đặt gói khác."
+msgstr ""
+"Phiên bản man-db này không tương thích với cơ sở dữ liệu mô tả trang hướng "
+"dẫn đã tồn tại của bạn, vì vậy cơ sở dữ liệu đó cần phải được xây dựng lại. "
+"Tiến trình này có thể kéo dài một lát, phụ thuộc vào tổng số trang đã cài "
+"đặt; nó sẽ chạy trong nền, cũng có thể làm trễ tiến trình cài đặt gói khác."
 
-#: ../templates.master:4001
 #. Type: boolean
 #. Description
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Thay đổi không tương thích như thế nên xảy ra rất ít."
