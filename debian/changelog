@@ -2,6 +2,8 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
 
   * Apply results of debconf templates and package descriptions review by
     debian-l10n-english (closes: #430837).
+  * Update debconf translations:
+    - Catalan (thanks, Jordà Polo; closes: #430857).
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 29 Jun 2007 10:11:55 +0100
 
