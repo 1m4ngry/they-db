@@ -1,12 +1,12 @@
 # Portuguese translation of man-db's debconf messages.
-# 2006, Miguel Figueiredo <elmig@debianpt.org>
+# 2006, 2007, Miguel Figueiredo <elmig@debianpt.org>
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: mandb 2.4.3-3\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: 2006-01-18 23:20+0000\n"
+"Project-Id-Version: mandb 2.4.4-4\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"PO-Revision-Date: 2007-06-29 22:44+0100\n"
 "Last-Translator: Miguel Figueiredo <elmig@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
 "MIME-Version: 1.0\n"
@@ -15,13 +15,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "Devem os man e mandb ser instalados com 'setuid man'?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
@@ -36,7 +36,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
@@ -51,7 +51,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
@@ -62,7 +62,15 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid "Should mandb build its database now?"
+msgstr "Deve, agora, o mandb gerar a sua base de dados?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -76,13 +84,26 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid "Should mandb build its database now?"
-msgstr "Deve, agora, o mandb gerar a sua base de dados?"
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+#| msgid ""
+#| "If you do not build the database now, it will be built the next time /etc/"
+#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
+#| "be able to display any output."
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/man-db runs (automatically or manually). Until then, the "
+"'whatis' and 'apropos' commands will not be able to display any output."
+msgstr ""
+"Se não construir agora a base de dados, será construída da próxima vez que "
+"correr /etc/cron.weekly/man-db (manualmente ou automaticamente). Até lá, "
+"os comandos 'whatis' e 'apropos' não conseguirão mostrar nada na saída."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -97,20 +118,6 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
-msgstr ""
-"Se não construir agora a base de dados, será construída da próxima vez que "
-"correr /etc/cron.weekly/mandb, ou pode fazê-lo você mesmo utilizando o "
-"comando 'mandb -c' como o utilizador 'man'. Entretanto, os comandos 'whatis' "
-"e 'apropos' não conseguirão mostrar nada na saída."
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Alterações incompatíveis como esta devem acontecer muito raramente."

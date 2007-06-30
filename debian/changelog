@@ -8,6 +8,7 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     - Swedish (thanks, Daniel Nylander; closes: #430869).
     - Vietnamese (thanks, Clytie Siddall; closes: #430945).
     - Turkish (thanks, Mehmet TURKER; closes: #430910).
+    - Portuguese (thanks, Miguel Figueiredo; closes: #431119).
   * Add debconf translations:
     - Basque (thanks, Piarres Beobide; closes: #430929).
     - Tamil (thanks, Tirumurti Vasudevan; closes: #431063).
