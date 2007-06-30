@@ -13,114 +13,114 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: man-db_2.4.2-9\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: 2004-02-22 00:11+0900\n"
+"Project-Id-Version: man-db_2.4.4-4\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"PO-Revision-Date: 2007-06-30 22:27+0900\n"
 "Last-Translator: Kenshi Muto <kmuto@debian.org>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=EUC-JP\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
-msgstr "man ¤È mandb ¤ò man ¤Ë setuid ¤·¤¿¾õÂÖ¤Ç¥¤¥ó¥¹¥È¡¼¥ë¤·¤Ş¤¹¤«?"
+msgstr "man ã¨ mandb ã‚’ man ã« setuid ã—ãŸçŠ¶æ…‹ã§ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ã¾ã™ã‹?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
 msgstr ""
-"man ¥×¥í¥°¥é¥à¤È mandb ¥×¥í¥°¥é¥à¤Ï¡¢¡Öman¡×¥æ¡¼¥¶¤Î¸¢¸Â²¸·Ã¤ò¼õ¤±¤ë¤¿¤á¤Ë¡¢"
-"set-user-id ¥Ó¥Ã¥È¤ò¥»¥Ã¥È¤·¤¿¾õÂÖ¤Ç¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¤³¤È¤¬¤Ç¤­¤Ş¤¹¡£¤½¤¦¤¹¤ë"
-"¤È¡¢ÄÌ¾ï¤Î¥æ¡¼¥¶¤¬¥Õ¥©¡¼¥Ş¥Ã¥ÈºÑ¤ß¤Î¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸ (¡Öcat ¥Ú¡¼¥¸¡×) ¤Î"
-"¥­¥ã¥Ã¥·¥ó¥°¤ò»È¤¦¤³¤È¤¬¤Ç¤­¡¢ÃÙ¤¤¥Ş¥·¥ó¤Ç¤Î¥Ñ¥Õ¥©¡¼¥Ş¥ó¥¹¤Î¸ş¾å¤ËÌòÎ©¤Á¤Ş"
-"¤¹¡£"
+"man ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã¨ mandb ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã¯ã€ã€Œmanã€ãƒ¦ãƒ¼ã‚¶ã®æ¨©é™æ©æµã‚’å—ã‘ã‚‹ãŸã‚ã«ã€"
+"set-user-id ãƒ“ãƒƒãƒˆã‚’ã‚»ãƒƒãƒˆã—ãŸçŠ¶æ…‹ã§ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚ãã†ã™ã‚‹"
+"ã¨ã€é€šå¸¸ã®ãƒ¦ãƒ¼ã‚¶ãŒãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆæ¸ˆã¿ã®ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ãƒšãƒ¼ã‚¸ (ã€Œcat ãƒšãƒ¼ã‚¸ã€) ã®"
+"ã‚­ãƒ£ãƒƒã‚·ãƒ³ã‚°ã‚’ä½¿ã†ã“ã¨ãŒã§ãã€é…ã„ãƒã‚·ãƒ³ã§ã®ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ã®å‘ä¸Šã«å½¹ç«‹ã¡ã¾"
+"ã™ã€‚"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"¤Û¤«¤Î¥æ¡¼¥¶¤Ë¤È¤Ã¤ÆÉÔÊØ¤ÊÉı¤ËÀ°·Á¤µ¤ì¤¿¥Ú¡¼¥¸¤¬ÊİÂ¸¤µ¤ì¤Æ¤·¤Ş¤¦¤Î¤òËÉ¤°¤¿"
-"¤á¡¢¥­¥ã¥Ã¥·¥å¤µ¤ì¤¿¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Ï¡¢80 Ê¸»úÉı¤ÎÃ¼Ëö¤ò»È¤Ã¤Æ¤¤¤ë¤È¤­¤Î¤ßÆ°"
-"ºî¤·¤Ş¤¹¡£Éı¤Î¹­¤¤Ã¼Ëö¤ò»È¤Ã¤Æ¤¤¤ë¾ì¹ç¡¢MANWIDTH=80 ¤ÈÀßÄê¤¹¤ë¤³¤È¤Ç¥Ş¥Ë¥å¥¢"
-"¥ë¥Ú¡¼¥¸¤¬ 80 Ê¸»úÉı¤ÇÀ°·Á¤µ¤ì¤ë¤è¤¦¤Ë¶¯À©¤Ç¤­¤Ş¤¹¡£"
+"ã»ã‹ã®ãƒ¦ãƒ¼ã‚¶ã«ã¨ã£ã¦ä¸ä¾¿ãªå¹…ã«æ•´å½¢ã•ã‚ŒãŸãƒšãƒ¼ã‚¸ãŒä¿å­˜ã•ã‚Œã¦ã—ã¾ã†ã®ã‚’é˜²ããŸ"
+"ã‚ã€ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã•ã‚ŒãŸãƒãƒ‹ãƒ¥ã‚¢ãƒ«ãƒšãƒ¼ã‚¸ã¯ã€80 æ–‡å­—å¹…ã®ç«¯æœ«ã‚’ä½¿ã£ã¦ã„ã‚‹ã¨ãã®ã¿å‹•"
+"ä½œã—ã¾ã™ã€‚å¹…ã®åºƒã„ç«¯æœ«ã‚’ä½¿ã£ã¦ã„ã‚‹å ´åˆã€MANWIDTH=80 ã¨è¨­å®šã™ã‚‹ã“ã¨ã§ãƒãƒ‹ãƒ¥ã‚¢"
+"ãƒ«ãƒšãƒ¼ã‚¸ãŒ 80 æ–‡å­—å¹…ã§æ•´å½¢ã•ã‚Œã‚‹ã‚ˆã†ã«å¼·åˆ¶ã§ãã¾ã™ã€‚"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
 msgstr ""
-"¤³¤ì¤òÍ­¸ú¤Ë¤¹¤ë¤È¥»¥­¥å¥ê¥Æ¥£¾å¤ÎÌäÂê¤¬È¯À¸¤¹¤ë¤«¤â¤·¤ì¤Ê¤¤¤¿¤á¡¢¤³¤Îµ¡Ç½¤Ï"
-"¥Ç¥Õ¥©¥ë¥È¤Ç¤ÏÌµ¸ú¤È¤Ê¤Ã¤Æ¤¤¤Ş¤¹¡£¤è¤¯¤ï¤«¤é¤Ê¤±¤ì¤Ğ¡¢Ìµ¸ú¤Î¤Ş¤Ş¤Ë¤·¤Æ¤ª¤¯¤³"
-"¤È¤ò¤ª´«¤á¤·¤Ş¤¹¡£"
+"ã“ã‚Œã‚’æœ‰åŠ¹ã«ã™ã‚‹ã¨ã‚»ã‚­ãƒ¥ãƒªãƒ†ã‚£ä¸Šã®å•é¡ŒãŒç™ºç”Ÿã™ã‚‹ã‹ã‚‚ã—ã‚Œãªã„ãŸã‚ã€ã“ã®æ©Ÿèƒ½ã¯"
+"ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ã¯ç„¡åŠ¹ã¨ãªã£ã¦ã„ã¾ã™ã€‚ã‚ˆãã‚ã‹ã‚‰ãªã‘ã‚Œã°ã€ç„¡åŠ¹ã®ã¾ã¾ã«ã—ã¦ãŠãã“"
+"ã¨ã‚’ãŠå‹§ã‚ã—ã¾ã™ã€‚"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid "Should mandb build its database now?"
+msgstr "mandb ã¯ã€ã„ã¾ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ§‹ç¯‰ã™ã¹ãã§ã™ã‹?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
 "packages."
 msgstr ""
-"¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Îµ­½Ò¤Î¥Ç¡¼¥¿¥Ù¡¼¥¹¤¬¤Ş¤À¤¢¤ê¤Ş¤»¤ó¡£¤É¤ì¤À¤±¤Î¥Ş¥Ë¥å¥¢¥ë"
-"¥Ú¡¼¥¸¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤¿¤«¤Ë°ÍÂ¸¤·¤Æ¡¢¤³¤Î¹½ÃÛ¤Ë¤ÏÂ¿¾¯¤Î»ş´Ö¤¬¤«¤«¤ê¤Ş¤¹¡£¹½"
-"ÃÛ¤Ï¥Ğ¥Ã¥¯¥°¥é¥¦¥ó¥É¤Ç¹Ô¤¦¤Î¤Ç¡¢¤Û¤«¤Î¥Ñ¥Ã¥±¡¼¥¸¤Î¥¤ ¥ó¥¹¥È¡¼¥ë²áÄø¤¬ÃÙ¤¯¤Ê¤ë"
-"¤«¤â¤·¤ì¤Ş¤»¤ó¡£"
+"ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ãƒšãƒ¼ã‚¸ã®è¨˜è¿°ã®ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ãŒã¾ã ã‚ã‚Šã¾ã›ã‚“ã€‚ã©ã‚Œã ã‘ã®ãƒãƒ‹ãƒ¥ã‚¢ãƒ«"
+"ãƒšãƒ¼ã‚¸ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ãŸã‹ã«ä¾å­˜ã—ã¦ã€ã“ã®æ§‹ç¯‰ã«ã¯å¤šå°‘ã®æ™‚é–“ãŒã‹ã‹ã‚Šã¾ã™ã€‚æ§‹"
+"ç¯‰ã¯ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ã§è¡Œã†ã®ã§ã€ã»ã‹ã®ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã®ã‚¤ ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«éç¨‹ãŒé…ããªã‚‹"
+"ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã€‚"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid "Should mandb build its database now?"
-msgstr "mandb ¤Ï¡¢¤¤¤Ş¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤¹¤Ù¤­¤Ç¤¹¤«?"
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/man-db runs (automatically or manually). Until then, the "
+"'whatis' and 'apropos' commands will not be able to display any output."
+msgstr "ã„ã¾ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’æ§‹ç¯‰ã—ãªã‘ã‚Œã°ã€æ¬¡å›ã« /etc/cron.weekly/man-db ãŒ (è‡ªå‹•ã¾ãŸã¯æ‰‹å‹•ã§) èµ·å‹•ã—ãŸã¨ãã«æ§‹ç¯‰ã•ã‚Œã¾ã™ã€‚ãã‚Œã¾ã§ã®é–“ã€ã€Œwhatisã€ã‚³ãƒãƒ³ãƒ‰ã¨ã€Œaproposã€ã‚³ãƒãƒ³ãƒ‰ã¯ä½•ã‚‚å‡ºåŠ›ã‚’è¡¨ç¤ºã§ãã¾ã›ã‚“ã€‚"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
 "background, possibly slowing down the installation of other packages."
 msgstr ""
-"man-db ¤Î¤³¤Î¥Ğ¡¼¥¸¥ç¥ó¤Ï¡¢¤¤¤Ş¤³¤Î¥Ş¥·¥ó¤ËÂ¸ºß¤·¤Æ¤¤¤ë¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Îµ­½Ò"
-"¤Î¥Ç¡¼¥¿¥Ù¡¼¥¹¤È¸ß´¹À­¤¬¤Ê¤¤¤Î¤Ç¡¢¥Ç¡¼¥¿¥Ù¡¼¥¹¤òºÆ¹½ÃÛ¤¹¤ëÉ¬Í×¤¬¤¢¤ê¤Ş¤¹¡£¤É"
-"¤ì¤À¤±¤Î¥Ş¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤¿¤«¤Ë°ÍÂ¸¤·¤Æ¡¢¤³¤Î¹½ÃÛ¤Ë¤ÏÂ¿¾¯¤Î»ş"
-"´Ö¤¬¤«¤«¤ê¤Ş¤¹¡£¹½ÃÛ¤Ï¥Ğ¥Ã¥¯¥°¥é¥¦¥ó¥É¤Ç¹Ô¤¦¤Î¤Ç¡¢¤Û¤«¤Î¥Ñ¥Ã¥±¡¼¥¸¤Î¥¤¥ó¥¹"
-"¥È¡¼¥ë²áÄø¤¬ÃÙ¤¯¤Ê¤ë¤«¤â¤·¤ì¤Ş¤»¤ó¡£"
+"man-db ã®ã“ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã¯ã€ã„ã¾ã“ã®ãƒã‚·ãƒ³ã«å­˜åœ¨ã—ã¦ã„ã‚‹ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ãƒšãƒ¼ã‚¸ã®è¨˜è¿°"
+"ã®ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã¨äº’æ›æ€§ãŒãªã„ã®ã§ã€ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚’å†æ§‹ç¯‰ã™ã‚‹å¿…è¦ãŒã‚ã‚Šã¾ã™ã€‚ã©"
+"ã‚Œã ã‘ã®ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ãƒšãƒ¼ã‚¸ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ãŸã‹ã«ä¾å­˜ã—ã¦ã€ã“ã®æ§‹ç¯‰ã«ã¯å¤šå°‘ã®æ™‚"
+"é–“ãŒã‹ã‹ã‚Šã¾ã™ã€‚æ§‹ç¯‰ã¯ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ã§è¡Œã†ã®ã§ã€ã»ã‹ã®ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã®ã‚¤ãƒ³ã‚¹"
+"ãƒˆãƒ¼ãƒ«éç¨‹ãŒé…ããªã‚‹ã‹ã‚‚ã—ã‚Œã¾ã›ã‚“ã€‚"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
-msgstr ""
-"¤¤¤Ş¥Ç¡¼¥¿¥Ù¡¼¥¹¤ò¹½ÃÛ¤·¤Ê¤±¤ì¤Ğ¡¢¼¡²ó¤Ë /etc/cron.weekly/mandb ¤¬µ¯Æ°¤·¤¿¤È"
-"¤­¤Ë¹½ÃÛ¤µ¤ì¤Ş¤¹¡£¡Öman¡×¥æ¡¼¥¶¤Ç¡Ömandb -c¡×¤ò¼Â¹Ô¤¹¤ë¤³¤È¤Ç¤â¹½ÃÛ¤Ç¤­¤Ş¤¹¡£"
-"¤½¤ì¤Ş¤Ç¤Î´Ö¡¢¡Öwhatis¡×¥³¥Ş¥ó¥É¤È¡Öapropos¡×¥³¥Ş¥ó¥É¤ÏÀµ¤·¤¯Æ°ºî¤·¤Ş¤»¤ó¡£"
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
 msgstr ""
-"º£²ó¤Î¤è¤¦¤Ë¡¢¥Ğ¡¼¥¸¥ç¥ó¥¢¥Ã¥×¤ËÈ¼¤Ã¤Æ¸ß´¹À­¤¬¤Ê¤¯¤Ê¤ë¤³¤È¤Ï¡¢¤Ş¤ì¤Ë¤·¤«µ¯¤³"
-"¤é¤Ê¤¤¤Ï¤º¤Ç¤¹¡£"
+"ä»Šå›ã®ã‚ˆã†ã«ã€ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚¢ãƒƒãƒ—ã«ä¼´ã£ã¦äº’æ›æ€§ãŒãªããªã‚‹ã“ã¨ã¯ã€ã¾ã‚Œã«ã—ã‹èµ·ã“"
+"ã‚‰ãªã„ã¯ãšã§ã™ã€‚"
