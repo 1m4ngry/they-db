@@ -10,6 +10,7 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     - Turkish (thanks, Mehmet TURKER; closes: #430910).
     - Portuguese (thanks, Miguel Figueiredo; closes: #431119).
     - Japanese (thanks, Kenshi Muto; closes: #431183).
+    - Italian (thanks, Luca Monducci; closes: #431195).
   * Add debconf translations:
     - Basque (thanks, Piarres Beobide; closes: #430929).
     - Tamil (thanks, Tirumurti Vasudevan; closes: #431063).
