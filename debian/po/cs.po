@@ -14,111 +14,119 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: 2004-04-18 12:51+0200\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"PO-Revision-Date: 2007-07-01 11:26+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
-"Language-Team: Czech <provoz@debian.cz>\n"
+"Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
-msgstr "Mají se man a mandb nainstalovat jako 'setuid man'?"
+msgstr "MajÃ­ se man a mandb nainstalovat jako â€setuid manâ€œ?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
 msgstr ""
-"Programy man a mandb mohou bıt nainstalovány s nastavenım pøíznakem set-user-"
-"id, tudí¾ se spou¹tí s právy u¾ivatele 'man'. Takto mohou i obyèejní "
-"u¾ivatelé vyu¾ívat urychleného naèítání pøedformátovanıch manuálovıch "
-"stránek z vyrovnávací pamìti, co¾ mù¾e pomoci obzvlá¹tì na pomalej¹ích "
-"poèítaèích. "
+"Programy man a mandb mohou bÃ½t nainstalovÃ¡ny s nastavenÃ½m pÅ™Ã­znakem set-user-"
+"id, tudÃ­Å¾ se spouÅ¡tÃ­ s prÃ¡vy uÅ¾ivatele â€manâ€œ. Takto mohou i obyÄejnÃ­ "
+"uÅ¾ivatelÃ© vyuÅ¾Ã­vat urychlenÃ©ho naÄÃ­tÃ¡nÃ­ pÅ™edformÃ¡tovanÃ½ch manuÃ¡lovÃ½ch "
+"strÃ¡nek z vyrovnÃ¡vacÃ­ pamÄ›ti, coÅ¾ mÅ¯Å¾e pomoci obzvlÃ¡Å¡tÄ› na pomalejÅ¡Ã­ch "
+"poÄÃ­taÄÃ­ch. "
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"Manuálové stránky ve vyrovnávací pamìti fungují pouze pokud pou¾íváte 80 "
-"sloupcovı terminál, aby se zabránilo mo¾nosti, ¾e nìkterı u¾ivatel ulo¾í "
-"stránky s takovou ¹íøkou, která bude obtì¾ovat ostatní u¾ivatele. Pou¾íváte-"
-"li ¹irokı terminál, mù¾ete pøinutit formátovaè stránek, aby pou¾il "
-"standardních 80 sloupcù nastavením promìnné MANWIDTH=80."
+"ManuÃ¡lovÃ© strÃ¡nky ve vyrovnÃ¡vacÃ­ pamÄ›ti fungujÃ­ pouze pokud pouÅ¾Ã­vÃ¡te 80 "
+"sloupcovÃ½ terminÃ¡l, aby se zabrÃ¡nilo moÅ¾nosti, Å¾e nÄ›kterÃ½ uÅ¾ivatel uloÅ¾Ã­ "
+"strÃ¡nky s takovou Å¡Ã­Å™kou, kterÃ¡ bude obtÄ›Å¾ovat ostatnÃ­ uÅ¾ivatele. PouÅ¾Ã­vÃ¡te-"
+"li Å¡irokÃ½ terminÃ¡l, mÅ¯Å¾ete pÅ™inutit formÃ¡tovaÄ strÃ¡nek, aby pouÅ¾il "
+"standardnÃ­ch 80 sloupcÅ¯ nastavenÃ­m promÄ›nnÃ© MANWIDTH=80."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
 msgstr ""
-"Proto¾e se povolením této vlastnosti mù¾ete vystavit bezpeènostnímu riziku, "
-"je vlastnost standardnì vypnutá."
+"ProtoÅ¾e se povolenÃ­m tÃ©to vlastnosti mÅ¯Å¾ete vystavit bezpeÄnostnÃ­mu riziku, "
+"je vlastnost standardnÄ› vypnutÃ¡."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid "Should mandb build its database now?"
+msgstr "MÃ¡ nynÃ­ mandb vytvoÅ™it svou databÃ¡zi?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
 "packages."
 msgstr ""
-"Zatím nemáte databázi popisù manuálovıch stránek. Vytvoøení databáze mù¾e "
-"trvat nìjakou dobu (v závislosti na poètu instalovanıch balíkù). Proces "
-"probìhne na pozadí, tudí¾ mù¾e zpomalit instalaci ostatních balíkù."
+"ZatÃ­m nemÃ¡te databÃ¡zi popisÅ¯ manuÃ¡lovÃ½ch strÃ¡nek. VytvoÅ™enÃ­ databÃ¡ze mÅ¯Å¾e "
+"trvat nÄ›jakou dobu (v zÃ¡vislosti na poÄtu instalovanÃ½ch balÃ­kÅ¯). Proces "
+"probÄ›hne na pozadÃ­, tudÃ­Å¾ mÅ¯Å¾e zpomalit instalaci ostatnÃ­ch balÃ­kÅ¯."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid "Should mandb build its database now?"
-msgstr "Má nyní mandb vytvoøit svou databázi?"
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+#| msgid ""
+#| "If you do not build the database now, it will be built the next time /etc/"
+#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
+#| "be able to display any output."
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/man-db runs (automatically or manually). Until then, the "
+"'whatis' and 'apropos' commands will not be able to display any output."
+msgstr ""
+"NevytvoÅ™Ã­te-li databÃ¡zi nynÃ­, vytvoÅ™Ã­ se pÅ™i pÅ™Ã­Å¡tÃ­m spuÅ¡tÄ›nÃ­ /etc/cron."
+"weekly/man-db. (Je jedno jestli jej spustÃ­te ruÄnÄ›, nebo poÄkÃ¡te na "
+"automatickÃ© spouÅ¡tÄ›nÃ­.) Do tÃ© doby nebudou fungovat pÅ™Ã­kazy â€aproposâ€œ a "
+"â€whatisâ€œ."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
 "background, possibly slowing down the installation of other packages."
 msgstr ""
-"Tato verze man-db je nekompatibilní s va¹í stávající databází popisù "
-"manuálovıch stránek, tudí¾ je potøeba databázi vytvoøit znovu. Vytvoøení "
-"databáze mù¾e trvat nìjakou dobu (v závislosti na poètu instalovanıch "
-"balíkù). Proces probìhne na pozadí, tudí¾ mù¾e zpomalit instalaci ostatních "
-"balíkù."
+"Tato verze man-db je nekompatibilnÃ­ s vaÅ¡Ã­ stÃ¡vajÃ­cÃ­ databÃ¡zÃ­ popisÅ¯ "
+"manuÃ¡lovÃ½ch strÃ¡nek, tudÃ­Å¾ je potÅ™eba databÃ¡zi vytvoÅ™it znovu. VytvoÅ™enÃ­ "
+"databÃ¡ze mÅ¯Å¾e trvat nÄ›jakou dobu (v zÃ¡vislosti na poÄtu instalovanÃ½ch "
+"balÃ­kÅ¯). Proces probÄ›hne na pozadÃ­, tudÃ­Å¾ mÅ¯Å¾e zpomalit instalaci ostatnÃ­ch "
+"balÃ­kÅ¯."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
-msgstr ""
-"Nevytvoøíte-li databázi nyní, vytvoøí se automaticky pøi pøí¹tím spu¹tìní /"
-"etc/cron.weekly/mandb. Také ji mù¾ete vytvoøit ruènì spu¹tìním 'mabdc -c' "
-"jako u¾ivatel 'man'. Do té doby nebudou fungovat pøíkazy 'apropos' a "
-"'whatis'."
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
-msgstr "Nekompatibilní zmìny, jako je tato, by se mìly stávat velmi zøídka."
+msgstr "NekompatibilnÃ­ zmÄ›ny, jako je tato, by se mÄ›ly stÃ¡vat velmi zÅ™Ã­dka."
