@@ -1,38 +1,29 @@
+# German translation of man-db templates
+# Helge Kreutzmann <debian@helgefjell.de>, 2007.
+# (based on an earlier translation by an unknown author)
+# This file is distributed under the same license as the man-db package.
 #
-#    Translators, if you are not familiar with the PO format, gettext
-#    documentation is worth reading, especially sections dedicated to
-#    this format, e.g. by running:
-#         info -n '(gettext)PO Files'
-#         info -n '(gettext)Header Entry'
-#
-#    Some information specific to po-debconf are available at
-#            /usr/share/doc/po-debconf/README-trans
-#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
-#
-#    Developers do not need to manually edit POT or PO files.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: man-db 2.8.3-1\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"PO-Revision-Date: 2007-06-28 18:51+0200\n"
+"Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
+"Language-Team: German <debian-l10n-german@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
-msgstr "Möchten Sie man und mandb mit dem setuid-Flag installieren?"
+msgstr "Möchten Sie man und mandb »setuid man« installieren?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
@@ -42,42 +33,48 @@ msgstr ""
 "Die Programme »man« und »mandb« können so installiert werden, dass das »set-"
 "user-id-Bit« gesetzt ist und die Programme daher mit den Rechten des "
 "Benutzers »man« laufen. Dadurch kommen reguläre Benutzer in den Genuss von "
-"vorformatierten Handbuchseiten (sogenannten »cat-Seiten«) und die Datenbank "
-"der Handbuchbeschreibungen wird durch die Benutzer dieser Seiten automatisch "
-"auf dem neuesten Stand gehalten. Besonders das Benutzen von cat-Seiten kann "
-"auf langsameren Computern einen Geschwindigkeitsvorteil beim Benutzen der "
+"vorformatierten Handbuchseiten (sogenannten »cat-Seiten«), die auf "
+"langsameren Computern einen Geschwindigkeitsvorteil beim Benutzen der "
 "Handbuchseiten bringen."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"Vorformatierte Handbuchseiten funktionieren nur mit Terminals mit »normaler« "
+"Vorformatierte Handbuchseiten funktionieren nur mit Terminals mit normaler "
 "Breite (80 Buchstaben). Dadurch wird verhindert, dass ein Benutzer die "
 "Seiten mit einer Größe speichert, die für andere Benutzer unlesbar ist. "
-"Zukünftig wird sich dies konfigurieren lassen. Bis dahin können Sie eine "
-"Breite der Handbuchseiten von 80 Zeichen durch Setzen der Umgebungsvariable "
-"MANWIDTH=80 erzwingen."
+"Zukünftig wird sich dies konfigurieren lassen. Falls Sie ein breiteres "
+"Terminal verwenden, können Sie dennoch eine Breite der Handbuchseiten von 80 "
+"Zeichen durch Setzen der Umgebungsvariable MANWIDTH=80 erzwingen."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
 msgstr ""
-"Das Einschalten dieses Features kann ein Sicherheitsrisiko sein. Daher ist "
-"es standardmäßig abgeschaltet. Wenn Sie sich nicht sicher sind, sollten Sie "
-"daher mit »Nein« antworten."
+"Das Einschalten dieses Funktionalität kann ein Sicherheitsrisiko sein. Daher "
+"ist es standardmäßig abgeschaltet. Falls Sie sich nicht sicher sind, sollten "
+"Sie es daher deaktiviert lassen."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid "Should mandb build its database now?"
+msgstr "Soll man-db seine Datenbank jetzt aufbauen?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -85,18 +82,27 @@ msgid ""
 "packages."
 msgstr ""
 "Sie verfügen noch nicht über eine Datenbank mit Handbuchbeschreibungen. Es "
-"benötigt eine gewisse Zeit, diese Datenbank neu aufzubauen. Dies geschieht "
-"im Hintergrund und kann daher die Installation anderer Pakete verlangsamen."
+"benötigt eine gewisse Zeit, diese Datenbank neu aufzubauen, abhängig von der "
+"Anzahl der installierten Seiten. Der Aufbau geschieht im Hintergrund und kann "
+"daher die Installation anderer Pakete verlangsamen."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid "Should mandb build its database now?"
-msgstr "Soll man-db seine Datenbank jetzt aufbauen?"
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/man-db runs (automatically or manually). Until then, the "
+"'whatis' and 'apropos' commands will not be able to display any output."
+msgstr ""
+"Falls Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim nächsten "
+"Aufruf (automatisch oder per Hand) von /etc/cron.weekly/man-db erstellt. Bis "
+"dahin können die Befehle »whatis« und »apropos« keine Ausgabe anzeigen."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -105,27 +111,13 @@ msgid ""
 msgstr ""
 "Diese Version von man-db ist inkompatibel zu Ihrer alten Datenbank mit "
 "Handbuchbeschreibungen. Daher muss die Datenbank neu aufgebaut werden. Dies "
-"benötigt eine gewisse Zeit. Da es im Hintergrund geschieht, kann die "
-"Installation anderer Pakete dadurch verlangsamt werden."
+"benötigt eine gewisse Zeit, abhängig von der Anzahl der installierten Seiten. "
+"Da dies im Hintergrund geschieht, kann die Installation anderer Pakete "
+"dadurch verlangsamt werden."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
-msgstr ""
-"Wenn Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim nächsten "
-"Aufruf von /etc/cron.weekly/mandb automatisch erstellt. Sie können auch als "
-"Benutzer »man« »mandb -c« per Hand aufrufen. Solange die Datenbank nicht auf "
-"eine dieser Arten erstellt wurde, zeigen die Befehle »whatis« und »apropos« "
-"keine Ausgabe an."
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Solche inkompatiblen Änderungen sollten nur selten vorkommen."
 
@@ -138,8 +130,8 @@ msgstr "Solche inkompatiblen Änderungen sollten nur selten vorkommen."
 #~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
 #~ "be able to display any output."
 #~ msgstr ""
-#~ "Wenn Sie die Datenbank jetzt nicht neu erstellen möchten, wird sie beim "
+#~ "Falls Sie die Datenbank jetzt nicht neu erstellen möchten, wird sie beim "
 #~ "nächsten Aufruf von /etc/cron.weekly/mandb automatisch erneuert. Sie "
-#~ "können auch als Benutzer \"man\" \"mandb -c\" per Hand aufrufen. Solange "
+#~ "können auch als Benutzer »man« »mandb -c« per Hand aufrufen. Solange "
 #~ "die Datenbank nicht auf eine dieser Arten erneuert wurde, zeigen die "
-#~ "Befehle \"whatis\" und \"apropos\" keine Ausgabe an."
+#~ "Befehle »whatis« und »apropos« keine Ausgabe an."
