@@ -83,8 +83,8 @@ msgid ""
 msgstr ""
 "Sie verfügen noch nicht über eine Datenbank mit Handbuchbeschreibungen. Es "
 "benötigt eine gewisse Zeit, diese Datenbank neu aufzubauen, abhängig von der "
-"Anzahl der installierten Seiten. Der Aufbau geschieht im Hintergrund und kann "
-"daher die Installation anderer Pakete verlangsamen."
+"Anzahl der installierten Seiten. Der Aufbau geschieht im Hintergrund und "
+"kann daher die Installation anderer Pakete verlangsamen."
 
 #. Type: boolean
 #. Description
@@ -96,9 +96,10 @@ msgid ""
 "cron.weekly/man-db runs (automatically or manually). Until then, the "
 "'whatis' and 'apropos' commands will not be able to display any output."
 msgstr ""
-"Falls Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim nächsten "
-"Aufruf (automatisch oder per Hand) von /etc/cron.weekly/man-db erstellt. Bis "
-"dahin können die Befehle »whatis« und »apropos« keine Ausgabe anzeigen."
+"Falls Sie die Datenbank jetzt nicht erstellen möchten, wird sie beim "
+"nächsten Aufruf (automatisch oder per Hand) von /etc/cron.weekly/man-db "
+"erstellt. Bis dahin können die Befehle »whatis« und »apropos« keine Ausgabe "
+"anzeigen."
 
 #. Type: boolean
 #. Description
@@ -111,9 +112,9 @@ msgid ""
 msgstr ""
 "Diese Version von man-db ist inkompatibel zu Ihrer alten Datenbank mit "
 "Handbuchbeschreibungen. Daher muss die Datenbank neu aufgebaut werden. Dies "
-"benötigt eine gewisse Zeit, abhängig von der Anzahl der installierten Seiten. "
-"Da dies im Hintergrund geschieht, kann die Installation anderer Pakete "
-"dadurch verlangsamt werden."
+"benötigt eine gewisse Zeit, abhängig von der Anzahl der installierten "
+"Seiten. Da dies im Hintergrund geschieht, kann die Installation anderer "
+"Pakete dadurch verlangsamt werden."
 
 #. Type: boolean
 #. Description
@@ -132,6 +133,6 @@ msgstr "Solche inkompatiblen Änderungen sollten nur selten vorkommen."
 #~ msgstr ""
 #~ "Falls Sie die Datenbank jetzt nicht neu erstellen möchten, wird sie beim "
 #~ "nächsten Aufruf von /etc/cron.weekly/mandb automatisch erneuert. Sie "
-#~ "können auch als Benutzer »man« »mandb -c« per Hand aufrufen. Solange "
-#~ "die Datenbank nicht auf eine dieser Arten erneuert wurde, zeigen die "
-#~ "Befehle »whatis« und »apropos« keine Ausgabe an."
+#~ "können auch als Benutzer »man« »mandb -c« per Hand aufrufen. Solange die "
+#~ "Datenbank nicht auf eine dieser Arten erneuert wurde, zeigen die Befehle "
+#~ "»whatis« und »apropos« keine Ausgabe an."
