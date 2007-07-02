@@ -98,8 +98,8 @@ msgid ""
 "'whatis' and 'apropos' commands will not be able to display any output."
 msgstr ""
 "Se não construir agora a base de dados, será construída da próxima vez que "
-"correr /etc/cron.weekly/man-db (manualmente ou automaticamente). Até lá, "
-"os comandos 'whatis' e 'apropos' não conseguirão mostrar nada na saída."
+"correr /etc/cron.weekly/man-db (manualmente ou automaticamente). Até lá, os "
+"comandos 'whatis' e 'apropos' não conseguirão mostrar nada na saída."
 
 #. Type: boolean
 #. Description

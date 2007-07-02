@@ -100,7 +100,10 @@ msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/man-db runs (automatically or manually). Until then, the "
 "'whatis' and 'apropos' commands will not be able to display any output."
-msgstr "いまデータベースを構築しなければ、次回に /etc/cron.weekly/man-db が (自動または手動で) 起動したときに構築されます。それまでの間、「whatis」コマンドと「apropos」コマンドは何も出力を表示できません。"
+msgstr ""
+"いまデータベースを構築しなければ、次回に /etc/cron.weekly/man-db が (自動また"
+"は手動で) 起動したときに構築されます。それまでの間、「whatis」コマンドと"
+"「apropos」コマンドは何も出力を表示できません。"
 
 #. Type: boolean
 #. Description
