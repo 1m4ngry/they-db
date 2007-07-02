@@ -9,117 +9,129 @@
 #            /usr/share/doc/po-debconf/README-trans
 #         or http://www.debian.org/intl/l10n/po-debconf/README-trans#
 #    Developers do not need to manually edit POT or PO files.
-# Yuri Kozlov <yuray@id.ru>, 2004.
 #
+# Yuri Kozlov <kozlov.y@gmail.com>, 2004, 2007.
+# Sergey Korobitsin <undertaker@gnu.kz>, 2007.
+# alyoshin.s@gmail.com <alyoshin.s@gmail.com>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: ru\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
-"PO-Revision-Date: 2004-08-28 09:19+0400\n"
-"Last-Translator: Yuri Kozlov <yuray@id.ru>\n"
+"Project-Id-Version: 2.4.4-4\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"PO-Revision-Date: 2007-07-01 16:39+0400\n"
+"Last-Translator: Yuri Kozlov <kozlov.y@gmail.com>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=KOI8-R\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
-msgstr "Установить программы man и mandb как 'setuid man'?"
+msgstr "пёя│я┌п╟п╫п╬п╡п╦я┌я▄ п©я─п╬пЁя─п╟п╪п╪я▀ man п╦ mandb п╨п╟п╨ 'setuid man'?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
 "ordinary users to benefit from the caching of preformatted manual pages "
 "('cat pages'), which may aid performance on slower machines."
 msgstr ""
-"Программы man и mandb могут быть установлены с включённым битом set-user-id, "
-"для того чтобы они запускались с правами пользователя 'man'. Это разрешит "
-"обычным пользователям использовать ранееотформатированные страницы "
-"руководств ('cat pages'), что улучшит производительность медленных машин."
+"п÷я─п╬пЁя─п╟п╪п╪я▀ man п╦ mandb п╪п╬пЁя┐я┌ п╠я▀я┌я▄ я┐я│я┌п╟п╫п╬п╡п╩п╣п╫я▀ я│ п╡п╨п╩я▌я┤я▒п╫п╫я▀п╪ п╠п╦я┌п╬п╪ set-user-id "
+"п╢п╩я▐ я┌п╬пЁп╬, я┤я┌п╬п╠я▀ п╬п╫п╦ п╥п╟п©я┐я│п╨п╟п╩п╦я│я▄ я│ п©я─п╟п╡п╟п╪п╦ п©п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩я▐ 'man'. п╜я┌п╬ п©п╬п╥п╡п╬п╩п╦я┌ "
+"п╬п╠я▀я┤п╫я▀п╪ п©п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩я▐п╪ п╦я│п©п╬п╩я▄п╥п╬п╡п╟я┌я▄ я─п╟п╫п╣п╣ п╬я┌я└п╬я─п╪п╟я┌п╦я─п╬п╡п╟п╫п╫я▀п╣ я│я┌я─п╟п╫п╦я├я▀ "
+"я─я┐п╨п╬п╡п╬п╢я│я┌п╡ ('cat pages'), я┤я┌п╬, п╡п╬п╥п╪п╬п╤п╫п╬, я┐я│п╨п╬я─п╦я┌ п╡я▀п╡п╬п╢ я│я┌я─п╟п╫п╦я├ п╫п╟ "
+"п╪п╣п╢п╩п╣п╫п╫я▀я┘ п╪п╟я┬п╦п╫п╟я┘."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
 "for other users. If you use a wide terminal, you can force man pages to be "
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
-"Кешированные страницы руководств работают только, если вы используете 80-ти "
-"колоночный терминал, что избавляет от сохранения в кеше страниц одного из "
-"пользователей с форматом, несовместимым с форматом других пользователей. "
-"Если вы используете широкий терминал, то можете принудительно форматировать "
-"страницы по 80 символов в строке установкой MANWIDTH=80."
+"п я█я┬п╦я─п╬п╡п╟п╫п╫я▀п╣ я│я┌я─п╟п╫п╦я├я▀ я─я┐п╨п╬п╡п╬п╢я│я┌п╡ п╦я│п©п╬п╩я▄п╥я┐я▌я┌я│я▐ п©я─п╦ п╡я▀п╡п╬п╢п╣ я┌п╬п╩я▄п╨п╬ п╫п╟ 80-я┌п╦ "
+"п╨п╬п╩п╬п╫п╬я┤п╫я▀п╧ я┌п╣я─п╪п╦п╫п╟п╩, я┤я┌п╬ п╦п╥п╠п╟п╡п╩я▐п╣я┌ п╬я┌ я│п╬я┘я─п╟п╫п╣п╫п╦я▐ п╡ п╨я█я┬п╣ я│я┌я─п╟п╫п╦я├ п╬п╢п╫п╬пЁп╬ п╦п╥ "
+"п©п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩п╣п╧ я│ я└п╬я─п╪п╟я┌п╬п╪, п╫п╣я│п╬п╡п╪п╣я│я┌п╦п╪я▀п╪ я│ я└п╬я─п╪п╟я┌п╬п╪ п╢я─я┐пЁп╦я┘ п©п╬п╩я▄п╥п╬п╡п╟я┌п╣п╩п╣п╧. "
+"п∙я│п╩п╦ п╡я▀ п╦я│п©п╬п╩я▄п╥я┐п╣я┌п╣ я┬п╦я─п╬п╨п╦п╧ я┌п╣я─п╪п╦п╫п╟п╩, я┌п╬ п╪п╬п╤п╣я┌п╣ п©я─п╦п╫я┐п╢п╦я┌п╣п╩я▄п╫п╬ я└п╬я─п╪п╟я┌п╦я─п╬п╡п╟я┌я▄ "
+"я│я┌я─п╟п╫п╦я├я▀ п©п╬ 80 я│п╦п╪п╡п╬п╩п╬п╡ п╡ я│я┌я─п╬п╨п╣ я┐я│я┌п╟п╫п╬п╡п╨п╬п╧ MANWIDTH=80."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
 msgstr ""
-"Включение этой возможности является угрозой безопасности, поэтому по "
-"умолчанию она выключена. Если не знаете, что делать, то оставьте как есть."
+"п▓п╨п╩я▌я┤п╣п╫п╦п╣ я█я┌п╬п╧ п╡п╬п╥п╪п╬п╤п╫п╬я│я┌п╦ я▐п╡п╩я▐п╣я┌я│я▐ я┐пЁя─п╬п╥п╬п╧ п╠п╣п╥п╬п©п╟я│п╫п╬я│я┌п╦, п©п╬я█я┌п╬п╪я┐ п©п╬ "
+"я┐п╪п╬п╩я┤п╟п╫п╦я▌ п╬п╫п╟ п╡я▀п╨п╩я▌я┤п╣п╫п╟. п∙я│п╩п╦ п╫п╣ п╥п╫п╟п╣я┌п╣ я┤я┌п╬ п╢п╣п╩п╟я┌я▄, я┌п╬ п╬я│я┌п╟п╡я▄я┌п╣ п╨п╟п╨ п╣я│я┌я▄."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid "Should mandb build its database now?"
+msgstr "п║п╬п╥п╢п╟я┌я▄ п╠п╟п╥я┐ п╢п╟п╫п╫я▀я┘ mandb я│п╣п╧я┤п╟я│?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
 "happen in the background, possibly slowing down the installation of other "
 "packages."
 msgstr ""
-"База данных описаний страниц руководств не существует. Ее создание может "
-"занять некоторое время, в зависимости от количества установленных страниц "
-"руководств; создание базы производится в фоновом режиме, что может замедлить "
-"установку остальных пакетов."
+"п▓ п╫п╟я│я┌п╬я▐я┴п╦п╧ п╪п╬п╪п╣п╫я┌ п╠п╟п╥я▀ п╢п╟п╫п╫я▀я┘ п╬п©п╦я│п╟п╫п╦п╧ я│я┌я─п╟п╫п╦я├ я─я┐п╨п╬п╡п╬п╢я│я┌п╡ п╫п╣ я│я┐я┴п╣я│я┌п╡я┐п╣я┌. "
+"п∙я▒ я│п╬п╥п╢п╟п╫п╦п╣ п╪п╬п╤п╣я┌ п╥п╟п╫я▐я┌я▄ п╫п╣п╨п╬я┌п╬я─п╬п╣ п╡я─п╣п╪я▐, п╡ п╥п╟п╡п╦я│п╦п╪п╬я│я┌п╦ п╬я┌ п╨п╬п╩п╦я┤п╣я│я┌п╡п╟ "
+"я┐я│я┌п╟п╫п╬п╡п╩п╣п╫п╫я▀я┘ я│я┌я─п╟п╫п╦я├ я─я┐п╨п╬п╡п╬п╢я│я┌п╡; я│п╬п╥п╢п╟п╫п╦п╣ п╠п╟п╥я▀ п©я─п╬п╦п╥п╡п╬п╢п╦я┌я│я▐ п╡ я└п╬п╫п╬п╡п╬п╪ "
+"я─п╣п╤п╦п╪п╣, я┤я┌п╬ п╪п╬п╤п╣я┌ п╥п╟п╪п╣п╢п╩п╦я┌я▄ я┐я│я┌п╟п╫п╬п╡п╨я┐ п╬я│я┌п╟п╩я▄п╫я▀я┘ п©п╟п╨п╣я┌п╬п╡."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid "Should mandb build its database now?"
-msgstr "Создать базу данных mandb сейчас?"
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+#| msgid ""
+#| "If you do not build the database now, it will be built the next time /etc/"
+#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
+#| "be able to display any output."
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/man-db runs (automatically or manually). Until then, the "
+"'whatis' and 'apropos' commands will not be able to display any output."
+msgstr ""
+"п∙я│п╩п╦ п╡я▀ п╫п╣ я│п╬п╥п╢п╟п╢п╦я┌п╣ п╠п╟п╥я┐ п╢п╟п╫п╫я▀я┘ я│п╣п╧я┤п╟я│, я┌п╬ п╬п╫п╟ п╠я┐п╢п╣я┌ я│п╬п╥п╢п╟п╫п╟ п©я─п╦ "
+"я│п╩п╣п╢я┐я▌я┴п╣п╪ п╥п╟п©я┐я│п╨п╣ /etc/cron.weekly/man-db (п╟п╡я┌п╬п╪п╟я┌п╦я┤п╣я│п╨п╦ п╦п╩п╦ п╡я─я┐я┤п╫я┐я▌). "
+"п■п╬ я█я┌п╬пЁп╬ п╪п╬п╪п╣п╫я┌п╟ п╨п╬п╪п╟п╫п╢я▀ 'whatis' п╦ 'apropos' п╫п╦я┤п╣пЁп╬ п©п╬п╨п╟п╥я▀п╡п╟я┌я▄ п╫п╣ п╠я┐п╢я┐я┌."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
 "time, depending on how many pages you have installed; it will happen in the "
 "background, possibly slowing down the installation of other packages."
 msgstr ""
-"Эта версия man-db несовместима с имеющейся у вас базой данных описаний "
-"страниц руководств, поэтому базу данных нужно перестроить. Это может занять "
-"некоторое время, в зависимости от количества установленных у вас  страниц; "
-"создание базы производится в фоновом режиме, что может замедлить установку "
-"остальных пакетов."
+"п╜я┌п╟ п╡п╣я─я│п╦я▐ man-db п╫п╣я│п╬п╡п╪п╣я│я┌п╦п╪п╟ я│ п╦п╪п╣я▌я┴п╣п╧я│я▐ я┐ п╡п╟я│ п╠п╟п╥п╬п╧ п╢п╟п╫п╫я▀я┘ п╬п©п╦я│п╟п╫п╦п╧ "
+"я│я┌я─п╟п╫п╦я├ я─я┐п╨п╬п╡п╬п╢я│я┌п╡, п©п╬я█я┌п╬п╪я┐ п╠п╟п╥я┐ п╢п╟п╫п╫я▀я┘ п╫я┐п╤п╫п╬ п©п╣я─п╣я│я┌я─п╬п╦я┌я▄. п╜я┌п╬ п╪п╬п╤п╣я┌ п╥п╟п╫я▐я┌я▄ "
+"п╫п╣п╨п╬я┌п╬я─п╬п╣ п╡я─п╣п╪я▐, п╡ п╥п╟п╡п╦я│п╦п╪п╬я│я┌п╦ п╬я┌ п╨п╬п╩п╦я┤п╣я│я┌п╡п╟ я┐я│я┌п╟п╫п╬п╡п╩п╣п╫п╫я▀я┘ я┐ п╡п╟я│ я│я┌я─п╟п╫п╦я├; "
+"я│п╬п╥п╢п╟п╫п╦п╣ п╠п╟п╥я▀ п©я─п╬п╦п╥п╡п╬п╢п╦я┌я│я▐ п╡ я└п╬п╫п╬п╡п╬п╪ я─п╣п╤п╦п╪п╣, я┤я┌п╬ п╪п╬п╤п╣я┌ п╥п╟п╪п╣п╢п╩п╦я┌я▄ я┐я│я┌п╟п╫п╬п╡п╨я┐ "
+"п╬я│я┌п╟п╩я▄п╫я▀я┘ п©п╟п╨п╣я┌п╬п╡."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
-msgstr ""
-"Если вы не построите базу даных сейчас, то она будет построена при "
-"следующемзапуске /etc/cron.weekly/mandb, или вы можете запустить команду "
-"'mandb -c' от имени пользователя  'man'. До этого момента команды 'whatis' и "
-"'apropos' работать не будут."
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
-msgstr "Несовместимые изменения, как этот, случаются редко."
+msgstr "п²п╣я│п╬п╡п╪п╣я│я┌п╦п╪я▀п╣ п╦п╥п╪п╣п╫п╣п╫п╦я▐, я┌п╟п╨п╦п╣ п╨п╟п╨ я█я┌п╬, я│п╩я┐я┤п╟я▌я┌я│я▐ я─п╣п╢п╨п╬."
+
