@@ -15,6 +15,7 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     - Russian (thanks, Yuri Kozlov; closes: #431290).
     - Spanish (thanks, Carlos Valdivia Yagüe; closes: #431416).
     - German (thanks, Helge Kreutzmann; closes: #431448).
+    - French (thanks, Christian Perrier; closes: #431503).
   * Add debconf translations:
     - Basque (thanks, Piarres Beobide; closes: #430929).
     - Tamil (thanks, Tirumurti Vasudevan; closes: #431063).
