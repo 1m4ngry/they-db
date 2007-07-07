@@ -36,7 +36,7 @@ for x in $maybesetuid; do
     # No statoverrides available or none exist for us ...
     if [ ! -x /usr/sbin/dpkg-statoverride ] || \
 	    ! dpkg-statoverride --list /usr/lib/man-db/$x >/dev/null; then
-	chown $owner /usr/lib/man-db/$x
+	chown $owner /usr/lib/man-db/$x || true
 	chmod $mode  /usr/lib/man-db/$x
     fi
     ln -sf ../lib/man-db/$x /usr/bin/$x
@@ -59,7 +59,7 @@ fi
 if [ -d $catdir ]; then
     # Catdirs sometimes used to be created with the wrong permissions.
     if dpkg --compare-versions "$2" lt 2.3.20-4; then
-	chown -R man /var/cache/man
+	chown -R man /var/cache/man || true
     fi
 else
     # Old packages removed catpages on upgrade. The preinst hack should have

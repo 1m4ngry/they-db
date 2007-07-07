@@ -1,5 +1,7 @@
 man-db (2.4.4-4) UNRELEASED; urgency=low
 
+  * Ignore chown failures, though affected systems are buggy and should be
+    fixed (closes: #432029).
   * Apply results of debconf templates and package descriptions review by
     debian-l10n-english (closes: #430837).
   * Update debconf translations:
