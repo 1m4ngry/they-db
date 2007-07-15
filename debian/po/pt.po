@@ -87,11 +87,6 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates.master:3001 ../templates.master:4001
-#| msgid ""
-#| "If you do not build the database now, it will be built the next time /etc/"
-#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#| "be able to display any output."
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/man-db runs (automatically or manually). Until then, the "

@@ -114,8 +114,8 @@ msgid ""
 "'whatis' and 'apropos' commands will not be able to display any output."
 msgstr ""
 "Si no construye la base de datos ahora, se hará la próxima vez que se "
-"ejecute «/etc/cron.weekly/man-db» (automática o manualmente). Hasta "
-"entonces, las órdenes «whatis» y «apropos» no podrán mostrar nada."
+"ejecute «/etc/cron.weekly/man-db» (automática o manualmente). Hasta entonces, "
+"las órdenes «whatis» y «apropos» no podrán mostrar nada."
 
 #. Type: boolean
 #. Description

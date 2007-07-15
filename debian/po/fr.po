@@ -1,10 +1,10 @@
 # Translation of man-db debconf templates to French
-# The file is licensed under the same license than the man-db package
+# The file is licensed under the same license as the man-db package
 #
 # Christian Perrier <bubulle@debian.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: fr\n"
+"Project-Id-Version: man-db\n"
 "Report-Msgid-Bugs-To: cjwatson@debian.org\n"
 "POT-Creation-Date: 2007-06-27 18:31+0200\n"
 "PO-Revision-Date: 2007-06-27 20:01+0200\n"

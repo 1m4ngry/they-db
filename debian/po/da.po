@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db_2.4.2-9_da\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-10 22:14+0000\n"
+"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
+"POT-Creation-Date: 2007-06-27 18:31+0200\n"
 "PO-Revision-Date: 2004-02-17 20:40+0100\n"
 "Last-Translator: Claus Hindsgaul <claus_h@image.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -26,13 +26,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "Skal man og mandb installeres 'setuid man'?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
@@ -46,7 +46,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
@@ -61,7 +61,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4
+#: ../templates.master:2001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
@@ -71,7 +71,15 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:21
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+msgid "Should mandb build its database now?"
+msgstr "Skal mandb opbygge sin database nu?"
+
+#. Type: boolean
+#. Description
+#: ../templates.master:3001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -85,13 +93,28 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid "Should mandb build its database now?"
-msgstr "Skal mandb opbygge sin database nu?"
+#. Type: boolean
+#. Description
+#: ../templates.master:3001 ../templates.master:4001
+#, fuzzy
+#| msgid ""
+#| "If you do not build the database now, it will be built the next time /etc/"
+#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
+#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
+#| "be able to display any output."
+msgid ""
+"If you do not build the database now, it will be built the next time /etc/"
+"cron.weekly/man-db runs (automatically or manually). Until then, the "
+"'whatis' and 'apropos' commands will not be able to display any output."
+msgstr ""
+"Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang, /etc/"
+"cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c' som "
+"brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' ikke "
+"kunne vise noget."
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -106,21 +129,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:35
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as user "
-"'man'. In the meantime, the 'whatis' and 'apropos' commands will not be able "
-"to display any output."
-msgstr ""
-"Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang, /etc/"
-"cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c' som "
-"brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' ikke "
-"kunne vise noget."
-
-#. Type: boolean
-#. Description
-#: ../templates.master:35
+#: ../templates.master:4001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Inkompatible ændringer som denne skulle være sjældne."
 
