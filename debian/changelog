@@ -1,4 +1,4 @@
-man-db (2.4.4-4) UNRELEASED; urgency=low
+man-db (2.4.4-4) unstable; urgency=low
 
   * Ignore chown failures, though affected systems are buggy and should be
     fixed (closes: #432029).
@@ -26,8 +26,9 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     to edit history from over eight years ago just for this.
   * Don't ignore errors from 'make distclean' other than the Makefile not
     existing.
+  * Drop source-compatibility with woody.
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 29 Jun 2007 10:11:55 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sun, 19 Aug 2007 14:45:35 +0100
 
 man-db (2.4.4-3) unstable; urgency=low
 

@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: man-db\n"
 "Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-06-27 18:31+0200\n"
+"POT-Creation-Date: 2007-08-19 15:19+0100\n"
 "PO-Revision-Date: 2004-02-29 16:36-0300\n"
 "Last-Translator: André Luís Lopes <andrelop@debian.org>\n"
 "Language-Team: Debian-BR Project <debian-l10n-portuguese@lists.debian.org>\n"
@@ -26,13 +26,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:2001
+#: ../templates:2001
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "O man e o mandb devem ser instalados 'setuid man'?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:2001
+#: ../templates:2001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
@@ -47,7 +47,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:2001
+#: ../templates:2001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
@@ -63,7 +63,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:2001
+#: ../templates:2001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
@@ -76,13 +76,13 @@ msgstr ""
 #. Description
 #. Type: boolean
 #. Description
-#: ../templates.master:3001 ../templates.master:4001
+#: ../templates:3001 ../templates:4001
 msgid "Should mandb build its database now?"
 msgstr "O man-db deve construir sua própria base de dados agora?"
 
 #. Type: boolean
 #. Description
-#: ../templates.master:3001
+#: ../templates:3001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -99,7 +99,7 @@ msgstr ""
 #. Description
 #. Type: boolean
 #. Description
-#: ../templates.master:3001 ../templates.master:4001
+#: ../templates:3001 ../templates:4001
 #, fuzzy
 #| msgid ""
 #| "If you do not build the database now, it will be built the next time /etc/"
@@ -119,7 +119,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4001
+#: ../templates:4001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -134,7 +134,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates.master:4001
+#: ../templates:4001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Mudanças incompatíveis como essa deverão ocorrer raramente."
 
