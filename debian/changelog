@@ -28,7 +28,7 @@ man-db (2.4.4-4) unstable; urgency=low
     existing.
   * Drop source-compatibility with woody.
 
- -- Colin Watson <cjwatson@debian.org>  Sun, 19 Aug 2007 14:45:35 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sun, 19 Aug 2007 15:36:42 +0100
 
 man-db (2.4.4-3) unstable; urgency=low
 
