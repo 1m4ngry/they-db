@@ -101,6 +101,8 @@ binary-arch: build install
 	install -m644 debian/bug.presubj \
 		$(dtmp)/usr/share/bug/man-db/presubj
 	dh_installchangelogs docs/ChangeLog
+	install -D -m644 debian/man-db.lintian \
+		$(dtmp)/usr/share/lintian/overrides/man-db
 	dh_installcron
 ifeq ($(PO2DEBCONF),yes)
 	po2debconf -e utf8 debian/templates.master > debian/templates

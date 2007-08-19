@@ -22,6 +22,8 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
   * Add debconf translations:
     - Basque (thanks, Piarres Beobide; closes: #430929).
     - Tamil (thanks, Tirumurti Vasudevan; closes: #431063).
+  * Override syntax-error-in-debian-changelog lintian warning. I'm not going
+    to edit history from over eight years ago just for this.
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 29 Jun 2007 10:11:55 +0100
 
