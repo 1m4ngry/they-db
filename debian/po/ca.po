@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.4.4-4\n"
 "Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:19+0100\n"
+"POT-Creation-Date: 2007-08-19 15:26+0100\n"
 "PO-Revision-Date: 2007-06-27 20:11+0200\n"
 "Last-Translator: Jordà Polo <jorda@ettin.org>\n"
 "Language-Team: Català <debian-l10n-catalan@lists.debian.org>\n"
@@ -21,13 +21,13 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:2001
+#: ../templates:1001
 msgid "Should man and mandb be installed 'setuid man'?"
 msgstr "Voleu que man i mandb s'instal·lin «setuid man»?"
 
 #. Type: boolean
 #. Description
-#: ../templates:2001
+#: ../templates:1001
 msgid ""
 "The man and mandb program can be installed with the set-user-id bit set, so "
 "that they will run with the permissions of the 'man' user. This allows "
@@ -42,7 +42,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:2001
+#: ../templates:1001
 msgid ""
 "Cached man pages only work if you are using an 80-column terminal, to avoid "
 "one user causing cat pages to be saved at widths that would be inconvenient "
@@ -57,7 +57,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:2001
+#: ../templates:1001
 msgid ""
 "Enabling this feature may be a security risk, so it is disabled by default. "
 "If in doubt, you should leave it disabled."
@@ -70,13 +70,13 @@ msgstr ""
 #. Description
 #. Type: boolean
 #. Description
-#: ../templates:3001 ../templates:4001
+#: ../templates:2001 ../templates:3001
 msgid "Should mandb build its database now?"
 msgstr "Hauria de construir ara mandb la seva base de dades?"
 
 #. Type: boolean
 #. Description
-#: ../templates:3001
+#: ../templates:2001
 msgid ""
 "You do not yet have a database of manual page descriptions. Building one may "
 "take some time, depending on how many pages you have installed; it will "
@@ -92,7 +92,7 @@ msgstr ""
 #. Description
 #. Type: boolean
 #. Description
-#: ../templates:3001 ../templates:4001
+#: ../templates:2001 ../templates:3001
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/man-db runs (automatically or manually). Until then, the "
@@ -104,7 +104,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid ""
 "This version of man-db is incompatible with your existing database of manual "
 "page descriptions, so that database needs to be rebuilt. This may take some "
@@ -119,7 +119,7 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../templates:4001
+#: ../templates:3001
 msgid "Incompatible changes like this should happen rarely."
 msgstr "Canvis incompatibles com aquest passen molt rarament."
 
