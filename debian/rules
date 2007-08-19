@@ -46,8 +46,8 @@ build-stamp: GNUmakefile
 clean:
 	dh_testdir
 	touch configure stamp-h.in	# avoid autoconf build-dependency
-	-$(MAKE) -i distclean
-	-$(MAKE) -C manual -i distclean
+	[ ! -f GNUmakefile ] || $(MAKE) -i distclean
+	[ ! -f manual/Makefile ] || $(MAKE) -C manual -i distclean
 	-rm -f build-stamp install-stamp man/index.*
 	-rm -f */*.i
 ifeq ($(PO2DEBCONF),yes)

@@ -24,6 +24,8 @@ man-db (2.4.4-4) UNRELEASED; urgency=low
     - Tamil (thanks, Tirumurti Vasudevan; closes: #431063).
   * Override syntax-error-in-debian-changelog lintian warning. I'm not going
     to edit history from over eight years ago just for this.
+  * Don't ignore errors from 'make distclean' other than the Makefile not
+    existing.
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 29 Jun 2007 10:11:55 +0100
 
