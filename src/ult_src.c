@@ -102,6 +102,8 @@ extern char *realpath();
 
 #include "manconfig.h"
 #include "lib/error.h"
+#include "lib/pipeline.h"
+#include "lib/decompress.h"
 #include "security.h"
 #include "ult_src.h"
 
@@ -112,29 +114,29 @@ static char *ult_hardlink (const char *fullpath, ino_t inode)
 {
 	DIR *mdir;
 	struct dirent *manlist;
-	char *link, *dir, *ret;
+	char *base, *dir, *ret;
 	const char *slash;
 
 	slash = strrchr (fullpath, '/');
 	assert (slash);
 	dir = xstrndup (fullpath, slash - fullpath);
-	link = xstrdup (++slash);
+	base = xstrdup (++slash);
 
 	mdir = opendir (dir);
 	if (mdir == NULL) {
-		error (0, errno, _("can't search directory %s"), dir);
+		if (quiet < 2)
+			error (0, errno, _("can't search directory %s"), dir);
 		free (dir);
-		free (link);
+		free (base);
 		return NULL;
 	}
 
 	while ((manlist = readdir (mdir))) {
 		if (manlist->d_ino == inode &&
-		    strcmp (link, manlist->d_name) > 0) {
-			free (link);
-			link = xstrdup (manlist->d_name);
-			if (debug)
-				fprintf (stderr, "ult_hardlink: (%s)\n", link);
+		    strcmp (base, manlist->d_name) > 0) {
+			free (base);
+			base = xstrdup (manlist->d_name);
+			debug ("ult_hardlink: (%s)\n", base);
 		}
 	}
 	closedir (mdir);
@@ -142,15 +144,15 @@ static char *ult_hardlink (const char *fullpath, ino_t inode)
 	/* If we already are the link with the smallest name value */
 	/* return NULL */
 
-	if (strcmp (link, slash) == 0) {
+	if (strcmp (base, slash) == 0) {
 		free (dir);
-		free (link);
+		free (base);
 		return NULL;
 	}
 
-	ret = strappend (NULL, dir, "/", link, NULL);
+	ret = strappend (NULL, dir, "/", base, NULL);
 	free (dir);
-	free (link);
+	free (base);
 	return ret;
 }
 
@@ -164,16 +166,19 @@ static char *ult_softlink (const char *fullpath)
 
 	if (realpath (fullpath, resolved_path) == NULL) {
 		/* discard the unresolved path */
-		if (errno == ENOENT)
-			error (0, 0, _("warning: %s is a dangling symlink"),
-			       fullpath);
-		else
-			error (0, errno, _("can't resolve %s"), fullpath);
+		if (quiet < 2) {
+			if (errno == ENOENT)
+				error (0, 0,
+				       _("warning: %s is a dangling symlink"),
+				       fullpath);
+			else
+				error (0, errno, _("can't resolve %s"),
+				       fullpath);
+		}
 		return NULL;
 	}
 
-	if (debug)
-		fprintf (stderr, "ult_softlink: (%s)\n", resolved_path);
+	debug ("ult_softlink: (%s)\n", resolved_path);
 
 	return xstrdup (resolved_path);
 }
@@ -228,7 +233,7 @@ static char *test_for_include (const char *buffer)
 const char *ult_src (const char *name, const char *path,
 		     struct stat *buf, int flags)
 {
-	static char *basename;		/* must be static */
+	static char *base;		/* must be static */
 	static short recurse; 		/* must be static */
 
 	/* initialise the function */
@@ -239,20 +244,19 @@ const char *ult_src (const char *name, const char *path,
 
 	if (recurse == 0) {
 		struct stat new_buf;
-		if (basename)
-			free (basename);
-		basename = xstrdup (name);
+		if (base)
+			free (base);
+		base = xstrdup (name);
 
-		if (debug)
-			fprintf (stderr, "\nult_src: File %s in mantree %s\n",
-				 name, path);
+		debug ("\nult_src: File %s in mantree %s\n", name, path);
 
 		/* If we don't have a buf, allocate and assign one */
 		if (!buf && ((flags & SOFT_LINK) || (flags & HARD_LINK))) {
 			buf = &new_buf;
-			if (lstat (basename, buf) == -1) {
-				error (0, errno, _("can't resolve %s"),
-				       basename);
+			if (lstat (base, buf) == -1) {
+				if (quiet < 2)
+					error (0, errno, _("can't resolve %s"),
+					       base);
 				return NULL;
 			}
 		}
@@ -262,10 +266,10 @@ const char *ult_src (const char *name, const char *path,
 		if (flags & SOFT_LINK) {
 			if (S_ISLNK (buf->st_mode)) {
 				/* Is a symlink, resolve it. */
-				char *softlink = ult_softlink (basename);
+				char *softlink = ult_softlink (base);
 				if (softlink) {
-					free (basename);
-					basename = softlink;
+					free (base);
+					base = softlink;
 				} else
 					return NULL;
 			}
@@ -276,11 +280,11 @@ const char *ult_src (const char *name, const char *path,
 		if (flags & HARD_LINK) {
 			if (buf->st_nlink > 1) {
 				/* Has HARD links, find least value */
-				char *hardlink = ult_hardlink (basename,
+				char *hardlink = ult_hardlink (base,
 							       buf->st_ino);
 				if (hardlink) {
-					free (basename);
-					basename = hardlink;
+					free (base);
+					base = hardlink;
 				}
 			}
 		}
@@ -288,65 +292,46 @@ const char *ult_src (const char *name, const char *path,
 
 	/* keep a check on recursion level */
 	else if (recurse == 10) {
-		error (0, 0, _("%s is self referencing"), name);
+		if (quiet < 2)
+			error (0, 0, _("%s is self referencing"), name);
 		return NULL;
 	}
 
 	if (flags & SO_LINK) {
-		char buffer[1024], *bptr;
-		FILE *fp;
+		const char *buffer;
+		pipeline *decomp;
 #ifdef COMP_SRC
-		struct compression *comp;
+		struct stat st;
 
-		/* get rid of the previous ztemp file (if any) */
-		remove_ztemp ();
+		if (stat (base, &st) < 0) {
+			struct compression *comp = comp_file (base);
 
-		/* if we are handed the name of a compressed file, remove
-		   the compression extension? */
-		comp = comp_info (basename, 1);
-		if (comp) {
-			free (basename);
-			basename = comp->stem;
-			comp->stem = NULL; /* steal memory */
-		}
-
-		/* if the open fails, try looking for compressed */
-		fp = fopen (basename, "r");
-		if (fp == NULL) {
-			char *filename;
-
-			comp = comp_file (basename);
 			if (comp) {
-				filename = decompress (comp->stem, comp);
-				free (comp->stem);
-				if (!filename)
-					return NULL;
-				basename = strappend (basename, ".", comp->ext,
-						      NULL);
-				drop_effective_privs ();
-				fp = fopen (filename, "r");
-				regain_effective_privs ();
-			} else
-				filename = basename;
-
-			if (!fp) {
-				error (0, errno, _("can't open %s"), filename);
+				if (base)
+					free (base);
+				base = comp->stem;
+				comp->stem = NULL; /* steal memory */
+			} else {
+				if (quiet < 2)
+					error (0, errno, _("can't open %s"),
+					       base);
 				return NULL;
 			}
 		}
-#else
-		fp = fopen (basename, "r");
-		if (fp == NULL) {
-			error (0, errno, _("can't open %s"), basename);
+#endif
+
+		decomp = decompress_open (base);
+		if (!decomp) {
+			if (quiet < 2)
+				error (0, errno, _("can't open %s"), base);
 			return NULL;
 		}
-#endif
+		pipeline_start (decomp);
+
 		/* make sure that we skip over any comments */
 		do {
-			bptr = fgets (buffer, 1024, fp);
-		} while (bptr && STRNEQ (buffer, ".\\\"", 3));
-
-		fclose(fp);
+			buffer = pipeline_readline (decomp);
+		} while (buffer && STRNEQ (buffer, ".\\\"", 3));
 
 		if (buffer) {
 			char *include = test_for_include (buffer);
@@ -357,25 +342,27 @@ const char *ult_src (const char *name, const char *path,
 				 * ult_softlink() etc., in case it went
 				 * outside the mantree.
 				 */
-				free (basename);
-				basename = strappend (NULL, path, "/", include,
-						      NULL);
+				free (base);
+				base = strappend (NULL, path, "/", include,
+						  NULL);
 				free (include);
 
-				if (debug)
-					fprintf (stderr,
-						 "ult_src: points to %s\n",
-						 basename);
+				debug ("ult_src: points to %s\n", base);
 
 				recurse++;
-				ult = ult_src (basename, path, NULL, flags);
+				ult = ult_src (base, path, NULL, flags);
 				recurse--;
 
+				pipeline_wait (decomp);
+				pipeline_free (decomp);
 				return ult;
 			}
 		}
+
+		pipeline_wait (decomp);
+		pipeline_free (decomp);
 	}
 
 	/* We have the ultimate source */
-	return basename;
+	return base;
 }

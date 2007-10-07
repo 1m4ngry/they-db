@@ -78,7 +78,6 @@ static const char *mandir_layout = MANDIR_LAYOUT;
 #  endif /* HAVE_GETOPT_H */
 
 char *program_name;
-int debug = 0;
 
 static const struct option long_options[] =
 {
@@ -173,26 +172,21 @@ static struct dirent_hashent *update_directory_cache (const char *path)
 
 	if (!dirent_hash) {
 		dirent_hash = hash_create (&dirent_hash_free);
-		push_cleanup ((cleanup_fun) hash_free, dirent_hash);
+		push_cleanup ((cleanup_fun) hash_free, dirent_hash, 0);
 	}
 	cache = hash_lookup (dirent_hash, path, strlen (path));
 
 	/* Check whether we've got this one already. */
 	if (cache) {
-		if (debug)
-			fprintf (stderr, "update_directory_cache %s: hit\n",
-				 path);
+		debug ("update_directory_cache %s: hit\n", path);
 		return cache;
 	}
 
-	if (debug)
-		fprintf (stderr, "update_directory_cache %s: miss\n", path);
+	debug ("update_directory_cache %s: miss\n", path);
 
 	dir = opendir (path);
 	if (!dir) {
-		if (debug)
-			fprintf (stderr, "can't open directory %s: %s\n",
-				 path, strerror (errno));
+		debug_error ("can't open directory %s", path);
 		return NULL;
 	}
 
@@ -254,14 +248,11 @@ static int match_in_directory (const char *path, const char *pattern,
 
 	cache = update_directory_cache (path);
 	if (!cache) {
-		if (debug)
-			fprintf (stderr, "directory cache update failed\n");
+		debug ("directory cache update failed\n");
 		return -1;
 	}
 
-	if (debug)
-		fprintf (stderr, "globbing pattern in %s: %s\n",
-			 path, pattern);
+	debug ("globbing pattern in %s: %s\n", path, pattern);
 
 	pglob->gl_pathv = xmalloc (allocated * sizeof (char *));
 	flags = ignore_case ? FNM_CASEFOLD : 0;
@@ -292,9 +283,7 @@ static int match_in_directory (const char *path, const char *pattern,
 		if (fnm)
 			continue;
 
-		if (debug)
-			fprintf (stderr, "matched: %s/%s\n",
-				 path, cache->names[i]);
+		debug ("matched: %s/%s\n", path, cache->names[i]);
 
 		if (pglob->gl_pathc >= allocated) {
 			allocated *= 2;
@@ -317,7 +306,7 @@ static int match_in_directory (const char *path, const char *pattern,
 	return 0;
 }
 
-char **look_for_file (const char *unesc_hier, const char *sec,
+char **look_for_file (const char *hier, const char *sec,
 		      const char *unesc_name, int cat, int match_case)
 {
 	char *pattern = NULL, *path = NULL;
@@ -325,11 +314,11 @@ char **look_for_file (const char *unesc_hier, const char *sec,
 	static int cleanup_installed = 0;
 	int status = 1;
 	static int layout = -1;
-	char *hier, *name;
+	char *name;
 
 	if (!cleanup_installed) {
 		/* appease valgrind */
-		push_cleanup ((cleanup_fun) globfree, &gbuf);
+		push_cleanup ((cleanup_fun) globfree, &gbuf, 0);
 		cleanup_installed = 1;
 	}
 
@@ -338,12 +327,9 @@ char **look_for_file (const char *unesc_hier, const char *sec,
 
 	if (layout == -1) {
 		layout = parse_layout (mandir_layout);
-		if (debug)
-			fprintf (stderr, "Layout is %s (%d)\n",
-				 mandir_layout, layout);
+		debug ("Layout is %s (%d)\n", mandir_layout, layout);
 	}
 
-	hier = escape_shell (unesc_hier);
 	name = escape_shell (unesc_name);
 
 	/* allow lookups like "3x foo" to match "../man3/foo.3x" */
@@ -437,7 +423,6 @@ char **look_for_file (const char *unesc_hier, const char *sec,
 	}
 
 	free (name);
-	free (hier);
 	free (path);
 	free (pattern);
 
@@ -465,17 +450,17 @@ static void usage (int status)
 
 int main (int argc, char **argv)
 {
-	int c, option_index;
+	int c;
 	int i;
 	int match_case = 0;
 
 	program_name = xstrdup (basename (argv[0]));
 
 	while ((c = getopt_long (argc, argv, args,
-				 long_options, &option_index)) != -1) {
+				 long_options, NULL)) != -1) {
 		switch (c) {
 			case 'd':
-				debug = 1;
+				debug_level = 1;
 				break;
 			case 'e':
 				extension = optarg;

@@ -4,7 +4,7 @@
  * lexgrog.l: extract 'whatis' info from nroff man / formatted cat pages.
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -61,8 +61,10 @@ extern int errno;
 #include "manconfig.h"
 #include "lib/error.h"
 #include "lib/pipeline.h"
+#include "lib/decompress.h"
 #include "descriptions.h"
 #include "security.h"
+#include "encodings.h"
 #include "ult_src.h"
 
 #define YY_READ_BUF_SIZE	1024
@@ -86,6 +88,19 @@ static char filters[MAX_FILTERS];
 static int fill_mode;
 static int waiting_for_quote;
 
+static pipeline *decomp;
+
+#define YY_INPUT(buf,result,max_size) { \
+	size_t size = max_size; \
+	const char *block = pipeline_read (decomp, &size); \
+	if (block && size != 0) { \
+		memcpy (buf, block, size); \
+		buf[size] = '\0'; \
+		result = size; \
+	} else \
+		result = YY_NULL; \
+}
+
 #ifdef TEST
 
 #include <stdio.h>
@@ -96,20 +111,21 @@ static int waiting_for_quote;
 #endif /* HAVE_GETOPT_H */
 
 char *program_name;
-int debug = 0;
+int quiet = 1;
 
 static const struct option long_options[] =
 {
-	{"man",		no_argument,	0,	'm'},
-	{"cat",		no_argument,	0,	'c'},
-	{"whatis",	no_argument,	0,	'w'},
-	{"filters",	no_argument,	0,	'f'},
-	{"help",	no_argument,	0,	'h'},
-	{"version",	no_argument,	0,	'V'},
+	{"man",		no_argument,		0,	'm'},
+	{"cat",		no_argument,		0,	'c'},
+	{"whatis",	no_argument,		0,	'w'},
+	{"filters",	no_argument,		0,	'f'},
+	{"encoding",	required_argument,	0,	'E'},
+	{"help",	no_argument,		0,	'h'},
+	{"version",	no_argument,		0,	'V'},
 	{0, 0, 0, 0}
 };
 
-static const char args[] = "mcwfhV";
+static const char args[] = "mcwfE:hV";
 
 #endif /* TEST */
 %}
@@ -148,23 +164,36 @@ sec_request	\.[Ss][HhYySs]
 comment		['.]\\{dbl_quote}
 
  /* Please add to this list if you know how. */
-cs_name		J[Mm][��Ee][Nn][Oo]
+ /* Note that, since flex only supports UTF-8 by accident, character classes
+  * including non-ASCII characters must be written out as (a|b|c|d) rather
+  * than [abcd].
+  */
+bg_name		ИМЕ
+cs_name		(J[Mm](É|é|\\\('[Ee]|E|e)[Nn][Oo]|N(Á|á)[Zz][Ee][Vv])
 da_name		N[Aa][Vv][Nn]
 de_name		B[Ee][Zz][Ee][Ii][Cc][Hh][Nn][Uu][Nn][Gg]
 en_name		N[Aa][Mm][Ee]
 es_name		N[Oo][Mm][Bb][Rr][Ee]
 fi_name		N[Ii][Mm][Ii]
 fr_name		N[Oo][Mm]
-hu_name		N[��Ee][Vv]
+hu_name		N(É|é|E|e)[Vv]
+id_name		N[Aa][Mm][Aa]
  /* NOME also works for gl, pt */
 it_name		N[Oo][Mm][Ee]
-ja_name		\314\276\301\260
+ja_name		(名|̾)(前|称)
+ko_name		이름
 latin_name	N[Oo][Mm][Ee][Nn]
 nl_name		N[Aa][Aa][Mm]
 pl_name		N[Aa][Zz][Ww][Aa]
-ru_name         \356\341\372\367\341\356\351\345
+ru_name         (ИМЯ|НАЗВАНИЕ|НАИМЕНОВАНИЕ)
+sk_name		M[Ee][Nn][Oo]
+sr_name		НАЗИВ
 sv_name		N[Aa][Mm][Nn]
-name		({cs_name}|{da_name}|{de_name}|{en_name}|{es_name}|{fi_name}|{fr_name}|{hu_name}|{it_name}|{ja_name}|{latin_name}|{nl_name}|{pl_name}|{ru_name}|{sv_name})
+tr_name		(İ|i)S(İ|i)M  
+vi_name		TÊN
+zh_CN_name	名{blank}?称{blank}?.*
+zh_TW_name	(名{blank}?稱|命令名){blank}?.*
+name		({bg_name}|{cs_name}|{da_name}|{de_name}|{en_name}|{es_name}|{fi_name}|{fr_name}|{hu_name}|{id_name}|{it_name}|{ja_name}|{ko_name}|{latin_name}|{nl_name}|{pl_name}|{ru_name}|{sk_name}|{sr_name}|{sv_name}|{tr_name}|{vi_name}|{zh_CN_name}|{zh_TW_name})
 name_sec	{dbl_quote}?{style_change}?{name}{style_change}?({blank}*{dbl_quote})?
 
  /* eptgrv : eqn, pic, tbl, grap, refer, vgrind */
@@ -254,6 +283,8 @@ vgrind_request	\.vS
 					}
 
 	{bol}{typeface}{blank}+		|	/* type face commands */
+	{bol}\.ft{blank}.*		|	/* font change */
+	{bol}\.V[be]{blank}.*		|	/* pod2man, verbatim mode */
 	{bol}\.IX{blank}.*		|	/* .IX line */
 	{next}{comment}.*		{	/* per line comments */
 						newline_found ();
@@ -407,17 +438,18 @@ static void newline_found (void)
 	waiting_for_quote = 0;
 }
 
-int find_name (const char *file, const char *filename, lexgrog *p_lg)
+int find_name (const char *file, const char *filename, lexgrog *p_lg,
+	       const char *encoding)
 {
 	int ret;
+	pipeline *p;
+	char *page_encoding = NULL;
 
 	if (strcmp (file, "-") == 0) {
-		yyin = fdopen (dup (0), "r");
+		p = decompress_fdopen (dup (fileno (stdin)));
 	} else {
-#ifdef COMP_SRC
-		struct compression *comp;
-#endif /* COMP_SRC */
 		struct stat st;
+		char *lang;
 
 		if (stat (file, &st)) {
 			error (0, errno, "%s", file);
@@ -429,26 +461,38 @@ int find_name (const char *file, const char *filename, lexgrog *p_lg)
 			return 0;
 		}
 
-#ifdef COMP_SRC
-		/* See if we need to decompress the file(s) first. */
-		comp = comp_info (file, 0);
-		if (comp) {
-			file = decompress (file, comp);
-			if (!file)
-				return 0;
-		}
-#endif /* COMP_SRC */
 		drop_effective_privs ();
-		yyin = fopen (file, "r");
-		regain_effective_privs ();
-		if (!yyin) {
+		p = decompress_open (file);
+		if (!p) {
 			error (0, errno, _("can't open %s"), file);
-#ifdef COMP_SRC
-			remove_ztemp ();
-#endif /* COMP_SRC */
+			regain_effective_privs ();
 			return 0;
 		}
+		regain_effective_privs ();
+
+		if (!encoding) {
+			lang = lang_dir (file);
+			page_encoding = get_page_encoding (lang);
+			free (lang);
+		}
 	}
+	if (!page_encoding && encoding)
+		page_encoding = xstrdup (encoding);
+	if (page_encoding)
+		add_manconv (p, page_encoding, "UTF-8");
+	free (page_encoding);
+	pipeline_start (p);
+
+	ret = find_name_decompressed (p, filename, p_lg);
+	pipeline_free (p);
+	return ret;
+}
+
+int find_name_decompressed (pipeline *p, const char *filename, lexgrog *p_lg)
+{
+	int ret;
+
+	decomp = p;
 
 	fname = filename;
 	*(p_name = newname) = '\0';
@@ -464,15 +508,12 @@ int find_name (const char *file, const char *filename, lexgrog *p_lg)
 
 	drop_effective_privs ();
 
-	yyrestart (yyin);
+	yyrestart (NULL);
 	ret = yylex ();
-	fclose (yyin);
-
-#ifdef COMP_SRC
-	remove_ztemp ();
-#endif
 
 	regain_effective_privs ();
+
+	pipeline_wait (decomp);
 
 	if (ret)
 		return 0;
@@ -504,13 +545,14 @@ int find_name (const char *file, const char *filename, lexgrog *p_lg)
 
 static void usage (int status)
 {
-	printf (_("usage: %s [-mcwfhV] file ...\n"), program_name);
+	printf (_("usage: %s [-mcwfhV] [-E encoding] file ...\n"), program_name);
 	printf (_(
 		"-m, --man                   parse as man page.\n"
 		"-c, --cat                   parse as cat page.\n"
 		"-w, --whatis                show whatis information.\n"
 		"-f, --filters               show guessed series of "
 					    "preprocessing filters.\n"
+		"-E, --encoding encoding     override character set.\n"
 		"-V, --version               show version.\n"
 		"-h, --help                  show this usage message.\n"
 		"\n"
@@ -520,15 +562,16 @@ static void usage (int status)
 
 int main (int argc, char **argv)
 {
-	int c, option_index;
+	int c;
 	int type = 0;
 	int parse_man = 0, parse_cat = 0, show_whatis = 0, show_filters = 0;
+	const char *encoding = NULL;
 	int some_failed = 0;
 
 	program_name = xstrdup (basename (argv[0]));
 
 	while ((c = getopt_long (argc, argv, args,
-				 long_options, &option_index)) != -1) {
+				 long_options, NULL)) != -1) {
 		switch (c) {
 			case 'm':
 				parse_man = 1;
@@ -541,6 +584,9 @@ int main (int argc, char **argv)
 				break;
 			case 'f':
 				show_filters = 1;
+				break;
+			case 'E':
+				encoding = optarg;
 				break;
 			case 'V':
 				ver ();
@@ -603,20 +649,15 @@ int main (int argc, char **argv)
 					&statbuf, SO_LINK);
 			if (path)
 				free (path);
-#ifdef COMP_SRC
-			if (file) {
-				char *ztemp = get_ztemp ();
-				if (ztemp)
-					file = ztemp;
-			}
-#endif
 		}
 
-		if (file && find_name (file, "-", &lg)) {
+		if (file && find_name (file, "-", &lg, encoding)) {
 			struct page_description *descs =
 				parse_descriptions (NULL, lg.whatis);
 			const struct page_description *desc;
 			for (desc = descs; desc; desc = desc->next) {
+				if (!desc->name || !desc->whatis)
+					continue;
 				found = 1;
 				printf ("%s", argv[optind]);
 				if (show_filters)

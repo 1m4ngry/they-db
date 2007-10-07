@@ -107,13 +107,11 @@ static void gripe_multi_extensions (const char *path, const char *sec,
 		       path, sec, name, ext);
 }
 
-static void gripe_rwopen_failed (const char *database)
+static void gripe_rwopen_failed (void)
 {
-	if (errno == EACCES || errno == EROFS) {
-		if (debug)
-			fprintf (stderr, "database %s is read-only\n",
-				 database);
-	} else {
+	if (errno == EACCES || errno == EROFS)
+		debug ("database %s is read-only\n", database);
+	else {
 #ifdef MAN_DB_UPDATES
 		if (!quiet)
 #endif /* MAN_DB_UPDATES */
@@ -122,11 +120,12 @@ static void gripe_rwopen_failed (const char *database)
 	}
 }
 
-/* take absolute filename and path (for ult_src) and do sanity checks on 
-   file. Also check that file is non-zero in length and is not already in
-   the db. If not, find its ult_src() and see if we have the whatis cached, 
-   otherwise cache it in case we trace another manpage back to it. Next,
-   store it in the db along with any references found in the whatis. */
+/* Take absolute filename and path (for ult_src) and do sanity checks on
+ * file. Also check that file is non-zero in length and is not already in
+ * the db. If not, find its ult_src() and see if we have the whatis cached,
+ * otherwise cache it in case we trace another manpage back to it. Next,
+ * store it in the db along with any references found in the whatis.
+ */
 void test_manfile (const char *file, const char *path)
 {
 	char *base_name;
@@ -160,14 +159,16 @@ void test_manfile (const char *file, const char *path)
 		return;
 	}
 
-	/* see if we already have it, before going any further, this will
-	   save both an ult_src() a find_name(), amongst other time wastes */
+	/* See if we already have it, before going any further. This will
+	 * save both an ult_src() and a find_name(), amongst other wastes of
+	 * time.
+	 */
 	exists = dblookup_exact (base_name, info.ext, 1);
 
-	/* Ensure we really have the actual page. Gzip keeps the mtime
-	   the same when it compresses, so we have to compare comp 
-	   extensions also */
-
+	/* Ensure we really have the actual page. Gzip keeps the mtime the
+	 * same when it compresses, so we have to compare compression
+	 * extensions as well.
+	 */
 	if (exists) {
 		if (strcmp (exists->comp, info.comp ? info.comp : "-") == 0) {
 			if (exists->_st_mtime == info._st_mtime 
@@ -185,9 +186,7 @@ void test_manfile (const char *file, const char *path)
 			   comp extensions */
 			abs_filename = make_filename (path, NULL,
 						      exists, "man");
-			if (debug)
-				fprintf (stderr, "test_manfile(): stat %s\n",
-					 abs_filename);
+			debug ("test_manfile(): stat %s\n", abs_filename);
 			if (stat (abs_filename, &physical) == -1) {
 				if (!opt_test)
 					dbdelete (base_name, exists);
@@ -203,21 +202,20 @@ void test_manfile (const char *file, const char *path)
 	}
 
 	/* Check if it happens to be a symlink/hardlink to something already
-	   in our cache. This just does some extra checks to avoid scanning
-	   links quite so many times. */
+	 * in our cache. This just does some extra checks to avoid scanning
+	 * links quite so many times.
+	 */
 	{
 		/* Avoid too much noise in debug output */
-		int save_debug = debug;
-		debug = 0;
+		int save_debug = debug_level;
+		debug_level = 0;
 		ult = ult_src (file, path, &buf, SOFT_LINK | HARD_LINK);
-		debug = save_debug;
+		debug_level = save_debug;
 	}
 
 	if (!ult) {
 		/* already warned about this, don't do so again */
-		if (debug)
-			fprintf (stderr,
-				 "test_manfile(): bad link %s\n", file);
+		debug ("test_manfile(): bad link %s\n", file);
 		free (manpage);
 		return;
 	}
@@ -226,23 +224,23 @@ void test_manfile (const char *file, const char *path)
 		whatis_hash = hash_create (&plain_hash_free);
 
 	if (hash_lookup (whatis_hash, ult, strlen (ult)) == NULL) {
-		if (debug && strncmp (ult, file, len) != 0)
-			fprintf (stderr,
-				 "\ntest_manfile(): link not in cache:\n"
-				 " source = %s\n"
-				 " target = %s\n", file, ult);
-		/* Trace the file to its ultimate source, else we'll be
-		   looking for whatis info in files containing only
-		   '.so manx/foo.x', which will give us an unobtainable
-		   whatis for the entry. */
+		if (!STRNEQ (ult, file, len))
+			debug ("\ntest_manfile(): link not in cache:\n"
+			       " source = %s\n"
+			       " target = %s\n", file, ult);
+		/* Trace the file to its ultimate source, otherwise we'll be
+		 * looking for whatis info in files containing only '.so
+		 * manx/foo.x', which will give us an unobtainable whatis
+		 * for the entry. */
 		ult = ult_src (file, path, &buf,
 			       SO_LINK | SOFT_LINK | HARD_LINK);
 	}
 
 	if (!ult) {
-		error (0, 0,
-		       _("warning: %s: bad symlink or ROFF `.so' request"),
-		       file);
+		if (quiet < 2)
+			error (0, 0,
+			       _("warning: %s: bad symlink or ROFF `.so' request"),
+			       file);
 		free (manpage);
 		return;
 	}
@@ -267,25 +265,10 @@ void test_manfile (const char *file, const char *path)
 	if (!lg.whatis) {	/* cache miss */
 		/* go get the whatis info in its raw state */
 		char *file_copy = xstrdup (file);
-#ifdef COMP_SRC
-		/* if the nroff was compressed, an uncompressed version is
-		   shown by a call to get_ztemp(), grog this for a whatis
-		   rather than ult. This is a bit difficult to follow, sorry:
-		   ult_src() will leave the last uncompressed nroff file it
-		   has to deal with in get_ztemp() */
-		char *ztemp;
-#endif /* COMP_SRC */
 
 		lg.type = MANPAGE;
 		drop_effective_privs ();
-#ifdef COMP_SRC
-		ztemp = get_ztemp ();
-		if (ztemp) {
-			find_name (ztemp, basename (file_copy), &lg);
-			remove_ztemp ();  /* get rid of temp file identifier */
-		} else
-#endif /* COMP_SRC */
-			find_name (ult, basename (file_copy), &lg);
+		find_name (ult, basename (file_copy), &lg, NULL);
 		free (file_copy);
 		regain_effective_privs ();
 
@@ -293,8 +276,7 @@ void test_manfile (const char *file, const char *path)
 			      xstrdup (lg.whatis));
 	}
 
-	if (debug)
-		fprintf (stderr, "\"%s\"\n", lg.whatis);
+	debug ("\"%s\"\n", lg.whatis);
 
 	/* split up the raw whatis data and store references */
 	info.pointer = NULL;	/* direct page, so far */
@@ -371,8 +353,7 @@ static short testmandirs (const char *path, time_t last)
 	struct stat stbuf;
 	short amount = 0;
 
-	if (debug)
-		fprintf (stderr, "Testing %s for new files\n", path);
+	debug ("Testing %s for new files\n", path);
 
 	dir = opendir (path);
 	if (!dir) {
@@ -386,8 +367,7 @@ static short testmandirs (const char *path, time_t last)
 		if (strncmp (mandir->d_name, "man", 3) != 0)
 			continue;
 
-		if (debug)
-			fprintf (stderr, "Examining %s\n", mandir->d_name);
+		debug ("Examining %s\n", mandir->d_name);
 
 		if (stat (mandir->d_name, &stbuf) != 0)	/* stat failed */
 			continue;
@@ -395,22 +375,18 @@ static short testmandirs (const char *path, time_t last)
 			continue;
 		if (last && stbuf.st_mtime <= last) {
 			/* scanned already */
-			if (debug)
-				fprintf (stderr,
-					 "%s modified %ld, db modified %ld\n",
-					 mandir->d_name, stbuf.st_mtime, last);
+			debug ("%s modified %ld, db modified %ld\n",
+			       mandir->d_name, stbuf.st_mtime, last);
 			continue;
 		}
 
-		if (debug)
-			fprintf (stderr,
-			  "\tsubdirectory %s has been 'modified'\n",
-			  mandir->d_name);
+		debug ("\tsubdirectory %s has been 'modified'\n",
+		       mandir->d_name);
 
 		dbf = MYDBM_RWOPEN(database);
 
 		if (!dbf) {
-			gripe_rwopen_failed (database);
+			gripe_rwopen_failed ();
 			return 0;
 		}
 
@@ -437,11 +413,18 @@ void update_db_time (void)
 	datum key1, content1;
 #endif /* FAST_BTREE */
 
-	key.dptr = xstrdup (KEY);
-	key.dsize = sizeof KEY;
-	content.dptr = (char *) xmalloc (16); /* 11 is max long with '\0' */
-	(void) sprintf (content.dptr, "%ld", (long) time (NULL));
-	content.dsize = strlen (content.dptr) + 1;
+	memset (&key, 0, sizeof key);
+	memset (&content, 0, sizeof content);
+#ifdef FAST_BTREE
+	memset (&key1, 0, sizeof key);
+	memset (&content1, 0, sizeof content);
+#endif
+
+	MYDBM_SET_DPTR (key, xstrdup (KEY));
+	MYDBM_DSIZE (key) = sizeof KEY;
+	MYDBM_SET_DPTR (content, xmalloc (16)); /* 11 is max long with '\0' */
+	sprintf (MYDBM_DPTR (content), "%ld", (long) time (NULL));
+	MYDBM_DSIZE (content) = strlen (MYDBM_DPTR (content)) + 1;
 
 	/* Open the db in RW to store the $mtime$ ID */
 	/* we know that this should succeed because we just updated the db! */
@@ -452,26 +435,26 @@ void update_db_time (void)
 #endif /* MAN_DB_UPDATES */
 			error (0, errno, _("can't update index cache %s"),
 			       database);
-		free (content.dptr);
+		free (MYDBM_DPTR (content));
 		return;
 	}
 #ifndef FAST_BTREE
 	MYDBM_REPLACE (dbf, key, content);
 #else /* FAST_BTREE */
-	key1.dptr = KEY;
-	key1.dsize = sizeof KEY;
+	MYDBM_SET_DPTR (key1, KEY);
+	MYDBM_DSIZE (key1) = sizeof KEY;
 
 	(dbf->seq) (dbf, (DBT *) &key1, (DBT *) &content1, R_CURSOR);
 	
-	if (strcmp (key1.dptr, key.dptr) == 0)
+	if (strcmp (MYDBM_DPTR (key1), MYDBM_DPTR (key)) == 0)
 		(dbf->put) (dbf, (DBT *) &key, (DBT *) &content, R_CURSOR);
 	else
 		(dbf->put) (dbf, (DBT *) &key, (DBT *) &content, 0);
 #endif /* !FAST_BTREE */
 
 	MYDBM_CLOSE (dbf);
-	free (key.dptr);
-	free (content.dptr);
+	free (MYDBM_DPTR (key));
+	free (MYDBM_DPTR (content));
 }
 
 /* remove the db's time key - called prior to update_db if we want
@@ -480,24 +463,51 @@ void reset_db_time (void)
 {
 	datum key;
 
-	key.dptr = xstrdup (KEY);
-	key.dsize = sizeof KEY;
+	memset (&key, 0, sizeof key);
+
+	MYDBM_SET_DPTR (key, xstrdup (KEY));
+	MYDBM_DSIZE (key) = sizeof KEY;
 
 	/* we don't really care if we can't open it RW - it's not fatal */
 	dbf = MYDBM_RWOPEN (database);
 	if (dbf == NULL) {
-		if (debug) {
-			fprintf (stderr, "reset_db_time(): ");
-			perror ("can't open db");
-		}
+		debug_error ("reset_db_time(): can't open db");
 		return;
 	}
 
 	MYDBM_DELETE (dbf, key);
-	if (debug)
-		fprintf (stderr, "reset_db_time()\n");
+	debug ("reset_db_time()\n");
 	MYDBM_CLOSE (dbf);
-	free (key.dptr);
+	free (MYDBM_DPTR (key));
+}
+
+/* Create directory containing database.
+ *
+ * I'm too lazy to implement mkdir -p properly; one level should do for the
+ * case at hand, namely per-locale databases.
+ */
+int make_database_directory (const char *db)
+{
+	char *dbcopy, *dbdir;
+	struct stat st;
+
+	if (!strchr (db, '/'))
+		return 0;
+
+	dbcopy = xstrdup (db);
+	dbdir = dirname (dbcopy);
+	if (stat (dbdir, &st) == 0)
+		goto success;
+	if (errno != ENOENT)
+		goto success; /* don't know, but we'll find out soon enough */
+	if (mkdir (dbdir, 0777) != 0) {
+		error (0, errno,
+		       _("can't create index cache directory %s"), dbdir);
+		return 1;
+	}
+success:
+	free (dbcopy);
+	return 0;
 }
 
 /* routine to prepare/create the db prior to calling testmandirs() */
@@ -505,18 +515,18 @@ short create_db (const char *manpath)
 {
 	short amount;
 	
-	if (debug)
-		fprintf (stderr, "create_db(%s): %s\n", manpath, database);
+	debug ("create_db(%s): %s\n", manpath, database);
+
+	if (make_database_directory (database) != 0)
+		return 0;
 
 	/* Open the db in CTRW mode to store the $ver$ ID */
 
 	dbf = MYDBM_CTRWOPEN (database);
 	if (dbf == NULL) {
-		if (errno == EACCES || errno == EROFS) {
-			if (debug)
-				fprintf (stderr, "database %s is read-only\n",
-					 database);
-		} else
+		if (errno == EACCES || errno == EROFS)
+			debug ("database %s is read-only\n", database);
+		else
 			error (0, errno, _("can't create index cache %s"),
 			       database);
 		return 0;
@@ -541,6 +551,9 @@ short create_db (const char *manpath)
    filesystem */
 short update_db (const char *manpath)
 {
+	if (make_database_directory (database) != 0)
+		return 0;
+
 	dbf = MYDBM_RDOPEN (database);
 	if (dbf && dbver_rd (dbf)) {
 		MYDBM_CLOSE (dbf);
@@ -550,19 +563,21 @@ short update_db (const char *manpath)
 		datum key, content;
 		short new;
 
-		key.dptr = xstrdup (KEY);
-		key.dsize = sizeof KEY;
+		memset (&key, 0, sizeof key);
+		memset (&content, 0, sizeof content);
+
+		MYDBM_SET_DPTR (key, xstrdup (KEY));
+		MYDBM_DSIZE (key) = sizeof KEY;
 		content = MYDBM_FETCH (dbf, key);
 		MYDBM_CLOSE (dbf);
-		free (key.dptr);
+		free (MYDBM_DPTR (key));
 
-		if (debug)
-			fprintf (stderr, "update_db(): %ld\n",
-				 content.dptr ? atol (content.dptr) : 0L);
-		if (content.dptr) {
-			new = testmandirs (manpath,
-					   (time_t) atol (content.dptr));
-			MYDBM_FREE (content.dptr);
+		debug ("update_db(): %ld\n",
+		       MYDBM_DPTR (content) ? atol (MYDBM_DPTR (content)) : 0L);
+		if (MYDBM_DPTR (content)) {
+			new = testmandirs (
+				manpath, (time_t) atol (MYDBM_DPTR (content)));
+			MYDBM_FREE (MYDBM_DPTR (content));
 		} else
 			new = testmandirs (manpath, (time_t) 0);
 
@@ -575,8 +590,7 @@ short update_db (const char *manpath)
 		return new;
 	}
 		
-	if (debug)
-		fprintf (stderr, "failed to open %s O_RDONLY\n", database);
+	debug ("failed to open %s O_RDONLY\n", database);
 		
 	return EOF;
 }
@@ -591,51 +605,48 @@ void purge_pointers (const char *name)
 {
 	datum key = MYDBM_FIRSTKEY (dbf);
 
-	if (debug)
-		fprintf (stderr, "Purging pointers to vanished page \"%s\"\n",
-			 name);
+	debug ("Purging pointers to vanished page \"%s\"\n", name);
 
-	while (key.dptr != NULL) {
+	while (MYDBM_DPTR (key) != NULL) {
 		datum content, nextkey;
 		struct mandata entry;
 		char *nicekey, *tab;
 
 		/* Ignore db identifier keys. */
-		if (*key.dptr == '$')
+		if (*MYDBM_DPTR (key) == '$')
 			goto pointers_next;
 
 		content = MYDBM_FETCH (dbf, key);
-		if (!content.dptr)
+		if (!MYDBM_DPTR (content))
 			return;
 
 		/* Get just the name. */
-		nicekey = xstrdup (key.dptr);
+		nicekey = xstrdup (MYDBM_DPTR (key));
 		tab = strchr (nicekey, '\t');
 		if (tab)
 			*tab = '\0';
 
-		if (*content.dptr == '\t')
+		if (*MYDBM_DPTR (content) == '\t')
 			goto pointers_contentnext;
 
-		split_content (content.dptr, &entry);
+		split_content (MYDBM_DPTR (content), &entry);
 		if (entry.id != SO_MAN && entry.id != WHATIS_MAN)
 			goto pointers_contentnext;
 
 		if (STREQ (entry.pointer, name)) {
 			if (!opt_test)
 				dbdelete (nicekey, &entry);
-			else if (debug)
-				fprintf (stderr,
-					 "%s(%s): pointer vanished, "
-					 "would delete\n", nicekey, entry.ext);
+			else
+				debug ("%s(%s): pointer vanished, "
+				       "would delete\n", nicekey, entry.ext);
 		}
 
 pointers_contentnext:
 		free (nicekey);
-		MYDBM_FREE (content.dptr);
+		MYDBM_FREE (MYDBM_DPTR (content));
 pointers_next:
 		nextkey = MYDBM_NEXTKEY (dbf, key);
-		MYDBM_FREE (key.dptr);
+		MYDBM_FREE (MYDBM_DPTR (key));
 		key = nextkey;
 	}
 }
@@ -658,11 +669,8 @@ static int count_glob_matches (const char *name, const char *ext,
 		memset (&info, 0, sizeof (struct mandata));
 
 		if (stat (*walk, &statbuf) == -1) {
-			if (debug)
-				fprintf (stderr,
-					 "count_glob_matches: excluding %s "
-					 "because stat failed\n",
-					 *walk);
+			debug ("count_glob_matches: excluding %s "
+			       "because stat failed\n", *walk);
 			continue;
 		}
 
@@ -693,9 +701,9 @@ static short purge_normal (const char *name, struct mandata *info,
 
 	if (!opt_test)
 		dbdelete (name, info);
-	else if (debug)
-		fprintf (stderr, "%s(%s): missing page, would delete\n",
-			 name, info->ext);
+	else
+		debug ("%s(%s): missing page, would delete\n",
+		       name, info->ext);
 
 	return 1;
 }
@@ -715,11 +723,10 @@ static short purge_whatis (const char *path, int cat, const char *name,
 		 * rescan just to be sure; since in the absence of a bug we
 		 * would rescan anyway, this isn't a problem.
 		 */
-		if (debug && !force_rescan)
-			fprintf (stderr,
-				 "%s(%s): whatis replaced by real page; "
-				 "forcing a rescan just in case\n",
-				 name, info->ext);
+		if (!force_rescan)
+			debug ("%s(%s): whatis replaced by real page; "
+			       "forcing a rescan just in case\n",
+			       name, info->ext);
 		force_rescan = 1;
 		return 0;
 	} else if (STREQ (info->pointer, "-")) {
@@ -730,38 +737,33 @@ static short purge_whatis (const char *path, int cat, const char *name,
 		 */
 		if (!opt_test)
 			dbdelete (name, info);
-		else if (debug)
-			fprintf (stderr,
-				 "%s(%s): whatis with empty pointer, "
-				 "would delete\n",
-				 name, info->ext);
+		else
+			debug ("%s(%s): whatis with empty pointer, "
+			       "would delete\n", name, info->ext);
 
-		if (debug && !force_rescan)
-			fprintf (stderr,
-				 "%s(%s): whatis had empty pointer; "
-				 "forcing a rescan just in case\n",
-				 name, info->ext);
+		if (!force_rescan)
+			debug ("%s(%s): whatis had empty pointer; "
+			       "forcing a rescan just in case\n",
+			       name, info->ext);
 		force_rescan = 1;
 		return 1;
 	} else {
 		/* Does the real page still exist? */
 		char **real_found;
-		int save_debug = debug;
-		debug = 0;
+		int save_debug = debug_level;
+		debug_level = 0;
 		real_found = look_for_file (path, info->ext,
 					    info->pointer, cat, 1);
-		debug = save_debug;
+		debug_level = save_debug;
 
 		if (count_glob_matches (info->pointer, info->ext, real_found))
 			return 0;
 
 		if (!opt_test)
 			dbdelete (name, info);
-		else if (debug)
-			fprintf (stderr,
-				 "%s(%s): whatis target was deleted, "
-				 "would delete\n",
-				 name, info->ext);
+		else
+			debug ("%s(%s): whatis target was deleted, "
+			       "would delete\n", name, info->ext);
 		return 1;
 	}
 }
@@ -789,11 +791,8 @@ static short check_multi_key (const char *name, const char *content)
 				valid = 0;
 		}
 		if (!valid) {
-			if (debug)
-				fprintf (stderr,
-					 "%s: broken multi key \"%s\", "
-					 "forcing a rescan\n",
-					 name, content);
+			debug ("%s: broken multi key \"%s\", "
+			       "forcing a rescan\n", name, content);
 			force_rescan = 1;
 			return 1;
 		}
@@ -813,21 +812,26 @@ static short check_multi_key (const char *name, const char *content)
  */
 short purge_missing (const char *manpath, const char *catpath)
 {
+	struct stat st;
 	datum key;
 	short count = 0;
+
+	if (stat (database, &st) != 0)
+		/* nothing to purge */
+		return 0;
 
 	if (!quiet)
 		printf (_("Purging old database entries in %s...\n"), manpath);
 
 	dbf = MYDBM_RWOPEN (database);
 	if (!dbf) {
-		gripe_rwopen_failed (database);
+		gripe_rwopen_failed ();
 		return 0;
 	}
 
 	key = MYDBM_FIRSTKEY (dbf);
 
-	while (key.dptr != NULL) {
+	while (MYDBM_DPTR (key) != NULL) {
 		datum content, nextkey;
 		struct mandata entry;
 		char *nicekey, *tab;
@@ -835,39 +839,39 @@ short purge_missing (const char *manpath, const char *catpath)
 		char **found;
 
 		/* Ignore db identifier keys. */
-		if (*key.dptr == '$') {
+		if (*MYDBM_DPTR (key) == '$') {
 			nextkey = MYDBM_NEXTKEY (dbf, key);
-			MYDBM_FREE (key.dptr);
+			MYDBM_FREE (MYDBM_DPTR (key));
 			key = nextkey;
 			continue;
 		}
 
 		content = MYDBM_FETCH (dbf, key);
-		if (!content.dptr)
+		if (!MYDBM_DPTR (content))
 			return count;
 
 		/* Get just the name. */
-		nicekey = xstrdup (key.dptr);
+		nicekey = xstrdup (MYDBM_DPTR (key));
 		tab = strchr (nicekey, '\t');
 		if (tab)
 			*tab = '\0';
 
 		/* Deal with multi keys. */
-		if (*content.dptr == '\t') {
-			if (check_multi_key (nicekey, content.dptr))
+		if (*MYDBM_DPTR (content) == '\t') {
+			if (check_multi_key (nicekey, MYDBM_DPTR (content)))
 				MYDBM_DELETE (dbf, key);
 			free (nicekey);
-			MYDBM_FREE (content.dptr);
+			MYDBM_FREE (MYDBM_DPTR (content));
 			nextkey = MYDBM_NEXTKEY (dbf, key);
-			MYDBM_FREE (key.dptr);
+			MYDBM_FREE (MYDBM_DPTR (key));
 			key = nextkey;
 			continue;
 		}
 
-		split_content (content.dptr, &entry);
+		split_content (MYDBM_DPTR (content), &entry);
 
-		save_debug = debug;
-		debug = 0;	/* look_for_file() is quite noisy */
+		save_debug = debug_level;
+		debug_level = 0;	/* look_for_file() is quite noisy */
 		if (entry.id <= WHATIS_MAN)
 			found = look_for_file (manpath, entry.ext,
 					       entry.name ? entry.name
@@ -878,7 +882,7 @@ short purge_missing (const char *manpath, const char *catpath)
 					       entry.name ? entry.name
 							  : nicekey,
 					       1, 1);
-		debug = save_debug;
+		debug_level = save_debug;
 
 		/* Now actually decide whether to purge, depending on the
 		 * type of entry.
@@ -897,7 +901,7 @@ short purge_missing (const char *manpath, const char *catpath)
 
 		free_mandata_elements (&entry);
 		nextkey = MYDBM_NEXTKEY (dbf, key);
-		MYDBM_FREE (key.dptr);
+		MYDBM_FREE (MYDBM_DPTR (key));
 		key = nextkey;
 	}
 

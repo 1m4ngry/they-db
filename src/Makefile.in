@@ -48,14 +48,13 @@ MANCPPFLAGS = -I../include -I$(top_srcdir) -I$(srcdir) -I../intl
 
 # You may need to modify these options if you have lex instead of flex
 # or flex < 2.4.7 and you want to play with lexgrog.l (development only)
-LFLAGS = -8 -B -Cem
 ifeq ($(LEXGROG_DEBUG),yes)
-LFLAGS += -d
+LFLAGS = -d
 endif
 
-PROGS = man manpath mandb apropos whatis catman lexgrog
+PROGS = man manpath mandb apropos whatis catman lexgrog zsoelim
 PUBTOOLS = accessdb
-PRIVTOOLS = globbing
+PRIVTOOLS = globbing manconv
 TOOLS = $(PUBTOOLS) $(PRIVTOOLS) wrapper
 
 # Special definitions for some compilations
@@ -66,6 +65,7 @@ DEFS_man.o = -DWHATIS=\"$(bindir)/$(whatis)\" \
 DEFS_catman.o = -DMAN=\"$(bindir)/$(man)\"
 DEFS_whatis.o = -DWHATIS
 DEFS_apropos.o = -DAPROPOS
+DEFS_encodings.o = -DMANCONV=\"$(libdir)/man-db/$(manconv)\"
 
 DEFS_.depend_man.d = $(DEFS_man.o)
 DEFS_.depend_catman.d = $(DEFS_catman.o)
@@ -78,7 +78,7 @@ DEFS_whatis = $(DEFS_whatis.o)
 DEFS_apropos = $(DEFS_apropos.o)
 
 # The default programs to build 
-all: $(PROGS) $(PUBTOOLS) wrapper man_db.conf
+all: $(PROGS) $(PUBTOOLS) manconv wrapper man_db.conf
 
 #--------------------#
 # some general rules #
@@ -101,7 +101,8 @@ man: security.o convert_name.o manp.o ult_src.o compression.o \
 
 mandb: security.o manp.o util.o ult_src.o check_mandirs.o \
        descriptions.o descriptions_store.o \
-       filenames.o straycats.o compression.o lexgrog.o globbing.o mandb.o
+       filenames.o straycats.o compression.o lexgrog.o encodings.o globbing.o \
+       mandb.o
 
 wrapper:	LDLIBS=-lc
 
@@ -111,13 +112,17 @@ man mandb catman whatis apropos accessdb: ../libdb/libmandb.a
 
 man mandb catman whatis apropos accessdb: LDLIBS += $(DBLIBS)
 
+whatis apropos: encodings.o
+whatis apropos: LDLIBS += $(LIBICONV)
+
 $(PROGS) $(TOOLS): version.o ../lib/libman.a
 
 apropos: whatis.c
 	$(LINK.c) $^ $(LDLIBS) -o $@
 
 # Rules to test code as program unit
-lexgrog: lexgrog.c compression.o descriptions.o fake_security.o ult_src.o util.o
+lexgrog: lexgrog.c compression.o descriptions.o encodings.o fake_security.o \
+	ult_src.o util.o
 	$(LINK.c) -DTEST $^ $(LDLIBS) -o $@
 
 globbing: globbing.c util.o
@@ -134,6 +139,7 @@ install:
 	$(INSTALL_PROGRAM) whatis $(DESTDIR)$(bindir)/$(whatis)
 	$(INSTALL_PROGRAM) apropos $(DESTDIR)$(bindir)/$(apropos)
 	$(INSTALL_PROGRAM) lexgrog $(DESTDIR)$(bindir)/$(lexgrog)
+	$(INSTALL_PROGRAM) zsoelim $(DESTDIR)$(bindir)/$(zsoelim)
 	for j in $(PUBTOOLS); do \
 		if test -x $$j; then \
 			$(INSTALL_PROGRAM) $$j $(DESTDIR)$(sbindir)/$$j; \
@@ -166,11 +172,11 @@ mostlyclean clean:
 	rm -f *.o *.i *~ core
 	rm -f $(PROGS) $(TOOLS)
 
-distclean: lexgrog.c clean
+distclean: lexgrog.c zsoelim.c clean
 	rm -f *.out Makefile man_db.conf
 
 realclean: distclean
-	rm -f lexgrog.c tags
+	rm -f lexgrog.c zsoelim.c tags
 
 TAGS:
 	$(MKTAGS) $(srcdir)/*.[chl]

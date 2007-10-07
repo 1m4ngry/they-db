@@ -88,11 +88,12 @@ extern char *canonicalize_file_name __P ((__const char *__name));
 #include "libdb/db_storage.h"
 #include "lib/error.h"
 #include "lib/pipeline.h"
+#include "lib/decompress.h"
 #include "descriptions.h"
+#include "encodings.h"
 #include "manp.h"
 #include "security.h"
 
-static char *temp_name;
 static char *catdir, *mandir;
 
 static int check_for_stray (void)
@@ -174,8 +175,7 @@ static int check_for_stray (void)
 				       _("warning: %s: "
 					 "ignoring bogus filename"),
 				       catdir);
-			free (section);
-			continue;
+			goto next_section;
 		}
 
 		/*
@@ -183,8 +183,7 @@ static int check_for_stray (void)
 		 * extension (if it has one), we can try some of ours.
 		 */
 
-		if (debug)
-			fprintf(stderr, "Testing for existence: %s\n", mandir);
+		debug ("Testing for existence: %s\n", mandir);
 
 		if (stat (mandir, &buf) == 0) 
 			found = 1;
@@ -197,10 +196,11 @@ static int check_for_stray (void)
 		else 
 			found = 0;
 
-		if (!found) { 
-			pipeline *filter;
+		if (!found) {
+			pipeline *decomp;
 			struct mandata *exists;
 			lexgrog lg;
+			char *lang, *page_encoding;
 			char *mandir_copy;
 			const char *mandir_base;
 			command *col_cmd;
@@ -218,19 +218,14 @@ static int check_for_stray (void)
 			mandir_base = basename (mandir_copy);
 			exists = dblookup_exact (mandir_base, info.ext, 1);
 #ifndef FAVOUR_STRAYCATS
-			if (exists && exists->id != WHATIS_CAT) {
+			if (exists && exists->id != WHATIS_CAT)
 #else /* FAVOUR_STRAYCATS */
 			if (exists && exists->id != WHATIS_CAT &&
-			    exists->id != WHATIS_MAN) {
+			    exists->id != WHATIS_MAN)
 #endif /* !FAVOUR_STRAYCATS */
-				free_mandata_struct (exists);
-				free (section);
-				free (mandir_copy);
-				continue;
-			}
-			if (debug)
-				fprintf (stderr, "%s(%s) is not in the db.\n",
-					 mandir_base, info.ext);
+				goto next_exists;
+			debug ("%s(%s) is not in the db.\n",
+			       mandir_base, info.ext);
 
 			/* fill in the missing parts of the structure */
 			info.name = NULL;
@@ -240,44 +235,25 @@ static int check_for_stray (void)
 			info.filter = "-";
 			info._st_mtime = 0L;
 
-			/* Check to see how to filter the cat file */
-			filter = pipeline_new ();
-#if defined(COMP_SRC)
-			if (info.comp) {
-				comp = comp_info (catdir, 0);
-				command *cmd = command_new_argstr (comp->prog);
-				command_arg (cmd, catdir);
-				pipeline_command (filter, cmd);
-			} else
-#elif defined (COMP_CAT)
-			if (info.comp) {
-				command *cmd = command_new_argstr
-					(get_def_user ("decompressor",
-						       DECOMPRESSOR));
-				command_arg (cmd, catdir);
-				pipeline_command (filter, cmd);
-			} else
-#endif /* COMP_* */
-			{
-				filter->want_in = open (catdir, O_RDONLY);
-				if (filter->want_in == -1) {
-					error (0, errno, _("can't open %s"),
-					       catdir);
-					continue;
-				}
+			drop_effective_privs ();
+			decomp = decompress_open (catdir);
+			regain_effective_privs ();
+			if (!decomp) {
+				error (0, errno, _("can't open %s"), catdir);
+				goto next_exists;
 			}
+
+			lang = lang_dir (mandir);
+			page_encoding = get_page_encoding (lang);
+			if (page_encoding)
+				add_manconv (decomp, page_encoding, "UTF-8");
+			free (page_encoding);
+			free (lang);
 
 			col_cmd = command_new_argstr
 				(get_def_user ("col", COL));
 			command_arg (col_cmd, "-bx");
-			pipeline_command (filter, col_cmd);
-
-			filter->want_out = open (temp_name, O_WRONLY);
-			if (filter->want_out == -1) {
-				error (0, errno,
-				       _("can't open %s for writing"),
-				       temp_name);
-			}
+			pipeline_command (decomp, col_cmd);
 
 #ifdef HAVE_CANONICALIZE_FILE_NAME
 			fullpath = canonicalize_file_name (catdir);
@@ -299,51 +275,49 @@ static int check_for_stray (void)
 			} else 
 #endif
 			{
+				char *catdir_copy;
+				const char *catdir_base;
+
 #ifdef HAVE_CANONICALIZE_FILE_NAME
 				free (fullpath);
 #endif
-				if (do_system_drop_privs (filter) != 0) {
-					char *filter_str =
-						pipeline_tostring (filter);
-					remove_with_dropped_privs (temp_name);
-					perror (filter_str);
-					free (filter_str);
-				} else {
+				drop_effective_privs ();
+				pipeline_start (decomp);
+				regain_effective_privs ();
+
+				strays++;
+
+				lg.type = CATPAGE;
+				catdir_copy = xstrdup (catdir);
+				catdir_base = basename (catdir_copy);
+				if (find_name_decompressed (decomp,
+							    catdir_base,
+							    &lg)) {
 					struct page_description *descs;
-					char *catdir_copy;
-					const char *catdir_base;
-
 					strays++;
-
-					lg.type = CATPAGE;
-					catdir_copy = xstrdup (catdir);
-					catdir_base = basename (catdir_copy);
-					if (!find_name (temp_name,
-							catdir_base, &lg))
-						if (quiet < 2)
-							error (0, 0, _("warning: %s: whatis parse for %s(%s) failed"),
-								catdir,
-								mandir_base,
-								info.sec);
-					free (catdir_copy);
-
-					descs = parse_descriptions (mandir_base,
-								    lg.whatis);
+					descs = parse_descriptions
+						(mandir_base, lg.whatis);
 					if (descs) {
-						store_descriptions (descs,
-								    &info,
-								    mandir_base);
+						store_descriptions
+							(descs, &info,
+							 mandir_base);
 						free_descriptions (descs);
 					}
-				}
-			}
+				} else if (quiet < 2)
+					error (0, 0, _("warning: %s: whatis parse for %s(%s) failed"),
+					       catdir, mandir_base, info.sec);
+				free (catdir_copy);
 
-			pipeline_free (filter);
-			free (mandir_copy);
+			}
 
 			if (lg.whatis)
 				free (lg.whatis);
+			pipeline_free (decomp);
+next_exists:
+			free_mandata_struct (exists);
+			free (mandir_copy);
 		}
+next_section:
 		free (section);
 	}
 	closedir (cdir);
@@ -392,24 +366,10 @@ static int open_catdir (void)
 	return strays;
 }
 
-int straycats (char *manpath)
+int straycats (const char *manpath)
 {
 	char *catpath;
 	int strays;
-
-	if (!temp_name) {
-		int fd;
-		drop_effective_privs ();
-		fd = create_tempfile ("zcat", &temp_name);
-		if (fd == -1) {
-			error (0, errno,
-			       _("warning: can't create temp file %s"),
-			       temp_name);
-			return 0;
-		}
-		close (fd);
-		regain_effective_privs ();
-	}
 
 	dbf = MYDBM_RWOPEN (database);
 	if (dbf && dbver_rd (dbf)) {
@@ -432,9 +392,8 @@ int straycats (char *manpath)
 	/* look in the alternate catpath location if we have one 
 	   and it's different from the usual catpath */
 
-	if (debug && catpath)
-		fprintf (stderr, "catpath: %s, manpath: %s\n",
-			 catpath, manpath);
+	if (catpath)
+		debug ("catpath: %s, manpath: %s\n", catpath, manpath);
 		
 	if (catpath && strcmp (catpath, manpath) != 0) {
 		*mandir = *catdir = '\0';
@@ -450,8 +409,5 @@ int straycats (char *manpath)
 		free (catpath);
 
 	MYDBM_CLOSE (dbf);
-	remove_with_dropped_privs (temp_name);
-	free (temp_name);
-	temp_name = NULL;
 	return strays;
 }

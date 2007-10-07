@@ -104,7 +104,6 @@ extern int errno;
 #include "manp.h"
 
 /* globals */
-int debug = 0;
 char *program_name;
 int quiet = 1;
 MYDBM_FILE dbf;
@@ -127,9 +126,10 @@ static const char args[] = "dM:C:hV";
 static char *locale;
 #endif /* HAVE_SETLOCALE */
 
+static char *manpathlist[MAXDIRS];
+
 extern char *optarg;
 extern int optind, opterr, optopt;
-extern char *manpathlist[];
 extern char *user_config_file;
 
 static void usage (int status)
@@ -166,7 +166,8 @@ static void catman (char *argp[])
 	int status;
 	int res;
 
-	if (debug) { 	/* show us what the command is going to be :) */
+	if (debug_level) {
+		/* just show the command, but don't execute it */
 		char **p;
 
 		fputs ("man command =", stderr);
@@ -197,21 +198,21 @@ static void catman (char *argp[])
 }
 
 /* accept key and a pointer to the array address that needs to be filled in,
-   fill in address and return 1 if key.dptr can be freed otherwise 0 */ 
+   fill in address and return 1 if MYDBM_DPTR (key) can be freed otherwise 0 */
 static __inline__ int add_arg (datum key, char **argument)
 {
     	char *tab;
 
-	tab = strrchr (key.dptr, '\t');
+	tab = strrchr (MYDBM_DPTR (key), '\t');
 
-	if (tab && tab != key.dptr) {
+	if (tab && tab != MYDBM_DPTR (key)) {
 		*tab = '\0';
-		*argument = xstrdup (key.dptr);
+		*argument = xstrdup (MYDBM_DPTR (key));
 		*tab = '\t';
 		return 1;
 	} 
 
-	*argument = key.dptr;
+	*argument = MYDBM_DPTR (key);
 	return 0;
 }
 
@@ -290,25 +291,25 @@ static int parse_for_sec (const char *manpath, const char *section)
 	arg_size = initial_bit;
 	key = MYDBM_FIRSTKEY (dbf);
 
-	while (key.dptr != NULL) {
+	while (MYDBM_DPTR (key) != NULL) {
 		int free_key = 1;
 
 		/* ignore db identifier keys */
-		if (*key.dptr != '$') { 
+		if (*MYDBM_DPTR (key) != '$') { 
 			datum content;
 
 			content = MYDBM_FETCH (dbf, key);
 
-			if (!content.dptr)
+			if (!MYDBM_DPTR (content))
 				error (FATAL, 0,
 				       _( "NULL content for key: %s"),
-				       key.dptr);
+				       MYDBM_DPTR (key));
 
 			/* ignore overflow entries */
-			if (*content.dptr != '\t') { 
+			if (*MYDBM_DPTR (content) != '\t') { 
 				struct mandata entry;
 
-				split_content (content.dptr, &entry);
+				split_content (MYDBM_DPTR (content), &entry);
 
 				/* Accept if the entry is an ultimate manual
 				   page and the section matches the one we're
@@ -325,9 +326,8 @@ static int parse_for_sec (const char *manpath, const char *section)
 							    &(argp[arg_no]));
 					arg_size += strlen (argp[arg_no++]) + 1;
 
-					if (debug)
-						fprintf (stderr, "arg space free: %d bytes\n",
-							 ARG_MAX - arg_size);
+					debug ("arg space free: %d bytes\n",
+					       ARG_MAX - arg_size);
 
 					/* Check to see if we have enough room 
 					   to add another max sized filename 
@@ -348,14 +348,14 @@ static int parse_for_sec (const char *manpath, const char *section)
 				    	}
 				}
 
-				/* == content.dptr, freed below */
+				/* == MYDBM_DPTR (content), freed below */
 				entry.addr = NULL;
 				free_mandata_elements (&entry);
 			}
 			
 			/* we don't need the content ever again */
-			assert (content.dptr); /* just to be sure */
-			MYDBM_FREE (content.dptr);
+			assert (MYDBM_DPTR (content)); /* just to be sure */
+			MYDBM_FREE (MYDBM_DPTR (content));
 		}
 
 		/* If we are not using the key, free it now */
@@ -363,7 +363,7 @@ static int parse_for_sec (const char *manpath, const char *section)
 			datum nextkey;
 
 			nextkey = MYDBM_NEXTKEY (dbf, key);
-			MYDBM_FREE (key.dptr);
+			MYDBM_FREE (MYDBM_DPTR (key));
 			key = nextkey;
 		} else 
 			key = MYDBM_NEXTKEY (dbf, key);
@@ -394,9 +394,7 @@ int main (int argc, char *argv[])
 	int c;
 	char *sys_manp;
 	char **mp;
-	const char **sections;
-
-	int option_index; /* not used, but required by getopt_long() */
+	const char **sections, **sp;
 
 	program_name = xstrdup (basename (argv[0]));
 
@@ -412,11 +410,11 @@ int main (int argc, char *argv[])
 	textdomain (PACKAGE);
 
 	while ((c = getopt_long (argc, argv, args,
-				 long_options, &option_index)) != EOF) {
+				 long_options, NULL)) != EOF) {
 		switch (c) {
 
 			case 'd':
-				debug = 1;
+				debug_level = 1;
 				break;
 			case 'M':
 				manp = optarg;
@@ -440,8 +438,6 @@ int main (int argc, char *argv[])
 
 	/* If we were supplied sections: sort them out */
 	if (optind != argc) {
-		const char **sp;
-		
 		sections = sp = xmalloc ((argc - optind + 1) *
 					 sizeof *sections);
 		while (optind != argc)
@@ -474,17 +470,13 @@ int main (int argc, char *argv[])
 		}
 	}
 
-	if (debug) {
-		const char **sp;
-
-		for (sp = sections; *sp; sp++)
-			fprintf (stderr, "sections: %s\n", *sp);
-	}
+	for (sp = sections; *sp; sp++)
+		debug ("sections: %s\n", *sp);
 
 	/* Deal with the MANPATH */
 
 	/* This is required for get_catpath(), regardless */
-	sys_manp = manpath (NULL);
+	sys_manp = get_manpath (NULL);
 
 	/* pick up the system manpath or use the supplied one */
 	if (!manp) {
@@ -493,15 +485,13 @@ int main (int argc, char *argv[])
 			manp = sys_manp;
 	}
 
-	if (debug)
-		fprintf (stderr, "manpath=%s\n", manp);
+	debug ("manpath=%s\n", manp);
 
 	/* get the manpath as an array of pointers */
 	create_pathlist (manp, manpathlist); 
 	
 	for (mp = manpathlist; *mp; mp++) {
 		char *catpath;
-		const char **sp;
 		size_t len;
 
 		catpath = get_catpath (*mp, SYSTEM_CAT | USER_CAT);

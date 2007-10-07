@@ -27,6 +27,14 @@
  * The University of Texas at Austin
  * Austin, Texas  78712
  *
+ * unpack_locale_bits is derived from _nl_explode_name in libintl:
+ * Copyright (C) 1995-1998, 2000-2001, 2003, 2005 Free Software Foundation,
+ * Inc.
+ * Contributed by Ulrich Drepper <drepper@gnu.ai.mit.edu>, 1995.
+ * This was originally LGPL v2 or later, but I (Colin Watson) hereby
+ * exercise my option under section 3 of LGPL v2 to distribute it under the
+ * GPL v2 or later as above.
+ *
  * Wed May  4 15:44:47 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk): changes
  * to get_dirlist() and manpath().
  *
@@ -44,6 +52,7 @@
 #include <sys/stat.h>
 #include <assert.h>
 #include <errno.h>
+#include <dirent.h>
 
 #if defined(STDC_HEADERS)
 #  include <stdlib.h>
@@ -75,6 +84,7 @@ extern int errno;
 #include "lib/getcwdalloc.h"
 #include "lib/cleanup.h"
 #include "security.h"
+#include "encodings.h"
 #include "manp.h"
 
 struct list {
@@ -95,13 +105,13 @@ static struct list *namestore, *tailstore;
 #define MANDATORY	 1
 
 /* DIRLIST list[MAXDIRS]; */
-char *tmplist[MAXDIRS];
-char *manpathlist[MAXDIRS];
+static char *tmplist[MAXDIRS];
 
 char *user_config_file = NULL;
+int disable_cache;
 
 static void mkcatdirs (const char *mandir, const char *catdir);
-static __inline__ char *get_manpath (const char *path);
+static __inline__ char *get_manpath_from_path (const char *path);
 static __inline__ char *has_mandir (const char *p);
 static __inline__ char *fsstnd (const char *path);
 static char *def_path (int flag);
@@ -167,8 +177,8 @@ static void print_list (void)
 	struct list *list;
 
 	for (list = namestore; list; list = list->next)
-		fprintf (stderr, "`%s'\t`%s'\t`%d'\n", list->key, 
-			 list->cont, list->flag);
+		debug ("`%s'\t`%s'\t`%d'\n",
+		       list->key, list->cont, list->flag);
 }
 
 static void add_sections (char *sections)
@@ -179,8 +189,7 @@ static void add_sections (char *sections)
 	for (sect = strtok (section_list, " "); sect;
 	     sect = strtok (NULL, " ")) {
 		add_to_list (sect, "", SECTION);
-		if (debug)
-			fprintf (stderr, "Added section `%s'.\n", sect);
+		debug ("Added section `%s'.\n", sect);
 	}
 	free (section_list);
 }
@@ -208,8 +217,7 @@ static void add_def (char *thing, char *config_def, int flag, int user)
 	add_to_list (thing, flag == 2 ? config_def : "",
 		     user ? DEFINE_USER : DEFINE);
 
-	if (debug)
-		fprintf (stderr, "Defined `%s' as `%s'.\n", thing, config_def);
+	debug ("Defined `%s' as `%s'.\n", thing, config_def);
 }
 
 static void add_manpath_map (const char *path, const char *mandir)
@@ -219,9 +227,7 @@ static void add_manpath_map (const char *path, const char *mandir)
 
 	add_to_list (path, mandir, MANPATH_MAP);
 
-	if (debug)
-		fprintf (stderr, "Path `%s' mapped to mandir `%s'.\n",
-			 path, mandir);
+	debug ("Path `%s' mapped to mandir `%s'.\n", path, mandir);
 }
 
 static void add_mandb_map (const char *mandir, const char *catdir,
@@ -246,9 +252,8 @@ static void add_mandb_map (const char *mandir, const char *catdir,
 
 	add_to_list (mandir, tmpcatdir, user ? MANDB_MAP_USER : MANDB_MAP);
 
-	if (debug)
-		fprintf (stderr, "%s mandir `%s', catdir `%s'.\n",
-			 user ? "User" : "Global", mandir, tmpcatdir);
+	debug ("%s mandir `%s', catdir `%s'.\n",
+	       user ? "User" : "Global", mandir, tmpcatdir);
 
 	/* create the catman hierarchy if it doesn't exist */
 	if (strcmp (program_name, "mandb") == 0)
@@ -264,8 +269,7 @@ static void add_mandatory (const char *mandir)
 
 	add_to_list (mandir, "", MANDATORY);
 
-	if (debug)
-		fprintf (stderr, "Mandatory mandir `%s'.\n", mandir);
+	debug ("Mandatory mandir `%s'.\n", mandir);
 }
 
 /* accept (NULL or oldpath) and new path component. return new path */
@@ -305,10 +309,10 @@ static char *pathappend (char *oldpath, const char *appendage)
 			}
 		}
 		free (oldpathtok);
-		if (debug && !STREQ (appendage, app_dedup))
-			fprintf (stderr, "%s:%s reduced to %s%s%s\n",
-				 oldpath, appendage,
-				 oldpath, *app_dedup ? ":" : "", app_dedup);
+		if (!STREQ (appendage, app_dedup))
+			debug ("%s:%s reduced to %s%s%s\n",
+			       oldpath, appendage,
+			       oldpath, *app_dedup ? ":" : "", app_dedup);
 		if (*app_dedup)
 			oldpath = strappend (oldpath, ":", app_dedup, NULL);
 		free (app_dedup);
@@ -326,8 +330,7 @@ static __inline__ void gripe_reading_mp_config (const char *file)
 
 static __inline__ void gripe_stat_file (const char *file)
 {
-	if (debug)
-		error (0, errno, _("warning: %s"), file);
+	debug_error (_("warning: %s"), file);
 }
 
 static __inline__ void gripe_not_directory (const char *dir)
@@ -360,32 +363,82 @@ char *cat_manpath (char *manp)
 }		
 
 static char *
-check_and_give (const char *path, const char *locale)
-{
-	char *result = NULL, *testdir;
-	int test;
-
-	testdir = strappend (NULL, path, "/", locale, NULL);
-	test = is_directory (testdir);
-
-	if (test == 1) {
-		if (debug)
-			fprintf (stderr, "check_and_give(): adding %s\n",
-				 testdir);
-
-		result = xstrdup (testdir);	/* I do not like side effects */
-	} else if (test == 0) 
-		gripe_not_directory (testdir);
-	
-	free (testdir);
-
-	return result;
-}
-
-static char *
 add_to_manpath (char *manpath, const char *path)
 {
 	return pathappend (manpath, path);
+}
+
+/* Unpack a glibc-style locale into its component parts.
+ *
+ * This function was inspired by _nl_explode_name in libintl; I've rewritten
+ * it here with extensive modifications in order not to require libintl or
+ * glibc internals, because this API is more convenient for man-db, and to
+ * be consistent with surrounding style. I also dropped the normalised
+ * codeset handling, which we don't need here.
+ */
+void unpack_locale_bits (const char *locale, struct locale_bits *bits)
+{
+	const char *p, *start;
+
+	bits->language = NULL;
+	bits->territory = NULL;
+	bits->codeset = NULL;
+	bits->modifier = NULL;
+
+	/* Now we determine the single parts of the locale name. First look
+	 * for the language. Termination symbols are '_', '.', and '@'.
+	 */
+	p = locale;
+	while (*p && *p != '_' && *p != '.' && *p != '@')
+		++p;
+	if (p == locale) {
+		/* This does not make sense: language has to be specified.
+		 * Use this entry as it is without exploding. Perhaps it is
+		 * an alias.
+		 */
+		bits->language = xstrdup (locale);
+		goto out;
+	}
+	bits->language = xstrndup (locale, p - locale);
+
+	if (*p == '_') {
+		/* Next is the territory. */
+		start = ++p;
+		while (*p && *p != '.' && *p != '@')
+			++p;
+		bits->territory = xstrndup (start, p - start);
+	}
+
+	if (*p == '.') {
+		/* Next is the codeset. */
+		start = ++p;
+		while (*p && *p != '@')
+			++p;
+		bits->codeset = xstrndup (start, p - start);
+	}
+
+	if (*p == '@')
+		/* Next is the modifier. */
+		bits->modifier = xstrdup (++p);
+
+out:
+	if (!bits->territory)
+		bits->territory = xstrdup ("");
+	if (!bits->codeset)
+		bits->codeset = xstrdup ("");
+	if (!bits->modifier)
+		bits->modifier = xstrdup ("");
+}
+
+/* Free the contents of a locale_bits structure populated by
+ * unpack_locale_bits. Does not free the pointer argument.
+ */
+void free_locale_bits (struct locale_bits *bits)
+{
+	free (bits->language);
+	free (bits->territory);
+	free (bits->codeset);
+	free (bits->modifier);
 }
 
 
@@ -394,51 +447,61 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 #ifdef HAVE_SETLOCALE
 	char *manpath = NULL;
 	char *path;
-	char *temp_locale;
+	struct locale_bits lbits;
 	char *omanpathlist = xstrdup (manpathlist);
 	char *manpathlist_ptr = manpathlist;
 
-	if (debug)
-		fprintf (stderr, "add_nls_manpath(): processing %s\n",
-			 manpathlist);
+	debug ("add_nls_manpath(): processing %s\n", manpathlist);
 
-	if (locale == NULL || *locale == '\0' || *locale == 'C')
+	if (locale == NULL || *locale == '\0')
 		return manpathlist;
-
-	temp_locale = xstrdup (locale);
+	unpack_locale_bits (locale, &lbits);
+	if (STREQ (lbits.language, "C") || STREQ (lbits.language, "POSIX")) {
+		free_locale_bits (&lbits);
+		return manpathlist;
+	}
 
 	for (path = strsep (&manpathlist_ptr, ":"); path;
-	     path = strsep (&manpathlist_ptr, ":") ) {
+	     path = strsep (&manpathlist_ptr, ":")) {
+		DIR *mandir = opendir (path);
+		if (!mandir)
+			continue;
 
-		static char locale_delims[] = "@,._";
-		char *delim, *tempo;
-		char *testpath;
+		for (;;) {
+			struct dirent *mandirent = readdir (mandir);
+			const char *name;
+			struct locale_bits mbits;
+			char *fullpath;
 
-		strcpy (temp_locale, locale);
+			if (!mandirent)
+				break;
 
-		testpath = check_and_give (path, temp_locale);
-		if (testpath) {
-			manpath = add_to_manpath (manpath, testpath);
-			free (testpath);
-		}
-		for (delim = locale_delims; *delim != '\0'; ++delim) {
-			tempo = strchr (temp_locale, *delim);
-			if (tempo) {
-				/* Strip out the rest of the line */
-				*tempo = '\0';
-				testpath = check_and_give (path, temp_locale);
-				if (testpath) {
-					manpath = add_to_manpath (manpath,
-								  testpath);
-					free (testpath);
-				}
+			name = mandirent->d_name;
+			if (STREQ (name, ".") || STREQ (name, ".."))
+				continue;
+			if (STRNEQ (name, "man", 3))
+				continue;
+			fullpath = strappend (NULL, path, "/", name, NULL);
+			if (is_directory (fullpath) != 1) {
+				free (fullpath);
+				continue;
 			}
+
+			unpack_locale_bits (name, &mbits);
+			if (STREQ (lbits.language, mbits.language) &&
+			    (!*mbits.territory ||
+			     STREQ (lbits.territory, mbits.territory)))
+				manpath = add_to_manpath (manpath, fullpath);
+			free_locale_bits (&mbits);
+			free (fullpath);
 		}
 	}
+
+	free_locale_bits (&lbits);
+
 	/* After doing all the locale stuff we add the manpath to the *END*
 	 * so the locale dirs are checked first on each section */
 	manpath = add_to_manpath (manpath, omanpathlist);
-	free (temp_locale);
 	free (omanpathlist);
 
 	free (manpathlist);
@@ -451,7 +514,7 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 
 static char *add_system_manpath (const char *systems, const char *manpathlist)
 {
-	char *system;
+	char *one_system;
 	char *manpath = NULL;
 	char *tmpsystems;
 
@@ -466,12 +529,12 @@ static char *add_system_manpath (const char *systems, const char *manpathlist)
 
 	/* For each systems component */
 
-	for (system = strtok (tmpsystems, ",:"); system;
-	     system = strtok (NULL, ",:")) {
+	for (one_system = strtok (tmpsystems, ",:"); one_system;
+	     one_system = strtok (NULL, ",:")) {
 
 		/* For each manpathlist component */
 
-		if (!STREQ (system, "man")) {
+		if (!STREQ (one_system, "man")) {
 			const char *next, *path;
 			char *newdir = NULL;
 			for (path = manpathlist; path; path = next) {
@@ -485,7 +548,7 @@ static char *add_system_manpath (const char *systems, const char *manpathlist)
 				} else
 					element = xstrdup (path);
 				newdir = strappend (newdir, element, "/",
-						    system, NULL);
+						    one_system, NULL);
 				free (element);
 
 				status = is_directory (newdir);
@@ -493,16 +556,11 @@ static char *add_system_manpath (const char *systems, const char *manpathlist)
 				if (status == 0)
 					gripe_not_directory (newdir);
 				else if (status == 1) {
-					if (debug)
-						fprintf (stderr,
-							 "adding %s to "
-							 "manpathlist\n",
-							 newdir);
+					debug ("adding %s to manpathlist\n",
+					       newdir);
 					manpath = pathappend (manpath, newdir);
-				} else if (debug) {
-					fputs ("can't stat ", stderr);
-					perror (newdir);
-				}
+				} else
+					debug_error ("can't stat %s", newdir);
 				/* reset newdir */
 				*newdir = '\0';
 			}
@@ -520,9 +578,8 @@ static char *add_system_manpath (const char *systems, const char *manpathlist)
 	 * the reason: is_directory (newdir); returns -1
 	 */
 	if (!manpath) {
-		if (debug)
-			fprintf (stderr, "add_system_manpath(): %s\n",
-				 "internal manpath equates to NULL");
+		debug ("add_system_manpath(): "
+		       "internal manpath equates to NULL\n");
 		return xstrdup (manpathlist);
 	}
 	return manpath;
@@ -565,14 +622,14 @@ static char *guess_manpath (const char *systems)
 						   def_path (MANDATORY));
 		}
 
-		manpathlist = get_manpath (path);
+		manpathlist = get_manpath_from_path (path);
 	}
 	manpath = add_system_manpath (systems, manpathlist);
 	free (manpathlist);
 	return manpath;
 }
 
-char *manpath (const char *systems)
+char *get_manpath (const char *systems)
 {
 	char *manpathlist;
 
@@ -658,13 +715,10 @@ mkcatdirs (const char *mandir, const char *catdir)
 					error (0, 0,
 					       _("warning: cannot create catdir %s"),
 					       catdir);
-				if (debug)
-					fprintf (stderr,
-						 "warning: cannot create catdir %s\n",
-						 catdir);
-			} else if (debug)
-				fprintf (stderr, "created base catdir %s\n",
-					 catdir);
+				debug ("warning: cannot create catdir %s\n",
+				       catdir);
+			} else
+				debug ("created base catdir %s\n", catdir);
 #ifdef SECURE_MAN_UID
 			if (ruid == 0)
 				chown (catdir, man_owner->pw_uid, 0);
@@ -677,10 +731,7 @@ mkcatdirs (const char *mandir, const char *catdir)
 		if (is_directory (catdir) == 1) {
 			int j;
 			regain_effective_privs ();
-			if (debug)
-				fprintf (stderr, 
-					 "creating catdir hierarchy %s	",
-					 catdir);
+			debug ("creating catdir hierarchy %s	", catdir);
 			for (j = 1; j <= 9; j++) {
 				catname[strlen (catname) - 1] = '0' + j;
 				manname[strlen (manname) - 1] = '0' + j;
@@ -690,10 +741,9 @@ mkcatdirs (const char *mandir, const char *catdir)
 						   S_ISGID | 0755) < 0) {
 						if (!quiet)
 							error (0, 0, _("warning: cannot create catdir %s"), catname);
-						if (debug)
-							fprintf (stderr, "warning: cannot create catdir %s\n", catname);
-					} else if (debug)
-						fprintf (stderr, " cat%d", j);
+						debug ("warning: cannot create catdir %s\n", catname);
+					} else
+						debug (" cat%d", j);
 #ifdef SECURE_MAN_UID
 					if (ruid == 0)
 						chown (catname,
@@ -701,8 +751,7 @@ mkcatdirs (const char *mandir, const char *catdir)
 #endif /* SECURE_MAN_UID */
 				}
 			}
-			if (debug)
-				fprintf (stderr, "\n");
+			debug ("\n");
 			drop_effective_privs ();
 		}
 		free (catname);
@@ -731,6 +780,8 @@ static void add_to_dirlist (FILE *config, int user)
 		 */
 		if (*bp == '#' || *bp == '\0')
 			continue;
+		else if (strncmp (bp, "NOCACHE", 7) == 0)
+			disable_cache = 1;
 		else if (strncmp (bp, "NO", 2) == 0)
 			continue;	/* match any word starting with NO */
 		else if (sscanf (bp, "MANBIN %*s") == 1)
@@ -777,7 +828,7 @@ void read_config_file(void)
 	char *home;
 	FILE *config;
 
-	push_cleanup (free_config_file, NULL);
+	push_cleanup (free_config_file, NULL, 0);
 
 	home = xstrdup (getenv ("HOME"));
 	if (home) {
@@ -788,10 +839,7 @@ void read_config_file(void)
 			dotmanpath = xstrdup (user_config_file);
 		config = fopen (dotmanpath, "r");
 		if (config != NULL) {
-			if (debug)
-				fprintf (stderr,
-					 "From the config file %s:\n\n",
-					 dotmanpath);
+			debug ("From the config file %s:\n\n", dotmanpath);
 			add_to_dirlist (config, 1);
 			fclose (config);
 		}
@@ -804,14 +852,12 @@ void read_config_file(void)
 		       _("can't open the manpath configuration file %s"),
 		       CONFIG_FILE);
 
-	if (debug)
-		fprintf (stderr, "From the config file %s:\n\n", CONFIG_FILE);
+	debug ("From the config file %s:\n\n", CONFIG_FILE);
 
 	add_to_dirlist (config, 0);
 	fclose (config);
 
-	if (debug)
-		print_list ();
+	print_list ();
 }
 
 
@@ -855,7 +901,7 @@ static char *def_path (int flag)
  * $HOME/man exists -- the directory $HOME/man will be added
  * to the manpath.
  */
-static __inline__ char *get_manpath (const char *path)
+static __inline__ char *get_manpath_from_path (const char *path)
 {
 	int len;
 	char *tmppath;
@@ -879,8 +925,7 @@ static __inline__ char *get_manpath (const char *path)
 		if (*p == '\0' || strcmp (p, ".") == 0)
 			continue;
 
-		if (debug)
-			fprintf (stderr, "\npath directory %s ", p);
+		debug ("\npath directory %s ", p);
 
 		mandir_list = iterate_over_list (NULL, p, MANPATH_MAP);
 
@@ -890,8 +935,7 @@ static __inline__ char *get_manpath (const char *path)
       		 */
 
 		if (mandir_list) {
-			if (debug)
-				fputs("is in the config file\n", stderr);
+			debug ("is in the config file\n");
 			while (mandir_list) {
 				add_dir_to_list (tmplist, mandir_list->cont);
 				mandir_list = iterate_over_list
@@ -903,26 +947,24 @@ static __inline__ char *get_manpath (const char *path)
       		    If so, and it hasn't been added to the list, do. */
 
 		} else {
-			if (debug)
-				fputs ("is not in the config file\n", stderr);
+			debug ("is not in the config file\n");
 
 		 	t = has_mandir (p);
 		 	if (t) {
-				if (debug)
-					fprintf (stderr, "but does have a ../man or man subdirectory\n");
+				debug ("but does have a ../man or man "
+				       "subdirectory\n");
 	
 				add_dir_to_list (tmplist, t);
 				free (t);
 		 	} else
-				if (debug)
-					fprintf (stderr, "and doesn't have ../man or man subdirectories\n");
+				debug ("and doesn't have ../man or man "
+				       "subdirectories\n");
 		}
 	}
 
 	free (tmppath);
 
-	if (debug)
-		fprintf (stderr, "\nadding mandatory man directories\n\n");
+	debug ("\nadding mandatory man directories\n\n");
 
 	for (list = namestore; list; list = list->next)
 		if (list->flag == MANDATORY) 
@@ -968,10 +1010,7 @@ static void add_dir_to_list (char **lp, const char *dir)
 		if (pos > MAXDIRS - 1)
 			gripe_overlong_list ();
 		if (!strcmp (*lp, dir)) {
-			if (debug)
-				fprintf (stderr,
-					 "%s is already in the manpath\n",
-					 dir);
+			debug ("%s is already in the manpath\n", dir);
 			return;
 		}
 		lp++;
@@ -987,8 +1026,7 @@ static void add_dir_to_list (char **lp, const char *dir)
 	else if (status == 0)
 		gripe_not_directory (dir);
 	else if (status == 1) {
-		if (debug)
-			fprintf (stderr, "adding %s to manpath\n", dir);
+		debug ("adding %s to manpath\n", dir);
 
 		*lp = xstrdup (dir);
 	}
@@ -1051,8 +1089,7 @@ static char **add_dir_to_path_list (char **mphead, char **mp, const char *p)
 		} else 
 			*mp = xstrdup (p);
 
-		if (debug)
-			fprintf (stderr, "adding %s to manpathlist\n", *mp);
+		debug ("adding %s to manpathlist\n", *mp);
 		mp++;
 	}
 	return mp;

@@ -72,7 +72,6 @@
 extern char *optarg;
 extern int optind, opterr, optopt;
 
-int debug = 0;
 char *program_name;
 int quiet = 0;
 
@@ -119,7 +118,6 @@ int main (int argc, char *argv[])
 	int c, global = 0, cat = 0;
 	const char *alt_system = "";
 	char *path_string;
-	int option_index; /* not used, but required by getopt_long() */
 
 	program_name = xstrdup (basename (argv[0]));
 	/* initialise the locale */
@@ -131,14 +129,14 @@ int main (int argc, char *argv[])
 	textdomain (PACKAGE);
 
 	while ((c = getopt_long (argc, argv, args,
-				 long_options, &option_index)) != EOF) {
+				 long_options, NULL)) != EOF) {
 		switch (c) {
 
 			case 'c':
 				cat = 1;
 				break;
 			case 'd':
-			    	debug = 1;
+			    	debug_level = 1;
 			    	break;
 		    	case 'q':
 			    	quiet = 1;
@@ -165,7 +163,7 @@ int main (int argc, char *argv[])
 		}
 	}
 	
-	path_string = manpath (alt_system);
+	path_string = get_manpath (alt_system);
 
 	if (global) {
 		path_string = get_mandb_manpath ();

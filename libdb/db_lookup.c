@@ -65,10 +65,11 @@ extern int errno;
  */
 datum copy_datum (datum dat)
 {
-	if (dat.dptr) {
-		dat.dptr = memcpy (xmalloc (dat.dsize + 1),
-				   dat.dptr, dat.dsize);
-		dat.dptr[dat.dsize] = '\0';
+	if (MYDBM_DPTR (dat)) {
+		MYDBM_SET_DPTR (dat, memcpy (xmalloc (MYDBM_DSIZE (dat) + 1),
+						      MYDBM_DPTR (dat),
+						      MYDBM_DSIZE (dat)));
+		MYDBM_DPTR (dat)[MYDBM_DSIZE (dat)] = '\0';
 	}
 	return dat;
 }
@@ -113,20 +114,19 @@ const char *dash_if_unset (const char *str)
 /* Just print out what would be stored in the db */
 void dbprintf (const struct mandata *info)
 {
-	fprintf (stderr,
-		 "name:      %s\n"
-		 "sec. ext:  %s\n"
-		 "section:   %s\n"
-		 "comp. ext: %s\n"
-		 "id:        %c\n"
-		 "st_mtime   %ld\n"
-		 "pointer:   %s\n"
-		 "filter:    %s\n"
-		 "whatis:    %s\n\n",
-		 dash_if_unset (info->name),
-		 info->ext, info->sec, info->comp,
-		 info->id, (long) info->_st_mtime,
-		 info->pointer, info->filter, info->whatis);
+	debug ("name:      %s\n"
+	       "sec. ext:  %s\n"
+	       "section:   %s\n"
+	       "comp. ext: %s\n"
+	       "id:        %c\n"
+	       "st_mtime   %ld\n"
+	       "pointer:   %s\n"
+	       "filter:    %s\n"
+	       "whatis:    %s\n\n",
+	       dash_if_unset (info->name),
+	       info->ext, info->sec, info->comp,
+	       info->id, (long) info->_st_mtime,
+	       info->pointer, info->filter, info->whatis);
 }
 
 /* Form a multi-style key from page and extension info. The page should
@@ -136,9 +136,10 @@ datum make_multi_key (const char *page, const char *ext)
 {
 	datum key;
 
-	key.dsize = strlen (page) + strlen (ext) + 2;
-	key.dptr = (char *) xmalloc (key.dsize);
-	sprintf (key.dptr, "%s\t%s", page, ext);
+	memset (&key, 0, sizeof key);
+	MYDBM_DSIZE (key) = strlen (page) + strlen (ext) + 2;
+	MYDBM_SET_DPTR (key, xmalloc (MYDBM_DSIZE (key)));
+	sprintf (MYDBM_DPTR (key), "%s\t%s", page, ext);
 	return key;
 }
 
@@ -247,6 +248,8 @@ datum make_content (struct mandata *in)
 	datum cont;
 	static const char dash[] = "-";
 
+	memset (&cont, 0, sizeof cont);
+
 	if (!in->pointer)
 		in->pointer = dash;
 	if (!in->filter)
@@ -256,18 +259,19 @@ datum make_content (struct mandata *in)
 	if (!in->whatis)
 		in->whatis = dash + 1;
 
-	cont.dsize = strlen (dash_if_unset (in->name)) + 1 +
-		     strlen (in->ext) + 1 +
-		     strlen (in->sec) + 1 +
-		  /* strlen (in->_st_mtime) */ + 10 + 1 +
-		  /* strlen (in->id) */ + 1 + 1 +
-		     strlen (in->pointer) + 1 +
-		     strlen (in->filter) + 1 +
-		     strlen (in->comp) + 1 +
-		     strlen (in->whatis) + 1;
-	cont.dptr = (char *) xmalloc (cont.dsize);
+	MYDBM_DSIZE (cont) =
+		strlen (dash_if_unset (in->name)) + 1 +
+		strlen (in->ext) + 1 +
+		strlen (in->sec) + 1 +
+		/* strlen (in->_st_mtime) + */ 10 + 1 +
+		/* strlen (in->id) + */ 1 + 1 +
+		strlen (in->pointer) + 1 +
+		strlen (in->filter) + 1 +
+		strlen (in->comp) + 1 +
+		strlen (in->whatis) + 1;
+	MYDBM_SET_DPTR (cont, xmalloc (MYDBM_DSIZE (cont)));
 #ifdef ANSI_SPRINTF
-	cont.dsize = 1 + sprintf (cont.dptr,
+	MYDBM_DSIZE (cont) = 1 + sprintf (MYDBM_DPTR (cont),
 		"%s\t%s\t%s\t%ld\t%c\t%s\t%s\t%s\t%s",
 		dash_if_unset (in->name),
 		in->ext,
@@ -279,9 +283,9 @@ datum make_content (struct mandata *in)
 		in->comp,
 		in->whatis);
 
-	assert (strlen (cont.dptr) + 1 == (size_t) cont.dsize);
+	assert (strlen (MYDBM_DPTR (cont)) + 1 == (size_t) MYDBM_DSIZE (cont));
 #else /* !ANSI_SPRINTF */
-	sprintf (cont.dptr, "%s\t%s\t%s\t%ld\t%c\t%s\t%s\t%s\t%s",
+	sprintf (MYDBM_DPTR (cont), "%s\t%s\t%s\t%ld\t%c\t%s\t%s\t%s\t%s",
 		 dash_if_unset (in->name),
 		 in->ext,
 		 in->sec,
@@ -292,14 +296,15 @@ datum make_content (struct mandata *in)
 		 in->comp,
 		 in->whatis);
 
-	cont.dsize = strlen (cont.dptr) + 1;	/* to be sure (st_mtime) */
+	/* to be sure (st_mtime) */
+	MYDBM_DSIZE (cont) = strlen (MYDBM_DPTR (cont)) + 1;
 #endif /* ANSI_SPRINTF */
 
 #ifdef NDBM
 	/* limit of 4096 bytes of data using ndbm */
-	if (cont.dsize > 4095) {
-		cont.dptr[4095] = '\0';
-		cont.dsize = 4096;
+	if (MYDBM_DSIZE (cont) > 4095) {
+		MYDBM_DPTR (cont)[4095] = '\0';
+		MYDBM_DSIZE (cont) = 4096;
 	}
 #endif
 	return cont;
@@ -333,8 +338,7 @@ int list_extensions (char *data, char ***names, char ***ext)
 		}
 	}
 
-	if (debug)
-		fprintf (stderr, "found %d names/extensions\n", count);
+	debug ("found %d names/extensions\n", count);
 	return count;
 }
 
@@ -357,16 +361,19 @@ static struct mandata *dblookup (const char *page, const char *section,
 	struct mandata *info = NULL;
 	datum key, cont;
 
-	key.dptr = name_to_key (page);
-	key.dsize = strlen (key.dptr) + 1;
-	cont = MYDBM_FETCH (dbf, key);
-	free (key.dptr);
+	memset (&key, 0, sizeof key);
+	memset (&cont, 0, sizeof cont);
 
-	if (cont.dptr == NULL) {		/* No entries at all */
+	MYDBM_SET_DPTR (key, name_to_key (page));
+	MYDBM_DSIZE (key) = strlen (MYDBM_DPTR (key)) + 1;
+	cont = MYDBM_FETCH (dbf, key);
+	free (MYDBM_DPTR (key));
+
+	if (MYDBM_DPTR (cont) == NULL) {	/* No entries at all */
 		return info;			/* indicate no entries */
-	} else if (*cont.dptr != '\t') {	/* Just one entry */
+	} else if (*MYDBM_DPTR (cont) != '\t') {	/* Just one entry */
 		info = infoalloc ();
-		split_content (cont.dptr, info);
+		split_content (MYDBM_DPTR (cont), info);
 		if (!info->name)
 			info->name = xstrdup (page);
 		if (!(flags & MATCH_CASE) || STREQ (info->name, page)) {
@@ -388,12 +395,14 @@ static struct mandata *dblookup (const char *page, const char *section,
 		 * associated with this key.
 		 */
 
-		refs = list_extensions (cont.dptr + 1, &names, &ext);
+		refs = list_extensions (MYDBM_DPTR (cont) + 1, &names, &ext);
 
 		/* Make the multi keys and look them up */
 
 		for (i = 0; i < refs; ++i) {
 			datum multi_cont;
+
+			memset (&multi_cont, 0, sizeof multi_cont);
 
 			/* Decide whether this part of a multi key is
 			 * suitable.
@@ -410,16 +419,14 @@ static struct mandata *dblookup (const char *page, const char *section,
 
 			/* So the key is suitable ... */
 			key = make_multi_key (names[i], ext[i]);
-			if (debug)
-				fprintf (stderr, "multi key lookup (%s)\n",
-					 key.dptr);
+			debug ("multi key lookup (%s)\n", MYDBM_DPTR (key));
 			multi_cont = MYDBM_FETCH (dbf, key);
-			if (multi_cont.dptr == NULL) {
+			if (MYDBM_DPTR (multi_cont) == NULL) {
 				error (0, 0, _("bad fetch on multi key %s"),
-				       key.dptr);
+				       MYDBM_DPTR (key));
 				gripe_corrupt_data ();
 			}
-			free (key.dptr);
+			free (MYDBM_DPTR (key));
 
 			/* allocate info struct, fill it in and
 			   point info to the next in the list */
@@ -427,14 +434,14 @@ static struct mandata *dblookup (const char *page, const char *section,
 				ret = info = infoalloc ();
 			else
 				info = info->next = infoalloc ();
-			split_content (multi_cont.dptr, info);
+			split_content (MYDBM_DPTR (multi_cont), info);
 			if (!info->name)
 				info->name = xstrdup (names[i]);
 		}
 
 		free (names);
 		free (ext);
-		MYDBM_FREE (cont.dptr);
+		MYDBM_FREE (MYDBM_DPTR (cont));
 		return ret;
 	}
 }

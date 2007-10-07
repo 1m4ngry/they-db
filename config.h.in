@@ -68,6 +68,9 @@
 /* Define to 1 if you have the `basename' function. */
 #undef HAVE_BASENAME
 
+/* Define if you have browser. */
+#undef HAVE_BROWSER
+
 /* Define to 1 if the compiler understands __builtin_expect. */
 #undef HAVE_BUILTIN_EXPECT
 
@@ -84,6 +87,9 @@
 /* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
    the CoreFoundation framework. */
 #undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
+/* Define if you have col. */
+#undef HAVE_COL
 
 /* Define if you have compress. */
 #undef HAVE_COMPRESS
@@ -125,6 +131,9 @@
 
 /* Define if you have the declaration of environ. */
 #undef HAVE_ENVIRON_DECL
+
+/* Define if you have eqn. */
+#undef HAVE_EQN
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
@@ -180,6 +189,9 @@
 /* Define if using <glob.h> rather than "lib/glob.h". */
 #undef HAVE_GLOB_H
 
+/* Define if you have grap. */
+#undef HAVE_GRAP
+
 /* Define if you have gzip. */
 #undef HAVE_GZIP
 
@@ -189,7 +201,7 @@
 /* Define if you have the 'intmax_t' type in <stdint.h> or <inttypes.h>. */
 #undef HAVE_INTMAX_T
 
-/* Define if <inttypes.h> exists and doesn't clash with <sys/types.h>. */
+/* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
 /* Define if <inttypes.h> exists, doesn't clash with <sys/types.h>, and
@@ -205,14 +217,17 @@
 /* Define to 1 if you have the <libgen.h> header file. */
 #undef HAVE_LIBGEN_H
 
+/* Define to 1 if you have the `z' library (-lz). */
+#undef HAVE_LIBZ
+
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
 /* Define if you have the 'long double' type. */
 #undef HAVE_LONG_DOUBLE
 
-/* Define if you have the 'long long' type. */
-#undef HAVE_LONG_LONG
+/* Define to 1 if the system has the type `long long int'. */
+#undef HAVE_LONG_LONG_INT
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -235,12 +250,24 @@
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #undef HAVE_NDIR_H
 
+/* Define if you have neqn. */
+#undef HAVE_NEQN
+
 /* Define if you have <langinfo.h> and it defines the NL_LOCALE_NAME macro if
    _GNU_SOURCE is defined. */
 #undef HAVE_NL_LOCALE_NAME
 
+/* Define if you have nroff. */
+#undef HAVE_NROFF
+
 /* Define to 1 if you have the `on_exit' function. */
 #undef HAVE_ON_EXIT
+
+/* Define if you have pager. */
+#undef HAVE_PAGER
+
+/* Define if you have pic. */
+#undef HAVE_PIC
 
 /* Define if your printf() function supports format strings with positions. */
 #undef HAVE_POSIX_PRINTF
@@ -256,6 +283,9 @@
 
 /* Define to 1 if you have the `realpath' function. */
 #undef HAVE_REALPATH
+
+/* Define if you have refer. */
+#undef HAVE_REFER
 
 /* Define to 1 if you have the <regex.h> header file. */
 #undef HAVE_REGEX_H
@@ -366,6 +396,9 @@
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #undef HAVE_SYS_WAIT_H
 
+/* Define if you have tbl. */
+#undef HAVE_TBL
+
 /* Define to 1 if you have the `tsearch' function. */
 #undef HAVE_TSEARCH
 
@@ -381,11 +414,17 @@
 /* Define if you have the 'unsigned long long' type. */
 #undef HAVE_UNSIGNED_LONG_LONG
 
+/* Define to 1 if the system has the type `unsigned long long int'. */
+#undef HAVE_UNSIGNED_LONG_LONG_INT
+
 /* Define to 1 if you have the `vfork' function. */
 #undef HAVE_VFORK
 
 /* Define to 1 if you have the <vfork.h> header file. */
 #undef HAVE_VFORK_H
+
+/* Define if you have vgrind. */
+#undef HAVE_VGRIND
 
 /* Define to 1 or 0, depending whether the compiler supports simple visibility
    declarations. */
@@ -568,9 +607,6 @@
 /* Define as the type of the result of subtracting two pointers, if the system
    doesn't define it. */
 #undef ptrdiff_t
-
-/* Define to empty if the C compiler doesn't support this keyword. */
-#undef signed
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

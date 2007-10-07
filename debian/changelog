@@ -1,3 +1,59 @@
+man-db (2.5.0-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Remove /usr/X11R6/man from MANDATORY_MANPATH (closes: #413349).
+    - man now supports the MANPAGER environment variable, overriding PAGER.
+    - Resolve ambiguous error message when asking for a nonexistent manual
+      page that might also be a section name (closes: #421481).
+    - MANSEC -> MANSECT in German man(1) and catman(8) (closes: #430635).
+    - Truncate apropos/whatis output to the terminal width by default
+      (closes: #411721).
+    - lexgrog now ignores alleged manual page names containing spaces, as
+      these usually indicate parsing errors or ill-formed NAME sections and
+      they clutter up apropos output badly.
+    - Discard stderr from formatting processes when outputting to a pager,
+      to avoid visual corruption from any error messages (closes: #372939).
+    - Disallow sectional extensions of alphabetic sections, e.g. n and l
+      from the default configuration (closes: #391977), and sectional
+      extensions beginning with a digit (closes: #421481).
+    - Suppress warnings in --quiet mode (closes: #348008, #378428, #411220;
+      also closes: #334280 since that suggestion is no longer relevant).
+    - If MAN_KEEP_FORMATTING is set in the environment, don't strip
+      formatting characters with col (closes: #340673).
+    - Implement and use a decompression library. This allows cat pages to be
+      saved in the background while the pager is active (closes: #18452) and
+      operation with a read-only /tmp (closes: #165499).
+    - Add a configuration file flag (NOCACHE) to disable cat page caching
+      (closes: #196642).
+    - Add output keys to a hashtable, and skip any that have already been
+      seen (closes: #259338).
+    - Execute system utilities by command name rather than by full path
+      (closes: #385651).
+    - Add apropos -a/--and option to display only items matching all
+      keywords (closes: #259340).
+    - Adjust Finnish translation of "No manual entry for %s"
+      (closes: #320108).
+    - Create and use databases for non-English manual hierarchies
+      (closes: #29448, #281811).
+    - Improve per-locale directory handling. Directories such as "fr.UTF-8"
+      may be used for occasions when it is appropriate to specify the
+      character set but not the country, and so a full locale name is
+      inconvenient.
+    - There is a new "manconv" program which can try multiple possible
+      encodings for a file, thus allowing UTF-8 manual pages to be installed
+      in any directory even without an explicit encoding declaration.
+    - Don't escape the hierarchy path while globbing; it isn't necessary and
+      it causes problems for paths containing metacharacters
+      (closes: #444187).
+  * Use new configure options for external programs rather than hardcoding
+    them in configure.ac.
+  * Remove code in debian/rules to fiddle manual page paths for Debian,
+    since the default of $LL.UTF-8 is now reasonable. (An
+    announcement/discussion about what other Debian packages should do will
+    be forthcoming shortly.)
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Oct 2007 17:40:21 +0100
+
 man-db (2.4.4-4) unstable; urgency=low
 
   * Ignore chown failures, though affected systems are buggy and should be

@@ -43,65 +43,50 @@
 #include "lib/error.h"
 #include "mydbm.h"
 
-static datum content;
-
-static int dbver (MYDBM_FILE dbf)
-{
-	datum key;
-
-	key.dptr = xstrdup (VER_KEY);
-	key.dsize = sizeof VER_KEY;
-
-	content = MYDBM_FETCH (dbf, key);
-
-	free (key.dptr);
-
-	if (content.dptr == NULL)
-		return -1;
-	else if (!STREQ (content.dptr, VER_ID))
-		return 1;
-	else
-		return 0;
-}
-
-void dbver_wr (MYDBM_FILE dbf)
+int dbver_rd (MYDBM_FILE dbfile)
 {
 	datum key, content;
 
-	key.dptr = xstrdup (VER_KEY);
-	key.dsize = sizeof VER_KEY;
-	content.dptr = xstrdup (VER_ID);
-	content.dsize = sizeof VER_ID;
+	memset (&key, 0, sizeof key);
 
-	if (MYDBM_INSERT (dbf, key, content) != 0)
+	MYDBM_SET_DPTR (key, xstrdup (VER_KEY));
+	MYDBM_DSIZE (key) = sizeof VER_KEY;
+
+	content = MYDBM_FETCH (dbfile, key);
+
+	free (MYDBM_DPTR (key));
+
+	if (MYDBM_DPTR (content) == NULL) {
+		debug (_("warning: %s has no version identifier\n"), database);
+		return 1;
+	} else if (!STREQ (MYDBM_DPTR (content), VER_ID)) {
+		debug (_("warning: %s is version %s, expecting %s\n"),
+		       database, MYDBM_DPTR (content), VER_ID);
+		MYDBM_FREE (MYDBM_DPTR (content));
+		return 1;
+	} else {
+		MYDBM_FREE (MYDBM_DPTR (content));
+		return 0;
+	}
+}
+
+void dbver_wr (MYDBM_FILE dbfile)
+{
+	datum key, content;
+
+	memset (&key, 0, sizeof key);
+	memset (&content, 0, sizeof content);
+
+	MYDBM_SET_DPTR (key, xstrdup (VER_KEY));
+	MYDBM_DSIZE (key) = sizeof VER_KEY;
+	MYDBM_SET_DPTR (content, xstrdup (VER_ID));
+	MYDBM_DSIZE (content) = sizeof VER_ID;
+
+	if (MYDBM_INSERT (dbfile, key, content) != 0)
 		error (FATAL, 0,
 		       _("fatal: unable to insert version identifier into %s"),
 		       database);
 
-	free (key.dptr);
-	free (content.dptr);
-}
-
-int dbver_rd (MYDBM_FILE dbf)
-{
-	int status;
-
-	status = dbver (dbf);
-
-	if (status == -1) {
-		if (debug)
-			fprintf (stderr,
-				 _("warning: %s has no version identifier\n"),
-				 database);
-	} else if (status == 1) {
-		if (debug)
-			fprintf (stderr,
-				 _("warning: %s is version %s, expecting %s\n"),
-				 database, content.dptr, VER_ID);
-	} else {
-		MYDBM_FREE (content.dptr);
-		return 0;
-	}
-
-	return 1;
+	free (MYDBM_DPTR (key));
+	free (MYDBM_DPTR (content));
 }

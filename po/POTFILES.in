@@ -9,11 +9,13 @@ src/check_mandirs.c
 src/compression.c
 src/convert_name.c
 src/descriptions.c
+src/descriptions_store.c
 src/fake_security.c
 src/filenames.c
 src/globbing.c
 src/lexgrog.l
 src/man.c
+src/manconv.c
 src/mandb.c
 src/manp.c
 src/manpath.c

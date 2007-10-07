@@ -2,9 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 dnl
 dnl Initialise and check we're in the correct directory.
 dnl
-AC_INIT(man-db, 2.4.4)
+AC_INIT(man-db, 2.5.0)
 AC_PREREQ([2.59])
-AC_CONFIG_SRCDIR(acinclude.m4)
+AC_CONFIG_SRCDIR(src/man.c)
 AC_CONFIG_AUX_DIR(tools)
 AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
@@ -12,7 +12,7 @@ AC_ARG_PROGRAM
 dnl
 dnl Define below date and version information to be put into man pages etc.
 dnl
-datemark=20070212
+datemark=20071007
 date=`LANG=C date -d $datemark +'%Y-%m-%d'`
 AC_SUBST(date)dnl
 dnl
@@ -113,16 +113,16 @@ AC_PROG_CPP
 CFLAGS="$CFLAGS -Wall"
 if test "$GCC" = yes
 then
-	CFLAGS="$CFLAGS -W -Wpointer-arith -Wwrite-strings -Wstrict-prototypes"
+	CFLAGS="$CFLAGS -W -Wpointer-arith -Wwrite-strings -Wstrict-prototypes -Wshadow"
 fi
 AC_PROG_INSTALL
 AC_PROG_RANLIB
-AC_PATH_PROG(cat, cat)
-AC_PATH_PROGS(browser, www-browser lynx, /usr/bin/www-browser)
+AC_CHECK_PROGS(cat, cat)
+MAN_CHECK_PROGS([browser], [BROWSER], [use BROWSER as default web browser], [www-browser lynx])
 test -n "$browser" && browser="exec $browser"
-AC_PATH_PROG(tr, tr)
-AC_PATH_PROG(grep, grep)
-AC_PATH_PROGS(pager, pager less more, /usr/bin/pager)
+AC_CHECK_PROGS(tr, tr)
+AC_CHECK_PROGS(grep, grep)
+MAN_CHECK_PROGS([pager], [PAGER], [use PAGER as default pager], [pager less more])
 test -n "$pager" && pager="$pager -s"
 dnl
 dnl define below (in list of preference) *roff macros to check for.
@@ -132,7 +132,7 @@ dnl
 dnl We have problems here, as different systems have different *roff
 dnl formatters and they accept different options and do different things :(
 dnl
-AC_PATH_PROGS(nroff, nroff gnroff groff)
+MAN_CHECK_PROGS([nroff], [NROFF], [use NROFF as roff formatter for character devices], [nroff gnroff groff])
 if test -n "$nroff"
 then
 	dnl define GNU_NROFF if necessary
@@ -177,13 +177,15 @@ else
 	nroff="(nroff not installed)"
 	AC_DEFINE(NROFF_MISSING, 1, [Define if you don't have nroff.])
 fi
-AC_PATH_PROGS(troff, groff)
+dnl It would be nice to use MAN_CHECK_PROGS here, but how do we determine
+dnl TROFF_IS_GROFF?
+AC_CHECK_PROGS(troff, groff)
 if test -n "$troff"
 then
 	AC_DEFINE(TROFF_IS_GROFF, 1, [Define if you are using groff as troff.])
 	TROFF=groff
 else
-	AC_PATH_PROGS(troff, troff gtroff)
+	AC_CHECK_PROGS(troff, troff gtroff)
 	TROFF=troff
 fi
 if test -n "$troff"
@@ -217,8 +219,8 @@ else
 	troff="(troff not installed)"
 fi
 dnl 
-AC_PATH_PROGS(eqn, eqn geqn)
-AC_PATH_PROGS(neqn, neqn gneqn)
+MAN_CHECK_PROGS([eqn], [EQN], [use EQN to preprocess equations], [eqn geqn])
+MAN_CHECK_PROGS([neqn], [NEQN], [use NEQN to preprocess equations for character devices], [neqn gneqn])
 dnl
 dnl if we fail to find an neqn, use eqn and try to force it to output
 dnl for an ascii device. As this is only relevant for equations (?), not
@@ -229,38 +231,33 @@ then
 	test -n "$eqn" && 
 	(test -n "$nroff_device" && neqn="$eqn -T$nroff_device" || neqn="$eqn -Tascii")
 fi
-AC_PATH_PROGS(tbl, tbl gtbl)
-AC_PATH_PROGS(col, col gcol, /usr/bin/col)
-AC_PATH_PROGS(vgrind, vgrind gvgrind, /usr/bin/vgrind)
-AC_PATH_PROGS(refer, refer grefer)
-AC_PATH_PROGS(grap, grap, /usr/bin/grap)
-AC_PATH_PROGS(pic, pic gpic)
+MAN_CHECK_PROGS([tbl], [TBL], [use TBL to preprocess tables], [tbl gtbl])
+MAN_CHECK_PROGS([col], [COL], [use COL to filter formatting characters from output], [col gcol])
+MAN_CHECK_PROGS([vgrind], [VGRIND], [use VGRIND to preprocess program sources], [vgrind gvgrind])
+MAN_CHECK_PROGS([refer], [REFER], [use REFER to preprocess bibliographic references], [refer grefer])
+MAN_CHECK_PROGS([grap], [GRAP], [use GRAP to preprocess graphs], [grap])
+MAN_CHECK_PROGS([pic], [PIC], [use PIC to preprocess pictures], [pic gpic])
 test -n "$pic" && pic="$pic -S"
-AC_PATH_PROG(gzip, gzip)
+MAN_CHECK_PROGS([gzip], [GZIP], [use GZIP as GNU compression utility], [gzip])
 if test -n "$gzip"
 then
-	AC_DEFINE(HAVE_GZIP, 1, [Define if you have gzip.])
 	gunzip="$gzip -dc"
 	compressor="$gzip -c7"
 	compress_ext="gz"
-	decompressor="$gunzip"
 fi
-AC_PATH_PROG(compress, compress, /usr/bin/compress)
+MAN_CHECK_PROGS([compress], [COMPRESS], [use COMPRESS as UNIX compression utility], [compress])
 if test -n "$compress"
 then
-	AC_DEFINE(HAVE_COMPRESS, 1, [Define if you have compress.])
 	uncompress="$compress -dc"
 	if test -z "$gzip"
 	then
 		compressor="$compress -c"
 		compress_ext="Z"
-		decompressor="$uncompress"
 	fi
 fi
-AC_PATH_PROG(bzip2, bzip2, /usr/bin/bzip2)
+MAN_CHECK_PROGS([bzip2], [BZIP2], [use BZIP2 as block-sorting compression utility], [bzip2])
 if test -n "$bzip2"
 then
-	AC_DEFINE(HAVE_BZIP2, 1, [Define if you have bzip2.])
 	bunzip2="$bzip2 -dc"
 fi
 if test -n "$gzip" || test -n "$compress" || test -n "$bzip2"
@@ -273,7 +270,7 @@ AC_SUBST(compress_ext)dnl
 AC_SUBST(gunzip)dnl
 AC_SUBST(uncompress)dnl
 AC_SUBST(bunzip2)dnl
-AC_SUBST(decompressor)dnl
+AC_CHECK_LIB(z, gzopen)
 dnl
 dnl to add more decompressors just follow the scheme above.
 dnl
@@ -316,8 +313,9 @@ dnl
 dnl Internationalization support.
 dnl
 AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION([0.15])
+AM_GNU_GETTEXT_VERSION([0.16.1])
 AC_SUBST(LINGUAS)dnl
+AM_ICONV
 dnl
 dnl Checks for structures and compiler characteristics.
 dnl
@@ -486,12 +484,13 @@ MAN_ECHO_VAR(LIBS)
 MAN_ECHO_VAR(DBLIBS)
 
 AC_CONFIG_FILES(GNUmakefile
+	makefile
 	lib/Makefile
 	src/Makefile
 	src/man_db.conf
 	man/Makefile
+	manual/Makefile
 	libdb/Makefile
-	zsoelim/Makefile
 	include/Defines
 	include/comp_src.h
 	include/manconfig.h
@@ -500,16 +499,3 @@ AC_CONFIG_FILES(GNUmakefile
 AC_OUTPUT
 
 date > stamp-h
-dnl Create a bogus makefile that non-GNU make's will try to use. This is 
-dnl better than messages like `make:105: missing separator **' 
-cat > makefile <<\MEOF
-all: GNUmakefile
-	@echo "Compilation of this package requires GNU make ver 3.68 or above."
-	@echo "If you are using GNU make and it ignores the GNUmakefile in this"
-	@echo "directory, issue the command 'make -f GNUmakefile'"
-
-GNUmakefile: GNUmakefile.in
-	CONFIG_HEADERS= CONFIG_FILES=$@ ./config.status
-
-update install clean realclean distclean TAGS dist: all
-MEOF

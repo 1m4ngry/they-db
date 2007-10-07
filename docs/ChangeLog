@@ -1,3 +1,1027 @@
+Sun Oct  7 17:05:54 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.0.
+	* configure.ac, docs/NEWS, man-db.lsm: Update.
+
+Sun Oct  7 17:01:47 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (ja_name): Add another possible translation.
+
+Sun Oct  7 15:19:15 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/Makefile.in (distclean): Remove Makefile.
+
+Sun Oct  7 14:28:27 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* po/man-db.pot, po/*.po: Update.
+
+Sun Oct  7 14:24:31 BST 2007  Ming Hua  <minghua-guest@users.alioth.debian.org>
+
+	* po/zh_CN.po: New translation.
+	* po/LINGUAS: Add zh_CN.
+	* man/THANKS: Add translator credit.
+
+Wed Sep 26 17:57:44 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/util.c (escape_shell): '=' is conceivably a shell
+	  metacharacter if used in the first word of a command (although I
+	  can't see anywhere in man-db where this might actually happen,
+	  barring very unlikely settings of $BROWSER).
+
+Wed Sep 26 17:51:45 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/globbing.c (look_for_file): Don't escape the hierarchy path;
+	  it isn't necessary and it causes problems for paths containing
+	  metacharacters (Debian bug #444187).
+	* src/globbing.h (look_for_file): Update prototype.
+
+Tue Sep 18 11:29:26 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po4a.cfg: Add po4a mechanism for manual page translation,
+	  as the Simplified Chinese translator would like to use this.
+	* man/po4a/po/man-db.pot: Add generated file.
+
+	* man/man1/apropos.man1, man/man1/lexgrog.man1, man/man1/man.man1,
+	  man/man1/manconv.man1, man/man1/manpath.man1,
+	  man/man1/whatis.man1, man/man1/zsoelim.man1,
+	  man/man5/manpath.man5, man/man8/accessdb.man8,
+	  man/man8/catman.man8, man/man8/mandb.man8: Some strings should not
+	  be translated. Use the ".if !'po4a'hide'" idiom to mark them.
+	* man/man1/man.man1 (OVERVIEW): Adjust some spacing.
+
+Tue Sep 18 08:59:55 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (directory_table): Switch Simplified Chinese to
+	  GBK by default. Ming Hua points out that GBK is a superset of
+	  EUC-CN, and indeed all Simplified Chinese manual pages I can find
+	  can be recoded from GBK without hassle. I'm less certain about
+	  changing the output encoding, but for CJK encodings it's best for
+	  these to be the same at the moment.
+
+Mon Sep 17 16:13:37 BST 2007  Daniel Nylander  <po@danielnylander.se>
+
+	* po/sv.po: Update from Translation Project.
+
+Mon Sep 17 14:27:15 BST 2007  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Mon Sep 17 00:34:17 UTC 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (ja_name): Oops; make the first translation keep
+	  working!
+
+Mon Sep 17 00:26:27 UTC 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (ja_name): Add another possible translation.
+
+Mon Sep 17 00:11:38 UTC 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_start): Break after execvp, otherwise we
+	  segfault if execvp fails.
+
+Sun Sep 16 23:15:27 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.0-pre2.
+	* man-db.lsm (Keywords): Add manconv.
+
+Sun Sep 16 20:41:36 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* GNUmakefile.in (__distclean): Remove config.status.lineno.
+	* .bzrignore: Ignore ./config.status.lineno.
+
+Sun Sep 16 20:38:32 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/Makefile.in: Deal more neatly with manual pages without
+	  complete sets of translations.
+
+Sun Sep 16 20:25:24 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Add more intelligent guessing of manual page encodings. Thanks to
+	Adam Borowski for discussion leading to this.
+
+	* src/manconv.c: New program.
+	* man/man1/manconv.man1: Document it.
+	* .bzrignore: Ignore src/manconv.
+	* include/Defines.in (manconv): Add.
+	* man/Makefile.in (manconv, thmanconv, manconv.1): Add.
+	  (process_manpage): Add manconv and thmanconv.
+	  (allmanpages): Add ./man1/manconv.1.
+	  (nlsinstall): Install manconv.1.
+	  (nlsuninstall): Uninstall manconv.1.
+	* src/Makefile.in (PRIVTOOLS, all): Add manconv.
+	* po/POTFILES.in: Add src/manconv.c.
+	* po/man-db.pot, po/*.po: Update.
+
+	* src/man.c (PP_COOKIE): Move to ...
+	* include/manconfig.h.in (PP_COOKIE): ... here.
+
+	* src/encodings.c (add_manconv): New function to use manconv instead
+	  of iconv where appropriate.
+	* src/encodings.h (add_manconv): Add prototype.
+	* src/lexgrog.l (find_name): Use it.
+	* src/man.c (make_roff_command): Use it. Remove coding: preprocessor
+	  string handling, as manconv deals with that now.
+	* src/straycats.c (check_for_stray): Use it.
+	* src/Makefile.in (DEFS_encodings.o): Add, defining location of
+	  manconv.
+
+	* docs/NEWS: Document this.
+
+Sun Sep 16 12:41:05 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/catman.c (main), src/globbing.c (main), src/lexgrog.l (main),
+	  src/man.c (man_getopt), src/mandb.c (main), src/manpath.c (main),
+	  src/whatis.c (main), src/zsoelim.l (main): Pass NULL as the fifth
+	  argument to getopt_long rather than requiring an unused variable.
+
+Tue Sep 11 13:49:33 BST 2007  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Mon Sep 10 10:29:40 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/TODO: Miscellaneous updates.
+
+Mon Sep 10 10:26:57 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/INSTALL.autoconf: Update to instructions from Autoconf 2.61.
+
+Mon Sep 10 10:20:23 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/misc.me (NLS message catalogues): Update Translation
+	  Project URL.
+
+Mon Sep 10 10:17:43 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/Makefile: Rename to ...
+	* manual/Makefile.in: ... this. Write out a version file with the
+	  current version of man-db.
+	* manual/man_db.me: Use the automatically-generated version file
+	  rather than hardcoding the version. Set the manual version to
+	  simply the version of man-db.
+	* configure.ac (AC_CONFIG_FILES): Add manual/Makefile.
+	* GNUmakefile.in (_manual): Distribute manual/Makefile.in rather
+	  than manual/Makefile.
+	* .bzrignore: Update.
+
+Mon Sep 10 09:17:17 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.0-pre1. I mistakenly used version 2.4.5-pre1 earlier.
+
+Mon Sep 10 09:11:05 BST 2007  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Mon Sep 10 00:15:31 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AM_GNU_GETTEXT_VERSION): Upgrade to gettext 0.16.1.
+	* .bzrignore: Update ignores.
+
+Sun Sep  9 23:49:37 BST 2007  Daniel Nylander  <po@danielnylander.se>
+
+	* po/sv.po: Update from Translation Project.
+
+Sun Sep  9 22:50:22 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/format.me (Format scripts): Adjust for renaming of
+	  tools/mandb_[nt]fmt-script to tools/mandb_fmt-script.
+
+Sun Sep  9 21:03:25 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/comp.me (Compressed manual pages): Using compressed manual
+	  pages is perfectly reasonable these days; stop recommending
+	  against it.
+
+Sun Sep  9 20:57:16 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/files.me (Displaying latin1 characters on a Linux virtual
+	  terminal): Rename to ...
+	  (Displaying non-ASCII characters on a Linux virtual terminal): ...
+	  this. Mention console-tools as an alternative to kbd. Remove
+	  detailed advice on configuring kbd as it is now woefully out of
+	  date. Recommend the UTF-8 encoding again.
+
+Sun Sep  9 20:49:59 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/files.me (NLS manual pages): Update for new per-locale
+	  directory handling. Recommend UTF-8 encoding.
+
+Sun Sep  9 19:39:36 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* manual/intro.me (The manual page system): Refer to /usr/share/man
+	  rather than /usr/man.
+	* manual/sec.me (Package specific manual page sections): Likewise.
+	* manual/files.me (Manual page hierarchies, Other OS's manual pages,
+	  NLS manual pages): Likewise.
+	* manual/leader.me: Update copyright years.
+
+Sun Sep  9 19:24:56 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Reorder, roughly by importance.
+
+Sun Sep  9 09:01:30 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* GNUmakefile.in (_root): Add autogen.sh to the distribution; it's
+	  useful if you need to change autotools input files.
+
+Sun Sep  9 08:37:04 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.4.5-pre1 (for translators).
+	* po/man-db.pot, po/*.po: Update.
+
+Mon Sep  3 14:34:06 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (add_nls_manpath): Handle the POSIX locale the same way
+	  as C.
+
+Mon Sep  3 13:48:13 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/whatis.man1 (OPTIONS): Refer to whatis rather than
+	  apropos in description of --manpath.
+
+Mon Sep  3 13:45:30 BST 2007  Nicolas François  <nicolas.francois@centraliens.net>
+
+	* man/man1/apropos.man1 (ENVIRONMENT): Remove stray space in
+	  description of POSIXLY_CORRECT. Patch from Debian bug #281811.
+
+Mon Sep  3 13:26:19 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (directory_table): Add Bulgarian -> CP1251 and
+	  Vietnamese -> TCVN5712-1.
+	* src/lexgrog.l (bg_name, vi_name): Add.
+
+Mon Sep  3 12:15:55 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/check_mandirs.c (test_manfile): Fix comment typos and
+	  formatting.
+
+Mon Sep  3 12:01:36 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* .bzrignore: Update for manual directory renaming.
+	* GNUmakefile.in (nls_man): Likewise.
+
+Mon Sep  3 11:56:58 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/de_DE.88591, man/es_ES.88591, man/fr_FR.88591,
+	  man/it_IT.88591, man/ja_JP.eucJP: Rename to ...
+	* man/de.UTF-8, man/es.UTF-8, man/fr.UTF-8, man/it.UTF-8,
+	  man/ja.UTF-8: ... these. Recode all contents to UTF-8.
+	* man/Makefile.in (NLS): Adjust directory search.
+	* man/THANKS: Update credits.
+
+Mon Sep  3 11:38:11 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Create and use databases for non-English manual hierarchies (Debian
+	bug #29448). Extensive changes elsewhere to support this by means of
+	better UTF-8 handling and knowledge of more languages.
+
+	* src/check_mandirs.c (make_database_directory): New function.
+	  (create_db, update_db): Use it.
+	  (purge_missing): Check that the database exists before starting.
+	* src/mandb.c (process_manpath): New function, split out from main.
+	  Make the single_filename check aware that the file might be in a
+	  per-locale subdirectory that we aren't processing right now.
+	  (main): Use it. Move man_owner, purged, and strays to file scope.
+	  Build databases for all per-locale subdirectories.
+	* src/straycats.c (straycats): Constify manpath argument.
+	* src/whatis.c (main): Sync locale handling with src/man.c, in order
+	  to look up per-locale databases correctly. Based on a patch by
+	  Nicolas François (Debian bug #281811).
+	* include/manconfig.h.in (straycats): Update prototype.
+
+	* src/man.c (duplicate_candidates): New function to determine
+	  whether candidates are substantially duplicated, and if so in
+	  which direction. The logic is better than before: it now knows how
+	  to compare locales and pick the best available candidate for each
+	  language, and prefers UTF-8 candidates if everything else is
+	  equal.
+	  (add_candidate): Move duplication logic to duplicate_candidates.
+	  Adjust insertion handling so that we can drop old candidates in
+	  favour of new candidates.
+	* src/manp.c (check_and_give): Remove.
+	  (unpack_locale_bits): New function, inspired by _nl_explode_name
+	  in libintl.
+	  (free_locale_bits): New function.
+	  (add_nls_manpath): Instead of trying individual directories (which
+	  doesn't work so well with character set aliasing), iterate over
+	  all subdirectories of each manpath entry and add all those
+	  matching the current locale's language and (if specified)
+	  territory. This now includes ll.CODESET as well as more
+	  conventional locale names.
+	* src/manp.h: Declare 'struct locale_bits'. Prototype
+	  unpack_locale_bits and free_locale_bits.
+
+	* src/man.c (lang_dir): Move to ...
+	* src/util.c (lang_dir): ... here.
+	* src/lexgrog.l (long_options, args, main): New -E/--encoding
+	  option.
+	  (usage): Document it.
+	  (cs_name, hu_name, ja_name, ru_name): Recode to UTF-8.
+	  (find_name): Add encoding argument. Guess the page's encoding from
+	  its filesystem location (or use encoding if supplied), and add an
+	  iconv command to recode it to UTF-8.
+	* man/man1/lexgrog.man1 (SYNOPSIS, OPTIONS): Document --encoding.
+	* src/straycats.c (check_for_stray): Guess the page's encoding from
+	  its filesystem location, and add an iconv command to recode it to
+	  UTF-8.
+	* src/whatis.c (simple_convert): New function to simplify iconv
+	  handling.
+	  (display): Convert output from UTF-8 to locale charset.
+	  (main): Initialise iconv descriptor.
+	* include/manconfig.h.in (find_name): Update prototype.
+	  (lang_dir): Add prototype.
+	* configure.ac: Call AM_ICONV.
+	* src/Makefile.in (mandb, lexgrog): Add encodings.o.
+	* src/Makefile.in (whatis, apropos): Add encodings.o and
+	  $(LIBICONV).
+
+	* src/encodings.c (directory_table): Add Serbian -> ISO-8859-5.
+	* src/lexgrog.l (cs_name, hu_name): Expand character classes
+	  containing non-ASCII characters into the form (a|b|...); flex
+	  doesn't understand Unicode well enough to deal with them
+	  otherwise.
+	  (cs_name, ru_name): Add more possible translations.
+	  (ko_name, sk_name, sr_name, tr_name, zh_CN_name, zh_TW_name): Add.
+	  (find_name_decompressed): Ignore exit status from decompressor
+	  pipeline; iconv may exit non-zero on misencoded pages, but if we
+	  manage to extract a whatis from it anyway then it doesn't really
+	  matter.
+
+	* src/whatis.c (usage): Document -L/--locale.
+	* man/man1/apropos.man1 (SYNOPSIS, OPTIONS): Likewise.
+	* man/man1/whatis.man1 (SYNOPSIS, OPTIONS): Likewise.
+
+	* docs/NEWS: Document this.
+
+Sun Sep  2 01:21:11 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Add limited character set aliasing support.
+
+	* src/encodings.c (charset_alias_table): New table for common
+	  character set aliases.
+	  (get_canonical_charset_name): New function to inspect
+	  charset_alias_table.
+	  (get_page_encoding): Use get_canonical_charset_name. Adjust FHS
+	  commentary, since we now support its craziness.
+	  (get_standard_output_encoding): Use get_canonical_charset_name.
+	  (get_locale_charset): Likewise.
+	* src/encodings.h: Prototype get_canonical_charset_name.
+
+	* src/encodings.c (directory_table): Use EUC-CN rather than GB2312
+	  and BIG5HKSCS rather than BIG5-HKSCS (canonical names according to
+	  glibc's /usr/lib/gconv/gconv-modules).
+	  (charset_table): Likewise.
+	  (compatible_encodings): Likewise.
+
+Sun Sep  2 00:49:27 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/decompress.c (decompress_open, decompress_fdopen): Don't start
+	  the returned pipeline.
+	* lib/decompress.h (decompress_open, decompress_fdopen): Note that
+	  the caller must start the returned pipeline.
+	* src/lexgrog.l (find_name): Start the decompressor pipeline.
+	* src/man.c (display): Likewise.
+	* src/ult_src.c (ult_src): Likewise.
+	* src/zsoelim.l (open_file): Likewise.
+	* src/straycats.c (check_for_stray): Append 'col -bx' to the
+	  decompressor pipeline rather than connecting two pipelines
+	  together. Don't call pipeline_wait by hand as pipeline_free will
+	  do this for us now.
+
+Fri Aug 31 14:52:22 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (maybe_update_file): Only recache pages automatically if
+	  --update was given.
+
+Fri Aug 31 04:54:45 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_free): Call pipeline_wait if the pipeline
+	  is still running.
+	* lib/pipeline.h (pipeline_free): Document that this may happen.
+
+Fri Aug 31 04:46:04 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/zsoelim.l (main): Call pipeline_install_sigchld.
+
+Wed Aug 29 17:12:52 BST 2007  Lars Wirzenius  <liw@iki.fi>
+
+	* po/fi.po: Adjust translation of "No manual entry for %s" (Debian
+	  bug #320108).
+
+Wed Aug 29 15:22:54 BST 2007  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Wed Aug 29 15:18:34 BST 2007  Daniel Nylander  <po@danielnylander.se>
+
+	* po/sv.po: Update from Translation Project.
+
+Wed Aug 29 12:07:38 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Reorganise slightly. Document mandb --quiet fixes.
+
+Wed Aug 29 11:57:59 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Add an option to apropos to display only items matching all keywords
+	(thanks, Alfie Costa; Debian bug #259340).
+
+	* src/whatis.c (args, long_options, main): New -a/--and option for
+	  apropos.
+	  (usage): Document it.
+	  (apropos): Store a count of how many times each item has been seen
+	  in the hashtable. If --and was given, only display an item if its
+	  count equals the number of supplied keywords.
+	  (main): Store the number of supplied keywords. Adjust hash free
+	  function.
+	* man/man1/apropos.man1 (SYNOPSIS, OPTIONS): Document --and.
+	* docs/NEWS: Document this.
+
+Wed Aug 29 11:09:31 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-path-progs.m4: Rename to ...
+	* m4/man-check-progs.m4: ... this. Use AC_CHECK_PROGS rather than
+	  AC_PATH_PROGS.
+	* configure.ac: Use AC_CHECK_PROGS rather than
+	  AC_PATH_PROG/AC_PATH_PROGS, and MAN_CHECK_PROGS rather than
+	  MAN_PATH_PROGS. This fixes problems due to system utilities moving
+	  around on $PATH (Debian bug #385651).
+
+Wed Aug 29 10:42:08 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Move bogus makefile content ...
+	* makefile.in: ... here.
+
+Wed Aug 29 10:15:33 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-path-progs.m4: Define HAVE_WITH-ARG if the program is
+	  found.
+	* configure.ac: Rely on the above rather than setting HAVE_GZIP,
+	  HAVE_COMPRESS, and HAVE_BZIP2 here.
+
+Wed Aug 29 09:41:51 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c (main): Revert inadvertently-committed debugging
+	  change to straycats logic.
+
+Wed Aug 29 09:34:50 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Add Indonesian translation of NAME.
+
+Wed Aug 29 09:29:36 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Document previous apropos change.
+
+Wed Aug 29 09:26:23 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (apropos): Add output keys to a hashtable, and skip
+	  any that have already been seen (Debian bug #259338).
+	  (main): Create the hashtable on startup and free it on exit.
+
+Tue Aug 28 19:16:18 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display): Wait for the decomp pipeline in the
+	  !format_cmd case too.
+
+Tue Aug 28 19:07:53 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display_catman): Take a decompressor pipeline argument.
+	  Connect it to format_cmd.
+	  (display): Update call to display_catman.
+
+Tue Aug 28 18:38:31 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Add a configuration file flag (NOCACHE) to disable cat page caching
+	(thanks, Ralph Corderoy; Debian bug #196642).
+
+	* src/manp.c (add_to_dirlist): Recognise NOCACHE.
+	* src/man.c (display): Don't save a cat page if NOCACHE is set.
+	* src/man_db.conf.in: Document NOCACHE.
+	* man/man5/manpath.man5 (FORMAT): Document NOCACHE.
+	* docs/NEWS: Document this.
+
+Tue Aug 28 17:23:26 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Bump to 2.5.0; I think there's now enough to justify
+	  that.
+
+Tue Aug 28 17:19:16 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Implement and use a decompression library. This allows cat pages to
+	be saved in the background (Debian bug #18452) and operation with a
+	read-only /tmp (Debian bug #165499).
+
+	* lib/pipeline.h (struct command): Add support for commands that
+	  consist of calling a function rather than executing a process.
+	  (struct pipeline): Add want_infile and want_outfile members. Note
+	  that infile and outfile default to NULL. Add source, buffer,
+	  buflen, bufmax, line_cache, and peek_offset members.
+	  (command_new_function, command_dump, command_tostring,
+	  pipeline_connect, pipeline_pump, pipeline_read, pipeline_peek,
+	  pipeline_peek_size, pipeline_peek_skip, pipeline_readline,
+	  pipeline_peekline): New prototypes.
+	  (pipeline_join): Update description for want_infile and
+	  want_outfile.
+	* lib/pipeline.c (command_new, command_dup, command_arg,
+	  command_argv, command_args, command_argstr, command_free): Update
+	  for 'struct command' changes.
+	  (command_new_function, command_dump, command_tostring): New
+	  functions.
+	  (pipeline_new, pipeline_join, pipeline_dump, pipeline_tostring):
+	  Update for 'struct pipeline' changes.
+	  (pipeline_dump): Use command_dump.
+	  (pipeline_tostring): Use command_tostring.
+	  (pipeline_start): Implement want_infile, want_outfile, and
+	  function commands. Make zero-command case work properly (read
+	  directly from input file). Flush all pending stdio output so that
+	  subprocesses don't inherit it.
+	  (pipeline_connect, pipeline_pump, get_block, pipeline_read,
+	  pipeline_peek, pipeline_peek_size, pipeline_peek_skip, get_line,
+	  pipeline_readline, pipeline_peekline): New functions.
+
+	* lib/decompress.c, lib/decompress.h: New files, implementing a
+	  decompression abstraction layer.
+	* lib/Makefile.in: Always compile decompress.c.
+
+	* src/lexgrog.l (YY_INPUT): Define to read from a 'struct pipeline'.
+	  (find_name): Use decompress_open/decompress_fdopen rather than
+	  older decompression methods. Split handling once we have a
+	  decompressor pipeline out to ...
+	  (find_name_decompressed): ... here.
+	* src/check_mandirs.c (test_manfile): Remove decompression code;
+	  find_name will handle this itself now.
+	* src/compression.c (create_ztemp, decompress, remove_ztemp,
+	  get_ztemp): Remove.
+	* src/man.c (checked_popen): Remove.
+	  (local_man_loop): Remove decompression code.
+	  (get_preprocessors_from_file): Convert to peeking the first line
+	  from a pipeline.
+	  (get_preprocessors): Adjust arguments and
+	  get_preprocessors_from_file call.
+	  (remove_stdintmp, create_stdintmp): Remove.
+	  (make_roff_command): Remove special handling of stdin, now handled
+	  by peeking a pipeline.
+	  (open_cat_stream): Don't start the returned pipeline.
+	  (close_cat_stream): Remove unnecessary COMP_CAT special case.
+	  (format_display_and_save): Take a decompressor pipeline argument.
+	  Simplify by using pipeline_connect and pipeline_pump.
+	  (format_display): Take a decompressor pipeline argument. Use
+	  pipeline_connect and pipeline_pump.
+	  (display): Use decompress_open/decompress_fdopen rather than older
+	  decompression methods.
+	  (display_filesystem, display_database): Drop remove_ztemp calls.
+	* src/straycats.c (check_for_stray): Use decompression layer.
+	  Rearrange control flow a bit to reduce duplication. Remove use of
+	  temporary file; use find_name_decompressed instead. Only increment
+	  strays if find_name_decompressed succeeds.
+	  (straycats): Remove temporary file creation.
+	* src/ult_src.c (ult_src): Use pipeline and decompression layers
+	  rather than older decompression methods.
+	* src/zsoelim.l (YY_INPUT): Define to read from a 'struct pipeline'.
+	  (<so>\"?[^ \t\n\"]+\"?): Call open_file only once; let it worry
+	  about compression extensions. Decrement so_stack_ptr here if
+	  open_file fails rather than having it do it.
+	  (<lfname>\"?[^ \t\n\"]+\"?): Free the old value of NAME, if set.
+	  (<<EOF>>): Clean up used pipeline and free NAME. Remove so_delete
+	  handling.
+	  (main): Let open_file handle stdin.
+	  (open_file): Use decompress_open/decompress_fdopen rather than
+	  older decompression methods. Don't decrement so_stack_ptr here on
+	  failure.
+
+	* configure.ac: Remove decompressor variable. Check for gzopen in
+	  libz.
+	* include/manconfig.h.in (DECOMPRESSOR): Remove.
+	  (comp_list): Declare extern here.
+	  (create_tempfile): Remove.
+	  (decompress, remove_ztemp, get_ztemp): Remove.
+	  (find_name_decompressed): Add prototype.
+	* lib/tempfile.c (create_tempfile): Remove. We now only need
+	  temporary directory creation.
+	* src/man_db.conf.in (decompressor): Remove.
+
+	* docs/TODO: Update.
+	* docs/NEWS: Document this.
+
+Tue Aug 28 11:14:53 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* tools/mandb_[nt]fmt-script: Rename to tools/mandb_fmt-script,
+	  which is a rather less hostile filename.
+	* tools/README: Update.
+	* GNUmakefile.in: Update.
+
+Tue Aug 28 10:36:20 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/straycats.c (check_for_stray): Drop privileges while opening
+	  temporary file (previously created with dropped privileges).
+
+Tue Aug 28 10:31:03 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/straycats.c (straycats): Regain privileges on the error path
+	  too.
+
+Mon Aug 27 20:13:09 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/compression.c (comp_file): Free compfile if returning NULL.
+
+Mon Aug 27 20:02:17 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_wait): Re-raise SIGINT or SIGQUIT if they
+	  terminate a subprocess.
+
+Mon Aug 27 19:58:19 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_wait): Return 1 if we fail to close the
+	  pipeline's output.
+
+Sun Aug 26 23:33:23 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display): Check whether format_cmd is NULL
+	  before discarding stderr from it.
+
+Sun Aug 26 21:20:45 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (checked_popen): Remove unnecessary SECURE_MAN_UID
+	  guard; drop_effective_privs/regain_effective_privs already check
+	  this.
+	* src/security.c (remove_with_dropped_privs): Likewise. The uid !=
+	  ruid check is no longer necessary now that
+	  drop_effective_privs/regain_effective_privs handle nesting
+	  correctly.
+
+Sun Aug 26 19:40:12 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_roff_command): If MAN_KEEP_FORMATTING is set in
+	  the environment, don't strip formatting characters with col
+	  (Debian bug #340673).
+	* man/man1/man.man1 (ENVIRONMENT): Document MAN_KEEP_FORMATTING.
+	* docs/NEWS: Document this.
+
+Sun Aug 26 16:40:50 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Suppress warnings in --quiet mode (thanks, Martin Dorey; Debian bugs
+	#348008, #378428, and #411220).
+
+	* src/check_mandirs.c (test_manfile): Suppress "bad symlink" warning
+	  under --quiet.
+	* src/ult_src.c (ult_hardlink): Suppress "can't search directory"
+	  warning under --quiet.
+	  (ult_softlink): Suppress "dangling symlinks" and "can't resolve"
+	  warnings under --quiet.
+	  (ult_src): Suppress "can't resolve", "is self referencing", and
+	  "can't open" warnings under --quiet.
+	* src/lexgrog.l: Declare global quiet variable.
+
+Sun Aug 26 16:10:26 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (main): Skip descriptions with NULL name or whatis.
+	  This causes pages with no description to be flagged as parse
+	  failures, so that automatic scanners can pick them up more easily.
+
+Sun Aug 26 15:08:45 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (is_section): Disallow sectional extensions of
+	  alphabetic sections, e.g. n and l from the default configuration
+	  (Debian bug #391977). Also disallow sectional extensions beginning
+	  with a digit (Debian bug #421481).
+
+Mon Aug 20 00:10:49 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Discard stderr from formatting processes when outputting to a pager,
+	to avoid visual corruption from any error messages (thanks, Vincent
+	Lefevre; Debian bug #372939).
+
+	* lib/pipeline.h (struct command): Add discard_err member.
+	* lib/pipeline.c (command_new, command_dup): Initialise discard_err.
+	  (pipeline_start): Redirect the child's stderr to /dev/null if
+	  discard_err is set.
+	* src/man.c (discard_stderr): New function to set discard_err on all
+	  commands in a pipeline.
+	  (format_display_and_save, format_display): Use it on format_cmd.
+	* docs/NEWS: Document this.
+
+Sun Aug 19 21:04:24 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/descriptions.c (parse_descriptions): Skip name tokens
+	  containing whitespace, as they are almost never useful as manual
+	  page names.
+	* man/man1/lexgrog.1 (WHATIS PARSING), docs/NEWS: Document this.
+
+Sun Aug 19 21:00:20 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Skip over .ft font change requests, and the .Vb and
+	  .Ve definitions used by pod2man to begin and end verbatim mode.
+	  This handles some POD-generated pages better.
+
+Sun Aug 19 20:48:42 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Truncate apropos/whatis output to the terminal width by default
+	(thanks, Dan Jacobson; Debian bug #411721).
+
+	* lib/linelength.c: New file for terminal line length detection,
+	  split out from src/man.c. Unlike the previous implementation, this
+	  does its own memoisation rather than requiring explicit
+	  initialisation.
+	* lib/linelength.h: Prototype get_line_length.
+	* lib/Makefile.in: Always compile linelength.c.
+	* src/man.c (line_length, store_line_length): Remove.
+	  (get_roff_line_length): Use get_line_length.
+	  (main): We no longer need to call store_line_length.
+	* src/whatis.c (args, long_options, main): New -l/--long option.
+	  (usage): Document it.
+	  (display): Truncate names and descriptions to fit within the
+	  terminal width.
+	* man/man1/apropos.man1 (SYNOPSIS, OPTIONS, ENVIRONMENT): Document
+	  --long and the MANWIDTH override.
+	* man/man1/whatis.man1 (SYNOPSIS, OPTIONS, ENVIRONMENT): Likewise.
+	* docs/NEWS: Document this.
+
+Tue Jun 26 10:48:45 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/de_DE.88591/man1/man.man1 (UMGEBUNG),
+	  man/de_DE.88591/man8/catman.man8 (BESCHREIBUNG): MANSEC -> MANSECT
+	  (thanks, Holger Kubiak; Debian bug #430635).
+
+Mon Jun 18 10:19:22 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/cleanup.c (do_cleanups): Split out signal-safe processing ...
+	  (do_cleanups_sigsafe): ... here.
+	  (sighandler): Call do_cleanups_sigsafe rather than do_cleanups.
+	  (push_cleanup): Add sigsafe argument to allow cleanup functions to
+	  be flagged as non-signal-safe (e.g. freeing memory).
+	* lib/cleanup.h: Update prototypes.
+	* libdb/db_gdbm.c (man_gdbm_firstkey): hash_free cleanup is not
+	  signal-safe.
+	* src/globbing.c (update_directory_cache): hash_free cleanup is not
+	  signal-safe.
+	  (look_for_file): globfree cleanup is not signal-safe.
+	* src/man.c (open_cat_stream, display_catman): unlink cleanup is
+	  signal-safe.
+	* src/mandb.c (cleanup): Split out signal-safe processing ...
+	  (cleanup_sigsafe): ... here.
+	  (main): Call cleanup_sigsafe as well as cleanup.
+	* src/manp.c (read_config_file): free_config_file cleanup is not
+	  signal-safe.
+
+Mon Jun 18 08:03:30 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/xstrsignal.c: Include config.h.
+
+Mon Jun 18 07:50:56 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_btree.c (btree_close, btree_flopen, btree_replace,
+	  btree_insert, btree_fetch, btree_exists, btree_findkey,
+	  btree_firstkey, btree_nextkey, btree_nextkeydata): Rename dbf to
+	  db to avoid shadowing a global variable.
+	* libdb/mydbm.h: Update prototypes and btree macros likewise.
+
+Sat May 26 10:58:11 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (gripe_no_name): On reflection, borrowing the error
+	  message from gripe_no_man is clearer if a possible section name
+	  was specified.
+	* po/man-db.pot, po/*.po: Update.
+
+Sat May 26 10:53:58 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* po/man-db.pot: Add to revision control.
+
+Sat May 26 10:52:01 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (gripe_no_name): Resolve ambiguous error message when
+	  asking for a nonexistent manual page that might also be a section
+	  name (Debian bug #421481).
+	* po/*.po: Update.
+
+Sat May 26 10:46:56 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (gripe_no_name): Complete renaming of section to sect.
+
+Fri May 25 21:23:05 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Add (untested) zh_HK support. Thanks to Alex Lau for advice.
+
+	* src/encodings.c (directory_table): Add zh_HK, defaulting to the
+	  BIG5-HKSCS encoding.
+	  (charset_table): Add BIG5-HKSCS, defaulting to the nippon driver.
+	  (compatible_encodings): Recognise BIG5-HKSCS encoding.
+	  (get_roff_encoding): Add special case for zh_HK.UTF-8 locale.
+
+Wed Apr 11 04:37:35 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Add MANPAGER support. Thanks to Faidon Liambotis for the suggestion.
+
+	* src/man.c (main): Support MANPAGER, overriding PAGER.
+	* man/man1/man.man1 (OPTIONS, ENVIRONMENT): Document MANPAGER.
+	* docs/NEWS: Document this.
+
+Thu Apr  5 18:00:00 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Break whatis definitions at .IP, .HP, .RS, and .RE
+	  (thanks to Ori Avtalion for the report).
+
+Mon Mar  5 10:02:01 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man_db.conf.in (MANDATORY_MANPATH): Remove /usr/X11R6/man
+	  (Debian bug #413349).
+
+Sun Mar  4 10:40:49 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_gdbm.c (gdbm_exists): Rename dbf to file.
+
+Sun Mar  4 10:39:14 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_store.c (dbstore): Rename basename to base.
+
+Sun Mar  4 00:51:30 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	Eliminate variable and function shadowing.
+
+	* configure.ac (CFLAGS): Add -Wshadow if the compiler is GCC.
+
+	* src/manp.c: Don't declare manpathlist here, as it's never used in
+	  this file.
+	* src/catman.c, src/man.c, src/mandb.c, src/whatis.c: Declare it
+	  here instead.
+
+	* lib/pipeline.c (pipeline_start): Remove duplicate declarations of
+	  set and oset.
+	* libdb/db_ver.c (dbver): Merge into ...
+	  (dbver_rd): ... this, eliminating a global variable.
+	  (dbver_rd, dbver_wr): Rename dbf to dbfile.
+	* src/accessdb.c (main): Don't redeclare dbf locally.
+	* src/check_mandirs.c (gripe_rwopen_failed): Use global database
+	  rather than passing it as an argument. Update all callers.
+	* src/man.c (gripe_no_name): Rename section to sect.
+	  (add_roff_line_length): Rename save_cat to save_cat_p.
+	  (make_roff_command): Declare cmd only once.
+	  (make_browser): Rename command to pattern.
+	  (display): Rename pause to prompt.
+	* src/manp.c (get_manpath): Rename to ...
+	  (get_manpath_from_path): ... this. Update all callers.
+	  (manpath): Rename to ...
+	  (get_manpath): ... this. Update all callers.
+	  (add_system_manpath): Rename system to one_system.
+	* src/manp.h (manpath): Rename to ...
+	  (get_manpath): ... this.
+	* src/ult_src.c (ult_hardlink): Rename link to base.
+	  (ult_src): Rename basename to base.
+	* src/whatis.c (apropos): Rename match to got_match.
+	  (search): Return found rather than setting the global variable
+	  status based on it.
+	  (main): Use search's return value, eliminating a global variable.
+	* src/zsoelim.l (usage): Rename status to exit_status.
+	  (open_file): Rename decompress to decomp.
+
+Sat Mar  3 22:35:31 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c: Declare tmplist as static.
+
+Wed Feb 28 22:04:04 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_start): Close inputs and outputs from
+	  other active pipelines in all subprocesses.
+
+Wed Feb 28 21:57:24 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_start): Don't ignore SIGPIPE in
+	  subprocesses; this has undesirable consequences in some
+	  situations.
+	  (pipeline_wait): Flatten SIGPIPE exit statuses to zero instead.
+
+Tue Feb 27 20:58:31 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_start): Save previous value of SIGQUIT
+	  such that it gets restored as SIGQUIT, not as SIGINT.
+
+Wed Feb 14 12:20:28 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-path-progs.m4: New file with MAN_PATH_PROGS macro.
+	* configure.ac: Use MAN_PATH_PROGS where reasonable (browser, pager,
+	  nroff, eqn, neqn, tbl, col, vgrind, refer, grap, pic, gzip,
+	  compress, bzip2) to allow overriding the default search for
+	  auxiliary program locations.
+	* docs/NEWS: Document this.
+
+Wed Feb 14 10:41:28 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* acinclude.m4: Remove and split into ...
+	* m4/man-ansi-sprintf.m4, m4/man-bdb.m4, m4/man-fnmatch.m4,
+	  m4/man-gnu-nroff.m4, m4/man-pclose.m4, m4/man-strsignal.m4: ...
+	  these new files.
+	* configure.ac (AC_CONFIG_SRCDIR): Use src/man.c rather than
+	  acinclude.m4.
+
+Wed Feb 14 10:32:28 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_lookup.c (make_content): Restore (size_t) cast in
+	  assertion.
+
+Wed Feb 14 10:30:52 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_gdbm.c (man_gdbm_nextkey): Fix MYDBM_DPTR vs. MYDBM_DSIZE
+	  typo.
+
+Wed Feb 14 09:52:15 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_btree.c (test_insert): Use debug function.
+
+	* libdb/mydbm.h (GDBM, NDBM, BTREE): Add MYDBM_DPTR, MYDBM_SET_DPTR,
+	  and MYDBM_DSIZE accessor macros.
+	  (BTREE): Make datum be a typedef for DBT rather than our own
+	  struct, fixing "dereferencing type-punned pointer will break
+	  strict-aliasing rules" warnings from GCC. Adjust MYDBM_DELETE
+	  definition accordingly.
+	* libdb/db_btree.c (test_insert, btree_findkey, dbstore, dblookup):
+	  Use MYDBM_DPTR, MYDBM_SET_DPTR, and MYDBM_DSIZE macros instead of
+	  accessing dptr and dsize members directly.
+	* libdb/db_delete.c (dbdelete): Likewise.
+	* libdb/db_gdbm.c (parent_sortkey_hash_free, sortkey_compare,
+	  man_gdbm_firstkey, man_gdbm_nextkey, gdbm_exists): Likewise.
+	* libdb/db_lookup.c (copy_datum, make_multi_key, make_content,
+	  dblookup): Likewise.
+	* libdb/db_store.c (replace_if_necessary, dbstore): Likewise.
+	* libdb/db_ver.c (dbver, dbver_wr, dbver_rd): Likewise.
+	* src/accessdb.c (main): Likewise.
+	* src/catman.c (add_arg, parse_for_sec): Likewise.
+	* src/check_mandirs.c (update_db_time, reset_db_time, update_db,
+	  purge_pointers, purge_missing): Likewise.
+	* src/whatis.c (apropos): Likewise.
+
+	* libdb/db_btree.c (btree_fetch, btree_findkey, dbstore, dblookup):
+	  Make sure that datum structures allocated on the stack are zeroed
+	  properly.
+	* libdb/db_delete.c (dbdelete): Likewise.
+	* libdb/db_lookup.c (make_multi_key, make_content, dblookup):
+	  Likewise.
+	* libdb/db_store.c (dbstore): Likewise.
+	* libdb/db_ver.c (dbver, dbver_wr): Likewise.
+	* src/check_mandirs.c (update_db_time, reset_db_time, update_db):
+	  Likewise.
+
+Tue Feb 13 11:02:08 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* zsoelim/README: Rename to ...
+	* src/README.zsoelim: ... this.
+	* zsoelim/zsoelim.l: Rename to ...
+	* src/zsoelim.l: ... this.
+	* zsoelim/Makefile.in: Remove.
+	* src/Makefile.in: Build, install, and clean zsoelim.
+	* GNUmakefile.in: Remove references to zsoelim directory. Distribute
+	  src/README.zsoelim.
+	* configure.ac: Stop producing zsoelim/Makefile.
+	* docs/HACKING: Remove description of zsoelim directory.
+	* .bzrignore: Update ignores.
+
+Tue Feb 13 10:52:33 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* zsoelim/zsoelim.l (yywrap): Remove; use %option noyywrap instead.
+	* zsoelim/Makefile.in (LDLIBS): zsoelim doesn't need to be linked
+	  with LEXLIB any more.
+
+Mon Feb 12 18:06:42 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/Makefile.in (LFLAGS), zsoelim/Makefile.in (LFLAGS),
+	  zsoelim/zsoelim.l: Set options using %option rather than using
+	  command-line options.
+
+Mon Feb 12 17:52:11 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* po/ca.po, po/cs.po, po/da.po, po/de.po, po/es.po, po/fi.po,
+	  po/fr.po, po/it.po, po/ja.po, po/pl.po, po/pt_BR.po, po/ro.po,
+	  po/ru.po, po/sv.po, po/vi.po: Update.
+
+Mon Feb 12 17:44:48 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/debug.c: New file for debugging functions.
+	* include/manconfig.h.in: debug -> debug_level; prototype debug and
+	  debug_error.
+	* lib/Makefile.in (ALL): Add debug.o.
+	* Update all emissions of debugging messages to use the new
+	  functions where possible; otherwise, debug -> debug_level.
+
+Mon Feb 12 13:00:42 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c (main): Change "No databases updated" to "No databases
+	  created" now that we're no longer string-frozen.
+	* po/ca.po, po/cs.po, po/da.po, po/de.po, po/es.po, po/fi.po,
+	  po/fr.po, po/it.po, po/ja.po, po/pl.po, po/pt_BR.po, po/ro.po,
+	  po/ru.po, po/sv.po, po/vi.po: Update.
+
+Mon Feb 12 12:58:10 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* po/POTFILES.in: Add src/descriptions_store.c.
+	* po/ca.po, po/cs.po, po/da.po, po/de.po, po/es.po, po/fi.po,
+	  po/fr.po, po/it.po, po/ja.po, po/pl.po, po/pt_BR.po, po/ro.po,
+	  po/ru.po, po/sv.po, po/vi.po: Update.
+
+Mon Feb 12 12:42:44 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/es_ES.88591/man1/man.man1 (OPCIONES),
+	  man/it_IT.88591/man1/man.man1 (OPZIONI),
+	  man/ja_JP.eucJP/man1/man.man1 (オプション): Fix soft-hyphen
+	  declarations to avoid error messages from groff.
+
 Mon Feb 12 10:35:14 GMT 2007  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.4.4.

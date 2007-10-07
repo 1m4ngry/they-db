@@ -1,7 +1,7 @@
 /*
  * encodings.c: locale and encoding handling for man
  *
- * Copyright (C) 2003, 2004, 2005 Colin Watson.
+ * Copyright (C) 2003, 2004, 2005, 2006, 2007 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -38,9 +38,11 @@
 #ifdef HAVE_LANGINFO_CODESET
 #  include <langinfo.h>
 #endif
+#include <ctype.h>
 
 #include "manconfig.h"
 #include "lib/pathsearch.h"
+#include "lib/pipeline.h"
 #include "encodings.h"
 
 
@@ -104,6 +106,7 @@ static struct directory_entry directory_table[] = {
 	/* These languages require a patched version of groff with the
 	 * ascii8 and nippon devices.
 	 */
+	{ "bg",		"CP1251",	"CP1251"		}, /* Bulgarian */
 	{ "cs",		"ISO-8859-2",	"ISO-8859-2"		}, /* Czech */
 	{ "hr",		"ISO-8859-2",	"ISO-8859-2"		}, /* Croatian */
 	{ "hu",		"ISO-8859-2",	"ISO-8859-2"		}, /* Hungarian */
@@ -112,8 +115,11 @@ static struct directory_entry directory_table[] = {
 	{ "pl",		"ISO-8859-2",	"ISO-8859-2"		}, /* Polish */
 	{ "ru",		"KOI8-R",	"KOI8-R"		}, /* Russian */
 	{ "sk",		"ISO-8859-2",	"ISO-8859-2"		}, /* Slovak */
+	{ "sr",		"ISO-8859-5",	"ISO-8859-5"		}, /* Serbian */
 	{ "tr",		"ISO-8859-9",	"ISO-8859-9"		}, /* Turkish */
-	{ "zh_CN",	"GB2312",	"GB2312"		}, /* Simplified Chinese */
+	{ "vi",		"TCVN5712-1",	"TCVN5712-1"		}, /* Vietnamese */
+	{ "zh_CN",	"GBK",		"GBK"			}, /* Simplified Chinese */
+	{ "zh_HK",	"BIG5HKSCS",	"BIG5HKSCS"		}, /* Traditional Chinese, Hong Kong */
 	{ "zh_TW",	"BIG5",		"BIG5"			}, /* Traditional Chinese */
 #endif /* MULTIBYTE_GROFF */
 
@@ -121,6 +127,67 @@ static struct directory_entry directory_table[] = {
 };
 
 static const char *fallback_source_encoding = "ISO-8859-1";
+
+/* Unfortunately, there is no portable way to inspect iconv's internal table
+ * of character set aliases. We copy the most interesting ones here so that
+ * we can deal with them if they appear in directory names. Note that all
+ * names will be converted to upper case before looking them up in this
+ * table.
+ */
+struct charset_alias_entry {
+	const char *alias;
+	const char *canonical_name;
+};
+
+static struct charset_alias_entry charset_alias_table[] = {
+	/* The FHS is silly and requires numeric-only aliases that iconv
+	 * does not support.
+	 */
+	{ "88591",		"ISO-8859-1"		},
+	{ "88592",		"ISO-8859-2"		},
+	{ "88593",		"ISO-8859-3"		},
+	{ "88594",		"ISO-8859-4"		},
+	{ "88595",		"ISO-8859-5"		},
+	{ "88596",		"ISO-8859-6"		},
+	{ "88597",		"ISO-8859-7"		},
+	{ "88598",		"ISO-8859-8"		},
+	{ "88599",		"ISO-8859-9"		},
+	{ "885910",		"ISO-8859-10"		},
+	{ "885911",		"ISO-8859-11"		},
+	{ "885913",		"ISO-8859-13"		},
+	{ "885914",		"ISO-8859-14"		},
+	{ "885915",		"ISO-8859-15"		},
+	{ "885916",		"ISO-8859-16"		},
+
+	{ "ASCII",		"ANSI_X3.4-1968"	},
+	{ "BIG-5",		"BIG5"			},
+	{ "BIG5-HKSCS",		"BIG5HKSCS"		},
+	{ "EUCCN",		"EUC-CN"		},
+	{ "EUCJP",		"EUC-JP"		},
+	{ "EUCKR",		"EUC-KR"		},
+	{ "GB2312",		"EUC-CN"		},
+	{ "ISO8859-1",		"ISO-8859-1"		},
+	{ "ISO8859-2",		"ISO-8859-2"		},
+	{ "ISO8859-3",		"ISO-8859-3"		},
+	{ "ISO8859-4",		"ISO-8859-4"		},
+	{ "ISO8859-5",		"ISO-8859-5"		},
+	{ "ISO8859-6",		"ISO-8859-6"		},
+	{ "ISO8859-7",		"ISO-8859-7"		},
+	{ "ISO8859-8",		"ISO-8859-8"		},
+	{ "ISO8859-9",		"ISO-8859-9"		},
+	{ "ISO8859-10",		"ISO-8859-10"		},
+	{ "ISO8859-11",		"ISO-8859-11"		},
+	{ "ISO8859-13",		"ISO-8859-13"		},
+	{ "ISO8859-14",		"ISO-8859-14"		},
+	{ "ISO8859-15",		"ISO-8859-15"		},
+	{ "ISO8859-16",		"ISO-8859-16"		},
+	{ "KOI8R",		"KOI8-R"		},
+	{ "UJIS",		"EUC-JP"		},
+	{ "US-ASCII",		"ANSI_X3.4-1968"	},
+	{ "UTF8",		"UTF-8"			},
+
+	{ NULL,			NULL			}
+};
 
 /* The default groff terminal output device to be used is determined based
  * on nl_langinfo(CODESET), which returns the character set used by the
@@ -139,8 +206,9 @@ static struct charset_entry charset_table[] = {
 
 #ifdef MULTIBYTE_GROFF
 	{ "BIG5",		"nippon"	},
+	{ "BIG5HKSCS",		"nippon"	},
+	{ "EUC-CN",		"nippon"	},
 	{ "EUC-JP",		"nippon"	},
-	{ "GB2312",		"nippon"	},
 	{ "GBK",		"nippon"	},
 #endif /* MULTIBYTE_GROFF */
 
@@ -255,10 +323,10 @@ char *get_page_encoding (const char *lang)
 	}
 
 	dot = strchr (lang, '.');
-	if (dot)
-		/* TODO: The FHS has the worst specification of what's
-		 * supposed to go after the dot here that I've ever seen. To
-		 * quote from version 2.1:
+	if (dot) {
+		/* The FHS has the worst specification of what's supposed to
+		 * go after the dot here that I've ever seen. To quote from
+		 * version 2.1:
 		 *
 		 * "It is recommended that this be a numeric representation
 		 * if possible (ISO standards, especially), not include
@@ -272,11 +340,18 @@ char *get_page_encoding (const char *lang)
 		 * than to pass them to iconv or similar, this is quite
 		 * startlingly useless.
 		 *
-		 * My plan is to ignore the current FHS specification on the
-		 * grounds that it's obviously wrong, and petition to have
-		 * it changed.
+		 * While we now support this thanks to
+		 * get_canonical_charset_name, the FHS specification is
+		 * obviously wrong and I plan to petition to have it
+		 * changed. I recommend ignoring this part of the FHS.
 		 */
-		return xstrndup (dot + 1, strcspn (dot + 1, ",@"));
+		char *dir_encoding =
+			xstrndup (dot + 1, strcspn (dot + 1, ",@"));
+		char *canonical_dir_encoding =
+			xstrdup (get_canonical_charset_name (dir_encoding));
+		free (dir_encoding);
+		return canonical_dir_encoding;
+	}
 
 	for (entry = directory_table; entry->lang_dir; ++entry)
 		if (STRNEQ (entry->lang_dir, lang, strlen (entry->lang_dir)))
@@ -354,18 +429,43 @@ char *get_standard_output_encoding (const char *lang)
 	}
 
 	dot = strchr (lang, '.');
-	if (dot)
+	if (dot) {
 		/* The cat directory will have a corresponding name to the
 		 * man directory including an explicit character set, so the
 		 * pages it contains should have that encoding.
 		 */
-		return xstrndup (dot + 1, strcspn (dot + 1, ",@"));
+		char *dir_encoding =
+			xstrndup (dot + 1, strcspn (dot + 1, ",@"));
+		char *canonical_dir_encoding =
+			xstrdup (get_canonical_charset_name (dir_encoding));
+		free (dir_encoding);
+		return canonical_dir_encoding;
+	}
 
 	for (entry = directory_table; entry->lang_dir; ++entry)
 		if (STRNEQ (entry->lang_dir, lang, strlen (entry->lang_dir)))
 			return xstrdup (entry->standard_output_encoding);
 
 	return NULL;
+}
+
+const char *get_canonical_charset_name (const char *charset)
+{
+	const struct charset_alias_entry *entry;
+	char *charset_upper = xstrdup (charset);
+	char *p;
+
+	for (p = charset_upper; *p; ++p)
+		*p = CTYPE (toupper, *p);
+
+	for (entry = charset_alias_table; entry->alias; ++entry)
+		if (STREQ (entry->alias, charset_upper)) {
+			free (charset_upper);
+			return entry->canonical_name;
+		}
+
+	free (charset_upper);
+	return charset;
 }
 
 /* Return the current locale's character set. */
@@ -395,7 +495,7 @@ const char *get_locale_charset (void)
 	setlocale (LC_CTYPE, saved_locale);
 
 	if (charset && *charset)
-		return charset;
+		return get_canonical_charset_name (charset);
 	else
 		return NULL;
 }
@@ -423,9 +523,9 @@ static int compatible_encodings (const char *input, const char *output)
 	 * recoded from EUC-JP (etc.) and produce UTF-8 output. This is
 	 * rather filthy.
 	 */
-	if ((STREQ (input, "BIG5") ||
+	if ((STREQ (input, "BIG5") || STREQ (input, "BIG5HKSCS") ||
 	     STREQ (input, "EUC-JP") ||
-	     STREQ (input, "GB2312") || STREQ (input, "GBK")) &&
+	     STREQ (input, "EUC-CN") || STREQ (input, "GBK")) &&
 	    STREQ (output, "UTF-8"))
 		return 1;
 #endif /* MULTIBYTE_GROFF */
@@ -497,6 +597,7 @@ const char *get_roff_encoding (const char *device, const char *source_encoding)
 		const char *ctype = setlocale (LC_CTYPE, NULL);
 		if (STREQ (ctype, "ja_JP.UTF-8") ||
 		    STREQ (ctype, "zh_CN.UTF-8") ||
+		    STREQ (ctype, "zh_HK.UTF-8") ||
 		    STREQ (ctype, "zh_SG.UTF-8") ||
 		    STREQ (ctype, "zh_TW.UTF-8"))
 			roff_encoding = "UTF-8";
@@ -530,4 +631,19 @@ const char *get_less_charset (const char *locale_charset)
 			return entry->less_charset;
 
 	return fallback_less_charset;
+}
+
+void add_manconv (pipeline *p, const char *source, const char *target)
+{
+	if (STREQ (source, "UTF-8")) {
+		if (STREQ (target, "UTF-8"))
+			return;
+		pipeline_command_args (p, "iconv", "-f", source, "-t", target,
+				       NULL);
+	} else {
+		char *sources = strappend (NULL, "UTF-8:", source, NULL);
+		pipeline_command_args (p, MANCONV, "-f", sources, "-t", target,
+				       NULL);
+		free (sources);
+	}
 }

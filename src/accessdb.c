@@ -64,7 +64,6 @@ extern char *strchr();
 
 char *program_name;
 const char *cat_root;
-int debug;
 
 static const struct option long_options[] =
 {
@@ -93,8 +92,7 @@ static void usage (int status)
 
 int main (int argc, char *argv[])
 {
-	int c, option_index;
-	MYDBM_FILE dbf;
+	int c;
 	datum key;
 
 	program_name = xstrdup (basename (argv[0]));
@@ -104,7 +102,7 @@ int main (int argc, char *argv[])
 		cat_root = CAT_ROOT;
 
 	while ((c = getopt_long (argc, argv, args,
-				 long_options, &option_index)) != -1) {
+				 long_options, NULL)) != -1) {
 		switch (c) {
 			case 'h':
 				usage (OK);
@@ -136,23 +134,23 @@ int main (int argc, char *argv[])
 
 	key = MYDBM_FIRSTKEY (dbf);
 
-	while (key.dptr != NULL) {
+	while (MYDBM_DPTR (key) != NULL) {
 		datum content, nextkey;
 		char *t, *nicekey;
 
 		content = MYDBM_FETCH (dbf, key);
-		if (!content.dptr)
+		if (!MYDBM_DPTR (content))
 			exit (FATAL);
-		nicekey = xstrdup (key.dptr);
+		nicekey = xstrdup (MYDBM_DPTR (key));
 		while ( (t = strchr (nicekey, '\t')) )
 			*t = '~';
-		while ( (t = strchr (content.dptr, '\t')) )
+		while ( (t = strchr (MYDBM_DPTR (content), '\t')) )
 			*t = ' ';
-		printf ("%s -> \"%s\"\n", nicekey, content.dptr);
+		printf ("%s -> \"%s\"\n", nicekey, MYDBM_DPTR (content));
 		free (nicekey); 
-		MYDBM_FREE (content.dptr);
+		MYDBM_FREE (MYDBM_DPTR (content));
 		nextkey = MYDBM_NEXTKEY (dbf, key);
-		MYDBM_FREE (key.dptr);
+		MYDBM_FREE (MYDBM_DPTR (key));
 		key = nextkey;
 	}
 

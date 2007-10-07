@@ -129,8 +129,7 @@ void init_security (void)
 {
 	ruid = getuid ();
 	uid = euid = geteuid ();
-	if (debug)
-		fprintf (stderr, "ruid=%d, euid=%d\n", (int) ruid, (int) euid);
+	debug ("ruid=%d, euid=%d\n", (int) ruid, (int) euid);
 	priv_drop_count = 0;
 	drop_effective_privs ();
 }
@@ -162,8 +161,7 @@ void drop_effective_privs (void)
 {
 #ifdef SECURE_MAN_UID
 	if (uid != ruid) {
-		if (debug)
-			fputs ("drop_effective_privs()\n", stderr);
+		debug ("drop_effective_privs()\n");
 #  ifdef POSIX_SAVED_IDS
 		if (SET_EUID (ruid))
 #  else
@@ -175,8 +173,7 @@ void drop_effective_privs (void)
 	}
 
 	priv_drop_count++;
-	if (debug)
-		fprintf (stderr, "++priv_drop_count = %d\n", priv_drop_count);
+	debug ("++priv_drop_count = %d\n", priv_drop_count);
 #endif /* SECURE_MAN_UID */
 }
 
@@ -189,16 +186,13 @@ void regain_effective_privs (void)
 #ifdef SECURE_MAN_UID
 	if (priv_drop_count) {
 		priv_drop_count--;
-		if (debug)
-			fprintf (stderr, "--priv_drop_count = %d\n",
-				 priv_drop_count);
+		debug ("--priv_drop_count = %d\n", priv_drop_count);
 		if (priv_drop_count)
 			return;
 	}
 
 	if (uid != euid) {
-		if (debug)
-			fputs ("regain_effective_privs()\n", stderr);
+		debug ("regain_effective_privs()\n");
 #  ifdef POSIX_SAVED_IDS
 		if (SET_EUID (euid))
 #  else
@@ -211,22 +205,15 @@ void regain_effective_privs (void)
 #endif /* SECURE_MAN_UID */
 }
 
-/* remove() a file after dropping privs. If already dropped, just remove and 
-   return, don't regain any privs! */
+/* remove() a file after dropping privs. */
 int remove_with_dropped_privs (const char *filename)
 {
 	int ret;
 	
-#ifdef SECURE_MAN_UID
-	if (uid != ruid) {
-		drop_effective_privs ();
-		ret = remove (filename);
-		if (debug)
-			fprintf (stderr, "remove(\"%s\")\n", filename);
-		regain_effective_privs ();
-	} else
-#endif /* SECURE_MAN_UID */
-		ret = remove (filename);
+	drop_effective_privs ();
+	ret = remove (filename);
+	debug ("remove(\"%s\")\n", filename);
+	regain_effective_privs ();
 
 	if (ret != 0)
 		error (0, errno, _("can't remove %s"), filename);

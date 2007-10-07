@@ -25,7 +25,11 @@ GNUmakefile:
 	./configure --prefix=/usr --enable-setuid --with-db=gdbm \
 	            --enable-undoc='man 7 undocumented' \
 	            --with-device=latin1 --enable-mb-groff \
-	            --with-config-file=/etc/manpath.config $(CONFARGS)
+	            --with-config-file=/etc/manpath.config \
+	            --with-browser=www-browser --with-pager=pager \
+	            --with-col=col --with-vgrind=vgrind --with-grap=grap \
+	            --with-compress=compress --with-bzip2=bzip2 \
+	            $(CONFARGS)
 
 build: build-stamp
 build-stamp: GNUmakefile
@@ -59,14 +63,6 @@ install-stamp: build
 	mv $(dtmp)/usr/bin/man			$(dtmp)/usr/lib/man-db/man
 	mv $(dtmp)/usr/bin/mandb		$(dtmp)/usr/lib/man-db/mandb
 	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)
-	# now do manual changes needed by debian
-	# change locale names
-	mv $(dtmp)/usr/share/man/de_DE.88591	$(dtmp)/usr/share/man/de
-	mv $(dtmp)/usr/share/man/es_ES.88591	$(dtmp)/usr/share/man/es
-	mv $(dtmp)/usr/share/man/fr_FR.88591	$(dtmp)/usr/share/man/fr
-	mv $(dtmp)/usr/share/man/it_IT.88591	$(dtmp)/usr/share/man/it
-	mv $(dtmp)/usr/share/man/ja_JP.eucJP	$(dtmp)/usr/share/man/ja
-	rm -rf $(dtmp)/usr/share/man/de_DE.ascii
 	touch install-stamp
 
 binary-indep: build install

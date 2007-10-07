@@ -60,6 +60,10 @@ extern char *strrchr();
 #include <locale.h>
 #define _(String) gettext (String)
 
+#ifdef HAVE_ICONV
+#  include <iconv.h>
+#endif /* HAVE_ICONV */
+
 #ifdef HAVE_REGEX_H
 #  include <sys/types.h>
 #  include <regex.h>
@@ -87,18 +91,26 @@ extern char *strrchr();
 #include "lib/error.h"
 #include "lib/setenv.h"
 #include "lib/pipeline.h"
+#include "lib/linelength.h"
+#include "lib/hashtable.h"
+#include "encodings.h"
 #include "manp.h"
 
-extern char *manpathlist[];
+static char *manpathlist[MAXDIRS];
+
 extern char *user_config_file;
 extern char *optarg;
 extern int optind, opterr, optopt;
+static int num_keywords;
 
-int debug = 0;
 char *program_name;
 char *database;
 MYDBM_FILE dbf;
 int quiet = 1;
+
+#ifdef HAVE_ICONV
+iconv_t conv_to_locale;
+#endif /* HAVE_ICONV */
 
 #if defined(POSIX_REGEX) || defined(BSD_REGEX)
 #  define REGEX
@@ -117,15 +129,26 @@ extern void regfree();
 #endif
 
 static int wildcard;
-static int status = OK;
+
+#ifdef APROPOS
+static int require_all;
+#endif
+
+static int long_output;
 
 static const char *section;
+
+static struct hashtable *apropos_seen = NULL;
 
 #if !defined(APROPOS) && !defined(WHATIS)
 #  error #define WHATIS or APROPOS, so I know who I am
 #endif
 
-static const char args[] = "dvrews:hVm:M:fkL:C:";
+#ifdef APROPOS
+static const char args[] = "dvrewas:lhVm:M:fkL:C:";
+#else
+static const char args[] = "dvrews:lhVm:M:fkL:C:";
+#endif
 
 static const struct option long_options[] =
 {
@@ -134,6 +157,10 @@ static const struct option long_options[] =
 	{"regex",	no_argument,		0, 'r'},
 	{"exact",	no_argument,		0, 'e'},
 	{"wildcard",	no_argument,		0, 'w'},
+#ifdef APROPOS
+	{"and",		no_argument,		0, 'a'},
+#endif
+	{"long",	no_argument,		0, 'l'},
 	{"section",	required_argument,	0, 's'},
 	{"help",	no_argument,		0, 'h'},
 	{"version",	no_argument,		0, 'V'},
@@ -149,17 +176,20 @@ static const struct option long_options[] =
 #ifdef APROPOS
 static void usage (int status)
 {
-	printf (_("usage: %s [-dhV] [-r|-w|-e] [-s section] [-m systems] [-M manpath] [-C file]\n"
-		  "               keyword ...\n"), program_name);
+	printf (_("usage: %s [-dalhV] [-r|-w|-e] [-s section] [-m systems] [-M manpath]\n"
+		  "               [-L locale] [-C file] keyword ...\n"), program_name);
 	printf (_(
 		"-d, --debug                produce debugging info.\n"
 		"-v, --verbose              print verbose warning messages.\n"
 		"-r, --regex                interpret each keyword as a regex (default).\n"
 		"-e, --exact                search each keyword for exact match.\n"
 		"-w, --wildcard             the keyword(s) contain wildcards.\n"
+		"-a, --and                  require all keywords to match.\n"
+		"-l, --long                 do not trim output to terminal width.\n"
 		"-s, --section section      search only this section.\n"
 		"-m, --systems system       include alternate systems' man pages.\n"
 		"-M, --manpath path         set search path for manual pages to `path'.\n"
+		"-L, --locale locale        define the locale for this search.\n"
 		"-C, --config-file file     use this user configuration file.\n"
 		"-V, --version              show version.\n"
 		"-h, --help                 show this usage message.\n"));
@@ -169,16 +199,18 @@ static void usage (int status)
 #else	
 static void usage (int status)
 {
-	printf (_("usage: %s [-dhV] [-r|-w] [-s section] [-m systems] [-M manpath] [-C file]\n"
-		  "              keyword ...\n"), program_name);
+	printf (_("usage: %s [-dlhV] [-r|-w] [-s section] [-m systems] [-M manpath]\n"
+		  "              [-L locale] [-C file] keyword ...\n"), program_name);
 	printf (_(
 		"-d, --debug                produce debugging info.\n"
 		"-v, --verbose              print verbose warning messages.\n"
 		"-r, --regex                interpret each keyword as a regex.\n"
 		"-w, --wildcard             the keyword(s) contain wildcards.\n"
+		"-l, --long                 do not trim output to terminal width.\n"
 		"-s, --section section      search only this section.\n"
 		"-m, --systems system       include alternate systems' man pages.\n"
 		"-M, --manpath path         set search path for manual pages to `path'.\n"
+		"-L, --locale locale        define the locale for this search.\n"
 		"-C, --config-file file     use this user configuration file.\n"
 		"-V, --version              show version.\n"
 		"-h, --help                 show this usage message.\n"));
@@ -186,6 +218,37 @@ static void usage (int status)
 	exit (status);
 }
 #endif
+
+static char *simple_convert (iconv_t conv, char *string)
+{
+#ifdef HAVE_ICONV
+	if (conv != (iconv_t) -1) {
+		size_t string_conv_alloc = strlen (string) + 1;
+		char *string_conv = xmalloc (string_conv_alloc);
+		for (;;) {
+			char *inptr = string, *outptr = string_conv;
+			size_t inleft = strlen (string);
+			size_t outleft = string_conv_alloc - 1;
+			if (iconv (conv, (ICONV_CONST char **) &inptr, &inleft,
+				   &outptr, &outleft) == (size_t) -1 &&
+			    errno == E2BIG) {
+				string_conv_alloc <<= 1;
+				string_conv = xrealloc (string_conv,
+							string_conv_alloc);
+			} else {
+				/* Either we succeeded, or we've done our
+				 * best; go ahead and print what we've got.
+				 */
+				string_conv[string_conv_alloc - 1 - outleft] =
+					'\0';
+				break;
+			}
+		}
+		return string_conv;
+	} else
+#endif /* HAVE_ICONV */
+		return xstrdup (string);
+}
 
 /* do the old thing, if we cannot find the relevant database */
 static __inline__ int use_grep (char *page, char *manpath)
@@ -224,10 +287,8 @@ static __inline__ int use_grep (char *page, char *manpath)
 		free (anchored_page);
 		pipeline_free (grep_pl);
 	} else {
-		if (debug) {
-			error (0, 0, _("warning: can't read the fallback whatis text database."));
-			error (0, errno, "%s/whatis", manpath);
-		}
+		debug ("warning: can't read the fallback whatis text database "
+		       "%s/whatis", manpath);
 		status = 0;
 	}
 
@@ -296,32 +357,51 @@ static char *get_whatis (struct mandata *info, const char *page)
 /* print out any matches found */
 static void display (struct mandata *info, char *page)
 {
-	char *string, *whatis;
+	char *string, *whatis, *string_conv;
 	const char *page_name;
+	int line_len, rest;
 
 	whatis = get_whatis (info, page);
 	
-	if (debug)
-		dbprintf (info);
+	dbprintf (info);
 
 	if (info->name)
 		page_name = info->name;
 	else
 		page_name = page;
 
-	if (STREQ (info->pointer, "-") || STREQ (info->pointer, page))
-		string = strappend (NULL, page_name, " (", info->ext, ")",
-				    NULL);
-	else
-		string = strappend (NULL, page_name, " (", info->ext, ") [",
-				    info->pointer, "]", NULL);
+	line_len = get_line_length ();
 
-	if (strlen (string) < (size_t) 20)
-		printf ("%-20s - %s\n", string, whatis);
-	else
-		printf ("%s - %s\n", string, whatis);
+	if (strlen (page_name) > (size_t) (line_len / 2)) {
+		string = xstrndup (page_name, line_len / 2 - 3);
+		string = strappend (string, "...", NULL);
+	} else
+		string = xstrdup (page_name);
+	string = strappend (string, " (", info->ext, ")", NULL);
+	if (!STREQ (info->pointer, "-") && !STREQ (info->pointer, page))
+		string = strappend (string, " [", info->pointer, "]", NULL);
+
+	if (strlen (string) < (size_t) 20) {
+		int i;
+		string = xrealloc (string, 21);
+		for (i = strlen (string); i < 20; ++i)
+			string[i] = ' ';
+		string[i] = '\0';
+	}
+	string = strappend (string, " - ", NULL);
+
+	rest = line_len - strlen (string);
+	if (!long_output && strlen (whatis) > (size_t) rest) {
+		whatis[rest - 3] = '\0';
+		string = strappend (string, whatis, "...\n", NULL);
+	} else
+		string = strappend (string, whatis, "\n", NULL);
+
+	string_conv = simple_convert (conv_to_locale, string);
+	fputs (string_conv, stdout);
 
 	free (whatis);
+	free (string_conv);
 	free (string);
 }
 
@@ -480,7 +560,7 @@ static int apropos (char *page, char *lowpage)
 	datum nextkey;
 
 	key = MYDBM_FIRSTKEY (dbf);
-	while (key.dptr) {
+	while (MYDBM_DPTR (key)) {
 		cont = MYDBM_FETCH (dbf, key);
 #else /* BTREE */
 	int end;
@@ -489,38 +569,39 @@ static int apropos (char *page, char *lowpage)
 	while (!end) {
 #endif /* !BTREE */
 		char *tab;
-		int match;
+		int got_match;
 		struct mandata info;
 #ifdef APROPOS
 		char *whatis;
+		char *seen_key;
+		int *seen_count;
 #endif
 
 		memset (&info, 0, sizeof (info));
 
-		/* bug#4372, NULL pointer dereference in cont.dptr, fix
-		 * by dassen@wi.leidenuniv.nl (J.H.M.Dassen), thanx Ray.
+		/* bug#4372, NULL pointer dereference in MYDBM_DPTR (cont),
+		 * fix by dassen@wi.leidenuniv.nl (J.H.M.Dassen), thanx Ray.
 		 * cjwatson: In that case, complain and exit, otherwise we
 		 * might loop (bug #95052).
 		 */
-		if (!cont.dptr)
+		if (!MYDBM_DPTR (cont))
 		{
-			if (debug)
-				fprintf (stderr, "key was %s\n", key.dptr);
+			debug ("key was %s\n", MYDBM_DPTR (key));
 			error (FATAL, 0,
 			       _("Database %s corrupted; rebuild with "
 				 "mandb --create"),
 			       database);
 		}
 
-		if (*key.dptr == '$')
+		if (*MYDBM_DPTR (key) == '$')
 			goto nextpage;
 
-		if (*cont.dptr == '\t')
+		if (*MYDBM_DPTR (cont) == '\t')
 			goto nextpage;
 
 		/* a real page */
 
-		split_content (cont.dptr, &info);
+		split_content (MYDBM_DPTR (cont), &info);
 
 		/* If there's a section given, does it match either the
 		 * section or extension of this page?
@@ -529,40 +610,63 @@ static int apropos (char *page, char *lowpage)
 		    (!STREQ (section, info.sec) && !STREQ (section, info.ext)))
 			goto nextpage;
 
-		tab = strrchr (key.dptr, '\t');
+		tab = strrchr (MYDBM_DPTR (key), '\t');
 		if (tab) 
 			 *tab = '\0';
 
 #ifdef APROPOS
-		match = parse_name (lowpage, key.dptr);
+		if (info.name)
+			seen_key = xstrdup (info.name);
+		else
+			seen_key = xstrdup (MYDBM_DPTR (key));
+		seen_key = strappend (seen_key, " (", info.ext, ")", NULL);
+		seen_count = hash_lookup (apropos_seen, seen_key,
+					  strlen (seen_key));
+		if (seen_count && !require_all)
+			goto nextpage_tab;
+		got_match = parse_name (lowpage, MYDBM_DPTR (key));
 		whatis = xstrdup (info.whatis);
-		if (!match && whatis)
-			match = parse_whatis (page, lowpage, whatis);
+		if (!got_match && whatis)
+			got_match = parse_whatis (page, lowpage, whatis);
 		free (whatis);
 #else /* WHATIS */
-		match = parse_name (page, key.dptr);
+		got_match = parse_name (page, MYDBM_DPTR (key));
 #endif /* APROPOS */
-		if (match) {
-			display (&info, key.dptr);
+		if (got_match) {
+#ifdef APROPOS
+			if (!seen_count) {
+				seen_count = xmalloc (sizeof *seen_count);
+				*seen_count = 0;
+				hash_install (apropos_seen, seen_key,
+					      strlen (seen_key), seen_count);
+			}
+			++(*seen_count);
+			if (!require_all || *seen_count == num_keywords)
+#endif
+			    display (&info, MYDBM_DPTR (key));
 			found++;
 		}
 
-		found += match;
+		found += got_match;
+
+#ifdef APROPOS
+		free (seen_key);
+nextpage_tab:
+#endif
 		if (tab)
 			*tab = '\t';
-
 nextpage:
 #ifndef BTREE
 		nextkey = MYDBM_NEXTKEY (dbf, key);
-		MYDBM_FREE (cont.dptr);
-		MYDBM_FREE (key.dptr);
+		MYDBM_FREE (MYDBM_DPTR (cont));
+		MYDBM_FREE (MYDBM_DPTR (key));
 		key = nextkey; 
 #else /* BTREE */
-		MYDBM_FREE (cont.dptr);
-		MYDBM_FREE (key.dptr);
+		MYDBM_FREE (MYDBM_DPTR (cont));
+		MYDBM_FREE (MYDBM_DPTR (key));
 		end = btree_nextkeydata (dbf, &key, &cont);
 #endif /* !BTREE */
-		info.addr = NULL; /* == cont.dptr, freed above */
+		info.addr = NULL; /* == MYDBM_DPTR (cont), freed above */
 		free_mandata_elements (&info);
 	}
 
@@ -574,14 +678,13 @@ nextpage:
 }
 
 /* loop through the man paths, searching for a match */
-static void search (char *page)
+static int search (char *page)
 {
 	int found = 0;
 	char *lowpage = lower (page);
 	char *catpath, **mp;
 
-	if (debug)
-		fprintf (stderr, "lower(%s) = \"%s\"\n", page, lowpage);
+	debug ("lower(%s) = \"%s\"\n", page, lowpage);
 
 	for (mp = manpathlist; *mp; mp++) {
 		catpath = get_catpath (*mp, SYSTEM_CAT | USER_CAT);
@@ -592,8 +695,7 @@ static void search (char *page)
 		} else
 			database = mkdbname (*mp);
 
-		if (debug)
-			fprintf (stderr, "path=%s\n", *mp);
+		debug ("path=%s\n", *mp);
 
 		dbf = MYDBM_RDOPEN (database);
 		if (dbf && dbver_rd (dbf)) {
@@ -624,12 +726,12 @@ static void search (char *page)
 
 	chkr_garbage_detector ();
 
-	if (!found) {
+	if (!found)
 		printf (_("%s: nothing appropriate.\n"), page);
-		status = NOT_FOUND;
-	}
 
 	free (lowpage);
+
+	return found;
 }
 
 int main (int argc, char *argv[])
@@ -637,34 +739,45 @@ int main (int argc, char *argv[])
 	int c;
 	char *manp = NULL;
 	const char *alt_systems = "";
-	char *llocale = NULL, *locale;
-	int option_index;
+	char *multiple_locale = NULL, *locale = NULL, *internal_locale;
+#ifdef HAVE_ICONV
+	char *locale_charset;
+#endif
+	int status = OK;
 
 	program_name = xstrdup (basename (argv[0]));
 
 	/* initialise the locale */
-	locale = xstrdup (setlocale (LC_ALL, ""));
-	if (!locale) {
+	if (!setlocale (LC_ALL, ""))
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
-		locale = xstrdup ("C");
-	}
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	textdomain (PACKAGE);
 
+	internal_locale = setlocale (LC_MESSAGES, NULL);
+	/* Use LANGUAGE only when LC_MESSAGES locale category is
+	 * neither "C" nor "POSIX". */
+	if (internal_locale && strcmp (internal_locale, "C") &&
+	    strcmp (internal_locale, "POSIX")) {
+		multiple_locale = getenv ("LANGUAGE");
+		if (multiple_locale && *multiple_locale)
+			internal_locale = multiple_locale;
+	}
+	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
+
 	while ((c = getopt_long (argc, argv, args,
-				 long_options, &option_index)) != EOF) {
+				 long_options, NULL)) != EOF) {
 		switch (c) {
 
 			case 'd':
-				debug = 1;
+				debug_level = 1;
 				break;
 			case 'v':
 				quiet = 0;
 				break;
 			case 'L':
-				llocale = optarg;
+				locale = optarg;
 				break;
 			case 'm':
 				alt_systems = optarg;
@@ -689,6 +802,14 @@ int main (int argc, char *argv[])
 #endif
 				wildcard = 1;
 				break;
+#ifdef APROPOS
+			case 'a':
+				require_all = 1;
+				break;
+#endif
+			case 'l':
+				long_output = 1;
+				break;
 			case 's':
 				section = optarg;
 				break;
@@ -710,24 +831,25 @@ int main (int argc, char *argv[])
 		}
 	}
 
-	/* close this locale and reinitialise in case a new locale was 
+#ifdef HAVE_SETLOCALE
+	/* close this locale and reinitialise if a new locale was 
 	   issued as an argument or in $MANOPT */
-	if (llocale) {
-		setlocale (LC_ALL, llocale);
-		free (locale);
-		locale = xstrdup (llocale);
-		if (debug)
-			fprintf (stderr,
-				 "main(): locale = %s, internal_locale = %s\n",
-				 llocale, locale);
-		if (locale) {
+	if (locale) {
+		free (internal_locale);
+		internal_locale = xstrdup (setlocale (LC_ALL, locale));
+		if (internal_locale == NULL)
+			internal_locale = xstrdup (locale);
+
+		debug ("main(): locale = %s, internal_locale = %s\n",
+		       locale, internal_locale);
+		if (internal_locale) {
 			extern int _nl_msg_cat_cntr;
-			if (locale[2] == '_' )
-				locale[2] = '\0';
-			setenv ("LANGUAGE", locale, 1);
+			setenv ("LANGUAGE", internal_locale, 1);
 			++_nl_msg_cat_cntr;
+			multiple_locale = NULL;
 		}
 	}
+#endif /* HAVE_SETLOCALE */
 
 	pipeline_install_sigchld ();
 
@@ -739,7 +861,8 @@ int main (int argc, char *argv[])
 #endif
 
 	/* Make sure that we have a keyword! */
-	if (argc == optind) {
+	num_keywords = argc - optind;
+	if (!num_keywords) {
 		printf (_("%s what?\n"), program_name);
 		free (locale);
 		free (program_name);
@@ -747,12 +870,41 @@ int main (int argc, char *argv[])
 	}
 
 	/* sort out the internal manpath */
-	if (manp == NULL)
-		manp = add_nls_manpath (manpath (alt_systems), locale);
-	else
-		free (manpath (NULL));
+	if (manp == NULL) {
+		char tmp_locale[3];
+		int idx;
+
+		manp = add_nls_manpath (get_manpath (alt_systems),
+					internal_locale);
+		/* Handle multiple :-separated locales in LANGUAGE */
+		idx = multiple_locale ? strlen (multiple_locale) : 0;
+		while (idx) {
+			while (idx && multiple_locale[idx] != ':')
+				idx--;
+			if (multiple_locale[idx] == ':')
+				idx++;
+			tmp_locale[0] = multiple_locale[idx];
+			tmp_locale[1] = multiple_locale[idx + 1];
+			tmp_locale[2] = 0;
+			/* step back over preceding ':' */
+			if (idx) idx--;
+			if (idx) idx--;
+			debug ("checking for locale %s\n", tmp_locale);
+			manp = add_nls_manpath (manp, tmp_locale);
+		}
+	} else
+		free (get_manpath (NULL));
 
 	create_pathlist (manp, manpathlist);
+
+	apropos_seen = hash_create (&plain_hash_free);
+
+#ifdef HAVE_ICONV
+	locale_charset = strappend (NULL, get_locale_charset (), "//IGNORE",
+				    NULL);
+	conv_to_locale = iconv_open (locale_charset, "UTF-8");
+	free (locale_charset);
+#endif /* HAVE_ICONV */
 
 	while (optind < argc) {
 #if defined(POSIX_REGEX)		
@@ -778,12 +930,18 @@ int main (int argc, char *argv[])
 				       argv[optind], error_string);
 		}
 #endif /* REGEX */
-		search (argv[optind++]);
+		if (!search (argv[optind++]))
+			status = NOT_FOUND;
 #ifdef POSIX_REGEX
 		regfree (&preg);
 #endif /* POSIX_REGEX */
 	}
 
+#ifdef HAVE_ICONV
+	if (conv_to_locale != (iconv_t) -1)
+		iconv_close (conv_to_locale);
+#endif /* HAVE_ICONV */
+	hash_free (apropos_seen);
 	free_pathlist (manpathlist);
 	free (manp);
 	free (locale);
