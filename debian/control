@@ -3,7 +3,7 @@ Section: doc
 Priority: important
 Maintainer: Colin Watson <cjwatson@debian.org>
 Standards-Version: 3.7.2
-Build-Depends: debhelper (>= 4.0.0), flex, gettext, groff, libgdbm-dev
+Build-Depends: debhelper (>= 4.0.0), flex, gettext, groff, libgdbm-dev, zlib1g-dev
 
 Package: man-db
 Architecture: any

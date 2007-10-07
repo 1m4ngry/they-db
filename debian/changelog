@@ -51,6 +51,8 @@ man-db (2.5.0-1) UNRELEASED; urgency=low
     since the default of $LL.UTF-8 is now reasonable. (An
     announcement/discussion about what other Debian packages should do will
     be forthcoming shortly.)
+  * Build-depend on zlib1g-dev so that we use zlib rather than gzip to
+    decompress gzipped manual pages.
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 07 Oct 2007 17:40:21 +0100
 
