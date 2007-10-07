@@ -5,8 +5,10 @@ apropos
 catman
 lexgrog
 man
+manconv
 mandb
 manpath
 man_db.conf
 whatis
 wrapper
+zsoelim
