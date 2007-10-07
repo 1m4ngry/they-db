@@ -1,4 +1,4 @@
-man-db (2.5.0-1) UNRELEASED; urgency=low
+man-db (2.5.0-1) unstable; urgency=low
 
   * New upstream release.
     - Remove /usr/X11R6/man from MANDATORY_MANPATH (closes: #413349).
@@ -54,7 +54,7 @@ man-db (2.5.0-1) UNRELEASED; urgency=low
   * Build-depend on zlib1g-dev so that we use zlib rather than gzip to
     decompress gzipped manual pages.
 
- -- Colin Watson <cjwatson@debian.org>  Sun, 07 Oct 2007 17:40:21 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Oct 2007 20:38:25 +0100
 
 man-db (2.4.4-4) unstable; urgency=low
 
