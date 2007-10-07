@@ -14,7 +14,7 @@ manual := man_db
 
 SOELIM = soelim
 
-include ../include/Defines
+-include ../include/Defines
 
 .PHONY: dvi ps tps cat html
 
