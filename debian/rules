@@ -36,7 +36,7 @@ build-stamp: GNUmakefile
 # Builds the binary package.
 	dh_testdir
 	$(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
-	$(MAKE) -C manual SOELIM=../zsoelim/zsoelim
+	$(MAKE) -C manual SOELIM=../src/zsoelim
 	touch build-stamp
 
 clean:
