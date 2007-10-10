@@ -1,9 +1,8 @@
 man-db (2.5.0-2) UNRELEASED; urgency=low
 
   * Backport from upstream (closes: #446189):
-    - src/man.c (display): Connect up the decompression pipeline in the
-      display_to_stdout case too.
-      (checked_system): Remove, no longer used.
+    - Connect up the decompression pipeline in the display_to_stdout case
+      too.
 
  -- Colin Watson <cjwatson@debian.org>  Thu, 11 Oct 2007 00:44:02 +0100
 
