@@ -1,10 +1,10 @@
-man-db (2.5.0-2) UNRELEASED; urgency=low
+man-db (2.5.0-2) unstable; urgency=low
 
   * Backport from upstream (closes: #446189):
     - Connect up the decompression pipeline in the display_to_stdout case
       too.
 
- -- Colin Watson <cjwatson@debian.org>  Thu, 11 Oct 2007 00:44:02 +0100
+ -- Colin Watson <cjwatson@debian.org>  Thu, 11 Oct 2007 00:55:11 +0100
 
 man-db (2.5.0-1) unstable; urgency=low
 
