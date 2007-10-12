@@ -1,3 +1,10 @@
+man-db (2.5.0-3) UNRELEASED; urgency=low
+
+  * Backport from upstream (closes: #446302):
+    - Fix apropos/whatis segfault with explicitly specified locale.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 12 Oct 2007 00:50:56 +0100
+
 man-db (2.5.0-2) unstable; urgency=low
 
   * Backport from upstream (closes: #446189):
