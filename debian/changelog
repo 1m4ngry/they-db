@@ -1,3 +1,10 @@
+man-db (2.5.0-4) UNRELEASED; urgency=low
+
+  * Add debconf translations:
+    - Simplified Chinese (thanks, Ming Hua; closes: #447421).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 22 Oct 2007 20:46:43 +0100
+
 man-db (2.5.0-3) unstable; urgency=low
 
   * Backport from upstream (closes: #446302):
