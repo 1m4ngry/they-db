@@ -16,12 +16,13 @@ msgstr ""
 "Project-Id-Version: mandb\n"
 "Report-Msgid-Bugs-To: cjwatson@debian.org\n"
 "POT-Creation-Date: 2007-08-19 15:26+0100\n"
-"PO-Revision-Date: 2004-07-04 15:22-0500\n"
-"Last-Translator: Bart Cornelis <cobaco@linux.be>\n"
+"PO-Revision-Date: 2007-10-23 13:16+0100\n"
+"Last-Translator: Bart Cornelis <cobaco@skolelinux.no>\n"
 "Language-Team: debian-l10n-dutch <debian-l10n-dutch@lists.debian..org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
 
 #  Type: boolean
 #  Description
@@ -60,7 +61,7 @@ msgid ""
 "formatted to 80 columns anyway by setting MANWIDTH=80."
 msgstr ""
 "Tijdelijk opgeslagen man-pagina's werken enkel wanneer u een terminal met "
-"een breedte van 80 gebruikt. Dit vermijdt dat één gebruiker cat-pagina's "
+"een breedte van 80 gebruikt. Dit vermijdt dat Ã©Ã©n gebruiker cat-pagina's "
 "opslaat met breedtes die niet geschikt zijn voor andere gebruikers. Wanneer "
 "u een bredere terminal gebruikt kunt u een breedte van 80 karakters "
 "afdwingen voor man-pagina's door 'MANWIDTH=80' in te stellen als "
@@ -99,7 +100,7 @@ msgid ""
 msgstr ""
 "U heeft nog geen database met omschrijvingen van man-pagina's. Het opbouwen "
 "van deze database kan enige tijd duren, afhankelijk van hoeveel man-pagina's "
-"u geïnstalleerd heeft; dit gebeurt in de achtergrond en kan de installatie "
+"u geÃ¯nstalleerd heeft; dit gebeurt in de achtergrond en kan de installatie "
 "van andere pakketten vertragen. Wilt u dat dit nu gebeurt?"
 
 #  Type: boolean
@@ -109,22 +110,14 @@ msgstr ""
 #. Type: boolean
 #. Description
 #: ../templates:2001 ../templates:3001
-#, fuzzy
-#| msgid ""
-#| "If you do not build the database now, it will be built the next time /etc/"
-#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#| "be able to display any output."
 msgid ""
 "If you do not build the database now, it will be built the next time /etc/"
 "cron.weekly/man-db runs (automatically or manually). Until then, the "
 "'whatis' and 'apropos' commands will not be able to display any output."
 msgstr ""
 "Indien u de database nu niet opbouwt zal deze bij de volgende uitvoering "
-"van /etc/cron.weekly/mandb opgebouwd worden. U kunt de database op elk "
-"moment ook zelf (her)opbouwen door 'mandb -c' uit te voeren als de gebruiker "
-"'man'. In de tussentijd zullen de 'whatis' en 'apropos' commando's geen "
-"uitvoer weergeven."
+"van /etc/cron.weekly/man-db opgebouwd worden. In de tussentijd zullen de "
+"'whatis'- en 'apropos'-commando's geen uitvoer weergeven."
 
 #  Type: boolean
 #  Description
@@ -139,7 +132,7 @@ msgid ""
 msgstr ""
 "Deze versie van man-db is incompatibel met uw bestaande database met man-"
 "pagina-omschrijvingen, dus moet deze heropgebouwd worden. Dit kan enige tijd "
-"duren, afhankelijk van hoeveel man-pagina's u geïnstalleerd heeft; dit "
+"duren, afhankelijk van hoeveel man-pagina's u geÃ¯nstalleerd heeft; dit "
 "gebeurt in de achtergrond, en kan de installatie van andere pakketten "
 "vertragen."
 
