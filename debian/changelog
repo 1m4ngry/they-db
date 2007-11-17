@@ -1,4 +1,4 @@
-man-db (2.5.0-4) UNRELEASED; urgency=low
+man-db (2.5.0-4) unstable; urgency=low
 
   * Always pass an appropriate --build= option to configure.
   * Add debconf translations:
@@ -7,7 +7,7 @@ man-db (2.5.0-4) UNRELEASED; urgency=low
   * Update debconf translations:
     - Dutch (thanks, Bart Cornelis; closes: #447719).
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 22 Oct 2007 20:46:43 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sat, 17 Nov 2007 20:03:27 +0000
 
 man-db (2.5.0-3) unstable; urgency=low
 
