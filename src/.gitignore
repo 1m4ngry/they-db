@@ -1,8 +1,9 @@
-.depend
+.deps
 Makefile
 accessdb
 apropos
 catman
+globbing
 lexgrog
 man
 manconv

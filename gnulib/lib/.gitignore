@@ -1,0 +1,17 @@
+.deps
+Makefile
+alloca.h
+charset.alias
+configmake.h
+fcntl.h
+getopt.h
+glob.h
+ref-add.sed
+ref-del.sed
+stdio.h
+stdlib.h
+string.h
+strings.h
+sys
+unistd.h
+*.a
