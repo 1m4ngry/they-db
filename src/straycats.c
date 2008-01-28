@@ -27,31 +27,14 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
 #include <errno.h>
-
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strrchr();
-#endif /* STDC_HEADERS */
-
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include <unistd.h>
 
 #ifdef HAVE_DIRENT_H
 #  include <dirent.h>
@@ -68,27 +51,21 @@ extern char *strrchr();
 #  endif /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H  */
 
-#ifdef HAVE_FCNTL_H
-#  include <fcntl.h>
-#endif /* HAVE_FCNTL_H */
+#include "canonicalize.h"
+#include "dirname.h"
 
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#ifdef HAVE_CANONICALIZE_FILE_NAME
-extern char *canonicalize_file_name __P ((__const char *__name));
-#endif
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "libdb/mydbm.h"
-#include "libdb/db_storage.h"
-#include "lib/error.h"
-#include "lib/pipeline.h"
-#include "lib/decompress.h"
+
+#include "error.h"
+#include "pipeline.h"
+#include "decompress.h"
+
+#include "mydbm.h"
+#include "db_storage.h"
+
 #include "descriptions.h"
 #include "encodings.h"
 #include "manp.h"
@@ -102,12 +79,6 @@ static int check_for_stray (void)
 	struct dirent *catlist;
 	size_t lenman, lencat;
 	int strays = 0;
-#ifdef HAVE_CANONICALIZE_FILE_NAME
-	/* no PATH_MAX then */
-	char *fullpath;
-#else
-	char fullpath[PATH_MAX];
-#endif
 
 	cdir = opendir (catdir);
 	if (!cdir) {
@@ -115,8 +86,8 @@ static int check_for_stray (void)
 		return 0;
 	}
 
-	mandir = strappend (mandir, "/", NULL);
-	catdir = strappend (catdir, "/", NULL);
+	mandir = appendstr (mandir, "/", NULL);
+	catdir = appendstr (catdir, "/", NULL);
 	lenman = strlen (mandir);
 	lencat = strlen (catdir);
 
@@ -136,8 +107,8 @@ static int check_for_stray (void)
 			continue;
 
 		*(mandir + lenman) = *(catdir + lencat) = '\0';
-		mandir = strappend (mandir, catlist->d_name, NULL);
-		catdir = strappend (catdir, catlist->d_name, NULL);
+		mandir = appendstr (mandir, catlist->d_name, NULL);
+		catdir = appendstr (catdir, catlist->d_name, NULL);
 
 		ext = strrchr (mandir, '.');
 		if (!ext) {
@@ -201,9 +172,9 @@ static int check_for_stray (void)
 			struct mandata *exists;
 			lexgrog lg;
 			char *lang, *page_encoding;
-			char *mandir_copy;
-			const char *mandir_base;
+			char *mandir_base;
 			command *col_cmd;
+			char *fullpath;
 
 			/* we have a straycat. Need to filter it and get
 			   its whatis (if necessary)  */
@@ -214,8 +185,7 @@ static int check_for_stray (void)
 
 			/* see if we already have it, before going any 
 			   further */
-			mandir_copy = xstrdup (mandir);
-			mandir_base = basename (mandir_copy);
+			mandir_base = base_name (mandir);
 			exists = dblookup_exact (mandir_base, info.ext, 1);
 #ifndef FAVOUR_STRAYCATS
 			if (exists && exists->id != WHATIS_CAT)
@@ -255,32 +225,20 @@ static int check_for_stray (void)
 			command_arg (col_cmd, "-bx");
 			pipeline_command (decomp, col_cmd);
 
-#ifdef HAVE_CANONICALIZE_FILE_NAME
 			fullpath = canonicalize_file_name (catdir);
 			if (!fullpath) {
-				if (quiet < 2)
-					error (0, errno,
-					       _("can't resolve %s"), catdir);
-			} else
-#else
-			if (realpath (catdir, fullpath) == NULL) {
 				if (quiet < 2) {
 					if (errno == ENOENT)
 						error (0, 0, _("warning: %s is a dangling symlink"), fullpath);
 					else
 						error (0, errno,
 						       _("can't resolve %s"),
-						       fullpath);
+						       catdir);
 				}
-			} else 
-#endif
-			{
-				char *catdir_copy;
-				const char *catdir_base;
+			} else {
+				char *catdir_base;
 
-#ifdef HAVE_CANONICALIZE_FILE_NAME
 				free (fullpath);
-#endif
 				drop_effective_privs ();
 				pipeline_start (decomp);
 				regain_effective_privs ();
@@ -288,8 +246,7 @@ static int check_for_stray (void)
 				strays++;
 
 				lg.type = CATPAGE;
-				catdir_copy = xstrdup (catdir);
-				catdir_base = basename (catdir_copy);
+				catdir_base = base_name (catdir);
 				if (find_name_decompressed (decomp,
 							    catdir_base,
 							    &lg)) {
@@ -306,8 +263,7 @@ static int check_for_stray (void)
 				} else if (quiet < 2)
 					error (0, 0, _("warning: %s: whatis parse for %s(%s) failed"),
 					       catdir, mandir_base, info.sec);
-				free (catdir_copy);
-
+				free (catdir_base);
 			}
 
 			if (lg.whatis)
@@ -315,7 +271,7 @@ static int check_for_stray (void)
 			pipeline_free (decomp);
 next_exists:
 			free_mandata_struct (exists);
-			free (mandir_copy);
+			free (mandir_base);
 		}
 next_section:
 		free (section);
@@ -340,8 +296,8 @@ static int open_catdir (void)
 	if (!quiet)
 		printf (_("Checking for stray cats under %s...\n"), catdir);
 
-	catdir = strappend (catdir, "/", NULL);
-	mandir = strappend (mandir, "/", NULL);
+	catdir = appendstr (catdir, "/", NULL);
+	mandir = appendstr (mandir, "/", NULL);
 	catlen = strlen (catdir);
 	manlen = strlen (mandir);
 
@@ -352,8 +308,8 @@ static int open_catdir (void)
 		if (strncmp (catlist->d_name, "cat", 3) != 0)
 			continue;
 
-		catdir = strappend (catdir, catlist->d_name, NULL);
-		mandir = strappend (mandir, catlist->d_name, NULL);
+		catdir = appendstr (catdir, catlist->d_name, NULL);
+		mandir = appendstr (mandir, catlist->d_name, NULL);
 
 		*(t1 = mandir + manlen) = 'm';
 		*(t1 + 2) = 'n';
@@ -397,8 +353,8 @@ int straycats (const char *manpath)
 		
 	if (catpath && strcmp (catpath, manpath) != 0) {
 		*mandir = *catdir = '\0';
-		mandir = strappend (mandir, manpath, NULL);
-		catdir = strappend (catdir, catpath, NULL);
+		mandir = appendstr (mandir, manpath, NULL);
+		catdir = appendstr (catdir, catpath, NULL);
 		strays += open_catdir ();
 	}
 

@@ -30,12 +30,7 @@
 
 #include <stdio.h>
 #include <errno.h>
-
-#if defined(STDC_HEADERS) || defined(HAVE_STRING_H)
 #include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#include <strings.h>
-#endif /* STDC_HEADERS */
 
 #if HAVE_SYS_FILE_H
 #  include <sys/file.h> /* for flock() */
@@ -48,14 +43,14 @@
 #  include <fcntl.h>
 #endif
 
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include <unistd.h>
 
 #include "manconfig.h"
-#include "lib/error.h"
-#include "lib/flock.h"
-#include "lib/hashtable.h"
+
+#include "error.h"
+#include "flock.h"
+#include "hashtable.h"
+
 #include "mydbm.h"
 #include "db_storage.h"
 
@@ -201,7 +196,7 @@ int btree_exists (DB *db, datum key)
 }
 
 /* initiate a sequential access */
-static __inline__ datum btree_findkey (DB *db, u_int flags)
+static inline datum btree_findkey (DB *db, u_int flags)
 {
 	datum key, data;
 
@@ -282,7 +277,7 @@ void gripe_get (int lineno)
 }
 
 /* the simplified storage routine */
-int dbstore (struct mandata *in, char *basename)
+int dbstore (struct mandata *in, char *base)
 {
 	datum key, cont;
 	int status;
@@ -290,14 +285,11 @@ int dbstore (struct mandata *in, char *basename)
 	memset (&key, 0, sizeof key);
 	memset (&cont, 0, sizeof cont);
 
- 	MYDBM_DSIZE (key) = strlen (basename) + 1;
-
- 	if (MYDBM_DSIZE (key) == 1) {
+	MYDBM_SET (key, base);
+ 	if (!*base) {
 		dbprintf (in);
  		return 2;
  	}
-
-	MYDBM_SET_DPTR (key, basename);
 
 	/* initialise the cursor to (possibly) our key/cont */
 	status = (dbf->seq) (dbf, (DBT *) &key, (DBT *) &cont, R_CURSOR);
@@ -306,10 +298,9 @@ int dbstore (struct mandata *in, char *basename)
 		gripe_get (__LINE__);
 
 	/* either nothing was found or the key was not an exact match */
-	else if (status == 1 || !STREQ (MYDBM_DPTR (key), basename)) {
+	else if (status == 1 || !STREQ (MYDBM_DPTR (key), base)) {
 		cont = make_content (in);
-		MYDBM_SET_DPTR (key, basename);
-		MYDBM_DSIZE (key) = strlen (basename) + 1;
+		MYDBM_SET (key, base);
 		test_insert (__LINE__, key, cont);
 		status = (dbf->put) (dbf, (DBT *) &key, (DBT *) &cont, 0);
 		free (MYDBM_DPTR (cont));
@@ -335,9 +326,8 @@ int dbstore (struct mandata *in, char *basename)
 			free_mandata_elements (&old);
 			status = (dbf->seq) (dbf, (DBT *) &key, (DBT *) &cont,
 					     R_NEXT);
-			if (!STREQ (MYDBM_DPTR (key), basename)) {
-				MYDBM_SET_DPTR (key, basename);
-				MYDBM_DSIZE (key) = strlen (basename) + 1;
+			if (!STREQ (MYDBM_DPTR (key), base)) {
+				MYDBM_SET (key, base);
 				cont = make_content (in);
 				test_insert (__LINE__, key, cont);
 				status = (dbf->put) (dbf, (DBT *) &key,
@@ -361,8 +351,7 @@ static struct mandata *dblookup (char *page, char *section, int flags)
 	memset (&key, 0, sizeof key);
 	memset (&cont, 0, sizeof cont);
 
-	MYDBM_SET_DPTR (key, page);
-	MYDBM_DSIZE (key) = strlen (page) + 1;
+	MYDBM_SET (key, page);
 
 	/* initialise the cursor to (possibly) our key/cont */
 	status = (dbf->seq) (dbf, (DBT *) &key, (DBT *) &cont, R_CURSOR);

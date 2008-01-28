@@ -22,11 +22,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-static void man_getopt (int argc, char *argv[]);
-static __inline__ const char *is_section (const char *name);
+static inline const char *is_section (const char *name);
 static const char **get_section_list (void);
 static int man (const char *name, int *found);
 static int display (const char *dir, const char *man_file,
 		    const char *cat_file, const char *title,
 		    const char *dbfilters);
-static __inline__ int do_prompt (const char *name);
+static inline int do_prompt (const char *name);

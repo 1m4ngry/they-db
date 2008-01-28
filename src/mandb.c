@@ -29,57 +29,37 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>	/* for chmod() */
 #include <dirent.h>
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-#endif /* STDC_HEADERS */
-
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#else
-#  define W_OK	2
-#endif /* HAVE_UNISTD_H */
+#include <unistd.h>
 
 #ifdef SECURE_MAN_UID
 #  include <pwd.h>
 #endif /* SECURE_MAN_UID */
 
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
+#include "argp.h"
+#include "dirname.h"
+#include "xgetcwd.h"
 
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #include <locale.h>
 #define _(String) gettext (String)
+#define N_(String) gettext_noop (String)
 
 #include "manconfig.h"
-#include "libdb/mydbm.h"
-#include "lib/error.h"
-#include "lib/cleanup.h"
-#include "lib/pipeline.h"
-#include "lib/getcwdalloc.h"
+
+#include "error.h"
+#include "cleanup.h"
+#include "pipeline.h"
+
+#include "mydbm.h"
+
 #include "check_mandirs.h"
 #include "filenames.h"
 #include "manp.h"
@@ -101,28 +81,90 @@ struct passwd *man_owner;
 static int purged = 0;
 static int strays = 0;
 
-/* default options */
-static const struct option long_options[] =
-{
-    {"create", 		no_argument,		0, 'c'},
-    {"debug",		no_argument,		0, 'd'},
-    {"filename",	required_argument,	0, 'f'},
-    {"help",		no_argument,		0, 'h'},
-    {"no-purge",	no_argument,		0, 'p'},
-    {"quiet",		no_argument,		0, 'q'},
-    {"user-db",		no_argument,		0, 'u'},
-    {"no-straycats",    no_argument,		0, 's'},
-    {"test",		no_argument,		0, 't'},
-    {"config-file",	required_argument,	0, 'C'},
-    {"version",		no_argument,		0, 'V'},
-    {0, 0, 0, 0}
-};
-
-static const char args[] = "cdf:hpqstuC:V";
 static int check_for_strays = 1;
 static int purge = 1;
 static int user;
 static int create;
+static const char *arg_manp;
+
+const char *argp_program_version = "mandb " PACKAGE_VERSION;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
+error_t argp_err_exit_status = FAIL;
+
+static const char args_doc[] = N_("[MANPATH]");
+
+static struct argp_option options[] = {
+	{ "debug",		'd',	0,		0,	N_("emit debugging messages") },
+	{ "quiet",		'q',	0,		0,	N_("work quietly, except for 'bogus' warning") },
+	{ "no-straycats",	's',	0,		0,	N_("don't look for or add stray cats to the dbs") },
+	{ "no-purge",		'p',	0,		0,	N_("don't purge obsolete entries from the dbs") },
+	{ "user-db",		'u',	0,		0,	N_("produce user databases only") },
+	{ "create",		'c',	0,		0,	N_("create dbs from scratch, rather than updating") },
+	{ "test",		't',	0,		0,	N_("check manual pages for correctness") },
+	{ "filename",		'f',	N_("FILENAME"),	0,	N_("update just the entry for this filename") },
+	{ "config-file",	'C',	N_("FILE"),	0,	N_("use this user configuration file") },
+	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
+	{ 0 }
+};
+
+static error_t parse_opt (int key, char *arg, struct argp_state *state)
+{
+	static int quiet_temp = 0;
+
+	switch (key) {
+		case 'd':
+			debug_level = 1;
+			return 0;
+		case 'q':
+			++quiet_temp;
+			return 0;
+		case 's':
+			check_for_strays = 0;
+			return 0;
+		case 'p':
+			purge = 0;
+			return 0;
+		case 'u':
+			user = 1;
+			return 0;
+		case 'c':
+			create = 1;
+			purge = 0;
+			return 0;
+		case 't':
+			opt_test = 1;
+			return 0;
+		case 'f':
+			single_filename = arg;
+			create = 0;
+			purge = 0;
+			check_for_strays = 0;
+			return 0;
+		case 'C':
+			user_config_file = arg;
+			return 0;
+		case 'h':
+			argp_state_help (state, state->out_stream,
+					 ARGP_HELP_STD_HELP);
+			break;
+		case ARGP_KEY_ARG:
+			if (arg_manp)
+				argp_usage (state);
+			arg_manp = arg;
+			return 0;
+		case ARGP_KEY_SUCCESS:
+			if (opt_test && !debug_level)
+				quiet = 1;
+			else if (quiet_temp == 1)
+				quiet = 2;
+			else
+				quiet = quiet_temp;
+			return 0;
+	}
+	return ARGP_ERR_UNKNOWN;
+}
+
+static struct argp argp = { options, parse_opt, args_doc };
 
 #ifdef NDBM
 #  ifdef BERKELEY_DB
@@ -146,44 +188,30 @@ extern uid_t euid;
 
 static char *manpathlist[MAXDIRS];
 
-extern char *optarg;
-extern int optind, opterr, optopt;
 extern int pages;
 
-static void usage (int status)
-{
-	printf (_("usage: %s [-dqspuct|-h|-V] [-C file] [-f filename] [manpath]\n"),
-		program_name);
-	printf (_(
-		"-d, --debug                 produce debugging info.\n"
-		"-q, --quiet                 work quietly, except for 'bogus' warning.\n"
-		"-s, --no-straycats          don't look for or add stray cats to the dbs.\n"
-		"-p, --no-purge              don't purge obsolete entries from the dbs.\n"
-		"-u, --user-db               produce user databases only.\n"
-		"-c, --create                create dbs from scratch, rather than updating.\n"
-		"-t, --test                  check manual pages for correctness.\n"
-		"-f, --filename              update just the entry for this filename.\n"
-		"-C, --config-file           use this user configuration file.\n"
-		"-V, --version               show version.\n"
-		"-h, --help                  show this usage message.\n")
-	);
-
-	exit (status);
-}
-
 /* remove() with error checking */
-static __inline__ void xremove (const char *path)
+static inline void xremove (const char *path)
 {
 	if (remove (path) == -1 && errno != ENOENT)
 		error (0, errno, _("can't remove %s"), path);
 }
 
 /* rename() with error checking */
-static __inline__ void xrename (const char *from, const char *to)
+static inline void xrename (const char *from, const char *to)
 {
 	if (rename (from, to) == -1 && errno != ENOENT) {
 		error (0, errno, _("can't rename %s to %s"), from, to);
 		xremove (from);
+	}
+}
+
+/* chmod() with error checking */
+static inline void xchmod (const char *path, mode_t mode)
+{
+	if (chmod (path, mode) == -1) {
+		error (0, errno, _("can't chmod %s"), path);
+		xremove (path);
 	}
 }
 
@@ -231,21 +259,14 @@ static int xcopy (const char *from, const char *to)
 
 	if (ret < 0)
 		xremove (to);
+	else
+		xchmod (to, DBMODE);
 
 	return ret;
 }
 
-/* chmod() with error checking */
-static __inline__ void xchmod (const char *path, mode_t mode)
-{
-	if (chmod (path, mode) == -1) {
-		error (0, errno, _("can't chmod %s"), path);
-		xremove (path);
-	}
-}
-
 /* rename and chmod the database */
-static __inline__ void finish_up (void)
+static inline void finish_up (void)
 {
 #ifdef NDBM
 #  ifdef BERKELEY_DB
@@ -272,7 +293,7 @@ static __inline__ void finish_up (void)
 
 #ifdef SECURE_MAN_UID
 /* chown() with error checking */
-static __inline__ void xchown (const char *path, uid_t owner, uid_t group)
+static inline void xchown (const char *path, uid_t owner, uid_t group)
 {
 	if (chown (path, owner, group) == -1) {
 		error (0, errno, _("can't chown %s"), path);
@@ -281,7 +302,7 @@ static __inline__ void xchown (const char *path, uid_t owner, uid_t group)
 }
 
 /* change the owner of global man databases */
-static __inline__ void do_chown (uid_t uid)
+static inline void do_chown (uid_t uid)
 {
 #  ifdef NDBM
 #    ifdef BERKELEY_DB
@@ -321,7 +342,7 @@ static short update_one_file (const char *manpath, const char *filename)
 }
 
 /* dont actually create any dbs, just do an update */
-static __inline__ short update_db_wrapper (const char *manpath)
+static inline short update_db_wrapper (const char *manpath)
 {
 	short amount;
 
@@ -396,15 +417,15 @@ static short mandb (const char *catpath, const char *manpath)
 
 	dbname = mkdbname (catpath);
 	sprintf (pid, "%d", getpid ());
-	database = strappend (NULL, catpath, "/", pid, NULL);
+	database = appendstr (NULL, catpath, "/", pid, NULL);
 	
 	if (!quiet) 
 		printf (_("Processing manual pages under %s...\n"), manpath);
 #ifdef NDBM
 #  ifdef BERKELEY_DB
-	dbfile = strappend (NULL, dbname, ".db", NULL);
+	dbfile = appendstr (NULL, dbname, ".db", NULL);
 	free (dbname);
-	tmpdbfile = strappend (NULL, database, ".db", NULL);
+	tmpdbfile = appendstr (NULL, database, ".db", NULL);
 	if (create || force_rescan || opt_test) {
 		xremove (tmpdbfile);
 		amount = create_db (manpath);
@@ -414,11 +435,11 @@ static short mandb (const char *catpath, const char *manpath)
 		amount = update_db_wrapper (manpath);
 	}
 #  else /* !BERKELEY_DB NDBM */
-	dirfile = strappend (NULL, dbname, ".dir", NULL);
-	pagfile = strappend (NULL, dbname, ".pag", NULL);
+	dirfile = appendstr (NULL, dbname, ".dir", NULL);
+	pagfile = appendstr (NULL, dbname, ".pag", NULL);
 	free (dbname);
-	tmpdirfile = strappend (NULL, database, ".dir", NULL);
-	tmppagfile = strappend (NULL, database, ".pag", NULL);
+	tmpdirfile = appendstr (NULL, database, ".dir", NULL);
+	tmppagfile = appendstr (NULL, database, ".pag", NULL);
 	if (create || force_rescan || opt_test) {
 		xremove (tmpdirfile);
 		xremove (tmppagfile);
@@ -475,7 +496,7 @@ static short process_manpath (const char *manpath, int global_manpath)
 		/* The file might be in a per-locale subdirectory that we
 		 * aren't processing right now.
 		 */
-		char *manpath_prefix = strappend (NULL, manpath, "/man", NULL);
+		char *manpath_prefix = appendstr (NULL, manpath, "/man", NULL);
 		if (STRNEQ (manpath_prefix, single_filename,
 		    strlen (manpath_prefix)))
 			amount += mandb (catpath, manpath);
@@ -512,17 +533,15 @@ static short process_manpath (const char *manpath, int global_manpath)
 
 int main (int argc, char *argv[])
 {
-	int c;
 	char *sys_manp;
 	short amount = 0;
-	int quiet_temp = 0;
 	char **mp;
 
 #ifdef __profile__
 	char *cwd;
 #endif /* __profile__ */
 
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
 
 	/* initialise the locale */
 	if (!setlocale (LC_ALL, ""))
@@ -530,57 +549,14 @@ int main (int argc, char *argv[])
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
 	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);
 
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != EOF) {
-		switch (c) {
-			case 'd':
-				debug_level = 1;
-				break;
-			case 'q':
-				quiet_temp++;
-				break;
-			case 'u':
-				user = 1;
-				break;
-			case 'c':
-				create = 1;
-				purge = 0;
-				break;
-			case 'p':
-				purge = 0;
-				break;
-			case 's':
-				check_for_strays = 0;
-				break;
-			case 't':
-				opt_test = 1;
-				break;
-			case 'f':
-				single_filename = optarg;
-				create = 0;
-				purge = 0;
-				check_for_strays = 0;
-				break;
-			case 'C':
-				user_config_file = optarg;
-				break;
-			case 'V':
-				ver ();
-				break;
-			case 'h':
-				usage (OK);
-				break;
-			default:
-				usage (FAIL);
-				break;
-		}
-	}
-
+	if (argp_parse (&argp, argc, argv, 0, 0, 0))
+		exit (FAIL);
 
 #ifdef __profile__
-	cwd = getcwd_allocated ();
+	cwd = xgetcwd ();
 	if (!cwd) {
 		cwd = xmalloc (1);
 		cwd[0] = '\0';
@@ -608,17 +584,10 @@ int main (int argc, char *argv[])
 	/* This is required for get_catpath(), regardless */
 	manp = get_manpath (NULL);	/* also calls read_config_file() */
 
-	if (opt_test && !debug_level)
-		quiet = 1;
-	else if (quiet_temp == 1)
-		quiet = 2;
-	else
-		quiet = quiet_temp;
-
 	/* pick up the system manpath or use the supplied one */
-	if (argc != optind) {
+	if (arg_manp) {
 		free (manp);
-		manp = xstrdup (argv[optind]);
+		manp = xstrdup (arg_manp);
 	} else if (!user) {
 		sys_manp = get_mandb_manpath ();
 		if (sys_manp) {
@@ -670,7 +639,7 @@ int main (int argc, char *argv[])
 			if (STRNEQ (subdirent->d_name, "man", 3))
 				continue;
 
-			subdirpath = strappend (NULL, *mp, "/",
+			subdirpath = appendstr (NULL, *mp, "/",
 						subdirent->d_name, NULL);
 			if (stat (subdirpath, &st) == 0 &&
 			    S_ISDIR (st.st_mode))

@@ -26,33 +26,19 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
-#include <assert.h>
-
-#if defined(STDC_HEADERS)
 #include <string.h>
 #include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#include <strings.h>
-#else /* no string(s) header file */
-extern char *strsep();
-#endif /* STDC_HEADERS */
+#include <unistd.h>
 
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include "xvasprintf.h"
 
-#ifndef STDC_HEADERS
-extern long atol();
-extern char *strsep();
-#endif /* not STDC_HEADERS */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
+
+#include "error.h"
+
 #include "mydbm.h"
 #include "db_storage.h"
 
@@ -156,14 +142,12 @@ int dbstore (struct mandata *in, const char *base)
 	memset (&oldcont, 0, sizeof oldcont);
 
 	/* create a simple key */
- 	MYDBM_DSIZE (oldkey) = strlen (base) + 1;
-
- 	if (MYDBM_DSIZE (oldkey) == 1) {
+	MYDBM_SET (oldkey, name_to_key (base));
+ 	if (!*base) {
 		dbprintf (in);
  		return 2;
  	}
 
-	MYDBM_SET_DPTR (oldkey, name_to_key (base));
 	if (in->name) {
 		error (0, 0, "in->name (%s) should not be set when calling "
 			     "dbstore()!\n",
@@ -223,12 +207,8 @@ int dbstore (struct mandata *in, const char *base)
 		free (MYDBM_DPTR (newkey));
 		free (MYDBM_DPTR (newcont));
 
-		MYDBM_DSIZE (newcont) = MYDBM_DSIZE (oldcont) +
-			strlen (base) + strlen (in->ext) + 2;
-		MYDBM_SET_DPTR (newcont, xmalloc (MYDBM_DSIZE (newcont)));
-
-		sprintf (MYDBM_DPTR (newcont), "%s\t%s\t%s",
-			 MYDBM_DPTR (oldcont), base, in->ext);
+		MYDBM_SET (newcont, xasprintf (
+			"%s\t%s\t%s", MYDBM_DPTR (oldcont), base, in->ext));
 		MYDBM_FREE (MYDBM_DPTR (oldcont));
 
 		/* Try to replace the old simple data with the new stuff */
@@ -310,12 +290,8 @@ int dbstore (struct mandata *in, const char *base)
 
 		/* Now build a simple reference to the above two items */
 
-		MYDBM_DSIZE (newcont) =
-			strlen (old_name) + strlen (old.ext) +
-			strlen (base) + strlen (in->ext) + 5;
-		MYDBM_SET_DPTR (newcont, xmalloc (MYDBM_DSIZE (newcont)));
-		sprintf (MYDBM_DPTR (newcont), "\t%s\t%s\t%s\t%s",
-			 old_name, old.ext, base, in->ext);
+		MYDBM_SET (newcont, xasprintf (
+			"\t%s\t%s\t%s\t%s", old_name, old.ext, base, in->ext));
 
 		if (MYDBM_REPLACE (dbf, oldkey, newcont))
 			gripe_replace_key (MYDBM_DPTR (oldkey));

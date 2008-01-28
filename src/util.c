@@ -35,48 +35,17 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strrchr();
-extern char *strcat();
-extern char *strcpy();
-#endif /* STDC_HEADERS */
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include <unistd.h>
 
 #include "manconfig.h"
-#include "libdb/mydbm.h" /* for full definition of MAN_DB */
-#include "lib/pipeline.h"
 
-#undef MAX
-#define MAX(a,b)	((a)>(b)?a:b)
-
-/* take path, add db name and return */
-char *mkdbname (const char *path)
-{
-	char *name;
-	size_t len = strlen (path);
-
-	name = (char *) xmalloc (sizeof MAN_DB + len);
-	(void) strcpy (name, path);
-	(void) strcpy (name + len, MAN_DB);
-
-	return name;
-}
+#include "pipeline.h"
 
 /*
  * Does file a have a different timestamp to file b?
@@ -160,7 +129,7 @@ char *escape_shell (const char *unesc)
 	if (!unesc)
 		return NULL;
 
-	escp = esc = (char *) xmalloc (strlen (unesc) * 2 + 1);
+	escp = esc = xmalloc (strlen (unesc) * 2 + 1);
 	for (unescp = unesc; *unescp; unescp++)
 		if ((*unescp >= '0' && *unescp <= '9') ||
 		    (*unescp >= 'A' && *unescp <= 'Z') ||
@@ -187,7 +156,7 @@ int remove_directory (const char *directory)
 	while (entry) {
 		struct stat st;
 		char *path = xstrdup (directory);
-		path = strappend (path, "/", entry->d_name, NULL);
+		path = appendstr (path, "/", entry->d_name, NULL);
 		if (stat (path, &st) == -1) {
 			free (path);
 			return -1;
@@ -232,10 +201,16 @@ char *lang_dir (const char *filename)
 		return ld;
 
 	/* Check whether filename is in a man page hierarchy. */
-	fm = strstr (filename, "/man/");
+	if (STRNEQ (filename, "man/", 4))
+		fm = filename;
+	else {
+		fm = strstr (filename, "/man/");
+		if (fm)
+			++fm;
+	}
 	if (!fm)
 		return ld;
-	sm = strstr (fm + 3, "/man");
+	sm = strstr (fm + 2, "/man");
 	if (!sm)
 		return ld;
 	if (sm[5] != '/')
@@ -244,11 +219,11 @@ char *lang_dir (const char *filename)
 		return ld;
 
 	/* If there's no lang dir element, it's an English man page. */
-	if (sm == fm + 4)
+	if (sm == fm + 3)
 		return xstrdup ("C");
 
 	/* found a lang dir */
-	fm += 5;
+	fm += 4;
 	sm = strchr (fm, '/');
 	if (!sm)
 		return ld;

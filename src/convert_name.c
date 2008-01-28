@@ -28,31 +28,20 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-#endif /* STDC_HEADERS */
+#include <string.h>
+#include <stdlib.h>
 
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
-#include <stdio.h>
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
+
+#include "error.h"
+
 #include "manp.h"
 #include "convert_name.h"
 
-static __inline__ void gripe_converting_name (const char *name)
+static inline void gripe_converting_name (const char *name)
 {
 	error (FATAL, 0, _("Can't convert %s to cat name"), name);
 }
@@ -86,7 +75,7 @@ char *convert_name (const char *name, int fsstnd)
 
 #ifdef COMP_CAT
 	/* TODO: BSD layout requires .0. */
-	to_name = strappend (NULL, namestem, "." COMPRESS_EXT, NULL);
+	to_name = appendstr (NULL, namestem, "." COMPRESS_EXT, NULL);
 #else /* !COMP_CAT */
 	to_name = xstrdup (namestem);
 #endif /* COMP_CAT */
@@ -122,4 +111,3 @@ char *convert_name (const char *name, int fsstnd)
 
 	return to_name;
 }
-

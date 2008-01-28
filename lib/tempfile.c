@@ -25,13 +25,8 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
-
-#ifdef STDC_HEADERS
-#  include <stdlib.h>
-#endif /* STDC_HEADERS */
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include <stdlib.h>
+#include <unistd.h>
 
 #include "manconfig.h"
 
@@ -79,7 +74,7 @@ char *create_tempdir (const char *template)
 
 	if (!dir)
 		return NULL;
-	created_dirname = strappend (dir, "/", template, "XXXXXX", NULL);
+	created_dirname = appendstr (dir, "/", template, "XXXXXX", NULL);
 	mkdtemp (created_dirname);
 	return created_dirname;
 }

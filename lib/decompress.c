@@ -1,7 +1,7 @@
 /*
  * decompress.c: decompression abstraction layer
  *
- * Copyright (C) 2007 Colin Watson.
+ * Copyright (C) 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -24,22 +24,12 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-#endif /* STDC_HEADERS */
-
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
+#include <unistd.h>
 #include <fcntl.h>
 
 #ifdef HAVE_LIBZ
@@ -57,7 +47,7 @@ static void decompress_zlib (void *data ATTRIBUTE_UNUSED)
 {
 	gzFile zlibfile;
 
-	zlibfile = gzdopen (dup (fileno (stdin)), "r");
+	zlibfile = gzdopen (dup (STDIN_FILENO), "r");
 	if (!zlibfile)
 		return;
 
@@ -94,7 +84,7 @@ pipeline *decompress_open (const char *filename)
 	filename_len = strlen (filename);
 	if (filename_len > 3 && STREQ (filename + filename_len - 3, ".gz")) {
 		/* informational only; no shell quoting concerns */
-		char *name = strappend (NULL, "zcat < ", filename, NULL);
+		char *name = appendstr (NULL, "zcat < ", filename, NULL);
 		cmd = command_new_function (name, &decompress_zlib, NULL);
 		free (name);
 		p = pipeline_new_commands (cmd, NULL);
@@ -133,6 +123,7 @@ pipeline *decompress_open (const char *filename)
 got_pipeline:
 	p->want_infile = filename;
 	p->want_out = -1;
+	p->ignore_signals = 0;
 	return p;
 }
 
@@ -152,5 +143,6 @@ pipeline *decompress_fdopen (int fd)
 
 	p->want_in = fd;
 	p->want_out = -1;
+	p->ignore_signals = 0;
 	return p;
 }

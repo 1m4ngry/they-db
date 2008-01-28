@@ -25,24 +25,18 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr();
-#endif /* no string(s) header */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "libdb/db_storage.h"
-#include "lib/error.h"
+
+#include "error.h"
+
+#include "db_storage.h"
+
 #include "descriptions.h"
 
 static void gripe_bad_store (const char *name, const char *ext)

@@ -1,5 +1,5 @@
 
-#line 3 "<stdout>"
+#line 3 "lexgrog.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1989,36 +1989,20 @@ char *yytext;
 
 #include <sys/stat.h>
 #include <errno.h>
+#include <string.h>
+#include <unistd.h>
 
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
-#ifdef HAVE_STRING_H
-#  include <string.h>
-#elif defined (HAVE_STRINGS_H)
-#  include <strings.h>
-#endif /* HAVE_STRING_H */
-
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
-#include "lib/pipeline.h"
-#include "lib/decompress.h"
-#include "descriptions.h"
+
+#include "error.h"
+#include "pipeline.h"
+#include "decompress.h"
+
 #include "security.h"
 #include "encodings.h"
-#include "ult_src.h"
 
 #define YY_READ_BUF_SIZE	1024
 #define MAX_NAME		2048
@@ -2054,34 +2038,6 @@ static pipeline *decomp;
 		result = YY_NULL; \
 }
 
-#ifdef TEST
-
-#include <stdio.h>
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
-
-char *program_name;
-int quiet = 1;
-
-static const struct option long_options[] =
-{
-	{"man",		no_argument,		0,	'm'},
-	{"cat",		no_argument,		0,	'c'},
-	{"whatis",	no_argument,		0,	'w'},
-	{"filters",	no_argument,		0,	'f'},
-	{"encoding",	required_argument,	0,	'E'},
-	{"help",	no_argument,		0,	'h'},
-	{"version",	no_argument,		0,	'V'},
-	{0, 0, 0, 0}
-};
-
-static const char args[] = "mcwfE:hV";
-
-#endif /* TEST */
-
 
 
 
@@ -2096,7 +2052,7 @@ static const char args[] = "mcwfE:hV";
 */
 /* NOME also works for gl, pt */
 /* eptgrv : eqn, pic, tbl, grap, refer, vgrind */
-#line 2100 "<stdout>"
+#line 2056 "lexgrog.c"
 
 #define INITIAL 0
 #define MAN_PRENAME 1
@@ -2255,11 +2211,11 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 208 "lexgrog.l"
+#line 164 "lexgrog.l"
 
 
  /* begin NAME section processing */
-#line 2263 "<stdout>"
+#line 2219 "lexgrog.c"
 
 	if ( !(yy_init) )
 		{
@@ -2341,78 +2297,78 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 211 "lexgrog.l"
+#line 167 "lexgrog.l"
 BEGIN (MAN_PRENAME);
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 212 "lexgrog.l"
+#line 168 "lexgrog.l"
 BEGIN (CAT_NAME);
 	YY_BREAK
 /* general text matching */
 case 3:
-#line 216 "lexgrog.l"
+#line 172 "lexgrog.l"
 case 4:
-#line 217 "lexgrog.l"
+#line 173 "lexgrog.l"
 case 5:
-#line 218 "lexgrog.l"
+#line 174 "lexgrog.l"
 case 6:
-#line 219 "lexgrog.l"
+#line 175 "lexgrog.l"
 case 7:
-#line 220 "lexgrog.l"
+#line 176 "lexgrog.l"
 case 8:
 /* rule 8 can match eol */
-#line 221 "lexgrog.l"
+#line 177 "lexgrog.l"
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 221 "lexgrog.l"
+#line 177 "lexgrog.l"
 
 	YY_BREAK
 
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 224 "lexgrog.l"
+#line 180 "lexgrog.l"
 filters[TBL_FILTER] = 't';
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 225 "lexgrog.l"
+#line 181 "lexgrog.l"
 filters[EQN_FILTER] = 'e';
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 226 "lexgrog.l"
+#line 182 "lexgrog.l"
 filters[PIC_FILTER] = 'p';
 	YY_BREAK
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 227 "lexgrog.l"
+#line 183 "lexgrog.l"
 filters[GRAP_FILTER] = 'g';
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
-#line 229 "lexgrog.l"
+#line 185 "lexgrog.l"
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 229 "lexgrog.l"
+#line 185 "lexgrog.l"
 filters[REF_FILTER] = 'r';
 	YY_BREAK
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 230 "lexgrog.l"
+#line 186 "lexgrog.l"
 filters[VGRIND_FILTER] = 'v';
 	YY_BREAK
 
 case YY_STATE_EOF(MAN_REST):
-#line 232 "lexgrog.l"
+#line 188 "lexgrog.l"
 {	/* exit */
 					*p_name = '\0'; /* terminate the string */
 					yyterminate ();
@@ -2421,14 +2377,14 @@ case YY_STATE_EOF(MAN_REST):
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 236 "lexgrog.l"
+#line 192 "lexgrog.l"
 
 	YY_BREAK
 /* rules to end NAME section processing */
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 239 "lexgrog.l"
+#line 195 "lexgrog.l"
 {	/* forced exit */
 					*p_name = '\0'; /* terminate the string */
 					yyterminate ();
@@ -2437,32 +2393,32 @@ YY_RULE_SETUP
 /* Skip over initial spacing in NAME section. This is evil. */
 case 19:
 /* rule 19 can match eol */
-#line 246 "lexgrog.l"
+#line 202 "lexgrog.l"
 case 20:
 /* rule 20 can match eol */
-#line 247 "lexgrog.l"
+#line 203 "lexgrog.l"
 case 21:
 /* rule 21 can match eol */
-#line 248 "lexgrog.l"
+#line 204 "lexgrog.l"
 case 22:
 /* rule 22 can match eol */
-#line 249 "lexgrog.l"
+#line 205 "lexgrog.l"
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 249 "lexgrog.l"
+#line 205 "lexgrog.l"
 
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 251 "lexgrog.l"
+#line 207 "lexgrog.l"
 yyless (1);
 	YY_BREAK
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 253 "lexgrog.l"
+#line 209 "lexgrog.l"
 {
 					yyless (0);
 					BEGIN (MAN_NAME);
@@ -2470,24 +2426,24 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 /* rule 26 can match eol */
-#line 259 "lexgrog.l"
+#line 215 "lexgrog.l"
 case 27:
 /* rule 27 can match eol */
-#line 260 "lexgrog.l"
+#line 216 "lexgrog.l"
 case 28:
 /* rule 28 can match eol */
-#line 261 "lexgrog.l"
+#line 217 "lexgrog.l"
 case 29:
 /* rule 29 can match eol */
-#line 262 "lexgrog.l"
+#line 218 "lexgrog.l"
 case 30:
 /* rule 30 can match eol */
-#line 263 "lexgrog.l"
+#line 219 "lexgrog.l"
 case 31:
 /* rule 31 can match eol */
-#line 264 "lexgrog.l"
+#line 220 "lexgrog.l"
 case YY_STATE_EOF(MAN_NAME):
-#line 264 "lexgrog.l"
+#line 220 "lexgrog.l"
 {	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (MAN_REST);
@@ -2495,14 +2451,14 @@ case YY_STATE_EOF(MAN_NAME):
 	YY_BREAK
 case 32:
 /* rule 32 can match eol */
-#line 270 "lexgrog.l"
+#line 226 "lexgrog.l"
 case 33:
 /* rule 33 can match eol */
-#line 271 "lexgrog.l"
+#line 227 "lexgrog.l"
 case 34:
 /* rule 34 can match eol */
 YY_RULE_SETUP
-#line 271 "lexgrog.l"
+#line 227 "lexgrog.l"
 {	/* terminate the string */
 					*p_name = '\0';
 					BEGIN (CAT_REST);
@@ -2515,7 +2471,7 @@ YY_RULE_SETUP
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 280 "lexgrog.l"
+#line 236 "lexgrog.l"
 {
 						newline_found ();
 						waiting_for_quote = 1;
@@ -2523,20 +2479,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
-#line 286 "lexgrog.l"
+#line 242 "lexgrog.l"
 case 37:
 /* rule 37 can match eol */
-#line 287 "lexgrog.l"
+#line 243 "lexgrog.l"
 case 38:
 /* rule 38 can match eol */
-#line 288 "lexgrog.l"
+#line 244 "lexgrog.l"
 case 39:
 /* rule 39 can match eol */
-#line 289 "lexgrog.l"
+#line 245 "lexgrog.l"
 case 40:
 /* rule 40 can match eol */
 YY_RULE_SETUP
-#line 289 "lexgrog.l"
+#line 245 "lexgrog.l"
 {	/* per line comments */
 						newline_found ();
 					}
@@ -2549,7 +2505,7 @@ case 41:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 295 "lexgrog.l"
+#line 251 "lexgrog.l"
 newline_found ();
 	YY_BREAK
 case 42:
@@ -2558,45 +2514,45 @@ case 42:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 296 "lexgrog.l"
+#line 252 "lexgrog.l"
 newline_found ();
 	YY_BREAK
 /* Toggle fill mode */
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 299 "lexgrog.l"
+#line 255 "lexgrog.l"
 fill_mode = 0;
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 300 "lexgrog.l"
+#line 256 "lexgrog.l"
 fill_mode = 1;
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 302 "lexgrog.l"
+#line 258 "lexgrog.l"
 /* strip continuations */
 	YY_BREAK
 /* convert to DASH */
 case 46:
 /* rule 46 can match eol */
-#line 306 "lexgrog.l"
+#line 262 "lexgrog.l"
 case 47:
 /* rule 47 can match eol */
-#line 307 "lexgrog.l"
+#line 263 "lexgrog.l"
 case 48:
 /* rule 48 can match eol */
-#line 308 "lexgrog.l"
+#line 264 "lexgrog.l"
 case 49:
 /* rule 49 can match eol */
-#line 309 "lexgrog.l"
+#line 265 "lexgrog.l"
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 309 "lexgrog.l"
+#line 265 "lexgrog.l"
 add_separator_to_whatis ();
 	YY_BREAK
 /* escape sequences and special characters */
@@ -2604,133 +2560,133 @@ add_separator_to_whatis ();
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 313 "lexgrog.l"
+#line 269 "lexgrog.l"
 add_char_to_whatis ('\\');
 	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 314 "lexgrog.l"
+#line 270 "lexgrog.l"
 add_char_to_whatis ('\'');
 	YY_BREAK
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 315 "lexgrog.l"
+#line 271 "lexgrog.l"
 add_char_to_whatis ('`');
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 316 "lexgrog.l"
+#line 272 "lexgrog.l"
 add_char_to_whatis ('-');
 	YY_BREAK
 case 55:
 /* rule 55 can match eol */
 YY_RULE_SETUP
-#line 317 "lexgrog.l"
+#line 273 "lexgrog.l"
 add_char_to_whatis ('.');
 	YY_BREAK
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 318 "lexgrog.l"
+#line 274 "lexgrog.l"
 add_char_to_whatis (' ');
 	YY_BREAK
 case 57:
 /* rule 57 can match eol */
 YY_RULE_SETUP
-#line 319 "lexgrog.l"
+#line 275 "lexgrog.l"
 add_char_to_whatis ('_');
 	YY_BREAK
 case 58:
 /* rule 58 can match eol */
 YY_RULE_SETUP
-#line 320 "lexgrog.l"
+#line 276 "lexgrog.l"
 add_char_to_whatis ('\t');
 	YY_BREAK
 case 59:
 /* rule 59 can match eol */
 YY_RULE_SETUP
-#line 322 "lexgrog.l"
+#line 278 "lexgrog.l"
 /* various useless control chars */
 	YY_BREAK
 case 60:
 /* rule 60 can match eol */
 YY_RULE_SETUP
-#line 323 "lexgrog.l"
+#line 279 "lexgrog.l"
 /* various inline functions */
 	YY_BREAK
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 325 "lexgrog.l"
+#line 281 "lexgrog.l"
 /* interpolate arg */
 	YY_BREAK
 case 62:
 /* rule 62 can match eol */
 YY_RULE_SETUP
-#line 327 "lexgrog.l"
+#line 283 "lexgrog.l"
 /* interpolate string */
 	YY_BREAK
 case 63:
 /* rule 63 can match eol */
 YY_RULE_SETUP
-#line 328 "lexgrog.l"
+#line 284 "lexgrog.l"
 /* special (non printable) character */
 	YY_BREAK
 case 64:
 /* rule 64 can match eol */
 YY_RULE_SETUP
-#line 329 "lexgrog.l"
+#line 285 "lexgrog.l"
 /* comment */
 	YY_BREAK
 case 65:
 /* rule 65 can match eol */
 YY_RULE_SETUP
-#line 331 "lexgrog.l"
+#line 287 "lexgrog.l"
 /* font changes */
 	YY_BREAK
 case 66:
 /* rule 66 can match eol */
 YY_RULE_SETUP
-#line 332 "lexgrog.l"
+#line 288 "lexgrog.l"
 /* mark input place in register */
 	YY_BREAK
 case 67:
 /* rule 67 can match eol */
 YY_RULE_SETUP
-#line 334 "lexgrog.l"
+#line 290 "lexgrog.l"
 /* interpolate number register */
 	YY_BREAK
 case 68:
 /* rule 68 can match eol */
 YY_RULE_SETUP
-#line 335 "lexgrog.l"
+#line 291 "lexgrog.l"
 /* overstrike chars */
 	YY_BREAK
 case 69:
 /* rule 69 can match eol */
 YY_RULE_SETUP
-#line 337 "lexgrog.l"
+#line 293 "lexgrog.l"
 /* size changes */
 	YY_BREAK
 case 70:
 /* rule 70 can match eol */
 YY_RULE_SETUP
-#line 338 "lexgrog.l"
+#line 294 "lexgrog.l"
 /* width of string */
 	YY_BREAK
 case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
-#line 340 "lexgrog.l"
+#line 296 "lexgrog.l"
 /* catch all */
 	YY_BREAK
 case 72:
 /* rule 72 can match eol */
 YY_RULE_SETUP
-#line 342 "lexgrog.l"
+#line 298 "lexgrog.l"
 /* function() in hpux */
 	YY_BREAK
 
@@ -2738,7 +2694,7 @@ YY_RULE_SETUP
 case 73:
 /* rule 73 can match eol */
 YY_RULE_SETUP
-#line 346 "lexgrog.l"
+#line 302 "lexgrog.l"
 add_char_to_whatis (' ');
 	YY_BREAK
 /* a ROFF break request, a paragraph request, or an indentation change
@@ -2747,36 +2703,36 @@ add_char_to_whatis (' ');
 
 case 74:
 /* rule 74 can match eol */
-#line 353 "lexgrog.l"
+#line 309 "lexgrog.l"
 case 75:
 /* rule 75 can match eol */
-#line 354 "lexgrog.l"
+#line 310 "lexgrog.l"
 case 76:
 /* rule 76 can match eol */
-#line 355 "lexgrog.l"
+#line 311 "lexgrog.l"
 case 77:
 /* rule 77 can match eol */
-#line 356 "lexgrog.l"
+#line 312 "lexgrog.l"
 case 78:
 /* rule 78 can match eol */
-#line 357 "lexgrog.l"
+#line 313 "lexgrog.l"
 case 79:
 /* rule 79 can match eol */
-#line 358 "lexgrog.l"
+#line 314 "lexgrog.l"
 case 80:
 /* rule 80 can match eol */
-#line 359 "lexgrog.l"
+#line 315 "lexgrog.l"
 case 81:
 /* rule 81 can match eol */
 YY_RULE_SETUP
-#line 359 "lexgrog.l"
+#line 315 "lexgrog.l"
 add_char_to_whatis ((char) 0x11);
 	YY_BREAK
 
 case 82:
 /* rule 82 can match eol */
 YY_RULE_SETUP
-#line 362 "lexgrog.l"
+#line 318 "lexgrog.l"
 { /* very general roff requests */
 						newline_found ();
 					}
@@ -2784,23 +2740,23 @@ YY_RULE_SETUP
 /* pass words as a chunk. speed optimization */
 case 83:
 YY_RULE_SETUP
-#line 367 "lexgrog.l"
+#line 323 "lexgrog.l"
 add_str_to_whatis (yytext, yyleng);
 	YY_BREAK
 /* normalise the period (,) separators */
 case 84:
 /* rule 84 can match eol */
-#line 371 "lexgrog.l"
+#line 327 "lexgrog.l"
 case 85:
 /* rule 85 can match eol */
 YY_RULE_SETUP
-#line 371 "lexgrog.l"
+#line 327 "lexgrog.l"
 add_str_to_whatis (", ", 2);
 	YY_BREAK
 case 86:
 /* rule 86 can match eol */
 YY_RULE_SETUP
-#line 373 "lexgrog.l"
+#line 329 "lexgrog.l"
 {
 					newline_found ();
 					add_char_to_whatis (yytext[yyleng - 1]);
@@ -2808,7 +2764,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 378 "lexgrog.l"
+#line 334 "lexgrog.l"
 add_char_to_whatis (*yytext);
 	YY_BREAK
 /* default EOF rule */
@@ -2819,15 +2775,15 @@ case YY_STATE_EOF(CAT_FILE):
 case YY_STATE_EOF(MAN_FILE):
 case YY_STATE_EOF(CAT_REST):
 case YY_STATE_EOF(FORCE_EXIT):
-#line 381 "lexgrog.l"
+#line 337 "lexgrog.l"
 return 1;
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 383 "lexgrog.l"
+#line 339 "lexgrog.l"
 ECHO;
 	YY_BREAK
-#line 2831 "<stdout>"
+#line 2787 "lexgrog.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3771,7 +3727,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 383 "lexgrog.l"
+#line 339 "lexgrog.l"
 
 
 
@@ -3839,7 +3795,7 @@ int find_name (const char *file, const char *filename, lexgrog *p_lg,
 	char *page_encoding = NULL;
 
 	if (strcmp (file, "-") == 0) {
-		p = decompress_fdopen (dup (fileno (stdin)));
+		p = decompress_fdopen (dup (STDIN_FILENO));
 	} else {
 		struct stat st;
 		char *lang;
@@ -3933,151 +3889,6 @@ int find_name_decompressed (pipeline *p, const char *filename, lexgrog *p_lg)
 		return p_name[0];
 	}
 }
-
-#ifdef TEST
-
-static void usage (int status)
-{
-	printf (_("usage: %s [-mcwfhV] [-E encoding] file ...\n"), program_name);
-	printf (_(
-		"-m, --man                   parse as man page.\n"
-		"-c, --cat                   parse as cat page.\n"
-		"-w, --whatis                show whatis information.\n"
-		"-f, --filters               show guessed series of "
-					    "preprocessing filters.\n"
-		"-E, --encoding encoding     override character set.\n"
-		"-V, --version               show version.\n"
-		"-h, --help                  show this usage message.\n"
-		"\n"
-		"The defaults are --man and --whatis.\n"));
-	exit (status);
-}
-
-int main (int argc, char **argv)
-{
-	int c;
-	int type = 0;
-	int parse_man = 0, parse_cat = 0, show_whatis = 0, show_filters = 0;
-	const char *encoding = NULL;
-	int some_failed = 0;
-
-	program_name = xstrdup (basename (argv[0]));
-
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != -1) {
-		switch (c) {
-			case 'm':
-				parse_man = 1;
-				break;
-			case 'c':
-				parse_cat = 1;
-				break;
-			case 'w':
-				show_whatis = 1;
-				break;
-			case 'f':
-				show_filters = 1;
-				break;
-			case 'E':
-				encoding = optarg;
-				break;
-			case 'V':
-				ver ();
-				break;
-			case 'h':
-				usage (OK);
-				break;
-			default:
-				usage (FAIL);
-				break;
-		}
-	}
-	if (parse_man) {
-		if (parse_cat) {
-			error (0, 0, _("-m -c: incompatible options"));
-			usage (FAIL);
-		} else
-			type = 0;
-	} else {
-		if (parse_cat)
-			type = 1;
-		else
-			type = 0;	/* default = man */
-	}
-	if (!show_whatis && !show_filters)
-		show_whatis = 1;
-
-	pipeline_install_sigchld ();
-
-	while (optind != argc) {
-		lexgrog lg;
-		const char *file;
-		int found = 0;
-
-		lg.type = type;
-
-		if (STREQ (argv[optind], "-"))
-			file = argv[optind];
-		else {
-			char *path, *pathend;
-			struct stat statbuf;
-
-			path = xstrdup (argv[optind]);
-			pathend = strrchr (path, '/');
-			if (pathend) {
-				*pathend = '\0';
-				pathend = strrchr (path, '/');
-				if (pathend && STRNEQ (pathend + 1, "man", 3))
-					*pathend = '\0';
-				else {
-					free (path);
-					path = NULL;
-				}
-			} else {
-				free (path);
-				path = NULL;
-			}
-
-			file = ult_src (argv[optind], path ? path : ".",
-					&statbuf, SO_LINK);
-			if (path)
-				free (path);
-		}
-
-		if (file && find_name (file, "-", &lg, encoding)) {
-			struct page_description *descs =
-				parse_descriptions (NULL, lg.whatis);
-			const struct page_description *desc;
-			for (desc = descs; desc; desc = desc->next) {
-				if (!desc->name || !desc->whatis)
-					continue;
-				found = 1;
-				printf ("%s", argv[optind]);
-				if (show_filters)
-					printf (" (%s)", lg.filters);
-				if (show_whatis)
-					printf (": \"%s - %s\"",
-						desc->name, desc->whatis);
-				printf ("\n");
-			}
-			free_descriptions (descs);
-		}
-
-		if (!found) {
-			printf ("%s: parse failed\n", argv[optind]);
-			some_failed = 1;
-		}
-
-		++optind;
-	}
-
-	if (some_failed)
-		return FATAL;
-	else
-		return OK;
-}
-
-#endif /* TEST */
 
 #ifdef PROFILE
 void rule_profile (void)

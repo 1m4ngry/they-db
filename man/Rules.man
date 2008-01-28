@@ -1,0 +1,57 @@
+## Copyright (C) 1994, 1995 Graeme Wilford.
+## Copyright (C) 2001, 2002, 2003, 2007 Colin Watson.
+## Much of the following is based on automake/lib/am/mans.am, which is:
+## Copyright (C) 1998, 2001, 2003, 2004, 2006 Free Software Foundation, Inc.
+##
+## This file is part of man-db.
+##
+## man-db is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## man-db is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with man-db; if not, write to the Free Software Foundation,
+## Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+mandir = @mandir@/$(LINGUA)
+
+CLEANFILES = $(man1_MANS) $(man5_MANS) $(man8_MANS) replace.sed
+
+replace.sed: $(top_builddir)/man/replace.sin
+	sed -e 's,%REPLACE_CONFIG_FILE%,$(config_file),g' $< > $@
+
+.man1.1: replace.sed
+	$(MKDIR_P) man1
+	@$(MAKE) $(AM_MAKEFLAGS) replace.sed
+	sed -f replace.sed $< > $@
+.man5.5: replace.sed
+	$(MKDIR_P) man5
+	@$(MAKE) $(AM_MAKEFLAGS) replace.sed
+	sed -f replace.sed $< > $@
+.man8.8: replace.sed
+	$(MKDIR_P) man8
+	@$(MAKE) $(AM_MAKEFLAGS) replace.sed
+	sed -f replace.sed $< > $@
+
+mostlyclean-local:
+	-rm -f index.*
+
+dist-hook:
+	@list='$(man1_MANS) $(man5_MANS) $(man8_MANS)'; \
+	dist_files=`for file in $$list; do \
+			echo $$file | sed 's/\.\([0-9]\)/.man\1/'; \
+		    done`; \
+	$(MKDIR_P) `echo "$$dist_files" | \
+		    sed 's|^|$(distdir)/|;s,/[^/]*$$,,' | \
+		    sort -u`; \
+	for file in $$dist_files; do \
+		test -f $(distdir)/$$file \
+		|| cp -p $(srcdir)/$$file $(distdir)/$$file \
+		|| exit 1; \
+	done

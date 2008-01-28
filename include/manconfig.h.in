@@ -104,6 +104,7 @@
 
 /* The name of the databases. DB_EXT depends on the database type in use */
 #define MAN_DB		"/index" DB_EXT
+#define mkdbname(path) appendstr (NULL, path, MAN_DB, NULL)
 
 /* The locations of the following files were determined by ../configure so
    some of them may be incorrect. Edit as necessary */
@@ -234,16 +235,6 @@
 /* know what you are doing.						 */
 /*-----------------------------------------------------------------------*/
 
-#define VERSION	"@VERSION@"
-#define DATE	"@date@"
-
-#ifdef inline
-/* autoconf #defines inline to be either "__inline", "__inline__" 
-   or "" if the compiler doesn't like inline */
-#  define __inline__	inline
-#  define __inline	inline
-#endif /* inline */
-
 /* my gcc specs file is hacked to define __profile__ if I compile with
    the -p or -pg flag, to do this manually (needed if you want to know where
    gmon.out ended up), uncomment the following line */
@@ -323,29 +314,15 @@ struct compression {
 
 extern struct compression comp_list[];
 
-/* depending on the compiler ... */
-#if __STDC__
-#  define VOID void
-#else
-#  define VOID char
-#endif
-
 /*-------------------------------------*/
 /* Now for some function prototypes... */
 /*-------------------------------------*/
 
 /* some library function declarations */
 #include <stddef.h>	/* for size_t */
-extern VOID *xmalloc (size_t n) ATTRIBUTE_MALLOC ATTRIBUTE_WARN_UNUSED_RESULT;
-extern VOID *xrealloc (VOID *p, size_t n)
-	ATTRIBUTE_MALLOC ATTRIBUTE_WARN_UNUSED_RESULT;
-extern __inline__ char *xstrdup (const char *string) ATTRIBUTE_MALLOC;
-extern __inline__ char *xstrndup (const char *string, size_t size) 
-	ATTRIBUTE_MALLOC;
+#include "xalloc.h"
+#include "xstrndup.h"
 extern const char *xstrsignal (int signum);
-struct sigaction;
-extern int xsigaction (int signum, const struct sigaction *act,
-		       struct sigaction *oldact);
 extern char *create_tempdir (const char *template);
 
 extern int debug_level;		/* shows whether -d issued */
@@ -354,11 +331,6 @@ extern void debug_error (const char *message, ...)
 	ATTRIBUTE_FORMAT_PRINTF(1, 2);
 
 struct pipeline;
-
-/* ver.c */
-#ifndef STATIC_VER
-extern __inline__ void ver (void);
-#endif /* !STATIC_VER */
 
 /* compression.c */
 extern struct compression *comp_info (const char *filename, int want_stem);
@@ -375,7 +347,6 @@ extern int find_name_decompressed (struct pipeline *p, const char *filename,
 				   struct lexgrog *p_lg);
 
 /* util.c */
-extern char *mkdbname (const char *path);
 extern int is_changed (const char *fa, const char *fb);
 extern int is_directory (const char *path);
 extern int do_system (struct pipeline *pl);
@@ -384,19 +355,7 @@ extern int remove_directory (const char *directory);
 extern char *trim_spaces (const char *s);
 extern char *lang_dir (const char *filename);
 
-#ifndef HAVE_BASENAME
-extern char *basename ();
-#endif /* HAVE_BASENAME */
-
-#ifndef HAVE_STRSEP
-extern char *strsep (char **stringp, const char *delim);
-#endif /* !HAVE_STRSEP */
-
-#ifndef HAVE_GETCWD
-#  define getcwd(buf,size) getwd (buf)
-#endif
-
-extern char *strappend (char *, ...)
+extern char *appendstr (char *, ...)
 	ATTRIBUTE_SENTINEL ATTRIBUTE_WARN_UNUSED_RESULT;
 
 extern int quiet;		/* be quiet(er) if 1 */
@@ -414,7 +373,6 @@ extern char *program_name;	/* the basename of the program (as called) */
 #define FAIL		1	/* usage or syntax error */
 #define FATAL		2	/* operational error */
 #define CHILD_FAIL	3	/* child failed */
-#define INTERRUPTED	4	/* Interrupted by signal */
 #define NOT_FOUND	16	/* No action was taken */
 
 /* System or user catpaths? Allow bitwise disjunctions of these. */

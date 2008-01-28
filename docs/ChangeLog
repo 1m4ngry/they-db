@@ -1,3 +1,1182 @@
+Mon Jan 28 08:47:51 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.1.
+	* po/man-db.pot, po/*.po: Update.
+
+Sun Jan 27 22:48:32 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Support Korean when configured with support for the multibyte groff
+	patch (thanks, Hansun Lee; Ubuntu bug #176896).
+
+	* src/encodings.c (compatible_encodings): Allow EUC-KR -> UTF-8.
+	  (get_roff_encoding): Handle ko_KR.UTF-8 via devutf8.
+
+Sun Jan 27 13:42:31 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_join): Initialise source, buffer, buflen,
+	  bufmax, line_cache, and peek_offset.
+
+Sun Jan 27 13:37:17 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.h (struct pipeline): Add ignore_signals member.
+	* lib/pipeline.c (pipeline_new): Initialise ignore_signals to 1.
+	  (pipeline_join): Set ignore_signals if either input pipeline has
+	  it set.
+	  (pipeline_start): Only ignore SIGINT and SIGQUIT if ignore_signals
+	  is set.
+	  (pipeline_wait): Only restore SIGINT and SIGQUIT if ignore_signals
+	  is set.
+	* lib/decompress.c (decompress_open, decompress_fdopen): Set
+	  ignore_signals to 0 so that SIGINT and SIGQUIT are not ignored
+	  just because a decompression process is running (Debian bug
+	  #462276).
+	* docs/NEWS: Document this.
+
+Thu Jan 24 17:12:24 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* include/manconfig.h.in (INTERRUPTED): Remove.
+	* src/man.c (int_handler): Remove; this is useless and
+	  non-signal-safe.
+	  (main): Don't set SIGINT to int_handler.
+
+Thu Jan 17 09:13:04 GMT 2008  Ming Hua  <minghua-guest@users.alioth.debian.org>
+
+	* po/zh_CN.po: Update from Translation Project.
+
+Tue Jan 15 18:45:22 GMT 2008  Yuri Kozlov  <kozlov.y@gmail.com>
+
+	* po/ru.po: Update from Translation Project.
+	* man/THANKS: Update e-mail address.
+
+Tue Jan 15 14:37:15 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-bdb.m4: Add WITH-DB option; make ACTION-IF-FOUND optional;
+	  define BDB_H and BTREE.
+	* configure.ac: Make Berkeley DB checks more concise using the
+	  above.
+
+Tue Jan 15 12:31:12 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Remove unused AC_HEADER_STDC.
+
+Tue Jan 15 08:42:27 GMT 2008  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Tue Jan 15 08:39:56 GMT 2008  Benno Schulenberg  <benno@vertaalt.nl>
+
+	* po/nl.po: Update from Translation Project.
+
+Tue Jan 15 00:01:39 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-compress-lib.m4: New function, MAN_COMPRESS_LIB: like
+	  AC_CHECK_LIB but adds the library to LIBCOMPRESS rather than LIBS.
+	* configure.ac: Use it for -lz.
+	* src/Makefile.am (lexgrog_LDADD, man_LDADD, manconv_LDADD,
+	  mandb_LDADD, zsoelim_LDADD): Add $(LIBCOMPRESS).
+
+Mon Jan 14 15:29:55 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Don't check for strerror; Gnulib supplies a
+	  replacement now.
+
+Mon Jan 14 13:59:18 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c (xcopy): Set the new file's mode to DBMODE in order to
+	  try to defend against strange problems with databases being left
+	  world-unreadable (Debian bug #430800).
+
+Mon Jan 14 00:55:22 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/man-db.pot: Update.
+
+Mon Jan 14 00:16:57 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.1-pre2.
+	* po/man-db.pot, po/*.po: Update.
+
+Mon Jan 14 00:00:21 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog_test.c (parse_opt): Use argp_error rather than
+	  error/argp_usage. Suggested by Ivan Shmakov.
+	* src/man.c (parse_opt): Likewise.
+	* src/manconv.c (parse_opt): Likewise.
+
+Sun Jan 13 23:35:27 GMT 2008  Ivan Shmakov  <oneingray@gmail.com>
+
+	Add a command-line option to man to enable groff warnings.
+
+	* src/man.c (enum opts, struct string_llist): New types.
+	  (default_roff_warnings, roff_warnings): Set defaults.
+	  (options, parse_opt): Accept --warnings.
+	  (make_roff_command): Add warnings to groff command line.
+	* man/man1/man.man1 (SYNOPSIS, OPTIONS): Document --warnings.
+	* docs/NEWS: Document this.
+
+Thu Jan 10 09:24:19 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (local_man_loop): Guess language based on absolute path
+	  to provided file, rather than relative (Debian bug #460014).
+
+Mon Jan  7 17:28:54 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib/lib/xmalloc.patch: Add commentary.
+
+Mon Jan  7 15:30:56 GMT 2008  Yuri Kozlov  <kozlov.y@gmail.com>
+
+	* po/ru.po: Update from Translation Project.
+
+Mon Jan  7 11:38:19 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/replace.sin: Rename to ...
+	* man/replace.sin.in: ... this.
+	* configure.ac (AC_CONFIG_FILES): Generate man/replace.sin.
+	* man/Rules.man (CLEANFILES, replace.sed, .man1.1, .man5.5,
+	  .man8.8): Generate replace.sed at 'make' time so that
+	  $(config_file) is substituted properly. Reported by Peter
+	  Breitenlohner.
+	* .bzrignore: Update.
+
+Mon Jan  7 11:14:04 GMT 2008  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* manual/Makefile.am: Use soelim with -I$(srcdir).
+
+	* man/Rules.man (mandir): Append the language so that Automake can
+	  handle translated manual pages.
+	  (install-data-local, uninstall-local): Removed in favor of rules
+	  generated by Automake.
+	  (CLEANFILES, dist-hook): Go back to using man*_MANS.
+	  (all-am): Remove explicit dependencies.
+	* man/Makefile.am, man/de/Makefile.am, man/es/Makefile.am,
+	  man/fr/Makefile.am, man/it/Makefile.am, man/ja/Makefile.am: Go
+	  back to using man*_MANS.
+
+	* man/man8/accessdb.man8, man/fr/man8/accessdb.man8: Fix typo (-V,
+	  not -v).
+
+	* manual/Makefile.am (.pp.ps): Use groff -Tps, not -Tdvi.
+
+	* src/Makefile.am (install-data-hook): Don't (try to) overwrite
+	  existing config files.
+
+	* src/Makefile.am (bin_SCRIPTS, all-am, install-exec-hook,
+	  uninstall-hook): Remove apropos from bin_SCRIPTS, explicitly
+	  depend on it from all-am, and manually create a whatis->apropos
+	  symlink at install time; installing the symlink from the build
+	  directory using bin_SCRIPTS would install a second copy (not
+	  stripped by "make install-strip").
+
+Mon Jan  7 09:54:12 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Stop checking for memory.h (not used) and limits.h
+	  (guaranteed by C89).
+	* lib/hashtable.c, libdb/db_ver.c, src/convert_name.c,
+	  src/descriptions.c, src/filenames.c: Remove unnecessary #include
+	  <stdio.h>.
+	* libdb/db_delete.c, libdb/db_lookup.c, libdb/db_store.c,
+	  src/manpath.c: Remove unnecessary #include <assert.h>.
+	* libdb/mydbm.h, src/catman.c, src/man.c, src/manpath.c: Include
+	  <limits.h> unconditionally.
+	* src/convert_name.c: Remove unnecessary #include <unistd.h>.
+	* src/man.c: Remove unnecessary #include <sys/file.h> and
+	  <sys/wait.h>.
+	* src/manpath.c: Remove unnecessary #include <termios.h>.
+	* src/straycats.c: Remove unnecessary #include <fcntl.h>.
+	* src/ult_src.c: Remove S_ISLNK conditionals; Gnulib's <sys/stat.h>
+	  wrapper deals with this.
+
+	* lib/linelength.c (get_line_length): Remove trailing newline from
+	  message passed to perror.
+
+Mon Jan  7 03:21:49 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/gettext.h: Remove; now provided by Gnulib.
+	* lib/Makefile.am (libman_a_SOURCES): Remove gettext.h.
+	* lib/README: Remove gettext.h.
+
+Mon Jan  7 03:11:08 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* include/comp_src.h.in: Update header comment.
+
+Mon Jan  7 02:52:25 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/util.c (mkdbname): Replace with ...
+	* include/manconfig.h.in (mkdbname): ... a simpler macro.
+
+Mon Jan  7 02:27:59 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_btree.c, libdb/db_storage.h, libdb/mydbm.h, src/catman.c,
+	  src/check_mandirs.c, src/convert_name.c, src/globbing.c,
+	  src/man.c, src/man.h, src/mandb.c, src/manp.c, src/security.c,
+	  src/security.h, src/whatis.c: Replace __inline__ with inline
+	  everywhere. Autoconf's handling of the latter is sufficient.
+	* include/manconfig.h.in: Remove __inline and __inline__
+	  definitions.
+
+Mon Jan  7 02:12:26 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Automatically detect the Debian multibyte patch to
+	  groff.
+
+Mon Jan  7 01:14:39 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/accessdb.c (options, parse_opt): Accept -d/--debug.
+	* src/lexgrog_test.c (options, parse_opt): Likewise.
+	* src/zsoelim.l (options, parse_opt): Likewise.
+	* docs/NEWS: Document this.
+
+Mon Jan  7 01:08:39 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/zsoelim.l (options): Fix incorrect description of -C.
+
+Sun Jan  6 15:01:08 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	sigaction is specified as non-interruptible; there is no need to
+	wrap it with EINTR detection.
+
+	* lib/xsigaction.c: Remove.
+	* include/manconfig.h.in (xsigaction): Remove prototype.
+	* lib/Makefile.am (libman_a_SOURCES): Remove xsigaction.c.
+	* lib/README: Remove xsigaction.c.
+	* lib/cleanup.c (sighandler, trap_signal, untrap_signal): Call
+	  sigaction rather than xsigaction.
+	* lib/pipeline.c (pipeline_start, pipeline_wait,
+	  pipeline_install_sigchld, pipeline_pump): Call sigaction rather
+	  than xsigaction.
+
+Sun Jan  6 14:46:36 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* po/nl.po: Update with msgmerge.
+
+Sun Jan  6 14:45:09 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man, man/de/Makefile.am, man/es/Makefile.am,
+	  man/fr/Makefile.am, man/it/Makefile.am, man/ja/Makefile.am: Use
+	  LINGUA rather than LANGUAGE to name the manual page language, as
+	  setting LANGUAGE causes 'make' output to be translated.
+
+Sun Jan  6 14:34:15 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/de.UTF-8, man/es.UTF-8, man/fr.UTF-8, man/it.UTF-8,
+	  man/ja.UTF-8: Rename to ...
+	* man/de, man/es, man/fr, man/it, man/ja: ... these.
+	* .bzrignore, configure.ac, man/de/Makefile.am, man/es/Makefile.am,
+	  man/fr/Makefile.am, man/it/Makefile.am, man/ja/Makefile.am,
+	  man/po4a/po4a.cfg, man/THANKS: Adjust for new directory names.
+
+Sun Jan  6 10:20:19 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Upgrade to Debian 20080104-1. Import the unsetenv module.
+	* src/man.c, src/whatis.c: No longer #include "setenv.h".
+
+Sun Jan  6 09:57:51 GMT 2008  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Sat Jan  5 23:15:23 GMT 2008  Ming Hua  <minghua-guest@users.alioth.debian.org>
+
+	* po/zh_CN.po: Update from Translation Project (trivial).
+
+Sat Jan  5 23:06:14 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Define NLS Automake conditional from USE_NLS.
+	* man/Makefile.am (SUBDIRS): Define only if NLS.
+
+Sat Jan  5 22:54:05 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/Makefile.am, man/de.UTF-8/Makefile.am,
+	  man/es.UTF-8/Makefile.am, man/fr.UTF-8/Makefile.am,
+	  man/it.UTF-8/Makefile.am, man/ja.UTF-8/Makefile.am: Declare
+	  man*_files rather than man*_MANS. Using the MANS primary causes
+	  Automake's incorrect manual page rules to be used.
+	* man/Rules.man (CLEANFILES, install-data-local, uninstall-local,
+	  dist-hook): Expect man*_files rather than man*_MANS.
+	  (all-am): Depend on $(man*_files).
+
+	* man/Rules.man (install-data-local, uninstall-local): Stop
+	  stripping leading "man*/" from install location.
+
+Sat Jan  5 21:49:40 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-gcc-warning.m4: New file.
+	* configure.ac: Test whether each -W option (other than -Wall) that
+	  we want to add is supported, rather than adding it
+	  unconditionally. Reported by Peter Breitenlohner.
+
+Sat Jan  5 14:12:33 GMT 2008  Ivan Shmakov  <oneingray@gmail.com>
+
+	* configure.ac: Test for existence of
+	  "$srcdir/gnulib/po/Makefile.in.in" rather than just
+	  gnulib/po/Makefile.in.in in order to work for VPATH builds. Also
+	  reported by Peter Breitenlohner.
+
+Fri Jan  4 16:03:57 GMT 2008  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* src/man.c (display): Stop -W printing blank lines for manual pages
+	  without corresponding cat pages.
+
+Fri Jan  4 15:59:41 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/Makefile.am: Install globbing and manconv in
+	  $(libexecdir)/@PACKAGE@ rather than in $(pkglibdir). Reported by
+	  Peter Breitenlohner.
+
+Fri Jan  4 12:44:34 GMT 2008  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* libdb/db_btree.c (dbstore): Rename basename argument to base to
+	  avoid clashing with the function of the same name.
+	* libdb/db_storage.h (dbstore): Update prototype.
+	* libdb/mydbm.h (dbver_wr, dbver_rd), src/security.h
+	  (do_system_drop_privs): Update prototype argument names to match
+	  definition.
+
+Fri Jan  4 11:52:22 GMT 2008  Peter Breitenlohner  <peb@mppmu.mpg.de>
+
+	* src/man.c: Make prompt_string const. Avoids "discards qualifier"
+	  warning when building without NLS.
+
+Thu Jan  3 21:39:27 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import the lib-ignore module, to have the linker ignore
+	  unused libraries.
+
+Wed Jan  2 23:30:33 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/decompress.c (decompress_zlib), lib/linelength.c
+	  (get_line_length), lib/pipeline.c (passthrough), src/lexgrog.l
+	  (find_name), src/man.c (set_term, get_term, main,
+	  make_roff_command, format_display_and_save, format_display,
+	  display_catman, display), src/manconv.c (main), src/zsoelim.l
+	  (open_file): Use STDIN_FILENO, STDOUT_FILENO, and STDERR_FILENO
+	  macros rather than calling fileno.
+
+Wed Jan  2 16:46:46 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/accessdb.c (main), src/catman.c (main), src/globbing_test.c
+	  (main), src/lexgrog_test.c (main), src/man.c (main), src/manconv.c
+	  (main), src/mandb.c (main), src/manpath.c (main), src/whatis.c
+	  (main), src/wrapper.c (main), src/zsoelim.l (main): Bind the
+	  "man-db-gnulib" textual domain as well as "man-db".
+
+Wed Jan  2 00:12:48 GMT 2008  Benno Schulenberg  <benno@vertaalt.nl>
+
+	* po/nl.po: New from Translation Project.
+	* po/LINGUAS: Add nl.
+	* man/THANKS: Add translator credit.
+
+Tue Jan  1 15:36:23 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* README, src/man.c: Update copyright years.
+
+Tue Jan  1 15:27:51 GMT 2008  Ming Hua  <minghua-guest@users.alioth.debian.org>
+
+	* po/zh_CN.po: Update.
+
+Tue Jan  1 12:34:10 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (options): Add -s as an alias for -S (Debian bug
+	  #458499).
+	  (parse_opt): Accept it.
+	  (get_section_list): Allow the section list to be separated by
+	  commas as well as colons.
+	* man/man1/man.man1 (OPTIONS): Document -s and comma-separation.
+	* docs/NEWS: Document this.
+
+Mon Dec 31 22:13:00 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Coding style): Expand.
+
+Mon Dec 31 22:01:35 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* include/manconfig.h.in: Remove obsolete definitions of VERSION and
+	  DATE and declaration of ver.
+	* src/zsoelim.l: Remove obsolete definition of STATIC_VER.
+
+Mon Dec 31 17:00:19 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/hashtable.c (hash_lookup_structure): New function; same as
+	  previous hash_lookup but returns a struct nlist * rather than the
+	  value.
+	  (hash_lookup): Rewrite in terms of hash_lookup_structure.
+	  (hash_install): Use hash_lookup_structure rather than hash_lookup
+	  (thanks, Ivan Shmakov; should fix Debian bug #374708).
+
+Mon Dec 31 16:15:26 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/hashtable.c (hash_install): Fix head comment to match reality
+	  (thanks, Ivan Shmakov).
+
+Mon Dec 31 15:45:31 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Revision control): Mention that the bzr archive now
+	  requires bzr 0.15 or later.
+
+Mon Dec 31 15:31:08 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.1-pre1.
+	* po/man-db.pot, po/*.po: Update.
+
+Mon Dec 31 10:02:28 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (passthrough): New helper function.
+	  (pipeline_connect): Add special (kludge) handling for zero-command
+	  sinks.
+	  (pipeline_pump): Add minor commentary.
+	* src/man.c (options, parse_opt): New -R/--recode option.
+	  (make_roff_command): If --recode is used, suppress external
+	  formatters and all processing filters, and force the output
+	  encoding to the argument to --recode.
+	  (display): If --recode is used, force display to stdout and
+	  suppress cat pages.
+	  (try_section, display_filesystem, display_database): Don't show
+	  cat pages or follow .so links for --recode.
+	* src/util.c (lang_dir): Handle relative filenames starting with
+	  "man/".
+	* man/man1/man.man1 (OPTIONS): Document --recode.
+	* docs/NEWS: Document this.
+
+Fri Dec 14 10:06:21 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (options): Note that --exact is for apropos only.
+
+Fri Dec 14 09:39:06 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	Convert from getopt to argp for option parsing. This invalidates
+	many translations, but this should be the last time; in future, a
+	changes in a single option will only affect translations of the help
+	strings for that option, not the program's entire help string.
+
+	* gnulib: Import the argp and lock modules.
+	* autogen.sh: Hack around a tools/config.rpath clash between Gnulib
+	  and gettext.
+	* configure.ac (CFLAGS): Add -Wno-missing-field-initializers for
+	  GCC.
+	* .bzrignore: Add gnulib/lib/strings.h, po/remove-potcdate.sed, and
+	  tools/config.rpath.*.
+
+	* src/version.c: Remove in favour of argp's --version handling.
+	* po/POTFILES.in: Remove src/version.c.
+	* src/Makefile.am (accessdb_SOURCES, catman_SOURCES,
+	  globbing_SOURCES, lexgrog_SOURCES, man_SOURCES, manconv_SOURCES,
+	  mandb_SOURCES, manpath_SOURCES, whatis_SOURCES, wrapper_SOURCES,
+	  zsoelim_SOURCES): Remove version.c.
+
+	* src/accessdb.c (long_options, args, usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, doc, options, parse_opt,
+	  help_filter, argp): Add.
+	  (main): Switch from getopt_long to argp_parse. Use error (FATAL)
+	  for database read errors rather than error (0); usage (FAIL).
+	* src/catman.c (long_options, args, usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, options, parse_opt, argp): Add.
+	  (catman, do_catman, parse_for_sec): Rename argp to args.
+	  (main): Switch from getopt_long to argp_parse.
+	* src/globbing_test.c (long_options, args, usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, options, parse_opt, argp): Add.
+	  (main): Switch from getopt_long to argp_parse.
+	* src/lexgrog_test.c (long_options, args, usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, doc, options, parse_opt, argp):
+	  Add.
+	  (main): Switch from getopt_long to argp_parse.
+	* src/man.c (long_options, args, usage, man_getopt): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, options, parse_opt, help_filter,
+	  argp): Add.
+	  (do_extern): Adjust iteration over arguments.
+	  (main): Switch from getopt_long to argp_parse. Initialise
+	  html_pager early for use in --help.
+	* src/man.h (man_getopt): Remove prototype.
+	* src/manconv.c (long_options, args, usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, options, parse_opt, argp): Add.
+	  (main): Switch from getopt_long to argp_parse.
+	* src/mandb.c (long_options, args, usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, options, parse_opt, argp): Add.
+	  (main): Switch from getopt_long to argp_parse.
+	* src/manpath.c (long_options, args, usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, options, parse_opt, argp): Add.
+	  (main): Switch from getopt_long to argp_parse.
+	* src/whatis.c (long_options, args, apropos_usage, whatis_usage,
+	  usage): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, apropos_doc, options, parse_opt,
+	  apropos_argp, whatis_argp): Add.
+	  (main): Switch from getopt_long to argp_parse. Suppress --exact
+	  and --and options in the whatis case.
+	* src/zsoelim.l (long_options, args, usage, ver): Remove.
+	  (argp_program_version, argp_program_bug_address,
+	  argp_err_exit_status, args_doc, options, parse_opt, argp): Add.
+	  (main): Switch from getopt_long to argp_parse.
+	* po/POTFILES.in: Add zsoelim.l.
+
+Thu Dec 13 17:20:51 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* autogen.sh: Permit gnulib-tool to be missing; in that case, just
+	  run autoreconf.
+
+Thu Dec 13 11:36:26 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AM_GNU_GETTEXT_VERSION): Upgrade to gettext 0.17.
+	* gnulib: Upgrade to Debian 20071201+dfsg-1.
+	* README (Copyright and licensing): New section. Explain the
+	  implications of Gnulib components being distributed under GPL v3.
+	* .bzrignore: Ignore gnulib/lib/fcntl.h.
+
+Mon Nov 26 08:37:30 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Utility functions to use): Rename to ...
+	  (Facilities and portability): ... this. Add comments on Gnulib and
+	  C89/C99.
+
+Sun Nov 25 21:11:34 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Revision control): Add advice on docs/ChangeLog
+	  practice in branches.
+
+Sun Nov 25 21:01:22 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (get_roff_encoding): Just use the fallback
+	  encoding if device is NULL, rather than crashing. Bug reported by
+	  Ivan Shmakov.
+
+Sun Nov 25 18:51:16 GMT 2007  Ivan Shmakov  <oneingray@gmail.com>
+
+	* man/Rules.man: replace.sed lives in $(top_builddir)/man, not
+	  $(top_srcdir)/man.
+
+Sat Nov 24 10:45:50 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_roff_command): If the environment variable
+	  MANROFFOPT is set, append its contents to the *roff command line
+	  (thanks, Ivan Shmakov; Debian bug #451187).
+	* man/man1/man.man1 (ENVIRONMENT): Document MANROFFOPT.
+	* docs/NEWS: Document this.
+
+Mon Nov 19 19:41:18 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AM_INIT_AUTOMAKE): Require Automake 1.10. Ming Hua
+	  reported that Automake 1.9 doesn't have the MKDIR_P feature we
+	  depend on.
+
+Tue Nov 13 22:10:51 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (use_grep, do_whatis, word_fnmatch, search, main):
+	  Rename regex to regex_opt, as Solaris' <libgen.h> defines a regex
+	  function (thanks to the Nexenta developers).
+
+Mon Nov 12 19:24:00 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/accessdb.c (main), src/globbing_test.c (main),
+	  src/lexgrog_test.c (main), src/zsoelim.l (main): Enable
+	  localisation (Debian bug #448395).
+
+Sun Nov 11 05:43:16 GMT 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Issue a useful error message if
+	  gnulib/po/Makefile.in.in does not exist (reported by Ming Hua).
+
+Mon Oct 22 00:04:45 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Bruno Haible notes in
+	http://lists.gnu.org/archive/html/groff/2005-12/msg00061.html that
+	setlocale is supported on all known systems, and it is in C89. Use
+	it unconditionally.
+
+	* configure.ac: Don't check for setlocale.
+	* src/catman.c (parse_for_sec), src/man.c (main), src/manp.c
+	  (add_nls_manpath), src/whatis.c (main): Remove HAVE_SETLOCALE
+	  conditionals.
+
+Sun Oct 21 21:56:02 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Forbid output tokens beginning with "MAN_".
+
+Sun Oct 21 21:52:43 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Rationalise use of comments. Use more vertical
+	  whitespace.
+
+Sun Oct 21 21:12:46 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import .po files (--po-base=gnulib/po --po-domain=man-db).
+	* configure.ac (AC_CONFIG_FILES): Generate gnulib/po/Makefile.in.
+	* Makefile.am (SUBDIRS): Build gnulib/po.
+	* .bzrignore: Ignore gnulib/po. This is contrary to our usual
+	  practice, since this is generated by autogen.sh; but gnulib-tool
+	  gives us full .po files which are then stripped down to just the
+	  parts of Gnulib we use by make, so adding them to bzr is
+	  inconvenient.
+
+Sun Oct 21 19:46:26 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (man_getopt): Fix reversed handling of -f and -k in the
+	  "incompatible options" message.
+
+Sun Oct 21 19:43:27 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (CFLAGS): Add -Wformat-security.
+	* src/man.c (man_getopt): Use %s as the format string for the
+	  "incompatible options" message since the message itself is not a
+	  string literal. (This is only a security problem in the presence
+	  of hostile translators.)
+
+Sun Oct 21 17:59:13 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man (SED_ARGS): Move to ...
+	* man/replace.sin: ... here.
+	* man/Rules.man (.man1.1, .man5.5, .man8.8): Use replace.sed to
+	  shorten build output.
+	* configure.ac (AC_CONFIG_FILES): Generate man/replace.sed from
+	  man/replace.sin.
+	* .bzrignore: Ignore man/replace.sed.
+
+Sun Oct 21 13:38:09 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/check_mandirs.c (purge_missing): If there is no content, that
+	  might just be because the key was already freed while purging an
+	  earlier multi key, so skip to the next key rather than breaking
+	  out of the loop.
+
+Sun Oct 21 13:33:38 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Check for gdbm_exists in DBLIBS as well as LIBS.
+	  Remove unused gdbm_setopt check.
+
+Sun Oct 21 01:25:00 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AC_INIT): Pass a BUG-REPORT argument.
+
+Sat Oct 20 18:27:13 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib/lib/xmalloc.c (xstrdup): Explicitly tolerate a NULL
+	  argument, returning NULL in that case. (Also sent to Gnulib
+	  upstream.)
+	* gnulib/lib/xmalloc.patch: Add, with the above change in patch
+	  format.
+	* autogen.sh: Apply xmalloc.patch after updating Gnulib.
+
+Sat Oct 20 18:20:07 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib/lib/asnprintf.c, gnulib/lib/asprintf.c,
+	  gnulib/lib/float+.h, gnulib/lib/float_.h,
+	  gnulib/lib/printf-args.c, gnulib/lib/printf-args.h,
+	  gnulib/lib/printf-parse.c, gnulib/lib/printf-parse.h,
+	  gnulib/lib/size_max.h, gnulib/lib/stdio_.h,
+	  gnulib/lib/vasnprintf.c, gnulib/lib/vasnprintf.h,
+	  gnulib/lib/vasprintf.c, gnulib/lib/xasprintf.c,
+	  gnulib/lib/xsize.h, gnulib/lib/xvasprintf.c,
+	  gnulib/lib/xvasprintf.h, gnulib/m4/eoverflow.m4,
+	  gnulib/m4/float_h.m4, gnulib/m4/intmax_t.m4,
+	  gnulib/m4/inttypes_h.m4, gnulib/m4/size_max.m4,
+	  gnulib/m4/stdarg.m4, gnulib/m4/stdint_h.m4, gnulib/m4/stdio_h.m4,
+	  gnulib/m4/vasnprintf.m4, gnulib/m4/vasprintf.m4,
+	  gnulib/m4/wchar_t.m4, gnulib/m4/xsize.m4, gnulib/m4/xvasprintf.m4:
+	  Import the Gnulib xvasprintf module.
+	* .bzrignore: Update.
+
+	* libdb/mydbm.h: Add MYDBM_RESET_DSIZE and MYDBM_SET convenience
+	  macros, to obsolete most direct uses of MYDBM_SET_DPTR and
+	  MYDBM_DSIZE. Code that just wants to put a string in a datum
+	  should use MYDBM_SET.
+	* libdb/db_btree.c (dbstore), libdb/db_delete.c (dbdelete): Use
+	  MYDBM_SET.
+	* libdb/db_lookup.c (make_multi_key): Use MYDBM_SET and xasprintf.
+	  (make_content): Likewise. Collapse ANSI_SPRINTF #ifdef, no longer
+	  needed.
+	  (dblookup): Use MYDBM_SET.
+	* libdb/db_ndbm.c (ndbm_flopen): Use xasprintf.
+	* libdb/db_store.c (dbstore): Use MYDBM_SET and xasprintf.
+	* libdb/db_ver.c (dbver_rd, dbver_wr): Use MYDBM_SET.
+	* src/check_mandirs.c (update_db_time): Use MYDBM_SET and xasprintf.
+	  (reset_db_time, update_db): Use MYDBM_SET.
+	* src/filenames.c (make_filename): Use xasprintf.
+	* src/man.c (setenv_less): Use xasprintf.
+
+	* m4/man-ansi-sprintf.m4, configure.ac (MAN_FUNC_ANSI_SPRINTF):
+	  Remove.
+
+Sat Oct 20 14:30:44 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Remove redundant check for getcwd.
+
+Thu Oct 18 01:51:06 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/wrapper.c: Include "config.h" right at the top and with a
+	  HAVE_CONFIG_H guard, like other files.
+
+Thu Oct 18 01:41:41 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pathsearch.c, src/man.c, src/mandb.c, src/manp.c: Include
+	  "xgetcwd.h" rather than <xgetcwd.h>, as suggested by gnulib-tool.
+
+Thu Oct 18 01:37:22 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (cat_manpath): Whitespace adjustments.
+
+Thu Oct 18 01:15:25 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c: PIPE_BUF is no longer used, so don't define it.
+
+Wed Oct 17 22:34:32 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib/lib/minmax.h, gnulib/m4/minmax.m4: Import the Gnulib minmax
+	  module.
+	* src/man.c (duplicate_candidates): Use it.
+	* src/util.c: Remove unused definition of MAX.
+
+	Regenerate all build system files. (Future ChangeLog entries will
+	not mention this.)
+
+Wed Oct 17 22:22:25 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib/lib/strerror.c, gnulib/m4/strerror.m4: Import the Gnulib
+	  strerror module.
+
+	Regenerate all build system files.
+
+Wed Oct 17 21:05:50 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Use the Gnulib portability library.
+
+	* lib/alloca.c, lib/basename.c, lib/error.c, lib/error.h,
+	  lib/fnmatch.c, lib/fnmatch_.h, lib/getcwdalloc.c,
+	  lib/getcwdalloc.h, lib/getopt.c, lib/getopt1.c, lib/getopt_.h,
+	  lib/glob.c, lib/glob_.h, lib/memcmp.c, lib/mkdtemp.c,
+	  lib/mkstemp.c, lib/putenv.c, lib/realpath.c, lib/rename.c,
+	  lib/setenv.c, lib/setenv.h, lib/strcspn.c, lib/strnlen.c,
+	  lib/strsep.c, lib/tempname.c, lib/unsetenv.c, lib/xmalloc.c,
+	  lib/xstrdup.c, lib/xstrndup.c, m4/man-fnmatch.m4, m4/setenv.m4,
+	  m4/tempname.m4: Remove.
+	* gnulib/*, tools/link-warning.h: Import atexit, canonicalize,
+	  dirname, error, fnmatch-gnu, getopt, glob, memcmp, mkdtemp,
+	  mkstemp, regex, rename, setenv, strcspn, strsep, sys_select,
+	  xalloc, xgetcwd, and xstrndup modules.
+	* .bzrignore: Update.
+	* Makefile.am (SUBDIRS): Build gnulib/lib.
+	  (ACLOCAL_AMFLAGS): Add -I gnulib/m4.
+	* autogen.sh: Add gnulib-tool --update.
+	* configure.ac: Call gl_EARLY and gl_INIT.
+	  Remove calls to AC_AIX and AC_MINIX.
+	  Stop checking for unistd.h, regex.h, libgen.h, string.h, and
+	  strings.h headers.
+	  Stop checking for alloca, memcmp, strcoll, vprintf, getwd, atexit,
+	  on_exit, canonicalize_file_name, regcomp, re_comp, globfree,
+	  getopt_long, putenv, realpath, rename, basename, strsep, strcspn,
+	  strnlen, mkdtemp, mkstemp, setenv, and __gen_tempname functions.
+	  Generate gnulib/lib/Makefile.
+	* docs/HACKING: Document policy on generated files in revision
+	  control.
+	* include/manconfig.h.in: Replace xmalloc, xrealloc, xstrdup, and
+	  xstrndup declarations with inclusions of xalloc.h and xstrndup.h.
+	  Stop defining basename, strsep, and getcwd.
+	* lib/Makefile.am (libman_a_CPPFLAGS): Include headers from
+	  gnulib/lib.
+	  (libman_a_SOURCES): Remove error.c, error.h, getcwdalloc.c,
+	  getcwdalloc.h, setenv.h, xmalloc.c, xstrdup.c, and xstrndup.c.
+	  (libman_a_LIBADD): Remove $(ALLOCA).
+	  (BUILT_SOURCES, MOSTLYCLEANFILES, EXTRA_DIST, fnmatch.h, getopt.h,
+	  glob.h): Remove; replaced by Gnulib.
+	* lib/README: Alphabetise, update file list, and update authors.
+	* libdb/Makefile.am (libmandb_a_CPPFLAGS): Include headers from
+	  gnulib/lib.
+	* src/Makefile.am (AM_CPPFLAGS): Include headers from gnulib/lib.
+	  (LIBMAN): Link with gnulib/lib/libgnu.a.
+
+	* lib/cleanup.c: Assume <unistd.h> and atexit.
+	* lib/decompress.c, lib/flock.c: Assume <unistd.h>.
+	* lib/pathsearch.c: Assume <unistd.h>.
+	  (pathsearch): Use xgetcwd.
+	* lib/pipeline.c: Assume <sys/select.h> and <unistd.h>. Remove
+	  duplicate <fcntl.h> inclusion.
+	  (command_new): Use base_name.
+	* lib/tempfile.c, lib/xstrsignal.h: Assume <unistd.h>.
+	* libdb/db_btree.c: Assume <unistd.h>.
+	* libdb/db_btree.c, libdb/db_lookup.c: Assume <unistd.h> and strsep.
+	* libdb/db_ndbm.c: Assume <unistd.h>.
+	* libdb/db_store.c: Assume <unistd.h> and strsep.
+	* src/accessdb.c (main): Use base_name.
+	* src/catman.c: Assume <unistd.h>.
+	  (main): Use base_name.
+	* src/check_mandirs.c: Assume <unistd.h>, strpbrk, and time.
+	  (test_manfile): Use base_name. Rename existing base_name variable
+	  to manpage_base.
+	  (reset_db_time): Use dir_name.
+	* src/compression.c, src/convert_name.c: Assume <unistd.h>.
+	* src/filenames.c: Remove unused <libgen.h> inclusion.
+	* src/globbing_test.c (main): Use base_name.
+	* src/lexgrog.l, src/lexgrog.l-2.3.8, src/lexgrog.l-2.4a,
+	  src/lexgrog.l.new: Assume <unistd.h>.
+	* src/lexgrog_test.c (main): Use base_name.
+	* src/man.c: Assume <unistd.h>.
+	  (gripe_no_man): Use unsetenv rather than putenv.
+	  (local_man_loop): Use base_name.
+	  (main): Use base_name and xgetcwd.
+	  (make_roff_command): Use setenv rather than putenv.
+	  (format_display): Use xgetcwd and base_name.
+	* src/manconv.c: Assume <unistd.h>.
+	  (main): Use base_name.
+	* src/mandb.c: Assume <unistd.h>.
+	  (main): Use base_name and xgetcwd.
+	* src/manp.c: Assume <unistd.h>.
+	  (add_dir_to_path_list): Use xgetcwd.
+	* src/manpath.c: Assume <unistd.h>.
+	  (main): Use base_name.
+	* src/security.c: Assume <unistd.h>.
+	* src/straycats.c: Assume <unistd.h>.
+	  (check_for_stray): Use base_name. Assume canonicalize_file_name.
+	* src/ult_src.c: Assume <unistd.h>.
+	  (ult_softlink): Use canonicalize_file_name.
+	* src/ult_src.c: Assume <unistd.h>.
+	* src/whatis.c: Assume <unistd.h> and <sys/types.h>.
+	  (use_grep, parse_name, parse_whatis, search, main): Assume POSIX
+	  regex functions (provided by Gnulib's regex module).
+	  (main): Use base_name.
+	* src/wrapper.c (main): Use base_name.
+	* src/zsoelim.l: Assume <unistd.h>.
+	  (main): Use base_name.
+
+	* docs/NEWS: Document this.
+
+	Drop remaining bits of pre-C89 compatibility.
+
+	* lib/ansidecl.h, lib/strspn.c, lib/strstr.c: Remove.
+	* configure.ac: Stop checking for strstr and strspn.
+	* include/manconfig.h.in: Remove VOID definition.
+	* lib/Makefile.am (libman_a_SOURCES): Remove ansidecl.h.
+	* lib/appendstr.c, lib/decompress.c, lib/flock.c, lib/hashtable.c,
+	  lib/pathsearch.c, lib/tempfile.c, libdb/db_btree.c,
+	  libdb/db_delete.c, libdb/db_gdbm.c, libdb/db_lookup.c,
+	  libdb/db_ndbm.c, libdb/db_store.c, libdb/db_ver.c, src/accessdb.c,
+	  src/catman.c, src/check_mandirs.c, src/compression.c,
+	  src/convert_name.c, src/descriptions.c, src/descriptions_store.c,
+	  src/encodings.c, src/fake_security.c, src/filenames.c,
+	  src/globbing.c, src/globbing_test.c, src/lexgrog.l,
+	  src/lexgrog.l-2.3.8, src/lexgrog.l-2.4a, src/lexgrog.l.new,
+	  src/lexgrog_test.c, src/man.c, src/manconv.c, src/mandb.c,
+	  src/manp.c, src/manpath.c, src/security.c, src/straycats.c,
+	  src/ult_src.c, src/util.c, src/version.c, src/whatis.c,
+	  src/zsoelim.l: Assume C89 declaration syntax, headers, and
+	  functions.
+	* docs/NEWS: Document this.
+
+	* configure.ac (--enable-mandirs): Improve grammar.
+
+	Regenerate all build system files using autogen.sh.
+
+Mon Oct 15 10:15:48 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Document previous change.
+
+Mon Oct 15 10:13:57 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (check_preprocessor_encoding): Allow only
+	  alphanumerics and "-_/:.()" in encoding names (Debian bug
+	  #446055). This matches everything in 'iconv --list' on my system.
+	  (try_iconv): Include encoding names in error message if iconv_open
+	  fails.
+
+Mon Oct 15 10:06:51 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man (.man1.1, .man5.5, .man8.8): Use $(MKDIR_P) rather
+	  than hardcoding mkdir -p.
+	* man/Makefile.in, man/de.UTF-8/Makefile.in,
+	  man/es.UTF-8/Makefile.in, man/fr.UTF-8/Makefile.in,
+	  man/it.UTF-8/Makefile.in, man/ja.UTF-8/Makefile.in: Regenerate.
+
+Sun Oct 14 02:39:43 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/Makefile.am (AM_CPPFLAGS): Fix SOELIM definition.
+	* src/Makefile.in: Regenerate.
+
+Sun Oct 14 01:20:07 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* .bzrignore: Restore some ignores needed in intl/.
+
+Sun Oct 14 01:16:23 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Add most files generated by autogen.sh to revision control, as it
+	makes it easier to keep track of what the Autotools are doing.
+	autom4te.cache and po/Makevars.template are explicitly still
+	ignored; the former is junk and the latter is only necessary in the
+	gettext-tools package.
+
+	* ABOUT-NLS, aclocal.m4, config.h.in, configure, intl/ChangeLog,
+	  intl/Makefile.in, intl/VERSION, intl/bindtextdom.c,
+	  intl/config.charset, intl/dcgettext.c, intl/dcigettext.c,
+	  intl/dcngettext.c, intl/dgettext.c, intl/dngettext.c,
+	  intl/eval-plural.h, intl/explodename.c, intl/export.h,
+	  intl/finddomain.c, intl/gettext.c, intl/gettextP.h, intl/gmo.h,
+	  intl/hash-string.c, intl/hash-string.h, intl/intl-compat.c,
+	  intl/intl-exports.c, intl/l10nflist.c, intl/langprefs.c,
+	  intl/libgnuintl.h.in, intl/loadinfo.h, intl/loadmsgcat.c,
+	  intl/localcharset.c, intl/localcharset.h, intl/locale.alias,
+	  intl/localealias.c, intl/localename.c, intl/lock.c, intl/lock.h,
+	  intl/log.c, intl/ngettext.c, intl/os2compat.c, intl/os2compat.h,
+	  intl/osdep.c, intl/plural-exp.c, intl/plural-exp.h, intl/plural.c,
+	  intl/plural.y, intl/printf-args.c, intl/printf-args.h,
+	  intl/printf-parse.c, intl/printf-parse.h, intl/printf.c,
+	  intl/ref-add.sin, intl/ref-del.sin, intl/relocatable.c,
+	  intl/relocatable.h, intl/textdomain.c, intl/vasnprintf.c,
+	  intl/vasnprintf.h, intl/vasnwprintf.h, intl/version.c,
+	  intl/wprintf-parse.h, intl/xsize.h, m4/codeset.m4, m4/gettext.m4,
+	  m4/glibc2.m4, m4/glibc21.m4, m4/iconv.m4, m4/intdiv0.m4,
+	  m4/intl.m4, m4/intldir.m4, m4/intmax.m4, m4/inttypes-pri.m4,
+	  m4/inttypes_h.m4, m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4,
+	  m4/lib-prefix.m4, m4/lock.m4, m4/longdouble.m4, m4/longlong.m4,
+	  m4/nls.m4, m4/po.m4, m4/printf-posix.m4, m4/progtest.m4,
+	  m4/size_max.m4, m4/stdint_h.m4, m4/uintmax_t.m4, m4/ulonglong.m4,
+	  m4/visibility.m4, m4/wchar_t.m4, m4/wint_t.m4, m4/xsize.m4,
+	  po/Makefile.in.in, po/Rules-quot, po/boldquot.sed,
+	  po/en@boldquot.header, po/en@quot.header, po/insert-header.sin,
+	  po/quot.sed, po/remove-potcdate.sin, tools/config.rpath,
+	  tools/depcomp, tools/missing, tools/ylwrap: New files.
+	* .bzrignore: Update.
+
+Sun Oct 14 01:04:41 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* autogen.sh: Use 'autoreconf -i' rather than reinventing the wheel.
+
+Sun Oct 14 00:53:14 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* po/man-db.pot, po/*.po: Update.
+
+Sun Oct 14 00:49:31 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man (clean-local): Remove; we don't need to worry about
+	  removing empty directories in separated build trees.
+	* man/Makefile.in, man/de.UTF-8/Makefile.in,
+	  man/es.UTF-8/Makefile.in, man/fr.UTF-8/Makefile.in,
+	  man/it.UTF-8/Makefile.in, man/ja.UTF-8/Makefile.in: Regenerate.
+
+Sun Oct 14 00:40:26 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man-db.lsm: Move to ...
+	* docs/man-db.lsm: ... here.
+	* Makefile.am, docs/Makefile.am: Move man-db.lsm reference.
+	* Makefile.in, docs/Makefile.in: Regenerate.
+
+Sun Oct 14 00:33:10 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* README: Remove several restrictions lifted by the conversion to
+	  Automake. Remove documentation of how to install native language
+	  manual pages, since this is now done unconditionally. Remove
+	  documentation of the update target, which no longer exists and
+	  should no longer be needed.
+
+	* docs/NEWS: Document conversion to Automake.
+
+Sun Oct 14 00:22:31 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Convert to Automake. This fixes VPATH builds, fixes a number of bugs
+	in areas such as dependency generation, provides new features such
+	as 'make distcheck', moves complexity into autogenerated code, and
+	prepares the way for using Gnulib more effectively.
+
+	* makefile.in, include/Defines.in: Remove.
+	* GNUmakefile.in, lib/Makefile.in, libdb/Makefile.in,
+	  man/Makefile.in, manual/Makefile.in, src/Makefile.in: Translate to
+	  Automake and move to ...
+	* Makefile.am, lib/Makefile.am, libdb/Makefile.am, man/Makefile.am,
+	  manual/Makefile.am, src/Makefile.am: ... here.
+	* docs/Makefile.am, tools/Makefile.am: Build these directories
+	  separately.
+	* man/Rules.man, man/de.UTF-8/Makefile.am, man/es.UTF-8/Makefile.am,
+	  man/fr.UTF-8/Makefile.am, man/it.UTF-8/Makefile.am,
+	  man/ja.UTF-8/Makefile.am: Build manual pages recursively, as it
+	  makes VPATH builds easier.
+	* Makefile.in, docs/Makefile.in, lib/Makefile.in, libdb/Makefile.in,
+	  man/Makefile.in, man/de.UTF-8/Makefile.in,
+	  man/es.UTF-8/Makefile.in, man/fr.UTF-8/Makefile.in,
+	  man/it.UTF-8/Makefile.in, man/ja.UTF-8/Makefile.in,
+	  manual/Makefile.in, src/Makefile.in, tools/Makefile.in: Add
+	  generated files.
+	* README: Remove mention of include/Defines.
+	* autogen.sh: Call automake-1.10 --add-missing --copy.
+	* m4/man-trans-subst.m4: New macro.
+	* configure.ac: Various changes for Automake. AC_SUBST man_owner,
+	  and set man_mode rather than man_install_flags. Set
+	  config_file_dirname. Calculate transformed versions of program
+	  names (using MAN_TRANS_SUBST) here for use in Automake variables.
+	* docs/HACKING (Directory layout): Mention automake.
+
+	Arrange that each file only needs to be built once.
+
+	* src/globbing.c: Split main program out to ...
+	* src/globbing_test.c: ... here.
+	* src/lexgrog.l: Split main program out to ...
+	* src/lexgrog_test.c: ... here.
+	* po/POTFILES.in: Add src/globbing_test.c and src/lexgrog_test.c.
+	* src/whatis.c (args, long_options): Include -a/--and
+	  unconditionally.
+	  (usage): Replace with a wrapper selecting between ...
+	  (apropos_usage, whatis_usage): ... these.
+	  (apropos, whatis): Rename to ...
+	  (do_apropos, do_whatis): ... these, respectively.
+	  (use_grep, do_whatis, parse_name, match, do_apropos, search,
+	  main): Use run-time conditionals rather than compile-time
+	  conditionals.
+	  (main): Detect whether we are being invoked as "apropos" or
+	  "whatis" and adjust behaviour accordingly.
+	* src/Makefile.am: Adjust for the above. Make apropos a symlink to
+	  whatis.
+
+	Make VPATH builds work, and simplify some includes.
+
+	* configure.ac, m4/man-fnmatch.m4: Define FNMATCH_H, GETOPT_H, and
+	  GLOB_H to the respective header names if system versions do not
+	  exist.
+	* lib/hashtable.h: Remove unnecessary libdb includes.
+	* lib/decompress.h, lib/glob.c, libdb/db_btree.c, libdb/db_delete.c,
+	  libdb/db_gdbm.c, libdb/db_lookup.c, libdb/db_ndbm.c,
+	  libdb/db_storage.h, libdb/db_store.c, libdb/db_ver.c,
+	  src/accessdb.c, src/catman.c, src/check_mandirs.c,
+	  src/check_mandirs.h, src/compression.c, src/convert_name.c,
+	  src/descriptions.h, src/descriptions_store.c, src/encodings.c,
+	  src/fake_security.c, src/filenames.c, src/filenames.h,
+	  src/globbing.c, src/lexgrog.l, src/lexgrog.l-2.3.8,
+	  src/lexgrog.l-2.4a, src/lexgrog.l.new, src/man.c, src/manconv.c,
+	  src/mandb.c, src/manp.c, src/manpath.c, src/security.c,
+	  src/straycats.c, src/ult_src.c, src/util.c, src/version.c,
+	  src/whatis.c, src/wrapper.c, src/zsoelim.l: Remove lib/ and libdb/
+	  prefixes from includes. Include <fnmatch.h>, <getopt.h>, and
+	  <glob.h> directly rather than using a forest of #ifdefs, since the
+	  copies in lib/ are now not built if a system version exists.
+
+	* .bzrignore: Update.
+
+Sat Oct 13 15:04:06 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/popen.c, m4/man-pclose.m4: Remove; we no longer need popen or
+	  pclose.
+	* configure.ac: Remove call to MAN_FUNC_PCLOSE.
+
+Sat Oct 13 11:55:21 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Add --with-sections option to change the default
+	  value of SECTION.
+	* src/man_db.conf.in: Use its output.
+	* docs/NEWS: Document this.
+
+Fri Oct 12 12:22:52 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Start 2.5.1.
+
+Fri Oct 12 11:57:50 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (try_iconv): If we need to try the next encoding in
+	  the list, make sure to do that before writing the output buffer.
+
+Fri Oct 12 10:21:07 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (use_grep): Add trailing newline to debugging output.
+
+Fri Oct 12 01:47:49 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (try_iconv): Improve debugging output slightly.
+
+Fri Oct 12 01:43:25 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display_and_save, format_display,
+	  display_catman): Only discard stderr from formatting processes if
+	  stdout is a terminal.
+
+Fri Oct 12 01:32:52 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (device_table): groff's ascii device only supports
+	  ASCII input, not ISO-8859-1.
+	  (compatible_encodings): If the output is ASCII, this is probably
+	  because the caller explicitly asked for it, so allow recoding to
+	  it unconditionally.
+
+Fri Oct 12 00:48:42 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (main): locale is a constant pointer; free
+	  internal_locale instead (Debian bug #446302).
+
+Thu Oct 11 01:40:51 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display): Free format_cmd on two more early return
+	  paths.
+
+Thu Oct 11 00:53:31 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display): I don't think it's possible for decomp to be
+	  NULL on the display_to_stdout path, but better safe than sorry.
+
+Thu Oct 11 00:38:56 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display): Connect up the decompression pipeline in the
+	  display_to_stdout case too (Debian bug #446189).
+	  (checked_system): Remove, no longer used.
+
+Thu Oct 11 00:21:49 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_roff_command): Perform input encoding conversion
+	  for troff output as well as nroff output.
+
+Wed Oct 10 09:39:53 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* man/man8/mandb.man8 (DATABASE CACHES): Fix "occured" typo (thanks,
+	  Alfie Costa; Debian bug #446044).
+
+Mon Oct  8 02:24:19 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* lib/popen.c (popen), src/descriptions.c (parse_descriptions),
+	  src/man.c (add_candidate), src/manp.c (add_dir_to_path_list): Use
+	  xmalloc instead of malloc.
+	* lib/pipeline.c (get_block): Use xrealloc instead of realloc.
+
+Mon Oct  8 02:15:47 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING: Minor release process adjustment now that we're no
+	  longer using CVS.
+
+Mon Oct  8 02:13:15 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* README: Building the manual requires running ./configure now.
+
+Mon Oct  8 02:09:55 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	The strappend function is in the namespace reserved by C99
+	7.26.10/7.26.11; rename it to appendstr.
+
+	* lib/strappend.c: Rename to ...
+	* lib/appendstr.c: ... this. Rename function.
+	* lib/Makefile.in (ALLSRCS, ALL): Build appendstr instead of
+	  strappend.
+	* lib/README: Update credit.
+	* include/manconfig.h.in: Update prototype.
+	* lib/decompress.c, lib/pathsearch.c, lib/pipeline.c,
+	  lib/tempfile.c, libdb/db_delete.c, src/accessdb.c, src/catman.c,
+	  src/check_mandirs.c, src/compression.c, src/convert_name.c,
+	  src/encodings.c, src/filenames.c, src/globbing.c,
+	  src/lexgrog.l.new, src/man.c, src/manconv.c, src/mandb.c,
+	  src/manp.c, src/straycats.c, src/ult_src.c, src/util.c,
+	  src/whatis.c, src/zsoelim.l: Update all callers.
+	* docs/HACKING: Update reference.
+	* docs/TODO: Remove item for this.
+
+Mon Oct  8 01:21:10 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	* GNUmakefile.in (_man): Ship po4a files.
+	  (dist): Create the necessary directories.
+
+Mon Oct  8 01:16:07 BST 2007  Colin Watson  <cjwatson@debian.org>
+
+	Build the manual automatically. This avoids problems trying to do a
+	distclean (distclean at the top level runs ./config.status --recheck
+	and regenerates manual/Makefile, but manual/Makefile requires
+	include/Defines to exist, so there is no way to distclean both the
+	top level and manual/).
+
+	* GNUmakefile.in (EVERYTHING, ALL): Add manual.
+	  (_subdirs): Remove manual, now included in $(EVERYTHING).
+
 Sun Oct  7 17:05:54 BST 2007  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.5.0.

@@ -1,5 +1,5 @@
 
-#line 3 "<stdout>"
+#line 3 "zsoelim.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -770,7 +770,7 @@ char *yytext;
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
  * Copyright (C) 1997 Fabrizio Polacco.
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -805,54 +805,32 @@ char *yytext;
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr(), *strcat();
-extern int strncmp();
-#endif /* STDC_HEADERS */
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
 
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#define STATIC_VER	/* zsoelim has a static ver() */
+#include "dirname.h"
 
 #define NAME	so_name[so_stack_ptr]
 #define LINE	so_line[so_stack_ptr]
 #define PIPE	so_pipe[so_stack_ptr]
 
-#include "lib/gettext.h"
+#include "gettext.h"
+#include <locale.h>
 #define _(String) gettext (String)
+#define N_(String) gettext_noop (String)
+
+#include "argp.h"
 
 #include "manconfig.h"
-#include "lib/error.h"
-#include "lib/pipeline.h"
-#include "lib/decompress.h"
 
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
+#include "error.h"
+#include "pipeline.h"
+#include "decompress.h"
 
 static int open_file (const char *filename);
 
@@ -865,15 +843,50 @@ static void zap_quotes (void);
 
 char *program_name;
 
-static const struct option long_options[] =
-{
-	{"compatible",	no_argument,		0,	'C'},
-	{"help",	no_argument,		0,	'h'},
-	{"version",	no_argument,		0,	'V'},
-	{0, 0, 0, 0}
+static char **files;
+static int num_files;
+
+const char *argp_program_version = "zsoelim " PACKAGE_VERSION;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
+error_t argp_err_exit_status = FAIL;
+
+static const char args_doc[] = N_("FILE...");
+
+static struct argp_option options[] = {
+	{ "debug",	'd',	0,	0,	N_("emit debugging messages") },
+	{ "compatible",	'C',	0,	0,	N_("compatibility switch (ignored)"),	1 },
+	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
+	{ 0 }
 };
 
-static const char args[] = "ChV";
+static error_t parse_opt (int key, char *arg ATTRIBUTE_UNUSED,
+			  struct argp_state *state)
+{
+	switch (key) {
+		case 'd':
+			debug_level = 1;
+			return 0;
+		case 'C':
+			return 0; /* compatibility with GNU soelim */
+		case 'h':
+			argp_state_help (state, state->out_stream,
+					 ARGP_HELP_STD_HELP);
+			break;
+		case ARGP_KEY_NO_ARGS:
+			/* open stdin */
+			files = xmalloc (sizeof *files);
+			files[0] = xstrdup ("-");
+			num_files = 1;
+			return 0;
+		case ARGP_KEY_ARGS:
+			files = state->argv + state->next;
+			num_files = state->argc - state->next;
+			return 0;
+	}
+	return ARGP_ERR_UNKNOWN;
+}
+
+static struct argp argp = { options, parse_opt, args_doc };
 
 static YY_BUFFER_STATE so_stack[MAX_SO_DEPTH];
 static char *so_name[MAX_SO_DEPTH];
@@ -882,8 +895,6 @@ static pipeline *so_pipe[MAX_SO_DEPTH];
 static int so_stack_ptr;
 static int no_newline;
 static int status = OK;
-
-extern int optind;
 
 /* The flex documentation says that yyin is only used by YY_INPUT, so we
  * should safely be able to abuse it as a handy way to keep track of the
@@ -904,7 +915,7 @@ extern int optind;
 
 
 
-#line 908 "<stdout>"
+#line 919 "zsoelim.c"
 
 #define INITIAL 0
 #define so 1
@@ -1063,10 +1074,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 151 "zsoelim.l"
+#line 162 "zsoelim.l"
 
 
-#line 1070 "<stdout>"
+#line 1081 "zsoelim.c"
 
 	if ( !(yy_init) )
 		{
@@ -1140,7 +1151,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 153 "zsoelim.l"
+#line 164 "zsoelim.l"
 {	
 			no_newline = 1;
 			ECHO;
@@ -1149,7 +1160,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 159 "zsoelim.l"
+#line 170 "zsoelim.l"
 {	
 			no_newline = 1;
 			BEGIN (so);	/* Now we're in the .so environment */
@@ -1157,7 +1168,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 164 "zsoelim.l"
+#line 175 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;		/* Now we're in the .lf environment */
@@ -1165,26 +1176,26 @@ YY_RULE_SETUP
 		}
 	YY_BREAK
 case 4:
-#line 171 "zsoelim.l"
+#line 182 "zsoelim.l"
 case 5:
 /* rule 5 can match eol */
-#line 172 "zsoelim.l"
+#line 183 "zsoelim.l"
 case 6:
 /* rule 6 can match eol */
-#line 173 "zsoelim.l"
+#line 184 "zsoelim.l"
 case 7:
 /* rule 7 can match eol */
-#line 174 "zsoelim.l"
+#line 185 "zsoelim.l"
 case 8:
 /* rule 8 can match eol */
-#line 175 "zsoelim.l"
+#line 186 "zsoelim.l"
 case 9:
 /* rule 9 can match eol */
-#line 176 "zsoelim.l"
+#line 187 "zsoelim.l"
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 176 "zsoelim.l"
+#line 187 "zsoelim.l"
 {
 				no_newline = 1;
 				ECHO;
@@ -1193,7 +1204,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 181 "zsoelim.l"
+#line 192 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1202,7 +1213,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 188 "zsoelim.l"
+#line 199 "zsoelim.l"
 { 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
@@ -1237,7 +1248,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 219 "zsoelim.l"
+#line 230 "zsoelim.l"
 {
 			no_newline = 0;
 			BEGIN (INITIAL);
@@ -1246,7 +1257,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 224 "zsoelim.l"
+#line 235 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1260,7 +1271,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 235 "zsoelim.l"
+#line 246 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1269,7 +1280,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 241 "zsoelim.l"
+#line 252 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1278,7 +1289,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 246 "zsoelim.l"
+#line 257 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1287,7 +1298,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 253 "zsoelim.l"
+#line 264 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1298,7 +1309,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 261 "zsoelim.l"
+#line 272 "zsoelim.l"
 {	/* file names including whitespace ?? */
 			no_newline = 1;
 			ECHO;
@@ -1312,7 +1323,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 272 "zsoelim.l"
+#line 283 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1320,7 +1331,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 277 "zsoelim.l"
+#line 288 "zsoelim.l"
 {
 			no_newline = 1;
 			error (OK, 0,
@@ -1334,7 +1345,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 287 "zsoelim.l"
+#line 298 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1352,7 +1363,7 @@ case YY_STATE_EOF(de):
 case YY_STATE_EOF(end_request):
 case YY_STATE_EOF(lfnumber):
 case YY_STATE_EOF(lfname):
-#line 298 "zsoelim.l"
+#line 309 "zsoelim.l"
 {
 		pipeline_wait (PIPE);
 		pipeline_free (PIPE);
@@ -1376,10 +1387,10 @@ case YY_STATE_EOF(lfname):
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 318 "zsoelim.l"
+#line 329 "zsoelim.l"
 ECHO;
 	YY_BREAK
-#line 1383 "<stdout>"
+#line 1394 "zsoelim.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2319,7 +2330,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 318 "zsoelim.l"
+#line 329 "zsoelim.l"
 
 
 
@@ -2339,24 +2350,6 @@ static void zap_quotes (void)
 }
 #endif
 
-/* print the usage message, then exit */
-static void usage (int exit_status)
-{
-	printf (_("usage: %s [-CVh] [file ...]\n"), program_name);
-	printf (_(
-		"-C, --compatible            compatibility switch (ignored).\n"
-		"-V, --version               show version.\n"
-		"-h, --help                  show this usage message.\n"));
-	exit (exit_status);
-}
-
-/* print the version, then exit */
-static __inline__ void ver (void)
-{
-	printf (_("%s, version %s, %s\n"), program_name, VERSION, DATE);
-	exit (OK);
-}
-
 /* initialise the stack and call the parser */
 static void parse_file (void)
 {
@@ -2368,40 +2361,28 @@ static void parse_file (void)
 
 int main (int argc, char *argv[])
 {
-	int c;
+	int i;
 
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
 
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != EOF) {
-		switch (c) {
-			case 'V':
-				ver ();
-				break;
-			case 'C': 
-				break; /* compatibility with GNU soelim */
-			case 'h':
-				usage (OK);
-				break;
-			default:
-				usage (FAIL);
-				break;
-		}
-	}
+	if (!setlocale (LC_ALL, ""))
+		/* Obviously can't translate this. */
+		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
+			     "are correct");
+	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
+	textdomain (PACKAGE);
+
+	if (argp_parse (&argp, argc, argv, 0, 0, 0))
+		exit (FAIL);
 
 	pipeline_install_sigchld ();
 
-	/* if we have any arguments, parse them in command line order, else
-	   open stdin */
-	if (optind == argc) {
-		open_file ("-");
+	/* parse files in command line order */
+	for (i = 0; i < num_files; ++i) {
+		if (open_file (files[i]))
+			continue;
 		parse_file ();
-	} else {
-		while (optind < argc) {
-			if (open_file (argv[optind++]))
-				continue;
-			parse_file ();
-		}
 	}
 
 	return status;
@@ -2414,7 +2395,7 @@ static int open_file (const char *filename)
 	pipeline *decomp;
 
 	if (strcmp (filename, "-") == 0) {
-		decomp = decompress_fdopen (dup (fileno (stdin)));
+		decomp = decompress_fdopen (dup (STDIN_FILENO));
 		NAME = xstrdup (filename);
 	} else {
 		decomp = decompress_open (filename);
@@ -2423,11 +2404,11 @@ static int open_file (const char *filename)
 			NAME = xstrdup (filename);
 		else {
 			struct compression *comp;
-			char *compfile = strappend (NULL, filename, ".", NULL);
+			char *compfile = appendstr (NULL, filename, ".", NULL);
 			size_t len = strlen (compfile);
 
 			for (comp = comp_list; comp->ext; ++comp) {
-				compfile = strappend (compfile, comp->ext,
+				compfile = appendstr (compfile, comp->ext,
 						      NULL);
 				decomp = decompress_open (compfile);
 				if (decomp) {

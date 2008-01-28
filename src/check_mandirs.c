@@ -30,6 +30,8 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -52,38 +54,22 @@
 #  endif /* HAVE_NDIR_H */
 #endif /* HAVE_DIRENT_H  */
 
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include <unistd.h>
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr(), *strrchr(), *strstr(), *strpbrk();
-#endif /* no string(s) header */
+#include "dirname.h"
+#include "xvasprintf.h"
 
-#ifndef STDC_HEADERS
-extern time_t time();
-extern int errno;
-#endif
-
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "libdb/mydbm.h"
-#include "libdb/db_storage.h"
-#include "lib/error.h"
-#include "lib/hashtable.h"
+
+#include "error.h"
+#include "hashtable.h"
+
+#include "mydbm.h"
+#include "db_storage.h"
+
 #include "descriptions.h"
 #include "filenames.h"
 #include "globbing.h"
@@ -128,7 +114,7 @@ static void gripe_rwopen_failed (void)
  */
 void test_manfile (const char *file, const char *path)
 {
-	char *base_name;
+	char *manpage_base;
 	const char *ult;
 	struct lexgrog lg;
 	char *manpage;
@@ -142,7 +128,7 @@ void test_manfile (const char *file, const char *path)
 	manpage = filename_info (file, &info, NULL);
 	if (!manpage)
 		return;
-	base_name = manpage + strlen (manpage) + 1;
+	manpage_base = manpage + strlen (manpage) + 1;
 
 	len  = strlen (manpage) + 1;		/* skip over directory name */
 	len += strlen (manpage + len) + 1;	/* skip over base name */
@@ -163,7 +149,7 @@ void test_manfile (const char *file, const char *path)
 	 * save both an ult_src() and a find_name(), amongst other wastes of
 	 * time.
 	 */
-	exists = dblookup_exact (base_name, info.ext, 1);
+	exists = dblookup_exact (manpage_base, info.ext, 1);
 
 	/* Ensure we really have the actual page. Gzip keeps the mtime the
 	 * same when it compresses, so we have to compare compression
@@ -189,10 +175,11 @@ void test_manfile (const char *file, const char *path)
 			debug ("test_manfile(): stat %s\n", abs_filename);
 			if (stat (abs_filename, &physical) == -1) {
 				if (!opt_test)
-					dbdelete (base_name, exists);
+					dbdelete (manpage_base, exists);
 			} else {
 				gripe_multi_extensions (path, exists->sec,
-							base_name, exists->ext);
+							manpage_base,
+							exists->ext);
 				free_mandata_struct (exists);
 				free (manpage);
 				return;
@@ -264,12 +251,12 @@ void test_manfile (const char *file, const char *path)
 
 	if (!lg.whatis) {	/* cache miss */
 		/* go get the whatis info in its raw state */
-		char *file_copy = xstrdup (file);
+		char *file_base = base_name (file);
 
 		lg.type = MANPAGE;
 		drop_effective_privs ();
-		find_name (ult, basename (file_copy), &lg, NULL);
-		free (file_copy);
+		find_name (ult, file_base, &lg, NULL);
+		free (file_base);
 		regain_effective_privs ();
 
 		hash_install (whatis_hash, ult, strlen (ult),
@@ -283,10 +270,11 @@ void test_manfile (const char *file, const char *path)
 	info.filter = lg.filters;
 	if (lg.whatis) {
 		struct page_description *descs =
-			parse_descriptions (base_name, lg.whatis);
+			parse_descriptions (manpage_base, lg.whatis);
 		if (descs) {
 			if (!opt_test)
-				store_descriptions (descs, &info, base_name);
+				store_descriptions (descs, &info,
+						    manpage_base);
 			free_descriptions (descs);
 		}
 	} else if (quiet < 2) {
@@ -297,7 +285,7 @@ void test_manfile (const char *file, const char *path)
 		else
 			error (0, 0,
 			       _("warning: %s: whatis parse for %s(%s) failed"),
-			       ult, base_name, info.ext);
+			       ult, manpage_base, info.ext);
 	}
 
 	free (manpage);
@@ -305,14 +293,14 @@ void test_manfile (const char *file, const char *path)
 		free (lg.whatis);
 }
 
-static __inline__ void add_dir_entries (const char *path, char *infile)
+static inline void add_dir_entries (const char *path, char *infile)
 {
 	char *manpage;
 	int len;
 	struct dirent *newdir;
 	DIR *dir;
 
-	manpage = strappend (NULL, path, "/", infile, "/", NULL);
+	manpage = appendstr (NULL, path, "/", infile, "/", NULL);
 	len = strlen (manpage);
 
 	/*
@@ -332,7 +320,7 @@ static __inline__ void add_dir_entries (const char *path, char *infile)
 	while ( (newdir = readdir (dir)) )
 		if (!(*newdir->d_name == '.' && 
 		      strlen (newdir->d_name) < (size_t) 3)) {
-			manpage = strappend (manpage, newdir->d_name, NULL);
+			manpage = appendstr (manpage, newdir->d_name, NULL);
 			test_manfile (manpage, path);
 			*(manpage + len) = '\0';
 		}
@@ -420,11 +408,8 @@ void update_db_time (void)
 	memset (&content1, 0, sizeof content);
 #endif
 
-	MYDBM_SET_DPTR (key, xstrdup (KEY));
-	MYDBM_DSIZE (key) = sizeof KEY;
-	MYDBM_SET_DPTR (content, xmalloc (16)); /* 11 is max long with '\0' */
-	sprintf (MYDBM_DPTR (content), "%ld", (long) time (NULL));
-	MYDBM_DSIZE (content) = strlen (MYDBM_DPTR (content)) + 1;
+	MYDBM_SET (key, xstrdup (KEY));
+	MYDBM_SET (content, xasprintf ("%ld", (long) time (NULL)));
 
 	/* Open the db in RW to store the $mtime$ ID */
 	/* we know that this should succeed because we just updated the db! */
@@ -441,8 +426,7 @@ void update_db_time (void)
 #ifndef FAST_BTREE
 	MYDBM_REPLACE (dbf, key, content);
 #else /* FAST_BTREE */
-	MYDBM_SET_DPTR (key1, KEY);
-	MYDBM_DSIZE (key1) = sizeof KEY;
+	MYDBM_SET (key1, KEY);
 
 	(dbf->seq) (dbf, (DBT *) &key1, (DBT *) &content1, R_CURSOR);
 	
@@ -465,8 +449,7 @@ void reset_db_time (void)
 
 	memset (&key, 0, sizeof key);
 
-	MYDBM_SET_DPTR (key, xstrdup (KEY));
-	MYDBM_DSIZE (key) = sizeof KEY;
+	MYDBM_SET (key, xstrdup (KEY));
 
 	/* we don't really care if we can't open it RW - it's not fatal */
 	dbf = MYDBM_RWOPEN (database);
@@ -488,14 +471,13 @@ void reset_db_time (void)
  */
 int make_database_directory (const char *db)
 {
-	char *dbcopy, *dbdir;
+	char *dbdir;
 	struct stat st;
 
 	if (!strchr (db, '/'))
 		return 0;
 
-	dbcopy = xstrdup (db);
-	dbdir = dirname (dbcopy);
+	dbdir = dir_name (db);
 	if (stat (dbdir, &st) == 0)
 		goto success;
 	if (errno != ENOENT)
@@ -506,7 +488,7 @@ int make_database_directory (const char *db)
 		return 1;
 	}
 success:
-	free (dbcopy);
+	free (dbdir);
 	return 0;
 }
 
@@ -566,8 +548,7 @@ short update_db (const char *manpath)
 		memset (&key, 0, sizeof key);
 		memset (&content, 0, sizeof content);
 
-		MYDBM_SET_DPTR (key, xstrdup (KEY));
-		MYDBM_DSIZE (key) = sizeof KEY;
+		MYDBM_SET (key, xstrdup (KEY));
 		content = MYDBM_FETCH (dbf, key);
 		MYDBM_CLOSE (dbf);
 		free (MYDBM_DPTR (key));
@@ -847,8 +828,12 @@ short purge_missing (const char *manpath, const char *catpath)
 		}
 
 		content = MYDBM_FETCH (dbf, key);
-		if (!MYDBM_DPTR (content))
-			return count;
+		if (!MYDBM_DPTR (content)) {
+			nextkey = MYDBM_NEXTKEY (dbf, key);
+			MYDBM_FREE (MYDBM_DPTR (key));
+			key = nextkey;
+			continue;
+		}
 
 		/* Get just the name. */
 		nicekey = xstrdup (MYDBM_DPTR (key));

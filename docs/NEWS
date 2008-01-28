@@ -1,3 +1,73 @@
+man-db 2.5.1 (28 January 2008)
+==============================
+
+Major changes since man-db 2.5.0:
+
+	Fixes:
+	------
+
+	o The manual is now built automatically, avoiding some ordering
+	  problems on 'make distclean'.
+
+	o Manual pages are converted to the proper input encoding for troff
+	  output as well as nroff output.
+
+	o The -t, -T, -X, and -Z options to man work again; in 2.5.0, they
+	  read input from stdin rather than from the manual page.
+
+	o apropos and whatis no longer segfault when given an explicit
+	  locale using -L.
+
+	o man now understands that groff's ascii device takes ASCII input,
+	  not ISO-8859-1.
+
+	o man no longer discards stderr when writing to a file or a pipe;
+	  this was broken by an overenthusiastic change in 2.5.0.
+
+	o manconv now falls back to the next encoding in its list if any
+	  characters in an entire 64KB block fail to decode using the
+	  current encoding, as was originally intended.
+
+	o manconv is more careful about extracting coding: directives from
+	  manual pages.
+
+	o Ctrl-C and Ctrl-\ now work again at the prompt issued by 'man -a'.
+
+	Improvements:
+	-------------
+
+	o There is a new --with-sections configure option to change the
+	  default value of SECTION in the configuration file.
+
+	o Automake is now used to generate Makefiles. Among other things,
+	  this fixes VPATH builds and some bugs in dependency generation,
+	  and should allow building with non-GNU versions of make.
+
+	o man-db now uses the Gnulib portability library, allowing the
+	  removal of earlier haphazard portability code. While this results
+	  in a somewhat larger source distribution, it makes man-db easier
+	  to maintain and should make it easier to build on systems to which
+	  the maintainer does not have access.
+
+	o In the process of switching to Gnulib, the last vestiges of
+	  pre-C89 support have been removed; they were documented to be
+	  broken anyway.
+
+	o If the MANROFFOPT environment variable is set, man now appends its
+	  value to the *roff command line.
+
+	o man now accepts a --recode option to output a source manual page
+	  converted to a specified encoding.
+
+	o For compatibility with System V, man accepts -s as an alias for
+	  -S, and permits sections to be comma-separated as well as
+	  colon-separated.
+
+	o All programs, except the obsolete 'wrapper', now accept a --debug
+	  option. (accessdb, lexgrog, and zsoelim were lacking it.)
+
+	o man now accepts a --warnings option to enable groff warnings.
+
 man-db 2.5.0 (7 October 2007)
 =============================
 

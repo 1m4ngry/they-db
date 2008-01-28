@@ -26,6 +26,7 @@
 
 #ifdef NDBM
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #if HAVE_SYS_FILE_H
@@ -39,16 +40,14 @@
 #  include <fcntl.h>
 #endif
 
-#ifdef STDC_HEADERS
-#include <stdlib.h>
-#endif /* STDC_HEADERS */
+#include <unistd.h>
 
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include "xvasprintf.h"
 
 #include "manconfig.h"
-#include "lib/flock.h"
+
+#include "flock.h"
+
 #include "mydbm.h"
 #include "db_storage.h"
 
@@ -81,8 +80,7 @@ DBM* ndbm_flopen (char *filename, int flags, int mode)
 
 		dbf = NULL;
 		lock_failed = 1;
-		dir_fname = xmalloc (strlen (filename) + 5);
-		sprintf (dir_fname, "%s.dir", filename);
+		dir_fname = xasprintf ("%s.dir", filename);
 		dir_fd = open (dir_fname, flags & ~O_TRUNC, mode);
 		free (dir_fname);
 		if (dir_fd != -1) {

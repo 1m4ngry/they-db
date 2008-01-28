@@ -34,108 +34,124 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
-
-#if defined(STDC_HEADERS)
-#  include <stdlib.h>
-#  include <string.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#endif
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #ifdef HAVE_ICONV
 #  include <iconv.h>
 #endif /* HAVE_ICONV */
 
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
+#include "argp.h"
+#include "dirname.h"
 
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #include <locale.h>
 #define _(String) gettext (String)
+#define N_(String) gettext_noop (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
-#include "lib/pipeline.h"
-#include "lib/decompress.h"
+
+#include "error.h"
+#include "pipeline.h"
+#include "decompress.h"
+
 #include "encodings.h"
 
 char *program_name;
 static const char *from_codes;
 static char *to_code;
 static char **from_code;
-
-extern int optind;
-
-static const struct option long_options[] =
-{
-	{"from-code",	required_argument,	0, 'f'},
-	{"to-code",	required_argument,	0, 't'},
-	{"debug",	no_argument,		0, 'd'},
-	{"help",	no_argument,		0, 'h'},
-	{"version",	no_argument,		0, 'V'},
-	{0, 0, 0, 0}
-};
-
-static const char args[] = "f:t:dhV";
-
-static void usage (int status)
-{
-	printf (_("usage: %s -f FROM-CODE:... -t TO-CODE [-d] [filename]\n"),
-		program_name);
-	printf (_(
-		"-f, --from-code     possible encodings of original text.\n"
-		"-t, --to-code       encoding for output.\n"
-		"-d, --debug         emit debugging messages.\n"
-		"-V, --version       show version.\n"
-		"-h, --help          show this usage message.\n")
-	);
-
-	exit (status);
-}
+static const char *filename;
 
 static char **split_codes (const char *codestr)
 {
 	char *codestrtok = xstrdup (codestr);
 	char *codestrtok_ptr = codestrtok;
 	char *tok;
-	int codearray_cur = 0, codearray_alloc = 4;
-	char **codearray = xmalloc (codearray_alloc * sizeof *codearray);
+	size_t codearray_cur = 0, codearray_alloc = 0;
+	char **codearray = NULL;
 
 	for (tok = strsep (&codestrtok_ptr, ":"); tok;
 	     tok = strsep (&codestrtok_ptr, ":")) {
 		if (!*tok)
 			continue;	/* ignore empty fields */
-		if (codearray_cur >= codearray_alloc) {
-			codearray_alloc <<= 1;
-			codearray = xrealloc
+		if (codearray_cur >= codearray_alloc)
+			codearray = x2nrealloc
 				(codearray,
-				 codearray_alloc * sizeof *codearray);
-		}
+				 &codearray_alloc, sizeof *codearray);
 		codearray[codearray_cur++] = xstrdup (tok);
 	}
 
 	if (codearray_cur >= codearray_alloc)
-		codearray = xrealloc (codearray,
-				      (++codearray_alloc) * sizeof *codearray);
+		codearray = x2nrealloc (codearray,
+					&codearray_alloc, sizeof *codearray);
 	codearray[codearray_cur] = NULL;
 
 	free (codestrtok);
 
 	return codearray;
 }
+
+const char *argp_program_version = "manconv " PACKAGE_VERSION;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
+error_t argp_err_exit_status = FAIL;
+
+static const char args_doc[] = N_("-f CODE:... -t CODE [FILENAME]");
+
+static struct argp_option options[] = {
+	{ "from-code",	'f',	N_("CODE:..."),	0,	N_("possible encodings of original text") },
+	{ "to-code",	't',	N_("CODE"),	0,	N_("encoding for output") },
+	{ "debug",	'd',	0,		0,	N_("emit debugging messages") },
+	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
+	{ 0 }
+};
+
+static error_t parse_opt (int key, char *arg, struct argp_state *state)
+{
+	switch (key) {
+		case 'f':
+			from_codes = arg;
+			return 0;
+		case 't':
+			to_code = xstrdup (arg);
+			if (!strstr (to_code, "//"))
+				to_code = appendstr (to_code, "//TRANSLIT",
+						     NULL);
+			return 0;
+		case 'd':
+			debug_level = 1;
+			return 0;
+		case 'h':
+			argp_state_help (state, state->out_stream,
+					 ARGP_HELP_STD_HELP);
+			break;
+		case ARGP_KEY_ARG:
+			if (filename)
+				argp_usage (state);
+			filename = arg;
+			return 0;
+		case ARGP_KEY_SUCCESS:
+			if (!from_codes)
+				argp_error (state,
+					    _("must specify an input "
+					      "encoding"));
+			if (!to_code)
+				argp_error (state,
+					    _("must specify an output "
+					      "encoding"));
+			from_code = split_codes (from_codes);
+			if (!from_code || !*from_code)
+				argp_error (state,
+					    _("must specify an input "
+					      "encoding"));
+			return 0;
+	}
+	return ARGP_ERR_UNKNOWN;
+}
+
+static struct argp argp = { options, parse_opt, args_doc };
 
 static char *check_preprocessor_encoding (pipeline *p)
 {
@@ -163,17 +179,17 @@ static char *check_preprocessor_encoding (pipeline *p)
 		while (*pp_search == ' ')
 			++pp_search;
 		if (STRNEQ (pp_search, "coding:", 7)) {
-			const char *pp_encoding_end;
+			const char *pp_encoding_allow;
+			size_t pp_encoding_len;
 			pp_search += 7;
 			while (*pp_search == ' ')
 				++pp_search;
-			pp_encoding_end = strchr (pp_search, ' ');
-			if (pp_encoding_end)
-				pp_encoding = xstrndup
-					(pp_search,
-					 pp_encoding_end - pp_search);
-			else
-				pp_encoding = xstrdup (pp_search);
+			pp_encoding_allow = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+					    "abcdefghijklmnopqrstuvwxyz"
+					    "0123456789-_/:.()";
+			pp_encoding_len = strspn (pp_search,
+						  pp_encoding_allow);
+			pp_encoding = xstrndup (pp_search, pp_encoding_len);
 			debug ("preprocessor encoding: %s\n", pp_encoding);
 		}
 	}
@@ -191,11 +207,12 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 	iconv_t cd;
 	int ret = 0;
 
-	debug ("trying encoding %s\n", try_from_code);
+	debug ("trying encoding %s -> %s\n", try_from_code, to_code);
 
 	cd = iconv_open (to_code, try_from_code);
 	if (cd == (iconv_t) -1) {
-		error (0, errno, "iconv_open");
+		error (0, errno, "iconv_open (\"%s\", \"%s\")",
+		       to_code, try_from_code);
 		return -1;
 	}
 
@@ -227,6 +244,16 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 		if (n == (size_t) -1 &&
 		    errno == EILSEQ && strstr (to_code, "//IGNORE"))
 			errno = 0;
+
+		/* If we need to try the next encoding, do that before
+		 * writing anything.
+		 */
+		if (!last && n == (size_t) -1 &&
+		    ((errno == EILSEQ && !strstr (to_code, "//IGNORE")) ||
+		     (errno == EINVAL && input_size < buf_size))) {
+			ret = -1;
+			break;
+		}
 
 		if (outptr != output) {
 			/* We have something to write out. */
@@ -265,23 +292,13 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 				errno = errno_save;
 			}
 		} else {
-			if (errno == EILSEQ && !strstr (to_code, "//IGNORE")) {
-				if (last)
-					error (FATAL, errno, "iconv");
-				else {
-					ret = -1;
-					break;
-				}
-			} else if (errno == EINVAL && input_size < buf_size) {
-				if (last)
-					error (FATAL, 0,
-					       _("iconv: incomplete character "
-						 "at end of buffer"));
-				else {
-					ret = -1;
-					break;
-				}
-			}
+			/* !last case handled above */
+			if (errno == EILSEQ && !strstr (to_code, "//IGNORE"))
+				error (FATAL, errno, "iconv");
+			else if (errno == EINVAL && input_size < buf_size)
+				error (FATAL, 0,
+				       _("iconv: incomplete character "
+					 "at end of buffer"));
 		}
 
 		if (input_size < buf_size)
@@ -305,70 +322,31 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 
 int main (int argc, char *argv[])
 {
-	int c;
 	pipeline *p;
 	char *pp_encoding;
 	char **try_from_code;
 
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
 
 	if (!setlocale (LC_ALL, ""))
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
 	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);
 
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != EOF) {
-		switch (c) {
-			case 'f':
-				from_codes = optarg;
-				break;
-			case 't':
-				to_code = xstrdup (optarg);
-				break;
-			case 'd':
-				debug_level = 1;
-				break;
-			case 'V':
-				ver ();
-				break;
-			case 'h':
-				usage (OK);
-				break;
-			default:
-				usage (FAIL);
-				break;
-		}
-	}
-
-	if (!from_codes) {
-		error (0, 0, _("must specify an input encoding"));
-		usage (FAIL);
-	}
-	if (!to_code) {
-		error (0, 0, _("must specify an output encoding"));
-		usage (FAIL);
-	}
-
-	from_code = split_codes (from_codes);
-	if (!from_code || !*from_code) {
-		error (0, 0, _("must specify an input encoding"));
-		usage (FAIL);
-	}
-	if (!strstr (to_code, "//"))
-		to_code = strappend (to_code, "//TRANSLIT", NULL);
+	if (argp_parse (&argp, argc, argv, 0, 0, 0))
+		exit (FAIL);
 
 	pipeline_install_sigchld ();
 
-	if (optind == argc)
-		p = decompress_fdopen (dup (fileno (stdin)));
-	else {
-		p = decompress_open (argv[optind]);
+	if (filename) {
+		p = decompress_open (filename);
 		if (!p)
 			error (FAIL, 0, _("can't open %s"), argv[optind]);
-	}
+	} else
+		p = decompress_fdopen (dup (STDIN_FILENO));
 	pipeline_start (p);
 
 	pp_encoding = check_preprocessor_encoding (p);

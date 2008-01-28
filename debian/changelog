@@ -1,3 +1,34 @@
+man-db (2.5.1-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Fix a number of problems with the localisation changes in 2.5.0.
+      Notably, manual pages are converted to the proper input encoding for
+      troff output as well as nroff output, and manconv's encoding fallback
+      mechanism should now actually fall back as intended.
+    - Add a 'man --recode' option to output a source manual page converted
+      to a specified encoding. This is expected to be used by debhelper to
+      install UTF-8 manual pages.
+    - Fix "occured" typo in mandb(8) (thanks, Alfie Costa; closes: #446044).
+    - Allow only alphanumerics and "-_/:.()" in encoding names (closes:
+      #446055).
+    - Enable localisation in accessdb, globbing, lexgrog, and zsoelim
+      (closes: #448395).
+    - Allow passing warning options to groff, either using the environment
+      variable MANROFFOPT or the new 'man --warnings' option (thanks, Ivan
+      Shmakov; closes: #451187).
+    - Add 'man -s' as an alias for 'man -S' (closes: #458499).
+    - 'man -l' guesses language based on absolute path to provided file,
+      rather than relative (closes: #460014).
+    - mandb sets the new file's mode to DBMODE in order to try to defend
+      against strange problems with databases being left world-unreadable
+      (closes: #430800).
+    - Don't ignore SIGINT and SIGQUIT just because a decompression process
+      is running (closes: #462276).
+    - Update Russian translation (closes: #452417).
+    - Add Korean support, requiring groff >= 1.18.1.1-16 (LP: #176896).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 28 Jan 2008 09:35:27 +0000
+
 man-db (2.5.0-4) unstable; urgency=low
 
   * Always pass an appropriate --build= option to configure.

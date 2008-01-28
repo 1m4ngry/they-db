@@ -42,7 +42,7 @@
 #  include <gdbm.h>
 
 #  ifndef HAVE_GDBM_EXISTS
-extern __inline__ int gdbm_exists(GDBM_FILE dbf, datum key);
+extern inline int gdbm_exists(GDBM_FILE dbf, datum key);
 #  endif /* !HAVE_GDBM_EXISTS */
 
 /* gdbm_nextkey() is not lexicographically sorted, so we need to keep the
@@ -127,22 +127,20 @@ extern int ndbm_flclose(DBM *dbf);
 
 #  include <sys/types.h>
 #  include <fcntl.h>
+#  include <limits.h>
 #  include BDB_H
-#  ifdef HAVE_LIMITS_H
-#   include <limits.h>
-#  endif
 
 typedef DBT datum;
 
 extern DB *btree_flopen(char *filename, int flags, int mode);
-extern __inline__ int btree_close(DB *db);
-extern __inline__ int btree_exists(DB *db, datum key);
-extern __inline__ datum btree_fetch(DB *db, datum key);
+extern inline int btree_close(DB *db);
+extern inline int btree_exists(DB *db, datum key);
+extern inline datum btree_fetch(DB *db, datum key);
 extern int btree_insert(DB *db, datum key, datum cont);
-extern __inline__ datum btree_firstkey(DB *db);
-extern __inline__ datum btree_nextkey(DB *db);
-extern __inline__ int btree_replace(DB *db, datum key, datum content);
-extern __inline__ int btree_nextkeydata(DB *db, datum *key, datum *cont);
+extern inline datum btree_firstkey(DB *db);
+extern inline datum btree_nextkey(DB *db);
+extern inline int btree_replace(DB *db, datum key, datum content);
+extern inline int btree_nextkeydata(DB *db, datum *key, datum *cont);
 
 #  define DB_EXT			".bt"
 #  define MYDBM_FILE			DB*
@@ -168,6 +166,9 @@ extern __inline__ int btree_nextkeydata(DB *db, datum *key, datum *cont);
 #  error Define either GDBM, NDBM or BTREE before including mydbm.h
 # endif /* not GDBM or NDBM or BTREE */
 
+#define MYDBM_RESET_DSIZE(d)		(MYDBM_DSIZE(d) = strlen(MYDBM_DPTR(d)) + 1)
+#define MYDBM_SET(d, value)		do { MYDBM_SET_DPTR(d, value); MYDBM_RESET_DSIZE(d); } while (0)
+
 extern char *database;
 extern MYDBM_FILE dbf;
 
@@ -175,7 +176,7 @@ extern MYDBM_FILE dbf;
 extern datum copy_datum (datum dat);
 
 /* db_ver.c */
-extern void dbver_wr(MYDBM_FILE dbf);
-extern int dbver_rd(MYDBM_FILE dbf);
+extern void dbver_wr(MYDBM_FILE dbfile);
+extern int dbver_rd(MYDBM_FILE dbfile);
 
 #endif /* MYDBM_H */

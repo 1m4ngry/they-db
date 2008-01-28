@@ -26,18 +26,14 @@
 
 #ifdef GDBM
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#endif /* STDC_HEADERS */
+#include <string.h>
+#include <stdlib.h>
 
 #include "manconfig.h"
-#include "lib/hashtable.h"
-#include "lib/cleanup.h"
+
+#include "hashtable.h"
+#include "cleanup.h"
+
 #include "mydbm.h"
 
 static struct hashtable *parent_sortkey_hash;
@@ -118,13 +114,13 @@ datum man_gdbm_firstkey (man_gdbm_wrapper wrap)
 	int i;
 
 	/* Build the raw list of keys and sort it. */
-	keys = xmalloc (maxkeys * sizeof *keys);
+	keys = xnmalloc (maxkeys, sizeof *keys);
 	keys[0] = xmalloc (sizeof **keys);
 	keys[0]->key = gdbm_firstkey (wrap->file);
 	while (MYDBM_DPTR (keys[numkeys]->key)) {
 		if (++numkeys >= maxkeys) {
 			maxkeys *= 2;
-			keys = xrealloc (keys, maxkeys * sizeof *keys);
+			keys = xnrealloc (keys, maxkeys, sizeof *keys);
 		}
 		keys[numkeys] = xmalloc (sizeof **keys);
 		keys[numkeys]->key =

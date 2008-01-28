@@ -20,36 +20,31 @@ else
 CONFARGS = --build=$(DEB_HOST_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE)
 endif
 
-GNUmakefile:
-# create the makefile needed both from build and clean rules
-	touch configure stamp-h.in	# avoid autoconf build-dependency
-	test -x configure || chmod +x configure 
-	./configure --prefix=/usr --enable-setuid --with-db=gdbm \
+configure-stamp:
+	./configure --prefix=/usr --libexecdir=\$${libdir} \
+	            --enable-setuid --with-db=gdbm \
 	            --enable-undoc='man 7 undocumented' \
 	            --with-device=latin1 --enable-mb-groff \
 	            --with-config-file=/etc/manpath.config \
 	            --with-browser=www-browser --with-pager=pager \
 	            --with-col=col --with-vgrind=vgrind --with-grap=grap \
 	            --with-compress=compress --with-bzip2=bzip2 \
+		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7' \
 	            $(CONFARGS)
+	touch $@
 
 build: build-stamp
-build-stamp: GNUmakefile
+build-stamp: configure-stamp
 # Builds the binary package.
 	dh_testdir
 	$(MAKE) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
-	$(MAKE) -C manual SOELIM=../src/zsoelim
-	touch build-stamp
+	touch $@
 
 clean:
 	dh_testdir
-	touch configure stamp-h.in	# avoid autoconf build-dependency
-	[ ! -f GNUmakefile ] || $(MAKE) -i distclean
-	[ ! -f manual/Makefile ] || $(MAKE) -C manual -i distclean
-	-rm -f build-stamp install-stamp man/index.*
-	-rm -f */*.i
+	[ ! -f Makefile ] || $(MAKE) -i distclean
+	-rm -f configure-stamp build-stamp install-stamp man/index.*
 	dh_clean
-	-cd po && rm -f stamp-cat-id cat-id-tbl.c
 
 install: install-stamp
 install-stamp: build
@@ -65,7 +60,7 @@ install-stamp: build
 	mv $(dtmp)/usr/bin/man			$(dtmp)/usr/lib/man-db/man
 	mv $(dtmp)/usr/bin/mandb		$(dtmp)/usr/lib/man-db/mandb
 	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)
-	touch install-stamp
+	touch $@
 
 binary-indep: build install
 

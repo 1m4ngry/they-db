@@ -8,8 +8,7 @@ this README.
 
 As of man-db-2.3.11, the man-db manual is *included* with this distribution
 in source form.  Please check manual/README for details of the formatters
-required.  The man-db manual must be built from the manual subdirectory and
-does not require use of ./configure.
+required.  The man-db manual must be built from the manual subdirectory.
 
 Read docs/INSTALL.autoconf for generic options to configure.
 Read docs/INSTALL.quick if you know all about man-db.
@@ -17,13 +16,43 @@ Read docs/NEWS for visible changes since the last public release.
 Read docs/ChangeLog for details of recent source code changes.
 Read docs/TODO for future plans.
 
-This package _requires_ GNU make version 3.68 or newer to be used. 
-Other vendors' make programs will not work with the Makefiles in this 
-package due to extensive utilization of GNU make features.
+The C source requires an ANSI C compiler.
 
-The C source requires an ANSI C compiler. To generate dependencies (only
-necessary if developing or source level debugging), a cpp that understands
--M is required.
+
+Copyright and licensing
+=======================
+
+Copyright (C) 1990, 1991 John W. Eaton.
+Copyright (C) 1994, 1995 Markus Armbruster.
+Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+Copyright (C) 1995 Carl Edman.
+Copyright (C) 1996, 1997, 1998, 2000 Fabrizio Polacco.
+Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
+Copyright (C) 1984, 1989, 1990, 1991, 1992, 1995, 1996, 1997, 1998, 1999,
+              2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007
+              Free Software Foundation, Inc.
+
+man-db is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+man-db is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with man-db; if not, write to the Free Software Foundation,
+Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+In addition, man-db incorporates Gnulib, copyrighted by the Free Software
+Foundation and others. Note that much of Gnulib is distributed under the GNU
+General Public License version 3 or later. This means that, although
+man-db's own source code is licensed under GPL v2 or later, the work as a
+whole falls under the terms of the GPL v3 or later. Unless you take special
+pains to remove the GPL v3 portions, you must therefore follow the terms and
+conditions of the GPL v3 or later when distributing man-db.
 
 
 Notice to users of man-db version 2.2 or 2.2.1 
@@ -127,9 +156,6 @@ Running configure.
 BROWSE or EDIT the following files that were created by the configuration
 process.
 
-	o `include/Defines' regarding general definitions used by all
-	  Makefiles in the distribution
-
 	o `include/manconfig.h' regarding paths to support programs,
 	  the default section list and other specific definitions.
 
@@ -161,15 +187,7 @@ Install the package.
 
 	o (gain superuser privileges for the rest of the steps)
 
-	o RUN `make install' to install the utilities and English manual 
-	  pages.
-
-The following command is required if you elected to compile the package
-without support for message catalogues but would like to install native
-language manual page translations.
-
-	o RUN `make man targets=install LINGUAS=<your_choice>' to install
-	  translations of the standard English manual pages 
+	o RUN `make install' to install the utilities and manual pages.
 
 Initialise the `index' databases for all manpaths marked as global in the
 man-db configuration file.
@@ -226,9 +244,8 @@ Makefile targets and variables
 
 The standard GNU Makefile targets: all, install, uninstall, mostlyclean,
 clean, distclean, realclean and TAGS are available in every Makefile-
-supported directory.  In addition, the master Makefile has the targets:
-update (update any configuration files whose source has changed) and dist
-(create a compressed and tarred distribution file).
+supported directory.  In addition, the master Makefile has the dist target
+to create a compressed and tarred distribution file.
 
 During the configuration process, `configure' sets the installation
 variables, `prefix' and `exec_prefix'.  These are then used to form other

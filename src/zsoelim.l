@@ -5,7 +5,7 @@
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
  * Copyright (C) 1997 Fabrizio Polacco.
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -40,54 +40,32 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr(), *strcat();
-extern int strncmp();
-#endif /* STDC_HEADERS */
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
 
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#define STATIC_VER	/* zsoelim has a static ver() */
+#include "dirname.h"
 
 #define NAME	so_name[so_stack_ptr]
 #define LINE	so_line[so_stack_ptr]
 #define PIPE	so_pipe[so_stack_ptr]
 
-#include "lib/gettext.h"
+#include "gettext.h"
+#include <locale.h>
 #define _(String) gettext (String)
+#define N_(String) gettext_noop (String)
+
+#include "argp.h"
 
 #include "manconfig.h"
-#include "lib/error.h"
-#include "lib/pipeline.h"
-#include "lib/decompress.h"
 
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
+#include "error.h"
+#include "pipeline.h"
+#include "decompress.h"
 
 static int open_file (const char *filename);
 
@@ -100,15 +78,50 @@ static void zap_quotes (void);
 
 char *program_name;
 
-static const struct option long_options[] =
-{
-	{"compatible",	no_argument,		0,	'C'},
-	{"help",	no_argument,		0,	'h'},
-	{"version",	no_argument,		0,	'V'},
-	{0, 0, 0, 0}
+static char **files;
+static int num_files;
+
+const char *argp_program_version = "zsoelim " PACKAGE_VERSION;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
+error_t argp_err_exit_status = FAIL;
+
+static const char args_doc[] = N_("FILE...");
+
+static struct argp_option options[] = {
+	{ "debug",	'd',	0,	0,	N_("emit debugging messages") },
+	{ "compatible",	'C',	0,	0,	N_("compatibility switch (ignored)"),	1 },
+	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
+	{ 0 }
 };
 
-static const char args[] = "ChV";
+static error_t parse_opt (int key, char *arg ATTRIBUTE_UNUSED,
+			  struct argp_state *state)
+{
+	switch (key) {
+		case 'd':
+			debug_level = 1;
+			return 0;
+		case 'C':
+			return 0; /* compatibility with GNU soelim */
+		case 'h':
+			argp_state_help (state, state->out_stream,
+					 ARGP_HELP_STD_HELP);
+			break;
+		case ARGP_KEY_NO_ARGS:
+			/* open stdin */
+			files = xmalloc (sizeof *files);
+			files[0] = xstrdup ("-");
+			num_files = 1;
+			return 0;
+		case ARGP_KEY_ARGS:
+			files = state->argv + state->next;
+			num_files = state->argc - state->next;
+			return 0;
+	}
+	return ARGP_ERR_UNKNOWN;
+}
+
+static struct argp argp = { options, parse_opt, args_doc };
 
 static YY_BUFFER_STATE so_stack[MAX_SO_DEPTH];
 static char *so_name[MAX_SO_DEPTH];
@@ -117,8 +130,6 @@ static pipeline *so_pipe[MAX_SO_DEPTH];
 static int so_stack_ptr;
 static int no_newline;
 static int status = OK;
-
-extern int optind;
 
 /* The flex documentation says that yyin is only used by YY_INPUT, so we
  * should safely be able to abuse it as a handy way to keep track of the
@@ -333,24 +344,6 @@ static void zap_quotes (void)
 }
 #endif
 
-/* print the usage message, then exit */
-static void usage (int exit_status)
-{
-	printf (_("usage: %s [-CVh] [file ...]\n"), program_name);
-	printf (_(
-		"-C, --compatible            compatibility switch (ignored).\n"
-		"-V, --version               show version.\n"
-		"-h, --help                  show this usage message.\n"));
-	exit (exit_status);
-}
-
-/* print the version, then exit */
-static __inline__ void ver (void)
-{
-	printf (_("%s, version %s, %s\n"), program_name, VERSION, DATE);
-	exit (OK);
-}
-
 /* initialise the stack and call the parser */
 static void parse_file (void)
 {
@@ -362,40 +355,28 @@ static void parse_file (void)
 
 int main (int argc, char *argv[])
 {
-	int c;
+	int i;
 
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
 
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != EOF) {
-		switch (c) {
-			case 'V':
-				ver ();
-				break;
-			case 'C': 
-				break; /* compatibility with GNU soelim */
-			case 'h':
-				usage (OK);
-				break;
-			default:
-				usage (FAIL);
-				break;
-		}
-	}
+	if (!setlocale (LC_ALL, ""))
+		/* Obviously can't translate this. */
+		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
+			     "are correct");
+	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
+	textdomain (PACKAGE);
+
+	if (argp_parse (&argp, argc, argv, 0, 0, 0))
+		exit (FAIL);
 
 	pipeline_install_sigchld ();
 
-	/* if we have any arguments, parse them in command line order, else
-	   open stdin */
-	if (optind == argc) {
-		open_file ("-");
+	/* parse files in command line order */
+	for (i = 0; i < num_files; ++i) {
+		if (open_file (files[i]))
+			continue;
 		parse_file ();
-	} else {
-		while (optind < argc) {
-			if (open_file (argv[optind++]))
-				continue;
-			parse_file ();
-		}
 	}
 
 	return status;
@@ -408,7 +389,7 @@ static int open_file (const char *filename)
 	pipeline *decomp;
 
 	if (strcmp (filename, "-") == 0) {
-		decomp = decompress_fdopen (dup (fileno (stdin)));
+		decomp = decompress_fdopen (dup (STDIN_FILENO));
 		NAME = xstrdup (filename);
 	} else {
 		decomp = decompress_open (filename);
@@ -417,11 +398,11 @@ static int open_file (const char *filename)
 			NAME = xstrdup (filename);
 		else {
 			struct compression *comp;
-			char *compfile = strappend (NULL, filename, ".", NULL);
+			char *compfile = appendstr (NULL, filename, ".", NULL);
 			size_t len = strlen (compfile);
 
 			for (comp = comp_list; comp->ext; ++comp) {
-				compfile = strappend (compfile, comp->ext,
+				compfile = appendstr (compfile, comp->ext,
 						      NULL);
 				decomp = decompress_open (compfile);
 				if (decomp) {

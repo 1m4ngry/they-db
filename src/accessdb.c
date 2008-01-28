@@ -29,108 +29,109 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
+#include <stdlib.h>
 
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
+#include "argp.h"
+#include "dirname.h"
+#include "xvasprintf.h"
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr();
-#endif /* STDC_HEADERS */
-
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
+#include <locale.h>
 #define _(String) gettext (String)
+#define N_(String) gettext_noop (String)
 
 #include "manconfig.h"
-#include "libdb/mydbm.h"
-#include "lib/error.h"
 
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
+#include "error.h"
+
+#include "mydbm.h"
 
 char *program_name;
 const char *cat_root;
-
-static const struct option long_options[] =
-{
-	{"help",	no_argument,		0, 'h'},
-	{"version",	no_argument,		0, 'V'},
-	{0, 0, 0, 0}
-};
-
-static const char args[] = "hV";
 
 /* for db_storage.c */
 char *database;
 MYDBM_FILE dbf;
 
-static void usage (int status)
-{
-	printf (_("usage: %s [-hV] [man database]\n"), program_name);
-	printf (_(
-		"-V, --version               show version.\n"
-		"-h, --help                  show this usage message.\n"
-		"\n"
-		"The man database defaults to %s%s.\n"), cat_root, MAN_DB);
+const char *argp_program_version = "accessdb " PACKAGE_VERSION;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
+error_t argp_err_exit_status = FAIL;
 
-	exit (status);
+static const char args_doc[] = N_("[MAN DATABASE]");
+static const char doc[] = "\v" N_("The man database defaults to %s%s.");
+
+static struct argp_option options[] = {
+	{ "debug",	'd',	0,	0,	N_("emit debugging messages") },
+	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
+	{ 0 }
+};
+
+static error_t parse_opt (int key, char *arg, struct argp_state *state)
+{
+	switch (key) {
+		case 'd':
+			debug_level = 1;
+			return 0;
+		case 'h':
+			argp_state_help (state, state->out_stream,
+					 ARGP_HELP_STD_HELP);
+			break;
+		case ARGP_KEY_ARG:
+			if (database)
+				argp_usage (state);
+			database = arg;
+			return 0;
+		case ARGP_KEY_NO_ARGS:
+			database = appendstr (NULL, cat_root, MAN_DB, NULL);
+			return 0;
+	}
+	return ARGP_ERR_UNKNOWN;
 }
+
+static char *help_filter (int key, const char *text,
+			  void *input ATTRIBUTE_UNUSED)
+{
+	switch (key) {
+		case ARGP_KEY_HELP_POST_DOC:
+			return xasprintf (text, cat_root, MAN_DB);
+		default:
+			return (char *) text;
+	}
+}
+
+static struct argp argp = { options, parse_opt, args_doc, doc, 0,
+			    help_filter };
 
 int main (int argc, char *argv[])
 {
-	int c;
 	datum key;
 
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
+
+	if (!setlocale (LC_ALL, ""))
+		/* Obviously can't translate this. */
+		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
+			     "are correct");
+	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
+	textdomain (PACKAGE);
+
 	if (is_directory (FHS_CAT_ROOT) == 1)
 		cat_root = FHS_CAT_ROOT;
 	else if (is_directory (CAT_ROOT) == 1)
 		cat_root = CAT_ROOT;
 
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != -1) {
-		switch (c) {
-			case 'h':
-				usage (OK);
-				break;
-			case 'V':
-				ver ();
-				break;
-			default:
-				usage (FAIL);
-				break;
-		}
-	}
-	if (argc - optind > 1)
-		usage (FAIL);
-	else if (argc - optind == 1) 
-		database = argv[1];
-	else
-		database = strappend (NULL, cat_root, MAN_DB, NULL);
-		
+	if (argp_parse (&argp, argc, argv, 0, 0, 0))
+		exit (FAIL);
+
 	dbf = MYDBM_RDOPEN (database);
 	if (dbf && dbver_rd (dbf)) {
 		MYDBM_CLOSE (dbf);
 		dbf = NULL;
 	}
-	if (!dbf) {
-		error (0, errno, _("can't open %s for reading"), database);
-		usage (FAIL);
-	}
+	if (!dbf)
+		error (FATAL, errno, _("can't open %s for reading"), database);
 
 	key = MYDBM_FIRSTKEY (dbf);
 

@@ -26,33 +26,17 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <stdio.h>
-#include <assert.h>
-
-#if defined(STDC_HEADERS)
 #include <string.h>
 #include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#include <strings.h>
-#else /* no string(s) header file */
-extern char *strsep();
-#endif /* STDC_HEADERS */
+#include <unistd.h>
 
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
-#ifndef STDC_HEADERS
-extern long atol();
-extern char *strsep();
-#endif /* not STDC_HEADERS */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
+
+#include "error.h"
+
 #include "mydbm.h"
 #include "db_storage.h"
 
@@ -80,8 +64,7 @@ int dbdelete (const char *name, struct mandata *info)
 
 	debug ("Attempting delete of %s(%s) entry.\n", name, info->ext);
 
-	MYDBM_SET_DPTR (key, name_to_key (name));
-	MYDBM_DSIZE (key) = strlen (MYDBM_DPTR (key)) + 1;
+	MYDBM_SET (key, name_to_key (name));
 	cont = MYDBM_FETCH (dbf, key);
 
 	if (!MYDBM_DPTR (cont)) {			/* 0 entries */
@@ -140,7 +123,7 @@ int dbdelete (const char *name, struct mandata *info)
 		/* create our new multi content */
 		for (j = 0; j < refs; ++j)
 			if (i != j)
-				multi_content = strappend (multi_content,
+				multi_content = appendstr (multi_content,
 							   "\t", names[j],
 							   "\t", ext[j], NULL);
 
@@ -150,8 +133,7 @@ int dbdelete (const char *name, struct mandata *info)
 		   the gdbm db file does not shrink any after a deletion
 		   anyway */
 
-		MYDBM_SET_DPTR (cont, multi_content);
-		MYDBM_DSIZE (cont) = strlen (MYDBM_DPTR (cont)) + 1;
+		MYDBM_SET (cont, multi_content);
 
 		if (MYDBM_REPLACE (dbf, key, cont))
 			gripe_replace_key (MYDBM_DPTR (key));

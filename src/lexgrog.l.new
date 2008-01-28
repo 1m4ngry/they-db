@@ -31,26 +31,15 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <errno.h>
+#include <string.h>
+#include <unistd.h>
 
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
-#ifdef HAVE_STRING_H
-#  include <string.h>
-#elif defined (HAVE_STRINGS_H)
-#  include <strings.h>
-#endif /* HAVE_STRING_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
+
+#include "error.h"
 
 #define YY_READ_BUF_SIZE	1024
 #define MAX_NAME		2048
@@ -303,7 +292,7 @@ char *find_name(char *file, char *filename, short catfile)
 		/* wipe out any initial spaces */
 		for (p_name = newname; *p_name == ' '; p_name++);
 		/* prepend filters to whatis */
-		return strappend( 0, "§", filters, "§", p_name, 0);
+		return appendstr( 0, "§", filters, "§", p_name, 0);
 	}
 }
 

@@ -25,29 +25,20 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strrchr();
-#endif /* no string(s) header */
+#include "xvasprintf.h"
 
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "libdb/db_storage.h"
-#include "lib/error.h"
+
+#include "error.h"
+
+#include "db_storage.h"
+
 #include "filenames.h"
 
 static void gripe_bogus_manpage (const char *manpage)
@@ -65,15 +56,10 @@ char *make_filename (const char *path, const char *name,
 	if (!name)
 		name = in->name;    /* comes from dblookup(), so non-NULL */
 
-	file = (char *) xrealloc (file, sizeof "//." + strlen (path) + 
-				  strlen (type) + strlen (in->sec) +
-				  strlen (name) + strlen (in->ext));
-				   
-	(void) sprintf (file, "%s/%s%s/%s.%s",
-			path, type, in->sec, name, in->ext);
+	file = xasprintf ("%s/%s%s/%s.%s", path, type, in->sec, name, in->ext);
 
 	if (in->comp && *in->comp != '-')	/* Is there an extension? */
-		file = strappend (file, ".", in->comp, NULL);
+		file = appendstr (file, ".", in->comp, NULL);
 
 	return file;
 }

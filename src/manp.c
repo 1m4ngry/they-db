@@ -53,36 +53,20 @@
 #include <assert.h>
 #include <errno.h>
 #include <dirent.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-#if defined(STDC_HEADERS)
-#  include <stdlib.h>
-#  include <string.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strtok();
-extern char *strchr();
-extern char *strstr();
-#endif
+#include "xgetcwd.h"
 
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
-#ifndef STDC_HEADERS
-extern char *getenv();
-extern int errno;
-#endif
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
-#include "lib/getcwdalloc.h"
-#include "lib/cleanup.h"
+
+#include "error.h"
+#include "cleanup.h"
+
 #include "security.h"
 #include "encodings.h"
 #include "manp.h"
@@ -111,9 +95,9 @@ char *user_config_file = NULL;
 int disable_cache;
 
 static void mkcatdirs (const char *mandir, const char *catdir);
-static __inline__ char *get_manpath_from_path (const char *path);
-static __inline__ char *has_mandir (const char *p);
-static __inline__ char *fsstnd (const char *path);
+static inline char *get_manpath_from_path (const char *path);
+static inline char *has_mandir (const char *p);
+static inline char *fsstnd (const char *path);
 static char *def_path (int flag);
 static void add_dir_to_list (char **lp, const char *dir);
 static char **add_dir_to_path_list (char **mphead, char **mp, const char *p);
@@ -121,7 +105,7 @@ static char **add_dir_to_path_list (char **mphead, char **mp, const char *p);
 
 static void add_to_list (const char *key, const char *cont, int flag)
 {
-	struct list *list = (struct list *) malloc (sizeof (struct list));
+	struct list *list = XMALLOC (struct list);
 	list->key = xstrdup (key);
 	list->cont = xstrdup (cont);
 	list->flag = flag;
@@ -203,7 +187,7 @@ const char **get_sections (void)
 	for (list = namestore; list; list = list->next)
 		if (list->flag == SECTION)
 			length++;
-	sections = xmalloc ((length + 1) * sizeof *sections);
+	sections = xnmalloc (length + 1, sizeof *sections);
 	sectionp = sections;
 	for (list = namestore; list; list = list->next)
 		if (list->flag == SECTION)
@@ -299,7 +283,7 @@ static char *pathappend (char *oldpath, const char *appendage)
 				} else if (*terminator == ':') {
 					char *newapp;
 					*search = 0;
-					newapp = strappend (NULL, app_dedup,
+					newapp = appendstr (NULL, app_dedup,
 							    terminator + 1,
 							    NULL);
 					free (app_dedup);
@@ -314,26 +298,26 @@ static char *pathappend (char *oldpath, const char *appendage)
 			       oldpath, appendage,
 			       oldpath, *app_dedup ? ":" : "", app_dedup);
 		if (*app_dedup)
-			oldpath = strappend (oldpath, ":", app_dedup, NULL);
+			oldpath = appendstr (oldpath, ":", app_dedup, NULL);
 		free (app_dedup);
 		return oldpath;
 	} else
 		return xstrdup (appendage);
 }
 
-static __inline__ void gripe_reading_mp_config (const char *file)
+static inline void gripe_reading_mp_config (const char *file)
 {
 	error (FAIL, 0,
 	       _("can't make sense of the manpath configuration file %s"),
 	       file);
 }
 
-static __inline__ void gripe_stat_file (const char *file)
+static inline void gripe_stat_file (const char *file)
 {
 	debug_error (_("warning: %s"), file);
 }
 
-static __inline__ void gripe_not_directory (const char *dir)
+static inline void gripe_not_directory (const char *dir)
 {
 	if (!quiet)
 		error (0, 0, _("warning: %s isn't a directory"), dir);
@@ -355,8 +339,8 @@ char *cat_manpath (char *manp)
 		catdir = get_from_list (path, MANDB_MAP_USER);
 		if (!catdir)
 			catdir = get_from_list (path, MANDB_MAP);
-		catp = catdir ? pathappend(catp, catdir) 
-			      : pathappend(catp, path);
+		catp = catdir ? pathappend (catp, catdir) 
+			      : pathappend (catp, path);
 	}
 
 	return catp;
@@ -444,7 +428,6 @@ void free_locale_bits (struct locale_bits *bits)
 
 char *add_nls_manpath (char *manpathlist, const char *locale)
 {
-#ifdef HAVE_SETLOCALE
 	char *manpath = NULL;
 	char *path;
 	struct locale_bits lbits;
@@ -481,7 +464,7 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 				continue;
 			if (STRNEQ (name, "man", 3))
 				continue;
-			fullpath = strappend (NULL, path, "/", name, NULL);
+			fullpath = appendstr (NULL, path, "/", name, NULL);
 			if (is_directory (fullpath) != 1) {
 				free (fullpath);
 				continue;
@@ -506,10 +489,6 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 
 	free (manpathlist);
 	return manpath;
-
-#else /* !HAVE_SETLOCALE */
-	return manpathlist;
-#endif /* HAVE_SETLOCALE */
 }
 
 static char *add_system_manpath (const char *systems, const char *manpathlist)
@@ -547,7 +526,7 @@ static char *add_system_manpath (const char *systems, const char *manpathlist)
 					++next;
 				} else
 					element = xstrdup (path);
-				newdir = strappend (newdir, element, "/",
+				newdir = appendstr (newdir, element, "/",
 						    one_system, NULL);
 				free (element);
 
@@ -647,7 +626,7 @@ char *get_manpath (const char *systems)
 				       _("warning: $MANPATH set, "
 					 "prepending %s"),
 				       CONFIG_FILE);
-			manpathlist = strappend (NULL,
+			manpathlist = appendstr (NULL,
 						 guess_manpath (systems),
 						 add_system_manpath
 							(systems, manpathlist),
@@ -658,7 +637,7 @@ char *get_manpath (const char *systems)
 				       _("warning: $MANPATH set, "
 					 "appending %s"),
 				       CONFIG_FILE);
-			manpathlist = strappend (NULL,
+			manpathlist = appendstr (NULL,
 						 add_system_manpath
 							(systems, manpathlist),
 						 guess_manpath (systems),
@@ -670,7 +649,7 @@ char *get_manpath (const char *systems)
 				       _("warning: $MANPATH set, "
 					 "inserting %s"),
 				       CONFIG_FILE);
-			manpathlist = strappend (NULL,
+			manpathlist = appendstr (NULL,
 						 add_system_manpath
 							(systems, manpathlist),
 						 ":", guess_manpath (systems),
@@ -726,8 +705,8 @@ mkcatdirs (const char *mandir, const char *catdir)
 			drop_effective_privs ();
 		}
 		/* then the hierarchy */
-		catname = strappend (NULL, catdir, "/cat1", NULL);
-		manname = strappend (NULL, mandir, "/man1", NULL);
+		catname = appendstr (NULL, catdir, "/cat1", NULL);
+		manname = appendstr (NULL, mandir, "/man1", NULL);
 		if (is_directory (catdir) == 1) {
 			int j;
 			regain_effective_privs ();
@@ -834,7 +813,7 @@ void read_config_file(void)
 	if (home) {
 		char *dotmanpath;
 		if (!user_config_file)
-			dotmanpath = strappend (home, "/.manpath", NULL);
+			dotmanpath = appendstr (home, "/.manpath", NULL);
 		else
 			dotmanpath = xstrdup (user_config_file);
 		config = fopen (dotmanpath, "r");
@@ -901,7 +880,7 @@ static char *def_path (int flag)
  * $HOME/man exists -- the directory $HOME/man will be added
  * to the manpath.
  */
-static __inline__ char *get_manpath_from_path (const char *path)
+static inline char *get_manpath_from_path (const char *path)
 {
 	int len;
 	char *tmppath;
@@ -978,7 +957,7 @@ static __inline__ char *get_manpath_from_path (const char *path)
 	}
 
 	assert (len);
-	manpathlist = (char *) xmalloc (len);
+	manpathlist = xmalloc (len);
 	*manpathlist = '\0';
 
 	lp = tmplist;
@@ -1034,7 +1013,7 @@ static void add_dir_to_list (char **lp, const char *dir)
 
 /* path does not exist in config file: check to see if path/../man or 
    path/man exist.  If so return it, if not return NULL. */
-static __inline__ char *has_mandir (const char *path)
+static inline char *has_mandir (const char *path)
 {
 	char *newpath = NULL;
 
@@ -1054,7 +1033,7 @@ static __inline__ char *has_mandir (const char *path)
 			*newpath = '\0';
 	}
 
-	newpath = strappend (newpath, path, "/man", NULL);
+	newpath = appendstr (newpath, path, "/man", NULL);
 
 	if (is_directory (newpath) == 1)
 		return newpath;
@@ -1081,11 +1060,11 @@ static char **add_dir_to_path_list (char **mphead, char **mp, const char *p)
 		/* deal with relative paths */
 
 		if (*p != '/') {
-			cwd = getcwd_allocated ();
+			cwd = xgetcwd ();
 			if (!cwd)
 				error (FATAL, errno,
 				       _("can't determine current directory"));
-			*mp = strappend (cwd, "/", p, NULL);
+			*mp = appendstr (cwd, "/", p, NULL);
 		} else 
 			*mp = xstrdup (p);
 
@@ -1164,15 +1143,15 @@ char *get_catpath (const char *name, int cattype)
 
 				if (*suffix == '/') {
 					++suffix;
-					catpath = strappend (catpath, "/",
+					catpath = appendstr (catpath, "/",
 							     NULL);
 				}
 				if (STRNEQ (suffix, "man", 3)) {
 					suffix += 3;
-					catpath = strappend (catpath, "cat",
+					catpath = appendstr (catpath, "cat",
 							     NULL);
 				}
-				catpath = strappend (catpath, suffix, NULL);
+				catpath = appendstr (catpath, suffix, NULL);
 			  	return catpath;
 			}
 		}
@@ -1196,7 +1175,7 @@ int is_global_mandir (const char *dir)
 
 /* Accept a manpath (not a full pathname to a file) and return an FSSTND 
    equivalent catpath */
-static __inline__ char *fsstnd (const char *path)
+static inline char *fsstnd (const char *path)
 {
 	char *manpath;
 	char *catpath;
@@ -1211,7 +1190,7 @@ static __inline__ char *fsstnd (const char *path)
 	/* get rid of initial "/usr" */
 	path += sizeof MAN_ROOT - 1;
 	manpath = xstrdup (path);
-	catpath = (char *) xmalloc (strlen (path) + sizeof CAT_ROOT - 3);
+	catpath = xmalloc (strlen (path) + sizeof CAT_ROOT - 3);
 
 	/* start with CAT_ROOT */ 
 	(void) strcpy (catpath, CAT_ROOT);

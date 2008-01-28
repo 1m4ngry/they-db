@@ -24,18 +24,8 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <stdio.h>
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr();
-#endif /* no string(s) header */
+#include <string.h>
+#include <stdlib.h>
 
 #include "manconfig.h"
 #include "descriptions.h"
@@ -97,10 +87,10 @@ struct page_description *parse_descriptions (const char *base_name,
 
 			/* Allocate new description node. */
 			if (head) {
-				desc->next = malloc (sizeof *desc);
+				desc->next = xmalloc (sizeof *desc);
 				desc = desc->next;
 			} else {
-				desc = malloc (sizeof *desc);
+				desc = xmalloc (sizeof *desc);
 				head = desc;
 			}
 			desc->name   = trim_spaces (token);
@@ -121,11 +111,11 @@ struct page_description *parse_descriptions (const char *base_name,
 	 */
 	if (base_name && !seen_base_name) {
 		if (head) {
-			desc->next = malloc (sizeof *desc);
+			desc->next = xmalloc (sizeof *desc);
 			desc = desc->next;
 			desc->whatis = xstrdup (head->whatis);
 		} else {
-			desc = malloc (sizeof *desc);
+			desc = xmalloc (sizeof *desc);
 			head = desc;
 			desc->whatis = NULL;
 		}

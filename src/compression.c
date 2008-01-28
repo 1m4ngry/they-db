@@ -30,37 +30,22 @@
 #include <stdio.h>
 #include <errno.h>
 #include <signal.h>
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-#endif /* STDC_HEADERS */
-
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
 #ifdef COMP_SRC /* must come after manconfig.h */
 
-#include "lib/error.h"
-#include "lib/pipeline.h"
+#include "error.h"
+#include "pipeline.h"
+
 #include "security.h"
 
 /* Take filename as arg, return structure containing decompressor 
@@ -116,13 +101,13 @@ struct compression *comp_file (const char *filename)
 	char *compfile;
 	struct compression *comp;
 
-	compfile = strappend (NULL, filename, ".", NULL);
+	compfile = appendstr (NULL, filename, ".", NULL);
 	len = strlen (compfile);
 	
 	for (comp = comp_list; comp->ext; comp++) {
 		struct stat buf;
 		
-		compfile = strappend (compfile, comp->ext, NULL);
+		compfile = appendstr (compfile, comp->ext, NULL);
 
 		if (stat (compfile, &buf) == 0) {
 			comp->stem = compfile;

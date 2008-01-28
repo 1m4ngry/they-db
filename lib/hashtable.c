@@ -33,17 +33,8 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#include <stdio.h>	/* only for printf() */
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-#endif /* STDC_HEADERS */
+#include <string.h>
+#include <stdlib.h>
 
 #include "manconfig.h"
 #include "hashtable.h"
@@ -86,43 +77,53 @@ void plain_hash_free (void *defn)
 /* Create a hashtable. */
 struct hashtable *hash_create (hash_free_ptr free_defn)
 {
-	struct hashtable *ht =
-		(struct hashtable *) xmalloc (sizeof (struct hashtable));
-	ht->hashtab =
-		(struct nlist **) xmalloc (HASHSIZE * sizeof (struct nlist *));
-	memset (ht->hashtab, 0, HASHSIZE * sizeof (struct nlist *));
+	struct hashtable *ht = XMALLOC (struct hashtable);
+	ht->hashtab = XCALLOC (HASHSIZE, struct nlist *);
 	ht->unique = 0;
 	ht->identical = 0;
 	ht->free_defn = free_defn;
 	return ht;
 }
 
-/* Return pointer to definition of s, or NULL if it doesn't exist. */
-void *hash_lookup (const struct hashtable *ht, const char *s, size_t len)
+/* Return pointer to hash entry structure containing s, or NULL if it
+ * doesn't exist.
+ */
+static void *hash_lookup_structure (const struct hashtable *ht,
+				    const char *s, size_t len)
 {
 	struct nlist *np;
 
 	for (np = ht->hashtab[hash (s, len)]; np; np = np->next) {
 		if (strncmp (s, np->name, len) == 0)
-			return np->defn;
+			return np;
 	}
 	return NULL;
 }
 
-/* Return structure containing defn, or NULL if unable to store. */
+/* Return pointer to definition of s, or NULL if it doesn't exist. */
+void *hash_lookup (const struct hashtable *ht, const char *s, size_t len)
+{
+	struct nlist *np = hash_lookup_structure (ht, s, len);
+	if (np)
+		return np->defn;
+	else
+		return NULL;
+}
+
+/* Return structure containing definition (never NULL). */
 struct nlist *hash_install (struct hashtable *ht, const char *name, size_t len,
 			    void *defn)
 {
 	struct nlist *np;
 
-	np = hash_lookup (ht, name, len);
+	np = hash_lookup_structure (ht, name, len);
 	if (np) {
 		if (np->defn)
 			ht->free_defn (np->defn);
 	} else {
 		unsigned int hashval;
 
-		np = (struct nlist *) xmalloc (sizeof (struct nlist));
+		np = XMALLOC (struct nlist);
 		np->name = xstrndup (name, len);
 		hashval = hash (name, len);
 

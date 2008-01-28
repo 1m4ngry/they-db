@@ -27,22 +27,10 @@
 #include <stdio.h>		/* SunOS's loosing assert.h needs it */
 #include <assert.h>
 #include <signal.h>
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#endif
+#include <unistd.h>
 
 #include "manconfig.h"		/* for FATAL */
 #include "cleanup.h"
-
-
-#ifndef HAVE_ATEXIT
-#  ifdef HAVE_ON_EXIT
-#    define atexit(fun) (on_exit ((void (*)())fun, NULL))
-#  else
-#    error need either atexit() or on_exit()
-/* If necessary we could dummify the whole module in this case */
-#  endif
-#endif
 
 
 
@@ -68,7 +56,7 @@ sighandler (int signo)
   act.sa_handler = SIG_DFL;
   sigemptyset (&act.sa_mask);
   act.sa_flags = 0;
-  if (xsigaction (signo, &act, NULL)) {
+  if (sigaction (signo, &act, NULL)) {
     /* should not happen */
     _exit (FATAL);		/* exit() is taboo from signal handlers! */
   }
@@ -93,7 +81,7 @@ sighandler (int signo)
 static int
 trap_signal (int signo, struct sigaction *oldact)
 {
-  if (xsigaction (signo, NULL, oldact)) {
+  if (sigaction (signo, NULL, oldact)) {
     return -1;
   }
 
@@ -103,7 +91,7 @@ trap_signal (int signo, struct sigaction *oldact)
     act.sa_handler = sighandler;
     sigemptyset (&act.sa_mask);
     act.sa_flags = 0;
-    return xsigaction (signo, &act, oldact);
+    return sigaction (signo, &act, oldact);
   }
 
   return 0;
@@ -128,12 +116,12 @@ static int
 untrap_signal (int signo, struct sigaction *oldact)
 {
   struct sigaction act;
-  if (xsigaction (signo, NULL, &act)) {
+  if (sigaction (signo, NULL, &act)) {
     return -1;
   }
 
   if (act.sa_handler == sighandler) {
-    return xsigaction (signo, oldact, NULL);
+    return sigaction (signo, oldact, NULL);
   }
 
   return 0;
@@ -218,9 +206,9 @@ push_cleanup (cleanup_fun fun, void *arg, int sigsafe)
     slot *new_stack;
 
     if (stack) {
-      new_stack = xrealloc (stack, (nslots+1)*sizeof(slot));
+      new_stack = xnrealloc (stack, nslots+1, sizeof (slot));
     } else {
-      new_stack = xmalloc ((nslots+1)*sizeof(slot));
+      new_stack = xnmalloc (nslots+1, sizeof (slot));
     }
       
     if (!new_stack) return -1;

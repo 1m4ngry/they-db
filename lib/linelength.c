@@ -56,11 +56,11 @@ int get_line_length (void)
 
 #ifdef TIOCGWINSZ
 	/* Jon Tombs */
-	if (isatty (fileno (stdin)) && isatty (fileno (stdout))) {
+	if (isatty (STDIN_FILENO) && isatty (STDOUT_FILENO)) {
 		struct winsize wsz;
 
-		if (ioctl (fileno (stdin), TIOCGWINSZ, &wsz))
-			perror ("TIOCGWINSZ failed\n");
+		if (ioctl (STDIN_FILENO, TIOCGWINSZ, &wsz))
+			perror ("TIOCGWINSZ failed");
 		else if (wsz.ws_col)
 			return line_length = wsz.ws_col;
 	}

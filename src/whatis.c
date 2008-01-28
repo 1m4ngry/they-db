@@ -33,77 +33,50 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
+#include <unistd.h>
 
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif /* HAVE_UNISTD_H */
-
-#if defined(STDC_HEADERS)
-#  include <stdlib.h>
-#  include <string.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else
-extern char *strrchr();
-#endif /* no string(s) header */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #include <locale.h>
 #define _(String) gettext (String)
+#define N_(String) gettext_noop (String)
 
 #ifdef HAVE_ICONV
 #  include <iconv.h>
 #endif /* HAVE_ICONV */
 
-#ifdef HAVE_REGEX_H
-#  include <sys/types.h>
-#  include <regex.h>
-#endif /* HAVE_REGEX_H */
+#include <sys/types.h>
+#include "regex.h"
 
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#ifdef HAVE_FNMATCH_H
-#  include <fnmatch.h>
-#else /* !HAVE_FNMATCH_H */
-#  include "lib/fnmatch.h"
-#endif /* HAVE_FNMATCH_H */
-
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
+#include "argp.h"
+#include "dirname.h"
+#include "fnmatch.h"
 
 #include "manconfig.h"
-#include "libdb/mydbm.h"
-#include "libdb/db_storage.h"
-#include "lib/error.h"
-#include "lib/setenv.h"
-#include "lib/pipeline.h"
-#include "lib/linelength.h"
-#include "lib/hashtable.h"
+
+#include "error.h"
+#include "pipeline.h"
+#include "linelength.h"
+#include "hashtable.h"
+
+#include "mydbm.h"
+#include "db_storage.h"
+
 #include "encodings.h"
 #include "manp.h"
 
 static char *manpathlist[MAXDIRS];
 
 extern char *user_config_file;
-extern char *optarg;
-extern int optind, opterr, optopt;
+static char **keywords;
 static int num_keywords;
 
 char *program_name;
+int am_apropos;
 char *database;
 MYDBM_FILE dbf;
 int quiet = 1;
@@ -112,112 +85,123 @@ int quiet = 1;
 iconv_t conv_to_locale;
 #endif /* HAVE_ICONV */
 
-#if defined(POSIX_REGEX) || defined(BSD_REGEX)
-#  define REGEX
-#endif
-
-#ifdef REGEX
-#  if defined(POSIX_REGEX)
 static regex_t preg;  
-#  endif
-static int regex;
+static int regex_opt;
 static int exact;
-#  ifndef HAVE_REGEX_H
-extern char *re_comp();
-extern void regfree();
-#  endif
-#endif
 
 static int wildcard;
 
-#ifdef APROPOS
 static int require_all;
-#endif
 
 static int long_output;
 
 static const char *section;
 
+static char *manp = NULL;
+static const char *alt_systems = "";
+static const char *locale = NULL;
+
 static struct hashtable *apropos_seen = NULL;
 
-#if !defined(APROPOS) && !defined(WHATIS)
-#  error #define WHATIS or APROPOS, so I know who I am
-#endif
+const char *argp_program_version; /* initialised in main */
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
+error_t argp_err_exit_status = FAIL;
 
-#ifdef APROPOS
-static const char args[] = "dvrewas:lhVm:M:fkL:C:";
-#else
-static const char args[] = "dvrews:lhVm:M:fkL:C:";
-#endif
+static const char args_doc[] = N_("KEYWORD...");
+static const char apropos_doc[] = "\v" N_("The --regex option is enabled by default.");
 
-static const struct option long_options[] =
-{
-	{"debug",	no_argument,		0, 'd'},
-	{"verbose",	no_argument,		0, 'v'},
-	{"regex",	no_argument,		0, 'r'},
-	{"exact",	no_argument,		0, 'e'},
-	{"wildcard",	no_argument,		0, 'w'},
-#ifdef APROPOS
-	{"and",		no_argument,		0, 'a'},
-#endif
-	{"long",	no_argument,		0, 'l'},
-	{"section",	required_argument,	0, 's'},
-	{"help",	no_argument,		0, 'h'},
-	{"version",	no_argument,		0, 'V'},
-	{"systems",	required_argument,	0, 'm'},
-	{"manpath",	required_argument,	0, 'M'},
-	{"whatis",	no_argument,		0, 'f'},
-	{"apropos",	no_argument,		0, 'k'},
-	{"locale",	required_argument,	0, 'L'},
-	{"config-file",	required_argument,	0, 'C'},
-	{0, 0, 0, 0}
+static struct argp_option options[] = {
+	{ "debug",		'd',	0,		0,	N_("emit debugging messages") },
+	{ "verbose",		'v',	0,		0,	N_("print verbose warning messages") },
+	{ "regex",		'r',	0,		0,	N_("interpret each keyword as a regex"),	10 },
+	{ "exact",		'e',	0,		0,	N_("search each keyword for exact match") }, /* apropos only */
+	{ "wildcard",		'w',	0,		0,	N_("the keyword(s) contain wildcards") },
+	{ "and",		'a',	0,		0,	N_("require all keywords to match"),			20 }, /* apropos only */
+	{ "long",		'l',	0,		0,	N_("do not trim output to terminal width"),		30 },
+	{ "section",		's',	N_("SECTION"),	0,	N_("search only this section"),				40 },
+	{ "systems",		'm',	N_("SYSTEM"),	0,	N_("include alternate systems' man pages") },
+	{ "manpath",		'M',	N_("PATH"),	0,	N_("set search path for manual pages to PATH") },
+	{ "locale",		'L',	N_("LOCALE"),	0,	N_("define the locale for this search") },
+	{ "config-file",	'C',	N_("FILE"),	0,	N_("use this user configuration file") },
+	{ "whatis",		'f',	0,		OPTION_HIDDEN,	0 },
+	{ "apropos",		'k',	0,		OPTION_HIDDEN,	0 },
+	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
+	{ 0 }
 };
 
-#ifdef APROPOS
-static void usage (int status)
+static error_t parse_opt (int key, char *arg, struct argp_state *state)
 {
-	printf (_("usage: %s [-dalhV] [-r|-w|-e] [-s section] [-m systems] [-M manpath]\n"
-		  "               [-L locale] [-C file] keyword ...\n"), program_name);
-	printf (_(
-		"-d, --debug                produce debugging info.\n"
-		"-v, --verbose              print verbose warning messages.\n"
-		"-r, --regex                interpret each keyword as a regex (default).\n"
-		"-e, --exact                search each keyword for exact match.\n"
-		"-w, --wildcard             the keyword(s) contain wildcards.\n"
-		"-a, --and                  require all keywords to match.\n"
-		"-l, --long                 do not trim output to terminal width.\n"
-		"-s, --section section      search only this section.\n"
-		"-m, --systems system       include alternate systems' man pages.\n"
-		"-M, --manpath path         set search path for manual pages to `path'.\n"
-		"-L, --locale locale        define the locale for this search.\n"
-		"-C, --config-file file     use this user configuration file.\n"
-		"-V, --version              show version.\n"
-		"-h, --help                 show this usage message.\n"));
-
-	exit (status);
+	switch (key) {
+		case 'd':
+			debug_level = 1;
+			return 0;
+		case 'v':
+			quiet = 0;
+			return 0;
+		case 'r':
+			regex_opt = 1;
+			return 0;
+		case 'e':
+			/* Only makes sense for apropos, but has
+			 * historically been accepted by whatis anyway.
+			 */
+			regex_opt = 0;
+			exact = 1;
+			return 0;
+		case 'w':
+			regex_opt = 0;
+			wildcard = 1;
+			return 0;
+		case 'a':
+			if (am_apropos)
+				require_all = 1;
+			else
+				argp_usage (state);
+			return 0;
+		case 'l':
+			long_output = 1;
+			return 0;
+		case 's':
+			section = arg;
+			return 0;
+		case 'm':
+			alt_systems = arg;
+			return 0;
+		case 'M':
+			manp = xstrdup (arg);
+			return 0;
+		case 'L':
+			locale = arg;
+			return 0;
+		case 'C':
+			user_config_file = arg;
+			return 0;
+		case 'f':
+		case 'k':
+			/* ignore, may be passed by man */
+			return 0;
+		case 'h':
+			argp_state_help (state, state->out_stream,
+					 ARGP_HELP_STD_HELP);
+			break;
+		case ARGP_KEY_ARGS:
+			keywords = state->argv + state->next;
+			num_keywords = state->argc - state->next;
+			return 0;
+		case ARGP_KEY_NO_ARGS:
+			/* Make sure that we have a keyword! */
+			printf (_("%s what?\n"), program_name);
+			exit (FAIL);
+		case ARGP_KEY_SUCCESS:
+			if (am_apropos && !exact && !wildcard)
+				regex_opt = 1;
+			return 0;
+	}
+	return ARGP_ERR_UNKNOWN;
 }
-#else	
-static void usage (int status)
-{
-	printf (_("usage: %s [-dlhV] [-r|-w] [-s section] [-m systems] [-M manpath]\n"
-		  "              [-L locale] [-C file] keyword ...\n"), program_name);
-	printf (_(
-		"-d, --debug                produce debugging info.\n"
-		"-v, --verbose              print verbose warning messages.\n"
-		"-r, --regex                interpret each keyword as a regex.\n"
-		"-w, --wildcard             the keyword(s) contain wildcards.\n"
-		"-l, --long                 do not trim output to terminal width.\n"
-		"-s, --section section      search only this section.\n"
-		"-m, --systems system       include alternate systems' man pages.\n"
-		"-M, --manpath path         set search path for manual pages to `path'.\n"
-		"-L, --locale locale        define the locale for this search.\n"
-		"-C, --config-file file     use this user configuration file.\n"
-		"-V, --version              show version.\n"
-		"-h, --help                 show this usage message.\n"));
 
-	exit (status);
-}
-#endif
+static struct argp apropos_argp = { options, parse_opt, args_doc, apropos_doc };
+static struct argp whatis_argp = { options, parse_opt, args_doc };
 
 static char *simple_convert (iconv_t conv, char *string)
 {
@@ -251,9 +235,9 @@ static char *simple_convert (iconv_t conv, char *string)
 }
 
 /* do the old thing, if we cannot find the relevant database */
-static __inline__ int use_grep (char *page, char *manpath)
+static inline int use_grep (char *page, char *manpath)
 {
-	char *whatis_file = strappend (NULL, manpath, "/whatis", NULL);
+	char *whatis_file = appendstr (NULL, manpath, "/whatis", NULL);
 	int status;
 
 	if (access (whatis_file, R_OK) == 0) {
@@ -262,20 +246,20 @@ static __inline__ int use_grep (char *page, char *manpath)
 		const char *flags;
 		char *anchored_page = NULL;
 
-#if defined(WHATIS)
-		flags = get_def_user ("whatis_grep_flags", WHATIS_GREP_FLAGS);
-		anchored_page = strappend (NULL, "^", page, NULL);
-#elif defined(APROPOS)
-#ifdef REGEX
-		if (regex)
-			flags = get_def_user ("apropos_regex_grep_flags",
-					      APROPOS_REGEX_GREP_FLAGS);
-		else
-#endif
-			flags = get_def_user ("apropos_grep_flags",
-					      APROPOS_GREP_FLAGS);
-		anchored_page = xstrdup (page);
-#endif 	
+		if (am_apropos) {
+			if (regex_opt)
+				flags = get_def_user (
+					"apropos_regex_grep_flags",
+					APROPOS_REGEX_GREP_FLAGS);
+			else
+				flags = get_def_user ("apropos_grep_flags",
+						      APROPOS_GREP_FLAGS);
+			anchored_page = xstrdup (page);
+		} else {
+			flags = get_def_user ("whatis_grep_flags",
+					      WHATIS_GREP_FLAGS);
+			anchored_page = appendstr (NULL, "^", page, NULL);
+		}
 
 		grep_cmd = command_new_argstr (get_def_user ("grep", GREP));
 		command_argstr (grep_cmd, flags);
@@ -288,7 +272,7 @@ static __inline__ int use_grep (char *page, char *manpath)
 		pipeline_free (grep_pl);
 	} else {
 		debug ("warning: can't read the fallback whatis text database "
-		       "%s/whatis", manpath);
+		       "%s/whatis\n", manpath);
 		status = 0;
 	}
 
@@ -374,12 +358,12 @@ static void display (struct mandata *info, char *page)
 
 	if (strlen (page_name) > (size_t) (line_len / 2)) {
 		string = xstrndup (page_name, line_len / 2 - 3);
-		string = strappend (string, "...", NULL);
+		string = appendstr (string, "...", NULL);
 	} else
 		string = xstrdup (page_name);
-	string = strappend (string, " (", info->ext, ")", NULL);
+	string = appendstr (string, " (", info->ext, ")", NULL);
 	if (!STREQ (info->pointer, "-") && !STREQ (info->pointer, page))
-		string = strappend (string, " [", info->pointer, "]", NULL);
+		string = appendstr (string, " [", info->pointer, "]", NULL);
 
 	if (strlen (string) < (size_t) 20) {
 		int i;
@@ -388,14 +372,14 @@ static void display (struct mandata *info, char *page)
 			string[i] = ' ';
 		string[i] = '\0';
 	}
-	string = strappend (string, " - ", NULL);
+	string = appendstr (string, " - ", NULL);
 
 	rest = line_len - strlen (string);
 	if (!long_output && strlen (whatis) > (size_t) rest) {
 		whatis[rest - 3] = '\0';
-		string = strappend (string, whatis, "...\n", NULL);
+		string = appendstr (string, whatis, "...\n", NULL);
 	} else
-		string = strappend (string, whatis, "\n", NULL);
+		string = appendstr (string, whatis, "\n", NULL);
 
 	string_conv = simple_convert (conv_to_locale, string);
 	fputs (string_conv, stdout);
@@ -410,7 +394,7 @@ static char *lower (char *s)
 {
 	char *low, *p;
 
-	p = low = (char *) xmalloc (strlen (s) +1);
+	p = low = xmalloc (strlen (s) + 1);
 
 	while (*s) {
 		if (CTYPE (isupper, *s))
@@ -423,9 +407,8 @@ static char *lower (char *s)
 	return low;
 }
 
-#ifdef WHATIS
 /* lookup the page and display the results */
-static __inline__ int whatis (char *page)
+static inline int do_whatis (char *page)
 {
 	struct mandata *info;
 	int count = 0;
@@ -443,33 +426,23 @@ static __inline__ int whatis (char *page)
 	}
 	return count;
 }
-#endif /* WHATIS */
 
 /* return 1 if page matches name, else 0 */
 static int parse_name (char *page, char *dbname)
 { 
-#ifdef REGEX
-	if (regex)
-#  if defined(POSIX_REGEX)
+	if (regex_opt)
 		return (regexec (&preg, dbname, 0, (regmatch_t *) 0, 0) == 0);
-#  elif defined(BSD_REGEX)
-		return re_exec (dbname);
-#  endif
-#endif /* REGEX */
 
-#ifdef APROPOS
-	if (!wildcard) {
+	if (am_apropos && !wildcard) {
 		char *lowdbname = lower (dbname);
 		int ret = STREQ (lowdbname, page);
 		free (lowdbname);
 		return ret;
 	}
-#endif
 
 	return (fnmatch (page, dbname, 0) == 0);
 }
 
-#ifdef APROPOS
 /* return 1 on word match */
 static int match (char *lowpage, char *whatis)
 {
@@ -525,14 +498,8 @@ static int word_fnmatch (char *lowpage, char *whatis)
 /* return 1 if page matches whatis, else 0 */
 static int parse_whatis (char *page, char *lowpage, char *whatis)
 { 
-#ifdef REGEX
-	if (regex) 
-#  if defined(POSIX_REGEX)
+	if (regex_opt) 
 		return (regexec (&preg, whatis, 0, (regmatch_t *) 0, 0) == 0);
-#  elif defined(BSD_REGEX)
-		return re_exec (whatis);
-#  endif
-#endif /* REGEX */
 
 	if (wildcard) {
 		if (exact)
@@ -543,7 +510,6 @@ static int parse_whatis (char *page, char *lowpage, char *whatis)
 
 	return match (lowpage, whatis);
 }
-#endif /* APROPOS */
 
 /* cjwatson: Optimized functions don't seem to be correct in some
  * circumstances; disabled for now.
@@ -551,7 +517,7 @@ static int parse_whatis (char *page, char *lowpage, char *whatis)
 #undef BTREE
 
 /* scan for the page, print any matches */
-static int apropos (char *page, char *lowpage)
+static int do_apropos (char *page, char *lowpage)
 {
 	datum key, cont;
 	int found = 0;
@@ -571,11 +537,6 @@ static int apropos (char *page, char *lowpage)
 		char *tab;
 		int got_match;
 		struct mandata info;
-#ifdef APROPOS
-		char *whatis;
-		char *seen_key;
-		int *seen_count;
-#endif
 
 		memset (&info, 0, sizeof (info));
 
@@ -614,45 +575,52 @@ static int apropos (char *page, char *lowpage)
 		if (tab) 
 			 *tab = '\0';
 
-#ifdef APROPOS
-		if (info.name)
-			seen_key = xstrdup (info.name);
-		else
-			seen_key = xstrdup (MYDBM_DPTR (key));
-		seen_key = strappend (seen_key, " (", info.ext, ")", NULL);
-		seen_count = hash_lookup (apropos_seen, seen_key,
-					  strlen (seen_key));
-		if (seen_count && !require_all)
-			goto nextpage_tab;
-		got_match = parse_name (lowpage, MYDBM_DPTR (key));
-		whatis = xstrdup (info.whatis);
-		if (!got_match && whatis)
-			got_match = parse_whatis (page, lowpage, whatis);
-		free (whatis);
-#else /* WHATIS */
-		got_match = parse_name (page, MYDBM_DPTR (key));
-#endif /* APROPOS */
-		if (got_match) {
-#ifdef APROPOS
-			if (!seen_count) {
-				seen_count = xmalloc (sizeof *seen_count);
-				*seen_count = 0;
-				hash_install (apropos_seen, seen_key,
-					      strlen (seen_key), seen_count);
+		if (am_apropos) {
+			char *whatis;
+			char *seen_key;
+			int *seen_count;
+
+			if (info.name)
+				seen_key = xstrdup (info.name);
+			else
+				seen_key = xstrdup (MYDBM_DPTR (key));
+			seen_key = appendstr (seen_key, " (", info.ext, ")",
+					      NULL);
+			seen_count = hash_lookup (apropos_seen, seen_key,
+						  strlen (seen_key));
+			if (seen_count && !require_all)
+				goto nextpage_tab;
+			got_match = parse_name (lowpage, MYDBM_DPTR (key));
+			whatis = xstrdup (info.whatis);
+			if (!got_match && whatis)
+				got_match = parse_whatis (page, lowpage,
+							  whatis);
+			free (whatis);
+			if (got_match) {
+				if (!seen_count) {
+					seen_count = xmalloc
+						(sizeof *seen_count);
+					*seen_count = 0;
+					hash_install (apropos_seen, seen_key,
+						      strlen (seen_key),
+						      seen_count);
+				}
+				++(*seen_count);
+				if (!require_all ||
+				    *seen_count == num_keywords)
+					display (&info, MYDBM_DPTR (key));
 			}
-			++(*seen_count);
-			if (!require_all || *seen_count == num_keywords)
-#endif
-			    display (&info, MYDBM_DPTR (key));
+			free (seen_key);
 			found++;
+		} else {
+			got_match = parse_name (page, MYDBM_DPTR (key));
+			if (got_match)
+				display (&info, MYDBM_DPTR (key));
 		}
 
 		found += got_match;
 
-#ifdef APROPOS
-		free (seen_key);
 nextpage_tab:
-#endif
 		if (tab)
 			*tab = '\t';
 nextpage:
@@ -669,10 +637,6 @@ nextpage:
 		info.addr = NULL; /* == MYDBM_DPTR (cont), freed above */
 		free_mandata_elements (&info);
 	}
-
-#ifndef APROPOS
-	lowpage = lowpage; /* not used in whatis */
-#endif
 
 	return found;
 }
@@ -707,18 +671,14 @@ static int search (char *page)
 			continue;
 		}
 
-#ifdef WHATIS
-# ifdef REGEX
-		if (regex || wildcard) {
-# else /* !REGEX */
-		if (wildcard) {
-# endif /* REGEX */
-			found += apropos (page, lowpage);
-		} else
-			found += whatis (page);
-#else /* APROPOS */
-		found += apropos (page, lowpage);
-#endif /* WHATIS */
+		if (am_apropos)
+			found += do_apropos (page, lowpage);
+		else {
+			if (regex_opt || wildcard) {
+				found += do_apropos (page, lowpage);
+			} else
+				found += do_whatis (page);
+		}
 		free (database);
 		database = NULL;
 		MYDBM_CLOSE (dbf);
@@ -736,17 +696,32 @@ static int search (char *page)
 
 int main (int argc, char *argv[])
 {
-	int c;
-	char *manp = NULL;
-	const char *alt_systems = "";
 	char *multiple_locale = NULL, *internal_locale;
-	const char *locale = NULL;
 #ifdef HAVE_ICONV
 	char *locale_charset;
 #endif
+	int i;
 	int status = OK;
 
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
+	if (STREQ (program_name, APROPOS_NAME)) {
+		am_apropos = 1;
+		argp_program_version = "apropos " PACKAGE_VERSION;
+	} else {
+		struct argp_option *optionp;
+		am_apropos = 0;
+		argp_program_version = "whatis " PACKAGE_VERSION;
+		for (optionp = (struct argp_option *) whatis_argp.options;
+		     optionp->name || optionp->key || optionp->arg ||
+		     optionp->flags || optionp->doc || optionp->group;
+		     ++optionp) {
+			if (!optionp->name)
+				continue;
+			if (STREQ (optionp->name, "exact") ||
+			    STREQ (optionp->name, "and"))
+				optionp->flags |= OPTION_HIDDEN;
+		}
+	}
 
 	/* initialise the locale */
 	if (!setlocale (LC_ALL, ""))
@@ -754,6 +729,7 @@ int main (int argc, char *argv[])
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
 	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);
 
 	internal_locale = setlocale (LC_MESSAGES, NULL);
@@ -767,72 +743,10 @@ int main (int argc, char *argv[])
 	}
 	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
 
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != EOF) {
-		switch (c) {
+	if (argp_parse (am_apropos ? &apropos_argp : &whatis_argp, argc, argv,
+			0, 0, 0))
+		exit (FAIL);
 
-			case 'd':
-				debug_level = 1;
-				break;
-			case 'v':
-				quiet = 0;
-				break;
-			case 'L':
-				locale = optarg;
-				break;
-			case 'm':
-				alt_systems = optarg;
-				break;
-			case 'M':
-				manp = xstrdup (optarg);
-				break;
-			case 'e':
-#ifdef REGEX
-				regex = 0;
-				exact = 1;
-#endif
-				break;
-			case 'r':
-#ifdef REGEX
-				regex = 1;
-#endif
-				break;
-			case 'w':
-#ifdef REGEX
-				regex = 0;
-#endif
-				wildcard = 1;
-				break;
-#ifdef APROPOS
-			case 'a':
-				require_all = 1;
-				break;
-#endif
-			case 'l':
-				long_output = 1;
-				break;
-			case 's':
-				section = optarg;
-				break;
-			case 'f': /* fall through */
-			case 'k': /* ignore, may be passed by man */
-				break;
-			case 'C':
-				user_config_file = optarg;
-				break;
-			case 'V':
-				ver ();
-				break;
-			case 'h':
-				usage (OK);
-				break;
-			default:
-				usage (FAIL);
-				break;
-		}
-	}
-
-#ifdef HAVE_SETLOCALE
 	/* close this locale and reinitialise if a new locale was 
 	   issued as an argument or in $MANOPT */
 	if (locale) {
@@ -850,25 +764,8 @@ int main (int argc, char *argv[])
 			multiple_locale = NULL;
 		}
 	}
-#endif /* HAVE_SETLOCALE */
 
 	pipeline_install_sigchld ();
-
-#if defined(REGEX) && defined(APROPOS)
-	/* Become it even if it's null - GNU standards */
-	/* if (getenv ("POSIXLY_CORRECT")) */
-	if (!exact && !wildcard)
-		regex = 1;
-#endif
-
-	/* Make sure that we have a keyword! */
-	num_keywords = argc - optind;
-	if (!num_keywords) {
-		printf (_("%s what?\n"), program_name);
-		free (internal_locale);
-		free (program_name);
-		return 0;
-	}
 
 	/* sort out the internal manpath */
 	if (manp == NULL) {
@@ -901,16 +798,15 @@ int main (int argc, char *argv[])
 	apropos_seen = hash_create (&plain_hash_free);
 
 #ifdef HAVE_ICONV
-	locale_charset = strappend (NULL, get_locale_charset (), "//IGNORE",
+	locale_charset = appendstr (NULL, get_locale_charset (), "//IGNORE",
 				    NULL);
 	conv_to_locale = iconv_open (locale_charset, "UTF-8");
 	free (locale_charset);
 #endif /* HAVE_ICONV */
 
-	while (optind < argc) {
-#if defined(POSIX_REGEX)		
-		if (regex) {
-			int errcode = regcomp (&preg, argv[optind], 
+	for (i = 0; i < num_keywords; ++i) {
+		if (regex_opt) {
+			int errcode = regcomp (&preg, keywords[i],
 					       REG_EXTENDED |
 					       REG_NOSUB |
 					       REG_ICASE);
@@ -919,23 +815,12 @@ int main (int argc, char *argv[])
 				char error_string[64];
 				regerror (errcode, &preg, error_string, 64);
 				error (FAIL, 0, _("fatal: regex `%s': %s"),
-				       argv[optind], error_string);
+				       keywords[i], error_string);
 			}
 		}
-#elif defined(BSD_REGEX)
-		if (regex) {
-			/* How to set type of regex ...? */
-			char *error_string = re_comp (argv[optind]);
-			if (error_string)
-				error (FAIL, 0, _("fatal: regex `%s': %s"),
-				       argv[optind], error_string);
-		}
-#endif /* REGEX */
-		if (!search (argv[optind++]))
+		if (!search (keywords[i]))
 			status = NOT_FOUND;
-#ifdef POSIX_REGEX
 		regfree (&preg);
-#endif /* POSIX_REGEX */
 	}
 
 #ifdef HAVE_ICONV

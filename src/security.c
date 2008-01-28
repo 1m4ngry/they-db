@@ -27,22 +27,11 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <errno.h>
-
-#ifndef STDC_HEADERS
-extern int errno;
-#endif
-
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#endif /* STDC_HEADERS */
 
 #include <sys/types.h>
 
@@ -50,13 +39,15 @@ extern int errno;
 #  include <sys/wait.h>
 #endif
 
-#include "lib/gettext.h"
+#include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
-#include "lib/error.h"
-#include "lib/cleanup.h"
-#include "lib/pipeline.h"
+
+#include "error.h"
+#include "cleanup.h"
+#include "pipeline.h"
+
 #include "security.h"
 
 #ifdef SECURE_MAN_UID
@@ -68,19 +59,17 @@ extern int errno;
     * they live in are writeable by this user.
     */
 
-#  ifdef HAVE_UNISTD_H
-#    include <unistd.h> 			/* for _POSIX_SAVED_IDS */
-#    if defined(_POSIX_SAVED_IDS)
-#      if defined(__ultrix__)
-         /* Ultrix pretends to have saved uids, but hasn't unless: */
-#        if defined(POSIX) || defined(SYSTEM_FIVE)
-#          define POSIX_SAVED_IDS
-#        endif /* POSIX || SYSTEM_FIVE */
-#      else /* !ultrix */
+#  include <unistd.h> 			/* for _POSIX_SAVED_IDS */
+#  if defined(_POSIX_SAVED_IDS)
+#    if defined(__ultrix__)
+       /* Ultrix pretends to have saved uids, but hasn't unless: */
+#      if defined(POSIX) || defined(SYSTEM_FIVE)
 #        define POSIX_SAVED_IDS
-#      endif /* ultrix */
-#    endif /* _POSIX_SAVED_IDS */
-#  endif /* HAVE_UNISTD_H */
+#      endif /* POSIX || SYSTEM_FIVE */
+#    else /* !ultrix */
+#      define POSIX_SAVED_IDS
+#    endif /* ultrix */
+#  endif /* _POSIX_SAVED_IDS */
 
 /* Sort out the function to use to set the euid.  Used if we have suid */
   
@@ -120,7 +109,7 @@ static struct passwd *man_owner;
  */
 static int priv_drop_count = 0;
 
-static __inline__ void gripe_set_euid (void)
+static inline void gripe_set_euid (void)
 {
 	error (FATAL, errno, _("can't set effective uid"));
 }

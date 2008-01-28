@@ -3,7 +3,7 @@
  *
  * Copyright (C) 1990, 1991 John W. Eaton.
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -39,54 +39,22 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <errno.h>
 #include <termios.h>
+#include <unistd.h>
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#else /* no string(s) header */
-extern char *strchr(), *strcat();
-#endif /* STDC_HEADERS */
-
-#if defined(HAVE_UNISTD_H)
-#  include <unistd.h>
-#else
-extern pid_t vfork();
+#ifndef R_OK
 #  define R_OK		4
-#  define STDOUT_FILENO	1
-#  define STDIN_FILENO	0
-#endif /* HAVE_UNISTD_H */
+#  define X_OK		1
+#endif /* !R_OK */
 
-#if defined(HAVE_LIMITS_H)
-#  include <limits.h>
-#elif defined(HAVE_SYS_PARAM_H)
-#  include <sys/param.h>
-#endif
+#include <limits.h>
 
 static char *cwd;
-
-#ifndef PIPE_BUF
-#  if defined(_POSIX_VERSION) && defined(_POSIX_PIPE_MAX)
-#    define PIPE_MAX _POSIX_PIPE_MAX
-#  else /* !_POSIX_PIPE_MAX */
-#    if defined(PIPE_MAX) && (PIPE_MAX != INT_MAX)
-#      define PIPE_BUF PIPE_MAX
-#    else /* !PIPE_MAX */
-#      define PIPE_BUF 512
-#    endif /* PIPE_MAX */
-#  endif /* _POSIX_PIPE_MAX */
-#endif /* PIPE_BUF */
-
-#ifdef HAVE_SYS_FILE
-#  include <sys/file.h>
-#endif /* HAVE_SYS_FILE */
 
 #if HAVE_FCNTL_H
 #  include <fcntl.h>
@@ -99,41 +67,30 @@ static char *cwd;
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if HAVE_SYS_WAIT_H
-#  include <sys/wait.h>
-#endif
+#include "argp.h"
+#include "dirname.h"
+#include "minmax.h"
+#include "xvasprintf.h"
+#include "xgetcwd.h"
 
-#ifndef STDC_HEADERS
-extern char *getenv();
-extern int errno;
-#endif
-
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#ifdef HAVE_GETOPT_H
-#  include <getopt.h>
-#else /* !HAVE_GETOPT_H */
-#  include "lib/getopt.h"
-#endif /* HAVE_GETOPT_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #include <locale.h>
 #define _(String) gettext (String)
+#define N_(String) gettext_noop (String)
 
 #include "manconfig.h"
-#include "libdb/mydbm.h"
-#include "libdb/db_storage.h"
-#include "lib/error.h"
-#include "lib/cleanup.h"
-#include "lib/setenv.h"
-#include "lib/hashtable.h"
-#include "lib/pipeline.h"
-#include "lib/getcwdalloc.h"
-#include "lib/pathsearch.h"
-#include "lib/linelength.h"
-#include "lib/decompress.h"
+
+#include "error.h"
+#include "cleanup.h"
+#include "hashtable.h"
+#include "pipeline.h"
+#include "pathsearch.h"
+#include "linelength.h"
+#include "decompress.h"
+
+#include "mydbm.h"
+#include "db_storage.h"
+
 #include "check_mandirs.h"
 #include "filenames.h"
 #include "globbing.h"
@@ -194,11 +151,22 @@ struct candidate {
 #define CANDIDATE_FILESYSTEM 0
 #define CANDIDATE_DATABASE   1
 
-static __inline__ void gripe_system (pipeline *p, int status)
+static inline void gripe_system (pipeline *p, int status)
 {
 	error (CHILD_FAIL, 0, _("command exited with status %d: %s"),
 	       status, pipeline_tostring (p));
 }
+
+enum opts {
+	OPT_WARNINGS = 256,
+	OPT_MAX
+};
+
+struct string_llist;
+struct string_llist {
+	const char *name;
+	struct string_llist *next;
+};
 
 
 static char *manpathlist[MAXDIRS];
@@ -211,7 +179,6 @@ MYDBM_FILE dbf;
 extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
 extern int disable_cache;
-extern int optind;
 
 /* locals */
 static const char *alt_system_name;
@@ -222,7 +189,7 @@ static const char *preprocessors;
 static const char *pager;
 static const char *locale;
 static char *internal_locale;
-static char *prompt_string;
+static const char *prompt_string;
 static char *less;
 static const char *std_sections[] = STD_SECTIONS;
 static char *manp;
@@ -231,16 +198,24 @@ static struct hashtable *db_hash = NULL;
 
 static int troff;
 static const char *roff_device = NULL;
+#ifdef TROFF_IS_GROFF
+static const char *const default_roff_warnings = "mac";
+static struct string_llist *roff_warnings = NULL;
+#endif /* TROFF_IS_GROFF */
 static int print_where, print_where_cat;
 static int catman;
 static int local_man_file;
 static int findall;
 static int update;
 static int match_case;
+static int ult_flags = SO_LINK | SOFT_LINK | HARD_LINK;
+static const char *recode = NULL;
 
 static int ascii;		/* insert tr in the output pipe */
 static int save_cat; 		/* security breach? Can we save the cat? */
 static int different_encoding;	/* was an explicit encoding specified? */
+
+static int first_arg;
 
 static int found_a_stray;		/* found a straycat */
 
@@ -251,49 +226,6 @@ static int created_tmp_cat;			/* dto. */
 static int man_modtime;		/* modtime of man page, for commit_tmp_cat() */
 #endif
 
-static const struct option long_options[] =
-{
-    {"local-file", no_argument, 	0, 'l'},
-    {"manpath", required_argument, 	0, 'M'},
-    {"pager", required_argument, 	0, 'P'},
-    {"sections", required_argument, 	0, 'S'},
-    {"all", no_argument, 		0, 'a'},
-    {"debug", no_argument, 		0, 'd'},
-    {"whatis", no_argument, 		0, 'f'},
-    {"help", no_argument, 		0, 'h'},
-    {"apropos", no_argument, 		0, 'k'},
-    {"version", no_argument, 		0, 'V'},
-    {"systems", required_argument, 	0, 'm'},
-    {"preprocessor", required_argument,	0, 'p'},
-    {"location", no_argument, 		0, 'w'},
-    {"where", no_argument,		0, 'w'},
-    {"location-cat", no_argument,	0, 'W'},
-    {"where-cat", no_argument,		0, 'W'},
-    {"locale", required_argument,	0, 'L'},
-    {"extension", required_argument,	0, 'e'},
-    {"update", no_argument, 		0, 'u'},
-    {"prompt", required_argument,	0, 'r'},
-    {"default", no_argument,		0, 'D'},
-    {"ascii", no_argument,		0, '7'},
-    {"catman", no_argument, 		0, 'c'},
-    {"encoding", required_argument,	0, 'E'},
-    {"ignore-case", no_argument,	0, 'i'},
-    {"match-case", no_argument,		0, 'I'},
-    {"config-file", required_argument,	0, 'C'},
-
-#ifdef HAS_TROFF
-    {"troff", no_argument, 		0, 't'},
-    {"troff-device", optional_argument,	0, 'T'},
-# ifdef TROFF_IS_GROFF
-    {"ditroff", no_argument, 		0, 'Z'},
-    {"gxditview", optional_argument,	0, 'X'},
-    {"html", optional_argument,		0, 'H'},
-# endif
-    {0, 0, 0, 0}
-};
-
-static const char args[] = "7DlM:P:S:adfhH::kVum:p:tT::wWe:L:Zcr:X::E:iIC:";
-
 # ifdef TROFF_IS_GROFF
 static int ditroff;
 static const char *gxditview;
@@ -301,86 +233,290 @@ static int htmlout;
 static const char *html_pager;
 # endif /* TROFF_IS_GROFF */
 
-#else /* !HAS_TROFF */
+const char *argp_program_version = "man " PACKAGE_VERSION;
+const char *argp_program_bug_address = PACKAGE_BUGREPORT;
+error_t argp_err_exit_status = FAIL;
 
-    {0, 0, 0, 0}
+static const char args_doc[] = N_("[SECTION] PAGE...");
+
+/* Please keep these options in the same order as in parse_opt below. */
+static struct argp_option options[] = {
+	{ "config-file",	'C',	N_("FILE"),	0,		N_("use this user configuration file") },
+	{ "debug",		'd',	0,		0,		N_("emit debugging messages") },
+	{ "default",		'D',	0,		0,		N_("reset all options to their default values") },
+#ifdef TROFF_IS_GROFF
+	{ "warnings",  OPT_WARNINGS,    N_("WARNINGS"), OPTION_ARG_OPTIONAL,
+									N_("enable warnings from groff") },
+#endif /* TROFF_IS_GROFF */
+
+	{ 0,			0,	0,		0,		N_("Main modes of operation:"),					10 },
+	{ "whatis",		'f',	0,		0,		N_("equivalent to whatis") },
+	{ "apropos",		'k',	0,		0,		N_("equivalent to apropos") },
+	{ "where",		'w',	0,		0,		N_("print physical location of man page(s)") },
+	{ "location",		0,	0,		OPTION_ALIAS },
+	{ "where-cat",		'W',	0,		0,		N_("print physical location of cat file(s)") },
+	{ "location-cat",	0,	0,		OPTION_ALIAS },
+	{ "local-file",		'l',	0,		0,		N_("interpret PAGE argument(s) as local filename(s)") },
+	{ "catman",		'c',	0,		0,		N_("used by catman to reformat out of date cat pages"),		11 },
+	{ "recode",		'R',	N_("CODE"),	0,		N_("output source page encoded in CODE") },
+
+	{ 0,			0,	0,		0,		N_("Finding manual pages:"),					20 },
+	{ "manpath",		'M',	N_("PATH"),	0,		N_("set search path for manual pages to PATH") },
+	{ "locale",		'L',	N_("LOCALE"),	0,		N_("define the locale for this particular man search") },
+	{ "systems",		'm',	N_("SYSTEM"),	0,		N_("search for man pages from other unix system(s)") },
+	{ "sections",		'S',	N_("LIST"),	0,		N_("use colon separated section list") },
+	{ 0,			's',	0,		OPTION_ALIAS },
+	{ "extension",		'e',	N_("EXTENSION"),
+							0,		N_("limit search to extension type EXTENSION") },
+	{ "ignore-case",	'i',	0,		0,		N_("look for pages case-insensitively (default)"),		21 },
+	{ "match-case",		'I',	0,		0,		N_("look for pages case-sensitively") },
+	{ "all",		'a',	0,		0,		N_("find all matching manual pages"),				22 },
+	{ "update",		'u',	0,		0,		N_("force a cache consistency check") },
+
+	{ 0,			0,	0,		0,		N_("Controlling formatted output:"),				30 },
+	{ "pager",		'P',	N_("PAGER"),	0,		N_("use program PAGER to display output") },
+	{ "prompt",		'r',	N_("STRING"),	0,		N_("provide the `less' pager with a prompt") },
+	{ "ascii",		'7',	0,		0,		N_("display ASCII translation of certain latin1 chars"),	31 },
+	{ "encoding",		'E',	N_("ENCODING"),	0,		N_("use the selected nroff device and display in pager") },
+	{ "preprocessor",	'p',	N_("STRING"),	0,		N_("STRING indicates which preprocessors to run:\n"
+									   "e - [n]eqn, p - pic, t - tbl,\n"
+									   "g - grap, r - refer, v - vgrind") },
+#ifdef HAS_TROFF
+	{ "troff",		't',	0,		0,		N_("use %s to format pages"),					32 },
+	{ "troff-device",	'T',	N_("DEVICE"),	OPTION_ARG_OPTIONAL,
+									N_("use %s with selected device") },
+# ifdef TROFF_IS_GROFF
+#  define MAYBE_HIDDEN 0
+# else
+#  define MAYBE_HIDDEN OPTION_HIDDEN
+# endif
+	{ "html",		'H',	N_("BROWSER"),	MAYBE_HIDDEN | OPTION_ARG_OPTIONAL,
+									N_("use %s or BROWSER to display HTML output") },
+	{ "ditroff",		'Z',	0,		MAYBE_HIDDEN,	N_("use groff and force it to produce ditroff") },
+	{ "gxditview",		'X',	N_("RESOLUTION"),
+							MAYBE_HIDDEN | OPTION_ARG_OPTIONAL,
+									N_("use groff and display through gxditview (X11):\n"
+									   "-X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12") },
+#endif /* HAS_TROFF */
+
+	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
+	{ 0 }
 };
 
-static const char args[] = "7DlM:P:S:adfhkVum:p:wWe:L:cr:E:iIC:";
+static error_t parse_opt (int key, char *arg, struct argp_state *state)
+{
+	static int apropos, whatis; /* retain values between calls */
 
+	/* Please keep these keys in the same order as in options above. */
+	switch (key) {
+		case 'C':
+			user_config_file = arg;
+			return 0;
+		case 'd':
+			debug_level = 1;
+			return 0;
+		case 'D':
+			/* discard all preset options */
+			local_man_file = findall = update = catman =
+				debug_level = troff =
+				print_where = print_where_cat =
+				ascii = different_encoding =
+				match_case = 0;
+#ifdef TROFF_IS_GROFF
+			ditroff = 0;
+			gxditview = NULL;
+			htmlout = 0;
+			html_pager = NULL;
+#endif
+			roff_device = extension = pager = locale =
+				alt_system_name = external =
+				preprocessors = NULL;
+			colon_sep_section_list = manp = NULL;
+			return 0;
+
+#ifdef TROFF_IS_GROFF
+		case OPT_WARNINGS:
+			{
+				char *s = xstrdup
+					(arg ? arg : default_roff_warnings);
+				const char *warning;
+
+				for (warning = strtok (s, ","); warning;
+				     warning = strtok (NULL, ",")) {
+					struct string_llist *new;
+					new = xmalloc (sizeof *new);
+					new->name = xstrdup (warning);
+					new->next = roff_warnings;
+					roff_warnings = new;
+				}
+
+				free (s);
+			}
+			return 0;
+#endif /* TROFF_IS_GROFF */
+
+		case 'f':
+			external = WHATIS;
+			whatis = 1;
+			return 0;
+		case 'k':
+			external = APROPOS;
+			apropos = 1;
+			return 0;
+		case 'w':
+			print_where = 1;
+			return 0;
+		case 'W':
+			print_where_cat = 1;
+			return 0;
+		case 'l':
+			local_man_file = 1;
+			return 0;
+		case 'c':
+			catman = 1;
+			return 0;
+		case 'R':
+			recode = arg;
+			ult_flags &= ~SO_LINK;
+			return 0;
+
+		case 'M':
+			manp = arg;
+			return 0;
+		case 'L':
+			locale = arg;
+			return 0;
+		case 'm':
+			alt_system_name = arg;
+			return 0;
+		case 'S':
+		case 's':
+			if (*arg)
+				colon_sep_section_list = arg;
+			return 0;
+		case 'e':
+			extension = arg;
+			return 0;
+		case 'i':
+			match_case = 0;
+			return 0;
+		case 'I':
+			match_case = 1;
+			return 0;
+		case 'a':
+			findall = 1;
+			return 0;
+		case 'u':
+			update = 1;
+			return 0;
+
+		case 'P':
+			pager = arg;
+			return 0;
+		case 'r':
+			prompt_string = arg;
+			return 0;
+		case '7':
+			ascii = 1;
+			return 0;
+		case 'E':
+			roff_device = arg;
+			different_encoding = 1;
+			return 0;
+		case 'p':
+			preprocessors = arg;
+			return 0;
+#ifdef HAS_TROFF
+		case 't':
+			troff = 1;
+			return 0;
+		case 'T':
+			/* Traditional nroff knows -T; troff does not (gets
+			 * ignored). All incarnations of groff know it. Why
+			 * does -T imply -t?
+			 */
+			roff_device = (arg ? arg : "ps");
+			troff = 1;
+			return 0;
+		case 'H':
+# ifdef TROFF_IS_GROFF
+			html_pager = arg; /* may be NULL */
+			htmlout = 1;
+			troff = 1;
+			roff_device = "html";
+# endif /* TROFF_IS_GROFF */
+			return 0;
+		case 'Z':
+# ifdef TROFF_IS_GROFF
+			ditroff = 1;
+			troff = 1;
+# endif /* TROFF_IS_GROFF */
+			return 0;
+		case 'X':
+# ifdef TROFF_IS_GROFF
+			troff = 1;
+			gxditview = (arg ? arg : "75");
+# endif /* TROFF_IS_GROFF */
+			return 0;
 #endif /* HAS_TROFF */
 
-/* issue a usage message, then exit with the given status */
-static void usage (int status)
+		case 'h':
+			argp_state_help (state, state->out_stream,
+					 ARGP_HELP_STD_HELP);
+			break;
+		case ARGP_KEY_SUCCESS:
+			/* check for incompatible options */
+			if (troff + whatis + apropos + catman +
+			    (print_where || print_where_cat) > 1) {
+				char *badopts = appendstr
+					(NULL,
+					 troff ? "-[tTZH] " : "",
+					 whatis ? "-f " : "",
+					 apropos ? "-k " : "",
+					 catman ? "-c " : "",
+					 print_where ? "-w " : "",
+					 print_where_cat ? "-W " : "",
+					 NULL);
+				argp_error (state,
+					    _("%s: incompatible options"),
+					    badopts);
+			}
+			return 0;
+	}
+	return ARGP_ERR_UNKNOWN;
+}
+
+static char *help_filter (int key, const char *text,
+			  void *input ATTRIBUTE_UNUSED)
 {
 #ifdef HAS_TROFF
-#  ifdef TROFF_IS_GROFF
-	const char formatter[] = "groff";
-#  else
-	const char formatter[] = "troff";
-#  endif /* TROFF_IS_GROFF */
-#endif /* HAS_TROFF */
-	
-#ifdef HAS_TROFF
-	printf (_(
-		"usage: %s [-c|-f|-k|-w|-tZT device] [-i|-I] [-adlhu7V] [-Mpath] [-Ppager]\n"
-		"           [-Cfile] [-Slist] [-msystem] [-pstring] [-Llocale] [-eextension]\n"
-		"           [section] page ...\n"),
-		program_name);
-#else
-	printf (_(
-		"usage: %s [-c|-f|-k|-w] [-i|-I] [-adlhu7V] [-Mpath] [-Ppager]\n"
-		"           [-Cfile] [-Slist] [-msystem] [-pstring] [-Llocale] [-eextension]\n"
-		"           [section] page ...\n"),
-		program_name);
-#endif
-
-	puts (_(
-		"-a, --all                   find all matching manual pages.\n"
-		"-d, --debug                 emit debugging messages.\n"
-		"-e, --extension             limit search to extension type `extension'.\n"
-		"-f, --whatis                equivalent to whatis.\n"
-		"-k, --apropos               equivalent to apropos.\n"
-		"-w, --where, --location     print physical location of man page(s).\n"
-		"-W, --where-cat,\n"
-		"    --location-cat          print physical location of cat file(s).\n"
-		"-l, --local-file            interpret `page' argument(s) as local filename(s).\n"
-		"-u, --update                force a cache consistency check.\n"
-		"-i, --ignore-case           look for pages case-insensitively (default).\n"
-		"-I, --match-case            look for pages case-sensitively.\n"
-		"-r, --prompt string         provide the `less' pager with a prompt\n"
-		"-c, --catman                used by catman to reformat out of date cat pages.\n"
-		"-7, --ascii                 display ASCII translation of certain latin1 chars.\n"
-		"-E, --encoding encoding     use the selected nroff device and display in pager."));
-#ifdef HAS_TROFF
-	printf (_(
-		"-t, --troff                 use %s to format pages.\n"
-		"-T, --troff-device device   use %s with selected device.\n"),
-		formatter, formatter);
 # ifdef TROFF_IS_GROFF
-	puts (_("-H, --html                  use lynx or argument to display html output.\n"
-		"-Z, --ditroff               use groff and force it to produce ditroff.\n"
-		"-X, --gxditview             use groff and display through gxditview (X11):\n"
-		"                            -X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12."));
+	static const char formatter[] = "groff";
+	const char *browser;
+# else
+	static const char formatter[] = "troff";
 # endif /* TROFF_IS_GROFF */
 #endif /* HAS_TROFF */
 
-	puts (_(
-		"-D, --default               reset all options to their default values.\n"
-		"-C, --config-file file      use this user configuration file.\n"
-		"-M, --manpath path          set search path for manual pages to `path'.\n"
-		"-P, --pager pager           use program `pager' to display output.\n"
-		"-S, --sections list         use colon separated section list.\n"
-		"-m, --systems system        search for man pages from other unix system(s).\n"
-		"-L, --locale locale         define the locale for this particular man search.\n"
-		"-p, --preprocessor string   string indicates which preprocessors to run.\n"
-		"                             e - [n]eqn   p - pic    t - tbl\n"
-		"                             g - grap     r - refer  v - vgrind\n"
-		"-V, --version               show version.\n"
-		"-h, --help                  show this usage message."));
-
-	exit (status);
+	switch (key) {
+#ifdef HAS_TROFF
+		case 't':
+		case 'T':
+			return xasprintf (text, formatter);
+# ifdef TROFF_IS_GROFF
+		case 'H':
+			browser = html_pager;
+			if (STRNEQ (browser, "exec ", 5))
+				browser += 5;
+			return xasprintf (text, browser);
+# endif /* TROFF_IS_GROFF */
+#endif /* HAS_TROFF */
+		default:
+			return (char *) text;
+	}
 }
+
+static struct argp argp = { options, parse_opt, args_doc, 0, 0, help_filter };
 
 /*
  * changed these messages from stdout to stderr,
@@ -406,14 +542,14 @@ static int tms_set = 0;
 static void set_term (void)
 {
 	if (tms_set)
-		tcsetattr (fileno (stdin), TCSANOW, &tms);
+		tcsetattr (STDIN_FILENO, TCSANOW, &tms);
 }
 
 static void get_term (void)
 {
-	if (isatty (fileno (stdout))) {
+	if (isatty (STDOUT_FILENO)) {
 		debug ("is a tty\n");
-		tcgetattr (fileno (stdin), &tms);
+		tcgetattr (STDIN_FILENO, &tms);
 		if (!tms_set++)
 			atexit (set_term);
 	}
@@ -447,12 +583,12 @@ static void add_roff_line_length (command *cmd, int *save_cat_p)
 	}
 }
 
-static __inline__ void gripe_no_man (const char *name, const char *sec)
+static inline void gripe_no_man (const char *name, const char *sec)
 {
 	/* On AIX and IRIX, fall back to the vendor supplied browser. */
 #if defined _AIX || defined __sgi
 	if (!troff) {
-		putenv ("MANPATH=");  /* reset the MANPATH variable */
+		unsetenv ("MANPATH");
 		execv ("/usr/bin/man", global_argv);
 	}
 #endif
@@ -489,8 +625,8 @@ static void do_extern (int argc, char *argv[])
 		command_args (cmd, "-L", locale, NULL);
 	if (user_config_file)
 		command_args (cmd, "-C", user_config_file, NULL);
-	while (optind < argc)
-		command_arg (cmd, argv[optind++]);
+	while (first_arg < argc)
+		command_arg (cmd, argv[first_arg++]);
 	p = pipeline_new_commands (cmd, NULL);
 
 	/* privs are already dropped */
@@ -498,8 +634,8 @@ static void do_extern (int argc, char *argv[])
 	exit (pipeline_wait (p));
 }
 
-/* lookup $MANOPT and if available, put in *argv[] format for getopt() */
-static __inline__ char **manopt_to_env (int *argc)
+/* lookup $MANOPT and if available, put in *argv[] format for argp */
+static inline char **manopt_to_env (int *argc)
 {
 	char *manopt, *opt_start, **argv;
 
@@ -511,7 +647,7 @@ static __inline__ char **manopt_to_env (int *argc)
 
 	/* allocate space for the program name */
 	*argc = 0;
-	argv = (char **) xmalloc ((*argc + 3) * sizeof (char *));
+	argv = XNMALLOC (*argc + 3, char *);
 	argv[(*argc)++] = program_name;
 	
 	/* for each [ \t]+ delimited string, allocate an array space and fill
@@ -522,9 +658,8 @@ static __inline__ char **manopt_to_env (int *argc)
 			case '\t':
 				if (manopt != opt_start) {
 					*manopt = '\0';
-					argv = (char **) 
-					       xrealloc (argv, (*argc + 3) * 
-							 sizeof (char *));
+					argv = xnrealloc (argv, *argc + 3,
+							  sizeof (char *));
 					argv[(*argc)++] = opt_start;
 				}
 				while (CTYPE (isspace, *(manopt + 1)))
@@ -549,14 +684,14 @@ static __inline__ char **manopt_to_env (int *argc)
 }
 
 /* Return char array with 'less' special chars escaped. Uses static storage. */
-static __inline__ const char *escape_less (const char *string)
+static inline const char *escape_less (const char *string)
 {
 	static char *escaped_string; 
 	char *ptr;
 
 	/* 2*strlen will always be long enough to hold the escaped string */
-	ptr = escaped_string = (char *) xrealloc (escaped_string, 
-						  2 * strlen (string) + 1);
+	ptr = escaped_string = xrealloc (escaped_string, 
+					 2 * strlen (string) + 1);
 	
 	while (*string) {
 		if (*string == '?' ||
@@ -652,26 +787,31 @@ static int local_man_loop (const char *argv)
 		}
 
 		if (exit_status == OK) {
-			char *argv_copy = xstrdup (argv);
-			lang = lang_dir (argv);
-			if (!display (NULL, argv, NULL, basename (argv_copy),
-				      NULL)) {
+			char *argv_base = base_name (argv);
+			char *argv_abs;
+			if (argv[0] == '/')
+				argv_abs = xstrdup (argv);
+			else {
+				argv_abs = xgetcwd ();
+				if (argv_abs)
+					argv_abs = appendstr (argv_abs, "/",
+							      argv, NULL);
+				else
+					argv_abs = xstrdup (argv);
+			}
+			lang = lang_dir (argv_abs);
+			free (argv_abs);
+			if (!display (NULL, argv, NULL, argv_base, NULL)) {
 				if (local_mf)
 					error (0, errno, "%s", argv);
 				exit_status = NOT_FOUND;
 			}
-			free (argv_copy);
+			free (argv_base);
 		}
 	}
 	local_man_file = local_mf;
 	regain_effective_privs ();
 	return exit_status;
-}
-
-static void int_handler (int signo)
-{
-	debug ("\ninterrupt signal %d handler\n", signo);
-	exit (INTERRUPTED);
 }
 
 int main (int argc, char *argv[])
@@ -681,7 +821,7 @@ int main (int argc, char *argv[])
 	const char *tmp;
 	char *multiple_locale = NULL;
 
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
 
 	umask (022);
 	/* initialise the locale */
@@ -690,6 +830,7 @@ int main (int argc, char *argv[])
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
 	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);
 
 	internal_locale = setlocale (LC_MESSAGES, NULL);
@@ -710,42 +851,49 @@ int main (int argc, char *argv[])
 
 	{ /* opens base streams in case someone like "info" closed them */
 		struct stat buf;
-		if (fileno (stdin) < 0 ||
-		    ((fstat (fileno (stdin), &buf) < 0) && (errno == EBADF))) 
+		if (STDIN_FILENO < 0 ||
+		    ((fstat (STDIN_FILENO, &buf) < 0) && (errno == EBADF))) 
 			freopen ("/dev/null", "r", stdin);
-		if (fileno (stdout) < 0 ||
-		    ((fstat (fileno (stdout), &buf) < 0) && (errno == EBADF)))
+		if (STDOUT_FILENO < 0 ||
+		    ((fstat (STDOUT_FILENO, &buf) < 0) && (errno == EBADF)))
 			freopen ("/dev/null", "w", stdout);
-		if (fileno (stderr) < 0 ||
-		    ((fstat (fileno (stderr), &buf) < 0) && (errno == EBADF)))
+		if (STDERR_FILENO < 0 ||
+		    ((fstat (STDERR_FILENO, &buf) < 0) && (errno == EBADF)))
 			freopen ("/dev/null", "w", stderr);
 	}
 
 	/* This will enable us to do some profiling and know
 	where gmon.out will end up. Must chdir(cwd) before we return */
-	cwd = getcwd_allocated ();
+	cwd = xgetcwd ();
 	if (!cwd) {
 		cwd = xmalloc (1);
 		cwd[0] = '\0';
 	}
 
-	/* First of all, find out if $MANOPT is set. If so, put it in 
-	   *argv[] format for getopt to play with. */
-	argv_env = manopt_to_env (&argc_env);
-	if (argv_env) {
-		man_getopt (argc_env, argv_env);
-		optind = 0;
+#ifdef TROFF_IS_GROFF
+	/* used in --help, so initialise early */
+	if (!html_pager) {
+		html_pager = getenv ("BROWSER");
+		if (!html_pager)
+			html_pager = WEB_BROWSER;
 	}
+#endif /* TROFF_IS_GROFF */
 
-	/* give the actual program args to getopt */
-	man_getopt (argc, argv);
+	/* First of all, find out if $MANOPT is set. If so, put it in 
+	   *argv[] format for argp to play with. */
+	argv_env = manopt_to_env (&argc_env);
+	if (argv_env)
+		if (argp_parse (&argp, argc_env, argv_env, ARGP_NO_ARGS, 0, 0))
+			exit (FAIL);
+
+	/* parse the actual program args */
+	if (argp_parse (&argp, argc, argv, ARGP_NO_ARGS, &first_arg, 0))
+		exit (FAIL);
 
 #ifdef SECURE_MAN_UID
 	/* record who we are and drop effective privs for later use */
 	init_security ();
 #endif /* SECURE_MAN_UID */
-
-	signal (SIGINT, int_handler);
 
 	pipeline_install_sigchld ();
 
@@ -760,7 +908,6 @@ int main (int argc, char *argv[])
 	debug ("real user = %d; effective user = %d\n", ruid, euid);
 #endif /* SECURE_MAN_UID */
 
-#ifdef HAVE_SETLOCALE
 	/* close this locale and reinitialise if a new locale was 
 	   issued as an argument or in $MANOPT */
 	if (locale) {
@@ -779,18 +926,10 @@ int main (int argc, char *argv[])
 		}
 	}
 
-#endif /* HAVE_SETLOCALE */
-
 #ifdef TROFF_IS_GROFF
-	if (htmlout) {
-		if (!html_pager) {
-			html_pager = getenv ("BROWSER");
-			if (!html_pager)
-				html_pager = WEB_BROWSER;
-		}
+	if (htmlout)
 		pager = html_pager;
-	}
-#endif
+#endif /* TROFF_IS_GROFF */
 	if (pager == NULL) {
 		pager = getenv ("MANPAGER");
 		if (pager == NULL) {
@@ -822,14 +961,14 @@ int main (int argc, char *argv[])
 
 	debug ("\nusing %s as pager\n", pager);
 
-	if (optind == argc)
+	if (first_arg == argc)
 		gripe_no_name (NULL);
 
 	/* man issued with `-l' option */
 	if (local_man_file) {
-		while (optind < argc) {
-			exit_status = local_man_loop (argv[optind]);
-			optind++;
+		while (first_arg < argc) {
+			exit_status = local_man_loop (argv[first_arg]);
+			++first_arg;
 		}
 		free (cwd);
 		free (internal_locale);
@@ -882,11 +1021,11 @@ int main (int argc, char *argv[])
 	}
 #endif /* MAN_DB_UPDATES */
 
-	while (optind < argc) {
+	while (first_arg < argc) {
 		int status = OK;
 		int found = 0;
 		static int maybe_section = 0;
-		const char *nextarg = argv[optind++];
+		const char *nextarg = argv[first_arg++];
 
 		/*
      		 * See if this argument is a valid section name.  If not,
@@ -900,9 +1039,9 @@ int main (int argc, char *argv[])
 		}
 
 		if (maybe_section) {
-			if (optind < argc)
+			if (first_arg < argc)
 				/* e.g. 'man 3perl Shell' */
-				nextarg = argv[optind++];
+				nextarg = argv[first_arg++];
 			else
 				/* e.g. 'man 9wm' */
 				section = NULL;
@@ -940,7 +1079,7 @@ int main (int argc, char *argv[])
 					 * null section.
 					 */
 					nextarg = tmp;
-					--optind;
+					--first_arg;
 				} else
 					/* No go, it really was a section. */
 					section = tmp;
@@ -964,7 +1103,7 @@ int main (int argc, char *argv[])
 				printf ("%s", nextarg);
 				if (section)
 					printf ("(%s)", section);
-				if (optind != argc)
+				if (first_arg != argc)
 					fputs (", ", stdout);
 				else
 					fputs (".\n", stdout);
@@ -991,168 +1130,6 @@ int main (int argc, char *argv[])
 	exit (exit_status);
 }
 
-/* parse the arguments contained in *argv[] and set appropriate vars */
-static void man_getopt (int argc, char *argv[])
-{
-	int c;
-	static int apropos, whatis; /* retain values between calls */
-
-	while ((c = getopt_long (argc, argv, args,
-				 long_options, NULL)) != EOF) {
-
-		switch (c) {
-
-			case 'l':
-				local_man_file = 1;
-				break;
-			case 'e':
-				extension = optarg;
-				break;
-			case 'M':
-				manp = optarg;
-				break;
-		    	case 'P':
-				pager = optarg;
-				break;
-		    	case 'S':
-				if (*optarg)
-					colon_sep_section_list = optarg;
-				break;
-			case 'V':
-				ver();
-				break;
-		    	case 'a':
-				findall = 1; 
-				break;
-			case 'u':
-				update = 1;
-				break;
-			case 'i':
-				match_case = 0;
-				break;
-			case 'I':
-				match_case = 1;
-				break;
-			case 'c':
-				catman = 1;
-				break;
-		    	case 'd':
-				debug_level = 1;
-				break;
-		    	case 'f':
-				external = WHATIS;
-				apropos = 1;
-				break;
-		    	case 'k':
-				external = APROPOS;
-				whatis = 1;
-				break;
-		    	case 'm':
-				alt_system_name = optarg;
-				break;
-			case 'L':
-				locale = optarg;
-				break;
-		    	case 'p':
-				preprocessors = optarg;
-				break;
-			case '7':
-				ascii = 1;
-				break;
-			case 'E':
-				roff_device = optarg;
-				different_encoding = 1;
-				break;
-#ifdef HAS_TROFF
-		    	case 't':
-				troff = 1;
-				break;
-
-			case 'T':
-				/* @@@ traditional nroff knows -T,
-				   troff does not (gets ignored).
-				   All incarnations of groff know it.
-				   Why does -T imply -t? */
-				/* as this is an optional argument */
-				roff_device = (optarg ? optarg : "ps");
-				troff = 1;
-				break;
-			case 'X':
-#ifdef TROFF_IS_GROFF
-				troff = 1;
-				gxditview = (optarg ? optarg : "75");
-#endif /* TROFF_IS_GROFF */
-				break;
-			case 'H':
-#ifdef TROFF_IS_GROFF
-				html_pager = (optarg ? optarg : NULL);
-				htmlout = 1;
-				troff = 1;
-				roff_device = "html";
-#endif /* TROFF_IS_GROFF */
-				break;
-			case 'Z':
-#ifdef TROFF_IS_GROFF
-				ditroff = 1;
-				troff = 1;
-#endif /* TROFF_IS_GROFF */
-				break;
-#endif /* HAS_TROFF */
-		    	case 'w':
-				print_where = 1;
-				break;
-			case 'W':
-				print_where_cat = 1;
-				break;
-			case 'r':
-				prompt_string = optarg;
-				break;
-			case 'C':
-				user_config_file = optarg;
-				break;
-			case 'D':
-		    		/* discard all preset options */
-		    		local_man_file = findall = update = catman =
-					debug_level = troff =
-					print_where = print_where_cat =
-					ascii = different_encoding =
-					match_case = 0;
-#ifdef TROFF_IS_GROFF
-				ditroff = 0;
-				gxditview = NULL;
-				htmlout = 0;
-				html_pager = NULL;
-#endif
-		    		roff_device = extension = pager = locale
-		    			     = alt_system_name = external
-		    			     = preprocessors = NULL;
-				colon_sep_section_list = manp = NULL;
-		    		break;
-		    	case 'h':
-		    		usage(OK);
-		    		break;
-		    	default:
-				usage(FAIL);
-				break;
-		}
-	}
-
-	/* check for incompatible options */
-	if (troff + whatis + apropos + catman +
-	    (print_where || print_where_cat) > 1) {
-		error (0, 0,
-		       strappend (NULL,
-				  troff ? "-[tTZH] " : "",
-				  whatis ? "-f " : "",
-				  apropos ? "-k " : "",
-				  catman ? "-c " : "",
-				  print_where ? "-w " : "",
-				  print_where_cat ? "-W " : "",
-				  _(": incompatible options"), NULL));
-		usage (FAIL);
-	}
-}
-
 /*
  * Check to see if the argument is a valid section number. 
  * If the name matches one of
@@ -1160,7 +1137,7 @@ static void man_getopt (int argc, char *argv[])
  * The list of sections in config.h simply allows us to specify oddly
  * named directories like .../man3f.  Yuk.
  */
-static __inline__ const char *is_section (const char *name)
+static inline const char *is_section (const char *name)
 {
 	const char **vs;
 
@@ -1251,9 +1228,12 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				    pipeline *decomp, const char *dbfilters)
 {
 	const char *pp_string;
+	const char *roff_opt;
 	char *fmt_prog;
 	pipeline *p = pipeline_new ();
 	command *cmd;
+	const char *output_encoding = NULL;
+	const char *locale_charset = NULL;
 
 #ifndef ALT_EXT_FORMAT
 	dir = dir; /* not used unless looking for formatters in catdir */
@@ -1261,15 +1241,19 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 
 	pp_string = get_preprocessors (decomp, dbfilters);
 
+	roff_opt = getenv ("MANROFFOPT");
+	if (!roff_opt)
+		roff_opt = "";
+
 #ifdef ALT_EXT_FORMAT
 	/* Check both external formatter locations */
-	if (dir) {
+	if (dir && !recode) {
 		char *catpath = get_catpath
 			(dir, global_manpath ? SYSTEM_CAT : USER_CAT);
 
 		/* If we have an alternate catpath */
 		if (catpath) {
-			fmt_prog = strappend (catpath, "/",
+			fmt_prog = appendstr (catpath, "/",
 					      troff ? TFMT_PROG : NFMT_PROG, 
 					      NULL);
 			if (access (fmt_prog, X_OK)) {
@@ -1302,26 +1286,25 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				
 	if (!fmt_prog) {
 		/* we don't have an external formatter script */
-		int using_tbl = 0;
-		const char *output_encoding = NULL, *locale_charset = NULL;
+		char *page_encoding;
+		const char *source_encoding, *roff_encoding;
+		char *cat_charset = NULL;
+		const char *groff_preconv;
 
-		pipeline_command_argstr (p, get_def ("soelim", SOELIM));
+		if (!recode)
+			pipeline_command_argstr (p, get_def ("soelim",
+							     SOELIM));
+
+		page_encoding = get_page_encoding (lang);
+		source_encoding = get_source_encoding (lang);
+		debug ("page_encoding = %s\n", page_encoding);
+		debug ("source_encoding = %s\n", source_encoding);
 
 		/* Load the roff_device value dependent on the language dir
 		 * in the path.
 		 */
 		if (!troff) {
-			char *page_encoding;
-			const char *source_encoding, *roff_encoding;
-			char *cat_charset;
-			const char *groff_preconv;
-
 #define STRC(s, otherwise) ((s) ? (s) : (otherwise))
-
-			page_encoding = get_page_encoding (lang);
-			source_encoding = get_source_encoding (lang);
-			debug ("page_encoding = %s\n", page_encoding);
-			debug ("source_encoding = %s\n", source_encoding);
 
 			cat_charset = get_standard_output_encoding (lang);
 			locale_charset = get_locale_charset ();
@@ -1349,28 +1332,33 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				debug ("roff_device (locale) = %s\n",
 				       STRC (roff_device, "NULL"));
 			}
+		}
 
-			roff_encoding = get_roff_encoding (roff_device,
-							   source_encoding);
-			debug ("roff_encoding = %s\n", roff_encoding);
+		roff_encoding = get_roff_encoding (roff_device,
+						   source_encoding);
+		debug ("roff_encoding = %s\n", roff_encoding);
 
-			/* We may need to recode:
-			 *   from page_encoding to roff_encoding on input;
-			 *   from output_encoding to locale_charset on output.
-			 * If we have preconv, then use it to recode the
-			 * input to a safe escaped form.
-			 */
-			groff_preconv = get_groff_preconv ();
-			if (groff_preconv) {
-				add_manconv (p, page_encoding, page_encoding);
-				pipeline_command_args
-					(p, groff_preconv, "-e", page_encoding,
-					 NULL);
-			} else if (roff_encoding)
-				add_manconv (p, page_encoding, roff_encoding);
-			else
-				add_manconv (p, page_encoding, page_encoding);
+		/* We may need to recode:
+		 *   from page_encoding to roff_encoding on input;
+		 *   from output_encoding to locale_charset on output
+		 *     (if not troff).
+		 * If we have preconv, then use it to recode the
+		 * input to a safe escaped form.
+		 * The --recode option overrides everything else.
+		 */
+		groff_preconv = get_groff_preconv ();
+		if (recode)
+			add_manconv (p, page_encoding, recode);
+		else if (groff_preconv) {
+			add_manconv (p, page_encoding, page_encoding);
+			pipeline_command_args
+				(p, groff_preconv, "-e", page_encoding, NULL);
+		} else if (roff_encoding)
+			add_manconv (p, page_encoding, roff_encoding);
+		else
+			add_manconv (p, page_encoding, page_encoding);
 
+		if (!troff && !recode) {
 			output_encoding = get_output_encoding (roff_device);
 			if (!output_encoding)
 				output_encoding = source_encoding;
@@ -1380,15 +1368,23 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				const char *less_charset =
 					get_less_charset (locale_charset);
 				debug ("less_charset = %s\n", less_charset);
-				putenv (strappend (NULL, "LESSCHARSET=",
-						   less_charset, NULL));
+				setenv ("LESSCHARSET", less_charset, 1);
 			}
-
-			free (page_encoding);
-			free (cat_charset);
 		}
 
+		free (page_encoding);
+		free (cat_charset);
+	}
+
+	if (recode)
+		;
+	else if (!fmt_prog) {
+		int using_tbl = 0;
+
 		do {
+#ifdef TROFF_IS_GROFF
+			struct string_llist *cur;
+#endif /* TROFF_IS_GROFF */
 			int wants_dev = 0; /* filter wants a dev argument */
 			int wants_post = 0; /* postprocessor arguments */
 
@@ -1442,7 +1438,17 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 					command_arg (cmd, "-Z");
 				else if (!troff)
 					add_roff_line_length (cmd, &save_cat);
-#endif
+
+				for (cur = roff_warnings; cur;
+				     cur = cur->next) {
+					char *arg = xasprintf
+						("-w%s", cur->name);
+					command_arg (cmd, arg);
+					free (arg);
+				}
+#endif /* TROFF_IS_GROFF */
+
+				command_argstr (cmd, roff_opt);
 
 				wants_dev = 1;
 				wants_post = 1;
@@ -1459,13 +1465,13 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 
 			if (wants_dev) {
 				if (roff_device) {
-					char *tmpdev = strappend (NULL, "-T",
+					char *tmpdev = appendstr (NULL, "-T",
 								  roff_device,
 								  NULL);
 					command_arg (cmd, tmpdev);
 					free (tmpdev);
 				} else if (gxditview) {
-					char *tmpdev = strappend (NULL, "-TX",
+					char *tmpdev = appendstr (NULL, "-TX",
 								  gxditview,
 								  NULL);
 					command_arg (cmd, tmpdev);
@@ -1503,7 +1509,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			const char *man_keep_formatting =
 				getenv ("MAN_KEEP_FORMATTING");
 			if ((!man_keep_formatting || !*man_keep_formatting) &&
-			    !isatty (fileno (stdout))) {
+			    !isatty (STDOUT_FILENO)) {
 				save_cat = 0;
 				setenv ("GROFF_NO_SGR", "1", 1);
 				pipeline_command_args (p, COL,
@@ -1555,14 +1561,14 @@ static pipeline *make_browser (const char *pattern, const char *file)
 		switch (*(percent + 1)) {
 			case '\0':
 			case '%':
-				browser = strappend (browser, "%", NULL);
+				browser = appendstr (browser, "%", NULL);
 				break;
 			case 'c':
-				browser = strappend (browser, ":", NULL);
+				browser = appendstr (browser, ":", NULL);
 				break;
 			case 's':
 				esc_file = escape_shell (file);
-				browser = strappend (browser, esc_file, NULL);
+				browser = appendstr (browser, esc_file, NULL);
 				free (esc_file);
 				found_percent_s = 1;
 				break;
@@ -1578,10 +1584,10 @@ static pipeline *make_browser (const char *pattern, const char *file)
 			pattern = percent + 1;
 		percent = strchr (pattern, '%');
 	}
-	browser = strappend (browser, pattern, NULL);
+	browser = appendstr (browser, pattern, NULL);
 	if (!found_percent_s) {
 		esc_file = escape_shell (file);
-		browser = strappend (browser, " ", esc_file, NULL);
+		browser = appendstr (browser, " ", esc_file, NULL);
 		free (esc_file);
 	}
 
@@ -1604,10 +1610,8 @@ static void setenv_less (const char *title)
 	}
 
 	esc_title = escape_less (title);
-	less_opts = xmalloc (strlen (LESS_OPTS) +
-			     strlen (prompt_string) * 2 + 1);
-	sprintf (less_opts, LESS_OPTS, prompt_string, prompt_string);
-	less_opts = strappend (less_opts, less, NULL);
+	less_opts = xasprintf (LESS_OPTS, prompt_string, prompt_string);
+	less_opts = appendstr (less_opts, less, NULL);
 	man_pn = strstr (less_opts, MAN_PN);
 	while (man_pn) {
 		char *subst_opts =
@@ -1703,7 +1707,7 @@ static char *tmp_cat_filename (const char *cat_file)
 			*(slash + 1) = '\0';
 		else
 			*name = '\0';
-		name = strappend (name, "catXXXXXX", NULL);
+		name = appendstr (name, "catXXXXXX", NULL);
 		tmp_cat_fd = mkstemp (name);
 	}
 
@@ -1892,7 +1896,8 @@ static int format_display_and_save (pipeline *decomp,
 	if (global_manpath)
 		drop_effective_privs ();
 
-	discard_stderr (format_cmd);
+	if (isatty (STDOUT_FILENO))
+		discard_stderr (format_cmd);
 
 	pipeline_connect (decomp, format_cmd, NULL);
 	if (sav_p) {
@@ -1928,16 +1933,16 @@ static void format_display (pipeline *decomp,
 	char *old_cwd = NULL;
 	char *htmldir = NULL, *htmlfile = NULL;
 
-	if (format_cmd)
+	if (format_cmd && isatty (STDOUT_FILENO))
 		discard_stderr (format_cmd);
 
 	drop_effective_privs ();
 
 #ifdef TROFF_IS_GROFF
 	if (format_cmd && htmlout) {
-		char *man_file_copy, *man_base, *man_ext;
+		char *man_base, *man_ext;
 
-		old_cwd = getcwd_allocated ();
+		old_cwd = xgetcwd ();
 		if (!old_cwd) {
 			old_cwd = xmalloc (1);
 			old_cwd[0] = '\0';
@@ -1946,14 +1951,13 @@ static void format_display (pipeline *decomp,
 		if (chdir (htmldir) == -1)
 			error (FATAL, errno, _("can't change to directory %s"),
 			       htmldir);
-		man_file_copy = xstrdup (man_file);
-		man_base = basename (man_file_copy);
+		man_base = base_name (man_file);
 		man_ext = strchr (man_base, '.');
 		if (man_ext)
 			*man_ext = '\0';
 		htmlfile = xstrdup (htmldir);
-		htmlfile = strappend (htmlfile, "/", man_base, ".html", NULL);
-		free (man_file_copy);
+		htmlfile = appendstr (htmlfile, "/", man_base, ".html", NULL);
+		free (man_base);
 		format_cmd->want_out = open (htmlfile,
 					     O_CREAT | O_EXCL | O_WRONLY,
 					     0644);
@@ -2048,7 +2052,8 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 				 get_def ("compressor", COMPRESSOR));
 #endif /* COMP_CAT */
 
-	discard_stderr (format_cmd);
+	if (isatty (STDOUT_FILENO))
+		discard_stderr (format_cmd);
 	format_cmd->want_out = tmp_cat_fd;
 
 	push_cleanup ((cleanup_fun) unlink, tmpcat, 1);
@@ -2105,7 +2110,7 @@ static int display (const char *dir, const char *man_file,
 		if (*man_file)
 			decomp = decompress_open (man_file);
 		else
-			decomp = decompress_fdopen (dup (fileno (stdin)));
+			decomp = decompress_fdopen (dup (STDIN_FILENO));
 	}
 
 	if (decomp) {
@@ -2129,6 +2134,8 @@ static int display (const char *dir, const char *man_file,
 	if (htmlout)
 		display_to_stdout = 0;
 #endif
+	if (recode)
+		display_to_stdout = 1;
 
 	if (display_to_stdout) {
 		/* If we're reading stdin via '-l -', man_file is "". See
@@ -2141,6 +2148,7 @@ static int display (const char *dir, const char *man_file,
 		if (found) {
 			int status;
 			if (prompt && do_prompt (title)) {
+				pipeline_free (format_cmd);
 				pipeline_free (decomp);
 				return 0;
 			}
@@ -2173,6 +2181,7 @@ static int display (const char *dir, const char *man_file,
 		    || htmlout
 #endif
 		    || local_man_file
+		    || recode
 		    || disable_cache)
 			save_cat = 0;
 
@@ -2232,8 +2241,10 @@ static int display (const char *dir, const char *man_file,
 				if (printed)
 					putchar (' ');
 				printf ("%s", cat_file);
+				printed = 1;
 			}
-			putchar ('\n');
+			if (printed)
+				putchar ('\n');
 		} else if (catman) {
 			if (format) {
 				if (!save_cat)
@@ -2282,6 +2293,7 @@ static int display (const char *dir, const char *man_file,
 			pipeline *decomp_cat;
 
 			if (prompt && do_prompt (title)) {
+				pipeline_free (format_cmd);
 				pipeline_free (decomp);
 				return 0;
 			}
@@ -2407,14 +2419,12 @@ static int duplicate_candidates (struct mandata *source, const char *path,
 	/* Figure out if we've had a sufficiently similar candidate for this
 	 * language already.
 	 */
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
 	slash1 = strrchr (path, '/');
 	slash2 = strrchr (search->path, '/');
 	if (!slash1 || !slash2 ||
 	    !STRNEQ (path, search->path,
 		     MAX (slash1 - path, slash2 - search->path)))
 		return 0; /* different path base */
-#undef MAX
 
 	unpack_locale_bits (++slash1, &bits1);
 	unpack_locale_bits (++slash2, &bits2);
@@ -2638,7 +2648,7 @@ static int add_candidate (struct candidate **head, char from_db, char cat,
 	if (!insert_found)
 		insert = prev;
 
-	candp = (struct candidate *) malloc (sizeof (struct candidate));
+	candp = XMALLOC (struct candidate);
 	candp->req_name = req_name;
 	candp->from_db = from_db;
 	candp->cat = cat;
@@ -2683,7 +2693,7 @@ static int try_section (const char *path, const char *sec, const char *name,
 		if (catman)
 			return 1;
 
-		if (!troff && !different_encoding) {
+		if (!troff && !different_encoding && !recode) {
 			names = look_for_file (path, sec, name, 1, match_case);
 			cat = 1;
 		}
@@ -2701,8 +2711,7 @@ static int try_section (const char *path, const char *sec, const char *name,
 		 * must be either ULT_MAN or SO_MAN. ult_src() can tell us
 		 * which.
 		 */
-		ult = ult_src (*np, path, NULL,
-			       SO_LINK | SOFT_LINK | HARD_LINK);
+		ult = ult_src (*np, path, NULL, ult_flags);
 		if (!ult) {
 			/* already warned */
 			debug ("try_section(): bad link %s\n", *np);
@@ -2726,10 +2735,10 @@ static int display_filesystem (struct candidate *candp)
 	char *filename = make_filename (candp->path, NULL, candp->source,
 					candp->cat ? "cat" : "man");
 	/* source->name is never NULL thanks to add_candidate() */
-	char *title = strappend (NULL, candp->source->name,
+	char *title = appendstr (NULL, candp->source->name,
 				 "(", candp->source->ext, ")", NULL);
 	if (candp->cat) {
-		if (troff || different_encoding)
+		if (troff || different_encoding || recode)
 			return 0;
 		return display (candp->path, NULL, filename, title, NULL);
 	} else {
@@ -2737,8 +2746,7 @@ static int display_filesystem (struct candidate *candp)
 		char *cat_file;
 		int found;
 
-		man_file = ult_src (filename, candp->path, NULL,
-				    SO_LINK | SOFT_LINK | HARD_LINK);
+		man_file = ult_src (filename, candp->path, NULL, ult_flags);
 		if (man_file == NULL) {
 			free (title);
 			return 0;
@@ -2797,7 +2805,7 @@ static int display_database (struct candidate *candp)
 	if (in->id == WHATIS_MAN || in->id == WHATIS_CAT)
 		debug (_("%s: relying on whatis refs is deprecated\n"), name);
 
-	title = strappend (NULL, name, "(", in->ext, ")", NULL);
+	title = appendstr (NULL, name, "(", in->ext, ")", NULL);
 
 #ifndef NROFF_MISSING /* #ifdef NROFF */
 	/*
@@ -2813,7 +2821,7 @@ static int display_database (struct candidate *candp)
 			char *cat_file;
 
 			man_file = ult_src (file, candp->path, NULL,
-					    SO_LINK | SOFT_LINK | HARD_LINK);
+					    ult_flags);
 			if (man_file == NULL) {
 				free (title);
 				return found; /* zero */
@@ -2847,7 +2855,7 @@ static int display_database (struct candidate *candp)
 		/* If explicitly asked for troff or a different encoding,
 		 * don't show a stray cat.
 		 */
-		if (troff || different_encoding) {
+		if (troff || different_encoding || recode) {
 			free (title);
 			return found;
 		}
@@ -3225,9 +3233,13 @@ static const char **get_section_list (void)
 	if (colon_sep_section_list == NULL || *colon_sep_section_list == '\0')
 		return config_sections;
 
-	for (sec = strtok (colon_sep_section_list, ":"); sec; 
-	     sec = strtok (NULL, ":")) {
-		sections = xrealloc (sections, (i + 2) * sizeof *sections);
+	/* Although this is documented as colon-separated, at least Solaris
+	 * man's -s option takes a comma-separated list, so we accept that
+	 * too for compatibility.
+	 */
+	for (sec = strtok (colon_sep_section_list, ":,"); sec; 
+	     sec = strtok (NULL, ":,")) {
+		sections = xnrealloc (sections, i + 2, sizeof *sections);
  		sections[i++] = sec;
  	}
 
@@ -3245,7 +3257,7 @@ static const char **get_section_list (void)
    return 1 to skip
    return 0 to view
  */
-static __inline__ int do_prompt (const char *name)
+static inline int do_prompt (const char *name)
 {
 	int ch;
 

@@ -24,16 +24,10 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
-#if defined(STDC_HEADERS)
-#  include <string.h>
-#  include <stdlib.h>
-#elif defined(HAVE_STRING_H)
-#  include <string.h>
-#elif defined(HAVE_STRINGS_H)
-#  include <strings.h>
-#endif /* STDC_HEADERS */
+#include <string.h>
+#include <stdlib.h>
 
-#include "lib/gettext.h"
+#include "gettext.h"
 #include <locale.h>
 #ifdef HAVE_LANGINFO_CODESET
 #  include <langinfo.h>
@@ -41,8 +35,10 @@
 #include <ctype.h>
 
 #include "manconfig.h"
-#include "lib/pathsearch.h"
-#include "lib/pipeline.h"
+
+#include "pathsearch.h"
+#include "pipeline.h"
+
 #include "encodings.h"
 
 
@@ -238,16 +234,16 @@ struct device_entry {
 };
 
 static struct device_entry device_table[] = {
-	{ "ascii",	"ISO-8859-1",	"ANSI_X3.4-1968"	},
-	{ "latin1",	"ISO-8859-1",	"ISO-8859-1"		},
-	{ "utf8",	"ISO-8859-1",	"UTF-8"			},
+	{ "ascii",	"ANSI_X3.4-1968",	"ANSI_X3.4-1968"	},
+	{ "latin1",	"ISO-8859-1",		"ISO-8859-1"		},
+	{ "utf8",	"ISO-8859-1",		"UTF-8"			},
 
 #ifdef MULTIBYTE_GROFF
-	{ "ascii8",	NULL,		NULL			},
-	{ "nippon",	NULL,		NULL			},
+	{ "ascii8",	NULL,			NULL			},
+	{ "nippon",	NULL,			NULL			},
 #endif /* MULTIBYTE_GROFF */
 
-	{ NULL,		NULL,		NULL			}
+	{ NULL,		NULL,			NULL			}
 };
 
 static const char *fallback_roff_encoding = "ISO-8859-1";
@@ -518,6 +514,12 @@ static int compatible_encodings (const char *input, const char *output)
 	if (STREQ (input, "UTF-8"))
 		return 1;
 
+	/* If the output is ASCII, this is probably because the caller
+	 * explicitly asked for it, so we have little choice but to try.
+	 */
+	if (STREQ (output, "ANSI_X3.4-1968"))
+		return 1;
+
 #ifdef MULTIBYTE_GROFF
 	/* Special case for some CJK UTF-8 locales, which take UTF-8 input
 	 * recoded from EUC-JP (etc.) and produce UTF-8 output. This is
@@ -525,7 +527,8 @@ static int compatible_encodings (const char *input, const char *output)
 	 */
 	if ((STREQ (input, "BIG5") || STREQ (input, "BIG5HKSCS") ||
 	     STREQ (input, "EUC-JP") ||
-	     STREQ (input, "EUC-CN") || STREQ (input, "GBK")) &&
+	     STREQ (input, "EUC-CN") || STREQ (input, "GBK") ||
+	     STREQ (input, "EUC-KR")) &&
 	    STREQ (output, "UTF-8"))
 		return 1;
 #endif /* MULTIBYTE_GROFF */
@@ -575,11 +578,13 @@ const char *get_roff_encoding (const char *device, const char *source_encoding)
 	int found = 0;
 	const char *roff_encoding = NULL;
 
-	for (entry = device_table; entry->roff_device; ++entry) {
-		if (STREQ (entry->roff_device, device)) {
-			found = 1;
-			roff_encoding = entry->roff_encoding;
-			break;
+	if (device) {
+		for (entry = device_table; entry->roff_device; ++entry) {
+			if (STREQ (entry->roff_device, device)) {
+				found = 1;
+				roff_encoding = entry->roff_encoding;
+				break;
+			}
 		}
 	}
 
@@ -593,9 +598,10 @@ const char *get_roff_encoding (const char *device, const char *source_encoding)
 	 * This is evil, but there's not much that can be done about it
 	 * apart from waiting for groff 2.0.
 	 */
-	if (STREQ (device, "utf8") && !get_groff_preconv ()) {
+	if (device && STREQ (device, "utf8") && !get_groff_preconv ()) {
 		const char *ctype = setlocale (LC_CTYPE, NULL);
 		if (STREQ (ctype, "ja_JP.UTF-8") ||
+		    STREQ (ctype, "ko_KR.UTF-8") ||
 		    STREQ (ctype, "zh_CN.UTF-8") ||
 		    STREQ (ctype, "zh_HK.UTF-8") ||
 		    STREQ (ctype, "zh_SG.UTF-8") ||
@@ -641,7 +647,7 @@ void add_manconv (pipeline *p, const char *source, const char *target)
 		pipeline_command_args (p, "iconv", "-f", source, "-t", target,
 				       NULL);
 	} else {
-		char *sources = strappend (NULL, "UTF-8:", source, NULL);
+		char *sources = appendstr (NULL, "UTF-8:", source, NULL);
 		pipeline_command_args (p, MANCONV, "-f", sources, "-t", target,
 				       NULL);
 		free (sources);

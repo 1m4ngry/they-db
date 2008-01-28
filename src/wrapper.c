@@ -21,6 +21,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif /* HAVE_CONFIG_H */
+
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -31,13 +35,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
+#include "dirname.h"
 
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
-
-#include "lib/gettext.h"
+#include "gettext.h"
 #include <locale.h>
 #define _(Text) gettext (Text)
 
@@ -77,10 +77,11 @@ int main (int argc, char **argv)
 	 */
 	setlocale (LC_ALL, "");
 	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);
 
 	/* this wrapper can be run as "man" or as "mandb" */
-	program_name = xstrdup (basename (argv[0]));
+	program_name = base_name (argv[0]);
 
 	ruid = getuid ();
 	fakeroot = getenv ("FAKEROOTKEY");

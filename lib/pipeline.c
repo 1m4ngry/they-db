@@ -1,6 +1,6 @@
 /* Copyright (C) 1989, 1990, 1991, 1992, 2000, 2001, 2002, 2003
  * Free Software Foundation, Inc.
- * Copyright (C) 2003, 2004, 2005, 2006, 2007 Colin Watson.
+ * Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
  *   Written for groff by James Clark (jjc@jclark.com)
  *   Heavily adapted and extended for man-db by Colin Watson.
  *
@@ -29,28 +29,17 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <errno.h>
-/* TODO: requires POSIX 1003.1-2001 */
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
-#include <fcntl.h>
+#include <unistd.h>
 #include <stdarg.h>
 #include <assert.h>
 #include <string.h>
-
-#ifndef HAVE_STRERROR
-extern char *strerror ();
-#endif
-
 #include <sys/wait.h>
 
-#ifdef HAVE_LIBGEN_H
-#  include <libgen.h>
-#endif /* HAVE_LIBGEN_H */
+#include "dirname.h"
 
 #include "gettext.h"
 #include <locale.h>
@@ -67,9 +56,9 @@ extern char *strerror ();
 
 command *command_new (const char *name)
 {
-	command *cmd = xmalloc (sizeof *cmd);
+	command *cmd = XMALLOC (command);
 	struct command_process *cmdp;
-	char *name_copy;
+	char *name_base;
 
 	cmd->tag = COMMAND_PROCESS;
 	cmd->name = xstrdup (name);
@@ -80,12 +69,12 @@ command *command_new (const char *name)
 
 	cmdp->argc = 0;
 	cmdp->argv_max = 4;
-	cmdp->argv = xmalloc (cmdp->argv_max * sizeof *cmdp->argv);
+	cmdp->argv = xnmalloc (cmdp->argv_max, sizeof *cmdp->argv);
 
 	/* argv[0] is the basename of the command name. */
-	name_copy = xstrdup (name);
-	command_arg (cmd, basename (name_copy));
-	free (name_copy);
+	name_base = base_name (name);
+	command_arg (cmd, name_base);
+	free (name_base);
 
 	return cmd;
 }
@@ -154,7 +143,7 @@ static char *argstr_get_word (const char **argstr)
 		/* Copy any accumulated literal characters. */
 		if (litstart < *argstr) {
 			char *tmp = xstrndup (litstart, *argstr - litstart);
-			out = strappend (out, tmp, NULL);
+			out = appendstr (out, tmp, NULL);
 			free (tmp);
 		}
 
@@ -192,7 +181,7 @@ static char *argstr_get_word (const char **argstr)
 					return NULL;
 				}
 				backslashed[1] = '\0';
-				out = strappend (out, backslashed, NULL);
+				out = appendstr (out, backslashed, NULL);
 				litstart = ++*argstr;
 				break;
 
@@ -211,7 +200,7 @@ static char *argstr_get_word (const char **argstr)
 	/* Copy any accumulated literal characters. */
 	if (litstart < *argstr) {
 		char *tmp = xstrndup (litstart, *argstr - litstart);
-		out = strappend (out, tmp, NULL);
+		out = appendstr (out, tmp, NULL);
 	}
 
 	return out;
@@ -254,7 +243,7 @@ command *command_new_argstr (const char *argstr)
 command *command_new_function (const char *name,
 			       command_function_type *func, void *data)
 {
-	command *cmd = xmalloc (sizeof *cmd);
+	command *cmd = XMALLOC (command);
 	struct command_function *cmdf;
 
 	cmd->tag = COMMAND_FUNCTION;
@@ -271,7 +260,7 @@ command *command_new_function (const char *name,
 
 command *command_dup (command *cmd)
 {
-	command *newcmd = xmalloc (sizeof *newcmd);
+	command *newcmd = XMALLOC (command);
 	int i;
 
 	newcmd->tag = cmd->tag;
@@ -396,10 +385,10 @@ char *command_tostring (command *cmd)
 			struct command_process *cmdp = &cmd->u.process;
 			int i;
 
-			out = strappend (out, cmd->name, NULL);
+			out = appendstr (out, cmd->name, NULL);
 			for (i = 1; i < cmdp->argc; ++i)
 				/* TODO: escape_shell()? */
-				out = strappend (out, " ", cmdp->argv[i],
+				out = appendstr (out, " ", cmdp->argv[i],
 						 NULL);
 
 			break;
@@ -446,10 +435,10 @@ void command_free (command *cmd)
 
 pipeline *pipeline_new (void)
 {
-	pipeline *p = xmalloc (sizeof *p);
+	pipeline *p = XMALLOC (pipeline);
 	p->ncommands = 0;
 	p->commands_max = 4;
-	p->commands = xmalloc (p->commands_max * sizeof *p->commands);
+	p->commands = xnmalloc (p->commands_max, sizeof *p->commands);
 	p->pids = NULL;
 	p->statuses = NULL;
 	p->want_in = p->want_out = 0;
@@ -461,6 +450,7 @@ pipeline *pipeline_new (void)
 	p->buflen = p->bufmax = 0;
 	p->line_cache = NULL;
 	p->peek_offset = 0;
+	p->ignore_signals = 1;
 	return p;
 }
 
@@ -486,7 +476,7 @@ pipeline *pipeline_new_commands (command *cmd1, ...)
 
 pipeline *pipeline_join (pipeline *p1, pipeline *p2)
 {
-	pipeline *p = xmalloc (sizeof *p);
+	pipeline *p = XMALLOC (pipeline);
 	int i;
 
 	assert (!p1->pids);
@@ -496,7 +486,7 @@ pipeline *pipeline_join (pipeline *p1, pipeline *p2)
 
 	p->ncommands = p1->ncommands + p2->ncommands;
 	p->commands_max = p1->ncommands + p2->ncommands;
-	p->commands = xmalloc (p->commands_max * sizeof *p->commands);
+	p->commands = xnmalloc (p->commands_max, sizeof *p->commands);
 	p->pids = NULL;
 	p->statuses = NULL;
 	p->want_in = p1->want_in;
@@ -507,6 +497,12 @@ pipeline *pipeline_join (pipeline *p1, pipeline *p2)
 	p->outfd = p2->outfd;
 	p->infile = p1->infile;
 	p->outfile = p2->outfile;
+	p->source = NULL;
+	p->buffer = NULL;
+	p->buflen = p->bufmax = 0;
+	p->line_cache = NULL;
+	p->peek_offset = 0;
+	p->ignore_signals = (p1->ignore_signals || p2->ignore_signals);
 
 	for (i = 0; i < p1->ncommands; ++i)
 		p->commands[i] = command_dup (p1->commands[i]);
@@ -514,6 +510,20 @@ pipeline *pipeline_join (pipeline *p1, pipeline *p2)
 		p->commands[p1->ncommands + i] = command_dup (p2->commands[i]);
 
 	return p;
+}
+
+static void passthrough (void *data ATTRIBUTE_UNUSED)
+{
+	for (;;) {
+		char buffer[4096];
+		int r = read (STDIN_FILENO, buffer, 4096);
+		if (r <= 0)
+			break;
+		if (fwrite (buffer, 1, (size_t) r, stdout) < (size_t) r)
+			break;
+	}
+
+	return;
 }
 
 void pipeline_connect (pipeline *source, pipeline *sink, ...)
@@ -537,6 +547,21 @@ void pipeline_connect (pipeline *source, pipeline *sink, ...)
 		arg->source = source;
 		arg->want_in = -1;
 		arg->want_infile = NULL;
+
+		/* Zero-command sinks should represent data being passed
+		 * straight through from the input to the output.
+		 * Unfortunately pipeline_start and pipeline_pump don't
+		 * handle this very well between them; a zero-command
+		 * pipeline has the write end of its input pipe wrongly
+		 * stashed in outfd and then pipeline_pump can't handle it
+		 * because it has nowhere to send output. Until this is
+		 * fixed, this kludge is necessary.
+		 */
+		if (arg->ncommands == 0) {
+			command *cmd = command_new_function
+				("cat", &passthrough, NULL);
+			pipeline_command (arg, cmd);
+		}
 	}
 	va_end (argv);
 }
@@ -634,10 +659,10 @@ char *pipeline_tostring (pipeline *p)
 
 	for (i = 0; i < p->ncommands; ++i) {
 		char *cmdout = command_tostring (p->commands[i]);
-		out = strappend (out, cmdout, NULL);
+		out = appendstr (out, cmdout, NULL);
 		free (cmdout);
 		if (i < p->ncommands - 1)
-			out = strappend (out, " | ", NULL);
+			out = appendstr (out, " | ", NULL);
 	}
 
 	return out;
@@ -693,7 +718,7 @@ void pipeline_start (pipeline *p)
 		pipeline_dump (p, stderr);
 	}
 
-	if (!ignored_signals++) {
+	if (p->ignore_signals && !ignored_signals++) {
 		struct sigaction sa;
 
 		/* Ignore SIGINT and SIGQUIT while subprocesses are running,
@@ -702,9 +727,9 @@ void pipeline_start (pipeline *p)
 		sa.sa_handler = SIG_IGN;
 		sigemptyset (&sa.sa_mask);
 		sa.sa_flags = 0;
-		if (xsigaction (SIGINT, &sa, &osa_sigint) < 0)
+		if (sigaction (SIGINT, &sa, &osa_sigint) < 0)
 			error (FATAL, errno, "Couldn't ignore SIGINT");
-		if (xsigaction (SIGQUIT, &sa, &osa_sigquit) < 0)
+		if (sigaction (SIGQUIT, &sa, &osa_sigquit) < 0)
 			error (FATAL, errno, "Couldn't ignore SIGQUIT");
 	}
 
@@ -746,8 +771,8 @@ void pipeline_start (pipeline *p)
 	while (sigprocmask (SIG_SETMASK, &oset, NULL) == -1 && errno == EINTR)
 		;
 
-	p->pids = xmalloc (p->ncommands * sizeof *p->pids);
-	p->statuses = xmalloc (p->ncommands * sizeof *p->statuses);
+	p->pids = xnmalloc (p->ncommands, sizeof *p->pids);
+	p->statuses = xnmalloc (p->ncommands, sizeof *p->statuses);
 
 	if (p->want_in < 0) {
 		if (pipe (infd) < 0)
@@ -861,8 +886,10 @@ void pipeline_start (pipeline *p)
 			}
 
 			/* Restore signals. */
-			xsigaction (SIGINT, &osa_sigint, NULL);
-			xsigaction (SIGQUIT, &osa_sigquit, NULL);
+			if (p->ignore_signals) {
+				sigaction (SIGINT, &osa_sigint, NULL);
+				sigaction (SIGQUIT, &osa_sigquit, NULL);
+			}
 
 			switch (p->commands[i]->tag) {
 				case COMMAND_PROCESS: {
@@ -1099,10 +1126,10 @@ int pipeline_wait (pipeline *p)
 	free (p->statuses);
 	p->statuses = NULL;
 
-	if (!--ignored_signals) {
+	if (p->ignore_signals && !--ignored_signals) {
 		/* Restore signals. */
-		xsigaction (SIGINT, &osa_sigint, NULL);
-		xsigaction (SIGQUIT, &osa_sigquit, NULL);
+		sigaction (SIGINT, &osa_sigint, NULL);
+		sigaction (SIGQUIT, &osa_sigquit, NULL);
 	}
 
 	if (raise_signal)
@@ -1142,7 +1169,7 @@ void pipeline_install_sigchld (void)
 #ifdef SA_RESTART
 	act.sa_flags |= SA_RESTART;
 #endif
-	if (xsigaction (SIGCHLD, &act, NULL) == -1)
+	if (sigaction (SIGCHLD, &act, NULL) == -1)
 		error (FATAL, errno, _("can't install SIGCHLD handler"));
 }
 
@@ -1161,13 +1188,13 @@ void pipeline_pump (pipeline *p, ...)
 	for (arg = p; arg; arg = va_arg (argv, pipeline *))
 		++argc;
 	va_end (argv);
-	pieces = xmalloc (argc * sizeof *pieces);
-	pos = xmalloc (argc * sizeof *pos);
-	known_source = xmalloc (argc * sizeof *known_source);
-	blocking_in = xmalloc (argc * sizeof *blocking_in);
-	blocking_out = xmalloc (argc * sizeof *blocking_out);
-	waiting = xmalloc (argc * sizeof *waiting);
-	write_error = xmalloc (argc * sizeof *write_error);
+	pieces = xnmalloc (argc, sizeof *pieces);
+	pos = xnmalloc (argc, sizeof *pos);
+	known_source = xcalloc (argc, sizeof *known_source);
+	blocking_in = xcalloc (argc, sizeof *blocking_in);
+	blocking_out = xcalloc (argc, sizeof *blocking_out);
+	waiting = xcalloc (argc, sizeof *waiting);
+	write_error = xcalloc (argc, sizeof *write_error);
 
 	/* Set up arrays of pipelines and their read positions. Start all
 	 * pipelines if necessary.
@@ -1183,7 +1210,6 @@ void pipeline_pump (pipeline *p, ...)
 	va_end (argv);
 
 	/* All source pipelines must be supplied as arguments. */
-	memset (known_source, 0, argc * sizeof *known_source);
 	for (i = 0; i < argc; ++i) {
 		int found = 0;
 		if (!pieces[i]->source)
@@ -1197,8 +1223,6 @@ void pipeline_pump (pipeline *p, ...)
 		assert (found);
 	}
 
-	memset (blocking_in, 0, argc * sizeof *blocking_in);
-	memset (blocking_out, 0, argc * sizeof *blocking_out);
 	for (i = 0; i < argc; ++i) {
 		int flags;
 		if (pieces[i]->infd != -1) {
@@ -1219,21 +1243,18 @@ void pipeline_pump (pipeline *p, ...)
 		}
 	}
 
-	memset (waiting, 0, argc * sizeof *waiting);
-	memset (write_error, 0, argc * sizeof *write_error);
-
 #ifdef SIGPIPE
 	sa.sa_handler = SIG_IGN;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = 0;
-	xsigaction (SIGPIPE, &sa, &osa_sigpipe);
+	sigaction (SIGPIPE, &sa, &osa_sigpipe);
 #endif
 
 #ifdef SA_RESTART
 	/* We rely on getting EINTR from select. */
-	xsigaction (SIGCHLD, NULL, &sa);
+	sigaction (SIGCHLD, NULL, &sa);
 	sa.sa_flags &= ~SA_RESTART;
-	xsigaction (SIGCHLD, &sa, NULL);
+	sigaction (SIGCHLD, &sa, NULL);
 #endif
 
 	for (;;) {
@@ -1286,12 +1307,14 @@ void pipeline_pump (pipeline *p, ...)
 		FD_ZERO (&rfds);
 		FD_ZERO (&wfds);
 		for (i = 0; i < argc; ++i) {
+			/* Input to sink pipeline. */
 			if (pieces[i]->source && pieces[i]->infd != -1 &&
 			    !waiting[i]) {
 				FD_SET (pieces[i]->infd, &wfds);
 				if (pieces[i]->infd > maxfd)
 					maxfd = pieces[i]->infd;
 			}
+			/* Output from source pipeline. */
 			if (known_source[i] && pieces[i]->outfd != -1) {
 				FD_SET (pieces[i]->outfd, &rfds);
 				if (pieces[i]->outfd > maxfd)
@@ -1452,13 +1475,13 @@ next_sink:		;
 	}
 
 #ifdef SA_RESTART
-	xsigaction (SIGCHLD, NULL, &sa);
+	sigaction (SIGCHLD, NULL, &sa);
 	sa.sa_flags |= SA_RESTART;
-	xsigaction (SIGCHLD, &sa, NULL);
+	sigaction (SIGCHLD, &sa, NULL);
 #endif
 
 #ifdef SIGPIPE
-	xsigaction (SIGPIPE, &osa_sigpipe, NULL);
+	sigaction (SIGPIPE, &osa_sigpipe, NULL);
 #endif
 
 	for (i = 0; i < argc; ++i) {
@@ -1521,7 +1544,7 @@ static const char *get_block (pipeline *p, size_t *len, int peek)
 			p->bufmax = readstart + toread;
 		else
 			p->bufmax = toread;
-		p->buffer = realloc (p->buffer, p->bufmax + 1);
+		p->buffer = xrealloc (p->buffer, p->bufmax + 1);
 	}
 
 	if (!peek)
