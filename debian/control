@@ -11,7 +11,7 @@ Depends: groff-base (>= 1.17.2-2), bsdmainutils, debconf (>= 1.2.0) | debconf-2.
 Suggests: groff, less, www-browser
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
-Replaces: man, nlsutils, manpages-de
+Replaces: man, nlsutils, manpages-de (<< 0.5-4)
 Description: on-line manual pager
  This package provides the man command, the primary way of examining the
  on-line help files (manual pages). Other utilities provided include the

@@ -1,3 +1,9 @@
+man-db (2.5.1-3) UNRELEASED; urgency=low
+
+  * Only replace manpages-de (<< 0.5-4), per Daniel Kobras.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 29 Jan 2008 19:42:59 +0000
+
 man-db (2.5.1-2) unstable; urgency=low
 
   * Replaces: manpages-de, which provides out-of-date copies of man-db's
