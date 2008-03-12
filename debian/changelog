@@ -1,6 +1,9 @@
 man-db (2.5.1-3) UNRELEASED; urgency=low
 
   * Only replace manpages-de (<< 0.5-4), per Daniel Kobras.
+  * Backport from upstream:
+    - 'man -H' (without a browser argument) was completely broken and is now
+      fixed.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 29 Jan 2008 19:42:59 +0000
 
