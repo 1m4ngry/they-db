@@ -1,5 +1,5 @@
 files
 man-db
 templates
-*.debhelper
+*.debhelper*
 *.substvars
