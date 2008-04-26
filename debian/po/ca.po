@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.4.4-4\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-06-27 20:11+0200\n"
 "Last-Translator: Jordà Polo <jorda@ettin.org>\n"
 "Language-Team: Català <debian-l10n-catalan@lists.debian.org>\n"
@@ -65,74 +65,3 @@ msgstr ""
 "Habilitar aquesta característica pot representar un risc de seguretat, de "
 "manera que està desactivada per defecte. Si dubteu, segurament us convingui "
 "deixar-la desactivada."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Hauria de construir ara mandb la seva base de dades?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Encara no teniu una base de dades de les descripcions de les pàgines de "
-"manual. Construir-ne una pot trigar una estona, depenent de quantes pàgines "
-"de manual tingueu instal·lades; això es farà en segon pla i possiblement "
-"alentirà la instal·lació d'altres paquets."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Si no construïu ara la base de dades, aquesta serà construïda la propera "
-"vegada que s'executi /etc/cron.weekly/man-db (automàtica o manualment). Fins "
-"que ho feu, les ordres «whatis» i «apropos» no podran mostrar cap resultat."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Aquesta versió de man-db és incompatible amb la vostra base de dades de les "
-"descripcions de les pàgines de manual, i per tant haurà de ser reconstruïda. "
-"Això pot trigar una estona, depenent de quantes pàgines de manual tingueu "
-"instal·lades; es farà en un segon pla i possiblement alentirà la "
-"instal·lació d'altres paquets."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Canvis incompatibles com aquest passen molt rarament."
-
-#~ msgid "Should mandb rebuild its database now?"
-#~ msgstr "Hauria de reconstruir ara mandb la seva base de dades?"
-
-#~ msgid ""
-#~ "If you do not rebuild the database now, it will be rebuilt the next time /"
-#~ "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#~ "be able to display any output."
-#~ msgstr ""
-#~ "Si no reconstruïu ara la base de dades, aquesta serà reconstruïda la "
-#~ "pròxima vegada que s'executi /etc/cron.weekly/mandb o podeu fer-ho "
-#~ "manualment amb \"mandb -c\" com a usuari \"man\".  Mentrestant, les "
-#~ "ordres \"whatis\" i \"apropos\" no podran mostrar cap eixida."

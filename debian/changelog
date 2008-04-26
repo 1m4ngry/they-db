@@ -1,3 +1,23 @@
+man-db (2.5.1-4) UNRELEASED; urgency=low
+
+  * Add support for dpkg triggers per
+    http://lists.debian.org/debian-dpkg/2007/04/msg00076.html. There's no
+    versioned dependency on a trigger-supporting version of dpkg since this
+    is an optional feature, but now installation of any package including
+    manual pages will trigger a database rebuild at the end of the dpkg run
+    once the new dpkg is available (closes: #133917, LP: #50110).
+  * Build-depend on debhelper (>= 5.0.59) for triggers installation in
+    dh_installdeb.
+  * Configuration always needs to be a superset of triggering, so we always
+    need to build or update the database on upgrade. After some thought,
+    I've decided that we can live with doing this unconditionally in the
+    foreground: mandb is faster than it used to be, hardware is faster than
+    it used to be, and most builds from scratch will be due to installing
+    from scratch when relatively few manual pages are installed. Thus, I've
+    ripped out the two debconf questions dealing with this.
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 26 Apr 2008 13:32:52 +0100
+
 man-db (2.5.1-3) unstable; urgency=low
 
   * Only replace manpages-de (<< 0.5-4), per Daniel Kobras.

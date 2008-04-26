@@ -1,5 +1,17 @@
 #!/bin/sh -e
 
+run_mandb () {
+    perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
+	     exec "/usr/bin/mandb", @ARGV' -- "$@" || true
+}
+
+if [ "$1" = triggered ]; then
+    # We don't print a status message here, as dpkg already said
+    # "Processing triggers for man-db ...".
+    run_mandb -pq
+    exit 0
+fi
+
 [ "$1" = configure ] || exit 0
 
 oldcatdir=/var/catman
@@ -71,56 +83,37 @@ build_db=0
 
 if dpkg --compare-versions "$2" lt 2.3.16 || \
    ([ ! -f $catdir/index.db ] && [ ! -f $catdir/index.bt ]); then
-    # If the build-database question was never asked, this is probably a
-    # fresh install, or maybe we're reconfiguring. The default is to build
-    # the database.
-    db_fget man-db/build-database seen
-    if [ "$RET" = false ]; then
-	build_db=1
-    else
-	# This should probably only fire when upgrading from less than
-	# 2.3.16, but it doesn't really matter.
-	db_get man-db/build-database
-	if [ "$RET" = true ]; then
-	    build_db=1
-	fi
-    fi
+    # All versions before 2.3.17.1-1 removed cat page hierarchies on
+    # upgrade. Since then a preinst hack means upgrades from 2.3.16 or later
+    # won't do this, but the hack is nasty enough that I don't want to
+    # extend it back beyond then. Thus, we need to build the database from
+    # scratch on old upgrades. This also covers fresh installs.
+    build_db=1
 elif dpkg --compare-versions "$2" lt 2.4.2-1; then
+    # At 2.3.17.1-5, the database version number changed to 2.3.2.
+    # At 2.4.0-1, the database version number changed to 2.4.1 and we
+    # moved from libdb2 to libdb3.
+    # At 2.4.2-1, we moved from libdb3 to libgdbm3.
+    build_db=1
+
     # Clean up old btree databases from before 2.4.2-1. They're useless now.
     find /var/cache/man -name index.bt -print0 | xargs -0r rm -f
-
-    db_get man-db/rebuild-database
-    if [ "$RET" = true ]; then
-	build_db=1
-    fi
 fi
 
 if [ $build_db -eq 1 ]; then
-    frontend=`echo "$DEBIAN_FRONTEND" | tr '[:upper:]' '[:lower:]'`
-    if [ "$frontend" = noninteractive ]; then
-	# Run in the foreground. In this case, chances are we're being run
-	# from debootstrap, which will have problems if mandb runs
-	# backgrounded for too long (bug #100616).
-	# start-stop-daemon isn't available when running from debootstrap.
-	echo "Building database of manual pages ..." >&2
-	perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
-	         exec "/usr/bin/mandb", "-cq"' || true
-    else
-	echo "Building database of manual pages in the background." >&2
-	# --pidfile /dev/null so it always starts; mandb isn't really a
-	# daemon, but we want to start it like one.
-	start-stop-daemon --start --pidfile /dev/null --background \
-			  --startas /usr/bin/mandb --oknodo --chuid man \
-			  -- --create --quiet
-    fi
+    # Chances are we're being run from debootstrap, which will have problems
+    # if mandb runs backgrounded for too long (bug #100616).
+    # start-stop-daemon isn't available when running from debootstrap.
+    echo "Building database of manual pages ..." >&2
+    run_mandb -cq
+else
+    # Otherwise, just update the database in the foreground. It's unlikely
+    # to take very long, and configuration needs to cover everything that
+    # happens when we're triggered.
+    echo "Updating database of manual pages ..." >&2
+    run_mandb -pq
 fi
 
 #DEBHELPER#
-
-# The upgrade is complete, so no more concern about this question being
-# asked twice. Clean up the flag.
-db_fset man-db/rebuild-database seen_in_2.4.2-1_upgrade false
-
-db_stop
 
 exit 0

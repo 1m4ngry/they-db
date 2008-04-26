@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-06-29 13:32+0530\n"
 "Last-Translator: Dr.T.Vasudevan <agnihot3@gmail.com>\n"
 "Language-Team: TAMIL <ubuntu-l10n-tam@lists.ubuntu.com>\n"
@@ -60,58 +60,3 @@ msgid ""
 msgstr ""
 "இதை இயலுமைபடுத்துவது ஒரு பாதுகாப்பு பிரச்சினை. அதனால் இது முன்னிருப்பாக செய்ல் நீக்கி "
 "இருக்கும். நீங்கள் குழம்பினால் இதை முன்னிருப்பிலேயே விடவும்."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "மான்டிபி இப்போது தரவுத்தளத்தை வடிக்க வேண்டுமா?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"உங்களிடம் இதுவரை கையேட்டு பக்க விவர தரவுத்தளம் இல்லை. எத்தனை பக்கங்களை நிறுவி "
-"இருக்கிறீகள் என்பதைப்பொறுத்து ஒன்றை உருவாக்க சற்று நேரம் ஆகும். இது பின்புலத்தில் நிகழும். "
-"இதனால் மற்ற நிரல்களின் நிறுவல் தாமதமாகலாம்."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"இப்போது தரவுத்தளத்தை உருவாக்காவிட்டால் பின்னால் அடுத்த முறை /etc/cron.weekly/man-db "
-"(கைமுறையகவோ அல்லது தானியங்கியாகவோ) இயங்கும்போது அது அமைக்கப்படும். அதுவரை 'whatis' "
-"மற்றும் 'apropos' கட்டளைகள் இயங்கா. "
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"இந்த பதிப்பு மான்டிபி உங்களது தற்போதைய கையேட்டு பக்க விவர தரவுத்தளத்துடன் இசைவு "
-"இல்லாதது. ஆகவே புதிய தரவுத்தளம் உருவாக்கப்படவேண்டும். எத்தனை பக்கங்களை நிறுவி "
-"இருக்கிறீகள் என்பதைப்பொறுத்து ஒன்றை உருவாக்க சற்று நேரம் ஆகும். இது பின்புலத்தில் நிகழும். "
-"இதனால் மற்ற நிரல்களின் நிறுவல் தாமதமாகலாம்."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "இது போல இசைவின்மை அரிதாகதான் ஏற்படும்."

@@ -4,37 +4,6 @@
 db_version 2.0
 
 db_input medium man-db/install-setuid || true
-
-catdir=/var/cache/man
-
-if dpkg --compare-versions "$2" lt 2.3.16 || \
-   ([ ! -f $catdir/index.db ] && [ ! -f $catdir/index.bt ]); then
-    # All versions before 2.3.17.1-1 removed cat page hierarchies on
-    # upgrade. Since then a preinst hack means upgrades from 2.3.16 or later
-    # won't do this, but the hack is nasty enough that I don't want to
-    # extend it back beyond then. Thus, we may need to build the database
-    # from scratch on old upgrades. This also covers fresh installs.
-    db_input low man-db/build-database || true
-elif dpkg --compare-versions "$2" lt 2.4.2-1; then
-    # At 2.3.17.1-5, the database version number changed to 2.3.2.
-    # At 2.4.0-1, the database version number changed to 2.4.1 and we
-    # moved from libdb2 to libdb3.
-    # At 2.4.2-1, we moved from libdb3 to libgdbm3.
-    # Set the seen flag to false in case people answered this for the
-    # previous transition, but only if it hasn't been asked already in
-    # the current upgrade.
-    db_fget man-db/rebuild-database seen_in_2.4.2-1_upgrade
-    if [ "$RET" = false ]; then
-	db_fset man-db/rebuild-database seen false
-    fi
-    db_input medium man-db/rebuild-database || true
-    rebuilding=1
-fi
-
 db_go
-
-if [ "$rebuilding" = 1 ]; then
-    db_fset man-db/rebuild-database seen_in_2.4.2-1_upgrade true
-fi
 
 exit 0

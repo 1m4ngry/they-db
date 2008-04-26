@@ -23,34 +23,3 @@ _Description: Should man and mandb be installed 'setuid man'?
  .
  Enabling this feature may be a security risk, so it is disabled by default.
  If in doubt, you should leave it disabled.
-
-Template: man-db/build-database
-Type: boolean
-Default: true
-_Description: Should mandb build its database now?
- You do not yet have a database of manual page descriptions. Building one
- may take some time, depending on how many pages you have installed; it
- will happen in the background, possibly slowing down the installation of
- other packages.
- .
- If you do not build the database now, it will be built the next time
- /etc/cron.weekly/man-db runs (automatically or manually). Until then,
- the 'whatis' and 'apropos' commands will not be able to display any
- output.
-
-Template: man-db/rebuild-database
-Type: boolean
-Default: true
-_Description: Should mandb build its database now?
- This version of man-db is incompatible with your existing database of
- manual page descriptions, so that database needs to be rebuilt. This may
- take some time, depending on how many pages you have installed; it will
- happen in the background, possibly slowing down the installation of other
- packages.
- .
- If you do not build the database now, it will be built the next time
- /etc/cron.weekly/man-db runs (automatically or manually). Until then,
- the 'whatis' and 'apropos' commands will not be able to display any
- output.
- .
- Incompatible changes like this should happen rarely.

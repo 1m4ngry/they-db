@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-06-29 12:36+0300\n"
 "Last-Translator: Mehmet Türker <mturker@innova.com.tr>\n"
 "Language-Team: Turkish <debian-l10n-turkish@lists.debian.org>\n"
@@ -60,60 +60,3 @@ msgid ""
 msgstr ""
 "Bu özelliği açmak bir güvenlik riski oluşturabilir, bu yüzden "
 "etkinleştirilmedi. Eğer kararsızsanız böyle bırakmanızı tavsiye ederiz."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "mandb kendi veritabanını şimdi yaratsın mı?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Henüz kılavuz (manual) sayfa açıklamaları için bir veritabanınız yok. Bir "
-"veritabanı yaratmak kurulu sayfaların sayısına bağlı olarak bir miktar zaman "
-"alabilir. Bu işlem arka planda yapılacak ve muhtemelen diğer paketlerin "
-"kurulumunu da yavaşlatacaktır."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Eğer veritabanını şimdi yaratmazsanız bir dahaki sefere /etc/cron.weekly/man-"
-"db çalıştığı zaman yaratılacaktır (otomatik olarak yada elle). Şu an için "
-"'whatis' ve 'apropos' komutları herhangi bir çıktı görüntüleyemeyecektir."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"man-db'nin bu sürümü kılavuz sayfa açıklamalarına ait sisteminizde mevcut "
-"veritabanıyla uyumsuz. Bu yüzden veritabanının tekrar oluşturulması "
-"gerekiyor. Bir veritabanı yaratmak kurulu sayfaların sayısına bağlı olarak "
-"bir miktar zaman alabilir. Bu işlem arka planda yapılacak ve muhtemelen "
-"diğer paketlerin kurulumunu da yavaşlatacaktır."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Bunun gibi uyumsuz değişiklikler nadiren olmaktadır."

@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.5.0-3+\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-10-16 01:58-0500\n"
 "Last-Translator: Ming Hua <minghua-guest@users.alioth.debian.org>\n"
 "Language-Team: Chinese (simplified) <debian-chinese-gb@lists.debian.org>\n"
@@ -60,55 +60,3 @@ msgid ""
 msgstr ""
 "启用这一功能可能会有安全隐患，因此默认关闭此功能。如果您不确定，请保留关闭的"
 "设定。"
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "要让 mandb 现在就建立数据库吗？"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"您还没有存储手册页描述的数据库。视您安装的手册页数量不同而定，建立该数据库可"
-"能会需要一段时间；建立数据库将在后台进行，有可能会减慢其它软件包的安装过程。"
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"如果您现在不建立该数据库，它将会在下次 /etc/cron.weekly/man-db 运行时 (自动或"
-"手动) 被建立。在那之前，“whatis”和“apropos”两个命令将无法显示任何输出。"
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"本版本的 man-db 和您现有的存储手册页描述的数据库不兼容，因此需要重新建立这一"
-"数据库。视您安装的手册页数量不同而定，这可能会需要一段时间；建立数据库将在后"
-"台进行，有可能会减慢其它软件包的安装过程。"
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "类似这样的不兼容变动应该很不常见。"

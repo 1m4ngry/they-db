@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.4.4 italian debconf templates\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-06-28 21:08+0100\n"
 "Last-Translator: Luca Monducci <luca.mo@tiscali.it>\n"
 "Language-Team: Italian <debian-l10n-italian@lists.debian.org>\n"
@@ -61,60 +61,3 @@ msgstr ""
 "L'attivazione di questa funzione può essere un rischio per la sicurezza, "
 "quindi nelle impostazioni predefinite è disattivata. In caso di dubbi è "
 "consigliato lasciarla disattivata."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Creare adesso il database di mandb?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Ancora non esiste un database con le descrizioni delle pagine di manuale. La "
-"sua creazione può richiedere del tempo in base al numero di pagine "
-"installate; la creazione del database avviene in background ed è possibile "
-"che rallenti l'installazione di altri pacchetti."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Se il database non viene creato adesso, verrà comunque creato alla prossima "
-"esecuzione (automatica o manuale) di /etc/cron.weekly/man-db. Nel frattempo "
-"i comandi \"whatis\" e \"apropos\" non possono mostrare alcun output."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Questa versione di man-db è incompatibile con il database delle descrizioni "
-"delle pagine di manuale esistente, è quindi necessario ricreare tale "
-"database. Questa operazione può richiedere del tempo in base al numero di "
-"pagine installate; la creazione del database avviene in background ed è "
-"possibile che rallenti l'installazione di altri pacchetti."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Dei cambiamenti incompatibili come questo accadono molto raramente."

@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db_2.4.2-9_da\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2004-02-17 20:40+0100\n"
 "Last-Translator: Claus Hindsgaul <claus_h@image.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -68,81 +68,3 @@ msgid ""
 msgstr ""
 "Det kan være en sikkerhedsrisiko at slå denne funktion til. Derfor er den "
 "som udgangspunkt slået fra. Hvis du er i tvivl, bør du slå den fra."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Skal mandb opbygge sin database nu?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Du har endnu ingen database over manualsidebeskrivelser. Det vil tage nogen "
-"tid at opbygge en sådan, afhængigt af, hvor mange manualsider, du har "
-"installeret. Det vil ske i baggrunden, og kan midlertidigt gøre "
-"installationen af andre pakker langsommere."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-#, fuzzy
-#| msgid ""
-#| "If you do not build the database now, it will be built the next time /etc/"
-#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#| "be able to display any output."
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang, /etc/"
-"cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c' som "
-"brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' ikke "
-"kunne vise noget."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Denne version af man-db er inkompatibel med din eksisterende database med "
-"manualside-beskrivelser, så databasen skal genopbygges. Det vil tage nogen "
-"tid afhængigt af, hvor mange manualsider du har installeret. Det vil ske i "
-"baggrunden, og kan midlertidigt gøre installationen af andre pakker "
-"langsommere."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Inkompatible ændringer som denne skulle være sjældne."
-
-#~ msgid "Should mandb rebuild its database now?"
-#~ msgstr "Skal mandb genopbygge sin database nu?"
-
-#~ msgid ""
-#~ "If you do not rebuild the database now, it will be rebuilt the next time /"
-#~ "etc/cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#~ "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#~ "be able to display any output."
-#~ msgstr ""
-#~ "Hvis du ikke opbygger databasen nu, vil den blive opbygget næste gang, /"
-#~ "etc/cron.weekly/mandb køres, eller du kan gøre det selv med 'mandb -c' "
-#~ "som brugeren 'man'. I mellemtiden vil kommandoerne 'whatis' og 'apropos' "
-#~ "ikke kunne vise noget."

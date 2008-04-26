@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db_2.5.0-3\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-10-31 22:23+0200\n"
 "Last-Translator: Esko Arajärvi <edu@iki.fi>\n"
 "Language-Team: Finnish <debian-l10n-finnish@lists.debian.org>\n"
@@ -55,60 +55,3 @@ msgid ""
 msgstr ""
 "Ominaisuuden käyttäminen saattaa olla turvallisuusriski, joten se on "
 "oletuksena passivoitu. Jos olet epävarma, jätä se passivoiduksi."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Tulisiko mandb:n rakentaa tietokantansa nyt?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"man-ohjesivujen kuvauksista ei ole vielä tietokantaa. Sellaisen rakentaminen "
-"voi viedä jonkin aikaa riippuen siitä montako sivua on asennettuna. "
-"Rakentaminen tapahtuu taustalla hidastaen mahdollisesti muiden pakettien "
-"asennusta."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Jos tietokantaa ei rakenneta nyt, se rakennetaan, kun /etc/cron.weekly/man-"
-"db ajetaan seuraavan kerran (automaattisesti tai käsin). Siihen asti "
-"komennot ”whatis” ja ”apropos” eivät pysty näyttämään mitään tulostetta."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Ohjelman man-db tämä versio on yhteensopimaton olemassa olevan man-"
-"ohjesivujen kuvaustietokannan kanssa, joten kanta tulee rakentaa uudelleen. "
-"Sen rakentaminen voi viedä jonkin aikaa riippuen siitä montako sivua on "
-"asennettuna. Rakentaminen tapahtuu taustalla hidastaen mahdollisesti muiden "
-"pakettien asennusta."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Tällaisia yhteensopimattomia muutoksia ei pitäisi tapahtua usein."

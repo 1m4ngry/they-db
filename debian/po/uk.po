@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db-templates_uk\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2004-03-02 17:20+0200\n"
 "Last-Translator: Eugeniy Meshcheryakov <eugen@univ.kiev.ua>\n"
 "Language-Team: Ukrainian\n"
@@ -69,67 +69,3 @@ msgid ""
 msgstr ""
 "Ввімкнення цієї можливості може бути ризиком з точки зору безпеки, тому вона "
 "заборонена за замовчанням. Якщо ви невпевнені, то залиште її забороненою."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Чи потрібно зараз створити базу даних mandb?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Ви поки що не маєте бази даних описів сторінок керівництва. Її побудова може "
-"зайняти деякий час, що залежить від кількості сторінок, що ви встановили. "
-"Вона буде проходити в фоновому режимі і, можливо, сповільнить встановлення "
-"інших пакунків."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-#, fuzzy
-#| msgid ""
-#| "If you do not build the database now, it will be built the next time /etc/"
-#| "cron.weekly/mandb runs, or you can do it yourself using 'mandb -c' as "
-#| "user 'man'. In the meantime, the 'whatis' and 'apropos' commands will not "
-#| "be able to display any output."
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Якщо ви не хочете створювати базу даних зараз, то вона буде створена при "
-"наступному виконанні /etc/cron.weekly/mandb, або ви можете зробити це самі "
-"шляхом запуску 'mandb -c' як користувач 'man'. До цього команди 'whatis' та "
-"'apropos' не зможуть працювати."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Ця версія man-db несумісна з існуючою базою даних сторінок описів сторінок "
-"керівництва, отже потрібно перебудувати базу даних. Це побудова може зайняти "
-"деякий час, що залежить від кількості сторінок, що ви встановили. Побудова "
-"буде проходити в фоновому режимі і, можливо, сповільнить встановлення інших "
-"пакунків."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Несумісні зміни, подібні цим, не повинні траплятися часто."

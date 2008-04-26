@@ -16,8 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.4.4-4\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-07-01 16:39+0400\n"
 "Last-Translator: Yuri Kozlov <kozlov.y@gmail.com>\n"
 "Language-Team: Russian <debian-l10n-russian@lists.debian.org>\n"
@@ -73,60 +73,3 @@ msgid ""
 msgstr ""
 "Включение этой возможности является угрозой безопасности, поэтому по "
 "умолчанию она выключена. Если не знаете что делать, то оставьте как есть."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Создать базу данных mandb сейчас?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"В настоящий момент базы данных описаний страниц руководств не существует. Её "
-"создание может занять некоторое время, в зависимости от количества "
-"установленных страниц руководств; создание базы производится в фоновом "
-"режиме, что может замедлить установку остальных пакетов."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Если вы не создадите базу данных сейчас, то она будет создана при следующем "
-"запуске /etc/cron.weekly/man-db (автоматически или вручную). До этого "
-"момента команды 'whatis' и 'apropos' ничего показывать не будут."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Эта версия man-db несовместима с имеющейся у вас базой данных описаний "
-"страниц руководств, поэтому базу данных нужно перестроить. Это может занять "
-"некоторое время, в зависимости от количества установленных у вас страниц; "
-"создание базы производится в фоновом режиме, что может замедлить установку "
-"остальных пакетов."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Несовместимые изменения, такие как это, случаются редко."

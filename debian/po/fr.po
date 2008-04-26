@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-06-27 20:01+0200\n"
 "Last-Translator: Christian Perrier <bubulle@debian.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -63,60 +63,3 @@ msgstr ""
 "Cette fonctionnalité peut comporter un risque pour la sécurité du système ; "
 "elle n'est pas activée par défaut. Dans le doute, vous devriez la laisser "
 "désactivée."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Faut-il construire la base de données des pages de manuel maintenant ?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Aucune base de données des pages de manuel n'existe encore. Selon le nombre "
-"de pages installées, sa construction peut prendre du temps ; elle se déroule "
-"en arrière-plan et peut ralentir l'installation des autres paquets. Veuillez "
-"confirmer que vous souhaitez l'effectuer maintenant."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Si vous ne construisez pas la base de données maintenant, elle le sera à la "
-"prochaine exécution (automatique ou manuelle) de /etc/cron.weekly/man-db. "
-"Dans l'intervalle, les commandes « whatis » et « apropos » ne pourront rien "
-"afficher."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Cette version de man-db est incompatible avec l'actuelle base de données des "
-"descriptions de pages, qui doit être reconstruite. Selon le nombre de pages "
-"installées, cette opération peut prendre du temps ; comme elle se déroule en "
-"arrière-plan, elle peut ralentir l'installation des autres paquets."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "De telles incompatibilités n'arrivent que rarement."

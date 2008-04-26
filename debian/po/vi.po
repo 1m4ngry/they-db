@@ -1,12 +1,12 @@
 # Vietnamese Translation for man-db.
 # Copyright © 2007 Free Software Foundation, Inc.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2007.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.4.4-4\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-06-28 21:32+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
@@ -60,60 +60,3 @@ msgid ""
 msgstr ""
 "Hiệu lực tính năng này có thể rủi ro bảo mật, vậy nó bị tắt theo mặc định. "
 "Chưa chắc thì bạn nên để lại nó bị tắt."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "Trình mandb nên xây dựng cơ sở dữ liệu ngay bây giờ không?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Bạn chưa có một cơ sở dữ liệu chứa các mô tả trang hướng dẫn. Tiến trình xây "
-"dựng cài đặt như vậy có thể kéo dài một lát, phụ thuộc vào tổng số trang đã "
-"cài đặt; nó sẽ chạy trong nền, cũng có thể làm trễ tiến trình cài đặt gói "
-"khác."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Nếu bạn không xây dựng cơ sở dữ liệu ngay bây giờ, nó sẽ được xây dựng lần "
-"kế tiếp chạy (tự động hay thủ công) văn lệnh định kỳ « /etc/cron.weekly/man-"
-"db ». Trước khi nó được xây dựng, hai lệnh « whatis » và « apropos » sẽ "
-"không thể hiển thị kết xuất."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Phiên bản man-db này không tương thích với cơ sở dữ liệu mô tả trang hướng "
-"dẫn đã tồn tại của bạn, vì vậy cơ sở dữ liệu đó cần phải được xây dựng lại. "
-"Tiến trình này có thể kéo dài một lát, phụ thuộc vào tổng số trang đã cài "
-"đặt; nó sẽ chạy trong nền, cũng có thể làm trễ tiến trình cài đặt gói khác."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Thay đổi không tương thích như thế nên xảy ra rất ít."

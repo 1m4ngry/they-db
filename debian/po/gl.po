@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db\n"
-"Report-Msgid-Bugs-To: cjwatson@debian.org\n"
-"POT-Creation-Date: 2007-08-19 15:26+0100\n"
+"Report-Msgid-Bugs-To: man-db@packages.debian.org\n"
+"POT-Creation-Date: 2008-04-26 13:39+0100\n"
 "PO-Revision-Date: 2007-06-27 21:24+0200\n"
 "Last-Translator: Jacobo Tarrio <jtarrio@debian.org>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -68,60 +68,3 @@ msgid ""
 msgstr ""
 "Esta característica pode ser un risco de seguridade, así que está "
 "desactivada por defecto. Se ten dúbidas, debería deixala desactivada."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid "Should mandb build its database now?"
-msgstr "¿Debería construír mandb a súa base de datos agora?"
-
-#. Type: boolean
-#. Description
-#: ../templates:2001
-msgid ""
-"You do not yet have a database of manual page descriptions. Building one may "
-"take some time, depending on how many pages you have installed; it will "
-"happen in the background, possibly slowing down the installation of other "
-"packages."
-msgstr ""
-"Aínda non ten unha base de datos de descricións de páxinas man. Construír "
-"unha ha levar tempo, dependendo do número de páxinas que teña instaladas. "
-"Hase facer nunha tarefa de segundo plano, o que pode facer máis lenta a "
-"instalación de outros paquetes."
-
-#. Type: boolean
-#. Description
-#. Type: boolean
-#. Description
-#: ../templates:2001 ../templates:3001
-msgid ""
-"If you do not build the database now, it will be built the next time /etc/"
-"cron.weekly/man-db runs (automatically or manually). Until then, the "
-"'whatis' and 'apropos' commands will not be able to display any output."
-msgstr ""
-"Se non constrúe a base de datos agora hase construír a próxima vez que se "
-"execute /etc/cron.weekly/man-db (automatica ou manualmente). Ata entón, as "
-"ordes \"whatis\" e \"apropos\" non han poder amosar nada."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid ""
-"This version of man-db is incompatible with your existing database of manual "
-"page descriptions, so that database needs to be rebuilt. This may take some "
-"time, depending on how many pages you have installed; it will happen in the "
-"background, possibly slowing down the installation of other packages."
-msgstr ""
-"Esta versión de man-db é incompatible coa base de datos de descricións de "
-"páxinas man que xa existe no seu sistema, así que hai que reconstruír esa "
-"base de datos. Isto ha levar tempo, dependendo do número de páxinas que teña "
-"instaladas. Hase facer nunha tarefa de segundo plano, o que pode facer máis "
-"lenta a instalación de outros paquetes."
-
-#. Type: boolean
-#. Description
-#: ../templates:3001
-msgid "Incompatible changes like this should happen rarely."
-msgstr "Os cambios incompatibles coma este non deberían ser moi frecuentes."
