@@ -15,6 +15,7 @@ man-db (2.5.1-4) UNRELEASED; urgency=low
     it used to be, and most builds from scratch will be due to installing
     from scratch when relatively few manual pages are installed. Thus, I've
     ripped out the two debconf questions dealing with this.
+  * Move doc-base entry to Viewers (from Applications/Viewers).
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 26 Apr 2008 13:32:52 +0100
 
