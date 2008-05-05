@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2004-2007 Free Software Foundation, Inc.
+# Copyright (C) 2002-2008 Free Software Foundation, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -46,13 +46,19 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([AC_LIBOBJ], m4_defn([gl_LIBOBJ]))
   m4_pushdef([AC_REPLACE_FUNCS], m4_defn([gl_REPLACE_FUNCS]))
   m4_pushdef([AC_LIBSOURCES], m4_defn([gl_LIBSOURCES]))
+  gl_COMMON
   gl_source_base='gnulib/lib'
+  gl_EOVERFLOW
   gl_FUNC_ALLOCA
   gl_ARGP
+  m4_ifdef([AM_XGETTEXT_OPTION],
+    [AM_XGETTEXT_OPTION([--flag=argp_error:2:c-format])
+     AM_XGETTEXT_OPTION([--flag=argp_failure:4:c-format])])
   gl_FUNC_ATEXIT
   AC_FUNC_CANONICALIZE_FILE_NAME
   gl_MODULE_INDICATOR([canonicalize])
   gl_CANONICALIZE_LGPL
+  gl_MODULE_INDICATOR([canonicalize-lgpl])
   gl_FUNC_CHDIR_LONG
   gl_FUNC_CHOWN
   gl_UNISTD_MODULE_INDICATOR([chown])
@@ -63,6 +69,8 @@ AC_DEFUN([gl_INIT],
   gl_DOUBLE_SLASH_ROOT
   gl_FUNC_DUP2
   gl_UNISTD_MODULE_INDICATOR([dup2])
+  gl_ENVIRON
+  gl_UNISTD_MODULE_INDICATOR([environ])
   gl_ERROR
   m4_ifdef([AM_XGETTEXT_OPTION],
     [AM_XGETTEXT_OPTION([--flag=error:3:c-format])
@@ -106,6 +114,7 @@ AC_DEFUN([gl_INIT],
   gl_STRING_MODULE_INDICATOR([mempcpy])
   gl_FUNC_MEMRCHR
   gl_STRING_MODULE_INDICATOR([memrchr])
+  gl_FUNC_MEMSET
   gl_MINMAX
   gt_FUNC_MKDTEMP
   gl_STDLIB_MODULE_INDICATOR([mkdtemp])
@@ -113,6 +122,8 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([mkstemp])
   gl_FUNC_OPENAT
   gl_PATHMAX
+  gl_FUNC_RAWMEMCHR
+  gl_STRING_MODULE_INDICATOR([rawmemchr])
   gl_FUNC_READLINK
   gl_UNISTD_MODULE_INDICATOR([readlink])
   gl_REGEX
@@ -124,6 +135,8 @@ AC_DEFUN([gl_INIT],
   gl_SIZE_MAX
   gl_FUNC_SLEEP
   gl_UNISTD_MODULE_INDICATOR([sleep])
+  gl_FUNC_SNPRINTF
+  gl_STDIO_MODULE_INDICATOR([snprintf])
   gt_TYPE_SSIZE_T
   gl_STDARG_H
   AM_STDBOOL_H
@@ -148,6 +161,8 @@ AC_DEFUN([gl_INIT],
   gl_STRING_MODULE_INDICATOR([strpbrk])
   gl_FUNC_STRSEP
   gl_STRING_MODULE_INDICATOR([strsep])
+  gl_FUNC_STRSIGNAL
+  gl_STRING_MODULE_INDICATOR([strsignal])
   gl_HEADER_SYS_SELECT
   AC_PROG_MKDIR_P
   gl_HEADER_SYS_SOCKET
@@ -158,6 +173,7 @@ AC_DEFUN([gl_INIT],
   AC_PROG_MKDIR_P
   gl_SYSEXITS
   gl_FUNC_GEN_TEMPNAME
+  gl_TLS
   gl_UNISTD_H
   gl_UNISTD_SAFER
   gl_FUNC_UNSETENV
@@ -201,6 +217,7 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([AC_LIBOBJ], m4_defn([gltests_LIBOBJ]))
   m4_pushdef([AC_REPLACE_FUNCS], m4_defn([gltests_REPLACE_FUNCS]))
   m4_pushdef([AC_LIBSOURCES], m4_defn([gltests_LIBSOURCES]))
+  gl_COMMON
   gl_source_base='tests'
   m4_popdef([AC_LIBSOURCES])
   m4_popdef([AC_REPLACE_FUNCS])
@@ -391,6 +408,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/memcmp.c
   lib/mempcpy.c
   lib/memrchr.c
+  lib/memset.c
   lib/minmax.h
   lib/mkdirat.c
   lib/mkdtemp.c
@@ -407,6 +425,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/printf-args.h
   lib/printf-parse.c
   lib/printf-parse.h
+  lib/rawmemchr.c
+  lib/rawmemchr.valgrind
   lib/readlink.c
   lib/ref-add.sin
   lib/ref-del.sin
@@ -423,14 +443,18 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/save-cwd.c
   lib/save-cwd.h
   lib/setenv.c
+  lib/siglist.h
   lib/size_max.h
   lib/sleep.c
+  lib/snprintf.c
+  lib/stdarg.in.h
   lib/stdbool.in.h
   lib/stdint.in.h
   lib/stdio.in.h
   lib/stdlib.in.h
   lib/strcasecmp.c
   lib/strchrnul.c
+  lib/strchrnul.valgrind
   lib/strcspn.c
   lib/strdup.c
   lib/strerror.c
@@ -442,6 +466,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strnlen.c
   lib/strpbrk.c
   lib/strsep.c
+  lib/strsignal.c
   lib/sys_select.in.h
   lib/sys_socket.in.h
   lib/sys_stat.in.h
@@ -449,6 +474,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/sysexits.in.h
   lib/tempname.c
   lib/tempname.h
+  lib/tls.c
+  lib/tls.h
   lib/unistd--.h
   lib/unistd-safer.h
   lib/unistd.in.h
@@ -470,7 +497,6 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/xstrndup.h
   lib/xvasprintf.c
   lib/xvasprintf.h
-  m4/absolute-header.m4
   m4/alloca.m4
   m4/argp.m4
   m4/atexit.m4
@@ -487,6 +513,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/double-slash-root.m4
   m4/dup2.m4
   m4/eealloc.m4
+  m4/environ.m4
   m4/eoverflow.m4
   m4/error.m4
   m4/exitfail.m4
@@ -526,12 +553,15 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/memcmp.m4
   m4/mempcpy.m4
   m4/memrchr.m4
+  m4/memset.m4
   m4/minmax.m4
   m4/mkdtemp.m4
   m4/mkstemp.m4
-  m4/onceonly_2_57.m4
+  m4/onceonly.m4
   m4/openat.m4
   m4/pathmax.m4
+  m4/printf.m4
+  m4/rawmemchr.m4
   m4/readlink.m4
   m4/regex.m4
   m4/rename.m4
@@ -540,6 +570,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/setenv.m4
   m4/size_max.m4
   m4/sleep.m4
+  m4/snprintf.m4
   m4/sockpfaf.m4
   m4/ssize_t.m4
   m4/stdarg.m4
@@ -559,12 +590,14 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/strnlen.m4
   m4/strpbrk.m4
   m4/strsep.m4
+  m4/strsignal.m4
   m4/sys_select_h.m4
   m4/sys_socket_h.m4
   m4/sys_stat_h.m4
   m4/sys_time_h.m4
   m4/sysexits.m4
   m4/tempname.m4
+  m4/tls.m4
   m4/unistd-safer.m4
   m4/unistd_h.m4
   m4/vasnprintf.m4

@@ -1,7 +1,7 @@
 /*
  * encodings.c: locale and encoding handling for man
  *
- * Copyright (C) 2003, 2004, 2005, 2006, 2007 Colin Watson.
+ * Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -115,6 +115,7 @@ static struct directory_entry directory_table[] = {
 	{ "tr",		"ISO-8859-9",	"ISO-8859-9"		}, /* Turkish */
 	{ "vi",		"TCVN5712-1",	"TCVN5712-1"		}, /* Vietnamese */
 	{ "zh_CN",	"GBK",		"GBK"			}, /* Simplified Chinese */
+	{ "zh_SG",	"GBK",		"GBK"			}, /* Simplified Chinese, Singapore */
 	{ "zh_HK",	"BIG5HKSCS",	"BIG5HKSCS"		}, /* Traditional Chinese, Hong Kong */
 	{ "zh_TW",	"BIG5",		"BIG5"			}, /* Traditional Chinese */
 #endif /* MULTIBYTE_GROFF */
@@ -161,6 +162,7 @@ static struct charset_alias_entry charset_alias_table[] = {
 	{ "EUCCN",		"EUC-CN"		},
 	{ "EUCJP",		"EUC-JP"		},
 	{ "EUCKR",		"EUC-KR"		},
+	{ "EUCTW",		"EUC-TW"		},
 	{ "GB2312",		"EUC-CN"		},
 	{ "ISO8859-1",		"ISO-8859-1"		},
 	{ "ISO8859-2",		"ISO-8859-2"		},
@@ -205,6 +207,7 @@ static struct charset_entry charset_table[] = {
 	{ "BIG5HKSCS",		"nippon"	},
 	{ "EUC-CN",		"nippon"	},
 	{ "EUC-JP",		"nippon"	},
+	{ "EUC-TW",		"nippon"	},
 	{ "GBK",		"nippon"	},
 #endif /* MULTIBYTE_GROFF */
 
@@ -234,6 +237,7 @@ struct device_entry {
 };
 
 static struct device_entry device_table[] = {
+	/* nroff devices */
 	{ "ascii",	"ANSI_X3.4-1968",	"ANSI_X3.4-1968"	},
 	{ "latin1",	"ISO-8859-1",		"ISO-8859-1"		},
 	{ "utf8",	"ISO-8859-1",		"UTF-8"			},
@@ -243,6 +247,17 @@ static struct device_entry device_table[] = {
 	{ "nippon",	NULL,			NULL			},
 #endif /* MULTIBYTE_GROFF */
 
+	/* troff devices */
+	{ "X75",	NULL,			NULL			},
+	{ "X75-12",	NULL,			NULL			},
+	{ "X100",	NULL,			NULL			},
+	{ "X100-12",	NULL,			NULL			},
+	{ "dvi",	NULL,			NULL			},
+	{ "html",	NULL,			NULL			},
+	{ "lbp",	NULL,			NULL			},
+	{ "lj4",	NULL,			NULL			},
+	{ "ps",		NULL,			NULL			},
+
 	{ NULL,		NULL,			NULL			}
 };
 
@@ -251,23 +266,26 @@ static const char *fallback_roff_encoding = "ISO-8859-1";
 /* Setting less_charset to iso8859 tells the less pager that characters
  * between 0xA0 and 0xFF are displayable, not that its input is encoded in
  * ISO-8859-*. TODO: Perhaps using LESSCHARDEF would be better.
+ *
+ * Character set names compatible only with jless go in jless_charset.
  */
 struct less_charset_entry {
 	const char *locale_charset;
 	const char *less_charset;
+	const char *jless_charset;
 };
 
 static struct less_charset_entry less_charset_table[] = {
-	{ "ANSI_X3.4-1968",	"ascii"		},
-	{ "ISO-8859-1",		"iso8859"	},
-	{ "UTF-8",		"utf-8"		},
+	{ "ANSI_X3.4-1968",	"ascii",	NULL		},
+	{ "ISO-8859-1",		"iso8859",	NULL		},
+	{ "UTF-8",		"utf-8",	NULL		},
 
 #ifdef MULTIBYTE_GROFF
-	{ "EUC-JP",		"ja"		},
-	{ "KOI8-R",		"koi8-r"	},
+	{ "EUC-JP",		"iso8859",	"japanese-ujis"	},
+	{ "KOI8-R",		"koi8-r",	NULL		},
 #endif /* MULTIBYTE_GROFF */
 
-	{ NULL,			NULL		}
+	{ NULL,			NULL,		NULL		}
 };
 
 static const char *fallback_less_charset = "iso8859";
@@ -528,7 +546,8 @@ static int compatible_encodings (const char *input, const char *output)
 	if ((STREQ (input, "BIG5") || STREQ (input, "BIG5HKSCS") ||
 	     STREQ (input, "EUC-JP") ||
 	     STREQ (input, "EUC-CN") || STREQ (input, "GBK") ||
-	     STREQ (input, "EUC-KR")) &&
+	     STREQ (input, "EUC-KR") ||
+	     STREQ (input, "EUC-TW")) &&
 	    STREQ (output, "UTF-8"))
 		return 1;
 #endif /* MULTIBYTE_GROFF */
@@ -569,6 +588,19 @@ const char *get_default_device (const char *locale_charset,
 	return fallback_default_device;
 }
 
+/* Is this a known *roff device name? */
+int is_roff_device (const char *device)
+{
+	const struct device_entry *entry;
+
+	for (entry = device_table; entry->roff_device; ++entry) {
+		if (STREQ (entry->roff_device, device))
+			return 1;
+	}
+
+	return 0;
+}
+
 /* Find the input encoding expected by groff, and set the LESSCHARSET
  * environment variable appropriately.
  */
@@ -598,14 +630,15 @@ const char *get_roff_encoding (const char *device, const char *source_encoding)
 	 * This is evil, but there's not much that can be done about it
 	 * apart from waiting for groff 2.0.
 	 */
-	if (device && STREQ (device, "utf8") && !get_groff_preconv ()) {
+	if (device && STREQ (device, "utf8") && !get_groff_preconv () &&
+	    STREQ (get_locale_charset (), "UTF-8")) {
 		const char *ctype = setlocale (LC_CTYPE, NULL);
-		if (STREQ (ctype, "ja_JP.UTF-8") ||
-		    STREQ (ctype, "ko_KR.UTF-8") ||
-		    STREQ (ctype, "zh_CN.UTF-8") ||
-		    STREQ (ctype, "zh_HK.UTF-8") ||
-		    STREQ (ctype, "zh_SG.UTF-8") ||
-		    STREQ (ctype, "zh_TW.UTF-8"))
+		if (STRNEQ (ctype, "ja_JP", 5) ||
+		    STRNEQ (ctype, "ko_KR", 5) ||
+		    STRNEQ (ctype, "zh_CN", 5) ||
+		    STRNEQ (ctype, "zh_HK", 5) ||
+		    STRNEQ (ctype, "zh_SG", 5) ||
+		    STRNEQ (ctype, "zh_TW", 5))
 			roff_encoding = "UTF-8";
 	}
 #endif /* MULTIBYTE_GROFF */
@@ -639,17 +672,41 @@ const char *get_less_charset (const char *locale_charset)
 	return fallback_less_charset;
 }
 
+/* Return the value of JLESSCHARSET appropriate for this locale. May return
+ * NULL.
+ */
+const char *get_jless_charset (const char *locale_charset)
+{
+	const struct less_charset_entry *entry;
+
+	for (entry = less_charset_table; entry->locale_charset; ++entry)
+		if (STREQ (entry->locale_charset, locale_charset))
+			return entry->jless_charset;
+
+	return NULL;
+}
+
 void add_manconv (pipeline *p, const char *source, const char *target)
 {
+	command *cmd;
+	char *target_ignore = appendstr (NULL, target, "//IGNORE", NULL);
+
 	if (STREQ (source, "UTF-8")) {
-		if (STREQ (target, "UTF-8"))
+		if (STREQ (target, "UTF-8")) {
+			free (target_ignore);
 			return;
-		pipeline_command_args (p, "iconv", "-f", source, "-t", target,
-				       NULL);
+		}
+		cmd = command_new_args ("iconv", "-f", source,
+					"-t", target_ignore, NULL);
 	} else {
 		char *sources = appendstr (NULL, "UTF-8:", source, NULL);
-		pipeline_command_args (p, MANCONV, "-f", sources, "-t", target,
-				       NULL);
+		cmd = command_new_args (MANCONV, "-f", sources,
+					"-t", target_ignore, NULL);
 		free (sources);
+		if (quiet >= 2)
+			command_arg (cmd, "-q");
 	}
+	pipeline_command (p, cmd);
+
+	free (target_ignore);
 }

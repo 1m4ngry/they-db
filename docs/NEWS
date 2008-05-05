@@ -1,3 +1,39 @@
+man-db 2.5.2 (5 May 2008)
+=========================
+
+Major changes since man-db 2.5.1:
+
+	Fixes:
+	------
+
+	o 'man -H' (without a browser argument) was completely broken in
+	  2.5.1 and is now fixed.
+
+	o man no longer breaks in Japanese locales when using less as a
+	  pager.
+
+	Improvements:
+	-------------
+
+	o The --encoding option to man can now take a true character
+	  encoding rather than a *roff device; the latter was an unreliable,
+	  inflexible, and awkward way to select an output encoding. The old
+	  semantics are still supported for backward compatibility.
+
+	o Whatis parsing stops at .ie or .if conditionals.
+
+	o CJK locale specifications where the codeset component is
+	  equivalent to but not stringwise-identical to UTF-8 (e.g.
+	  zh_CN.utf8) are handled better.
+
+	o man(1)'s OPTIONS section is ordered more comprehensibly.
+
+	o apropos, lexgrog, man, mandb, and whatis ignore encoding
+	  conversion errors for the last possible encoding of the source
+	  page. This helps, for example, with pages including misencoded
+	  non-ASCII names of authors; it usually seems better to allow these
+	  pages to pass with small errors than to break them entirely.
+
 man-db 2.5.1 (28 January 2008)
 ==============================
 

@@ -137,7 +137,7 @@ id_name		N[Aa][Mm][Aa]
  /* NOME also works for gl, pt */
 it_name		N[Oo][Mm][Ee]
 ja_name		(名|̾)(前|称)
-ko_name		이름
+ko_name		(이름|명칭)
 latin_name	N[Oo][Mm][Ee][Nn]
 nl_name		N[Aa][Aa][Mm]
 pl_name		N[Aa][Zz][Ww][Aa]
@@ -216,6 +216,7 @@ vgrind_request	\.vS
 <MAN_NAME>{bol}\.sp{blank}*		|	/* vertical spacing */
 <MAN_NAME>{bol}\.ig{blank}*		|	/* block comment */
 <MAN_NAME>{bol}\.de[1i]?{blank}*	|	/* macro definition */
+<MAN_NAME>{bol}\.i[ef]{blank}*		|	/* conditional */
 <MAN_NAME>{empty}{bol}.+		|
 <MAN_NAME><<EOF>>		{	/* terminate the string */
 					*p_name = '\0';

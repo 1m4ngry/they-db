@@ -20,7 +20,11 @@
 ## Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 if NLS
-SUBDIRS = de es fr it ja
+if PO4A
+MAYBE_PO4A = po4a
+MAYBE_PO4A_LINGUAS = pl
+endif
+SUBDIRS = $(MAYBE_PO4A) de es fr it ja $(MAYBE_PO4A_LINGUAS)
 endif
 
 LINGUA = .

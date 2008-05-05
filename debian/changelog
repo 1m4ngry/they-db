@@ -1,3 +1,23 @@
+man-db (2.5.2-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Make /usr/local/share/man mandatory rather than /usr/local/man
+      (thanks, Reuben Thomas; closes: #463892).
+    - Whatis parsing stops at .ie or .if conditionals (closes: #467444).
+    - In the CJK UTF-8 special case, check the canonicalised encoding in
+      order that locale specifications such as "zh_CN.utf8" work (closes:
+      #467249).
+    - Improve 'man -E' to allow overriding the output encoding explicitly,
+      rather than implicitly (and unreliably) by changing the *roff device
+      (closes: #466396).
+    - Don't emit encoding conversion errors in mandb's quiet mode (closes:
+      #473862).
+    - Clean up some loose ends of Chinese support, adding zh_SG and EUC-TW
+      support (thanks, Wu Songhai; closes: #354321).
+    - Fix jless support to avoid breaking less (closes: #217519).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 May 2008 02:22:09 +0100
+
 man-db (2.5.1-4) unstable; urgency=low
 
   * Add support for dpkg triggers per

@@ -1,7 +1,7 @@
 /*
  * encodings.h: Interface to locale and encoding handling for man
  *
- * Copyright (C) 2003, 2004, 2006, 2007 Colin Watson.
+ * Copyright (C) 2003, 2004, 2006, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -28,8 +28,10 @@ const char *get_canonical_charset_name (const char *charset);
 const char *get_locale_charset (void);
 const char *get_default_device (const char *locale_charset,
 				const char *source_encoding);
+int is_roff_device (const char *device);
 const char *get_roff_encoding (const char *device,
 			       const char *source_encoding);
 const char *get_output_encoding (const char *device);
 const char *get_less_charset (const char *locale_charset);
+const char *get_jless_charset (const char *locale_charset);
 void add_manconv (struct pipeline *p, const char *source, const char *target);

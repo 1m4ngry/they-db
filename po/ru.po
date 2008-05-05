@@ -1,4 +1,4 @@
-# translation of man-db-2.5.1-pre2.ru.po to Russian
+# translation of man-db-2.5.2-pre1.ru.po to Russian
 # This file is distributed under the same license as the man-db package.
 # Copyright (C) YEAR Colin Watson <cjwatson@debian.org>.
 #
@@ -6,10 +6,10 @@
 # Yuri Kozlov <kozlov.y@gmail.com>, 2007, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: man-db 2.5.1-pre2\n"
+"Project-Id-Version: man-db 2.5.2-pre1\n"
 "Report-Msgid-Bugs-To: Colin Watson <cjwatson@debian.org>\n"
-"POT-Creation-Date: 2008-01-27 16:58+0000\n"
-"PO-Revision-Date: 2008-01-15 20:51+0300\n"
+"POT-Creation-Date: 2008-05-05 02:09+0100\n"
+"PO-Revision-Date: 2008-03-11 21:20+0300\n"
 "Last-Translator: Yuri Kozlov <kozlov.y@gmail.com>\n"
 "Language-Team: Russian <gnu@mx.ru>\n"
 "MIME-Version: 1.0\n"
@@ -34,74 +34,74 @@ msgstr "ввод конвейера не открыт"
 msgid "pipeline output not open"
 msgstr "вывод конвейера не открыт"
 
-#: lib/pipeline.c:779 lib/pipeline.c:798
+#: lib/pipeline.c:780 lib/pipeline.c:799
 #, c-format
 msgid "pipe failed"
 msgstr "функция pipe вернула ошибку"
 
-#: lib/pipeline.c:787 src/lexgrog.l:423 src/manconv.c:347 src/straycats.c:212
+#: lib/pipeline.c:788 src/lexgrog.l:424 src/manconv.c:369 src/straycats.c:212
 #: src/ult_src.c:277 src/ult_src.c:287 src/zsoelim.l:420
 #, c-format
 msgid "can't open %s"
 msgstr "не удалось открыть %s"
 
-#: lib/pipeline.c:827 src/catman.c:199
+#: lib/pipeline.c:828 src/catman.c:199
 #, c-format
 msgid "fork failed"
 msgstr "функция fork вернула ошибку"
 
-#: lib/pipeline.c:835 lib/pipeline.c:844
+#: lib/pipeline.c:836 lib/pipeline.c:845
 #, c-format
 msgid "dup2 failed"
 msgstr "функция dup2 вернула ошибку"
 
-#: lib/pipeline.c:838 lib/pipeline.c:847 lib/pipeline.c:854 lib/pipeline.c:863
-#: lib/pipeline.c:922 lib/pipeline.c:926
+#: lib/pipeline.c:839 lib/pipeline.c:848 lib/pipeline.c:855 lib/pipeline.c:864
+#: lib/pipeline.c:923 lib/pipeline.c:927
 #, c-format
 msgid "close failed"
 msgstr "функция close вернула ошибку"
 
-#: lib/pipeline.c:916
+#: lib/pipeline.c:917
 #, c-format
 msgid "can't execute %s"
 msgstr "не удалось запустить %s"
 
-#: lib/pipeline.c:1018
+#: lib/pipeline.c:1019
 #, c-format
 msgid "closing pipeline input stream failed"
 msgstr "не удалось закрыть поток ввода конвейера"
 
-#: lib/pipeline.c:1023 lib/pipeline.c:1278
+#: lib/pipeline.c:1024 lib/pipeline.c:1281
 #, c-format
 msgid "closing pipeline input failed"
 msgstr "не удалось закрыть ввод конвейера"
 
-#: lib/pipeline.c:1030
+#: lib/pipeline.c:1031
 #, c-format
 msgid "closing pipeline output stream failed"
 msgstr "не удалось закрыть поток вывода конвейера"
 
-#: lib/pipeline.c:1037 lib/pipeline.c:1303
+#: lib/pipeline.c:1038 lib/pipeline.c:1306
 #, c-format
 msgid "closing pipeline output failed"
 msgstr "не удалось закрыть вывод конвейера"
 
-#: lib/pipeline.c:1085
+#: lib/pipeline.c:1086
 #, c-format
 msgid "%s: %s (core dumped)"
 msgstr "%s: %s (создан файл core)"
 
-#: lib/pipeline.c:1090
+#: lib/pipeline.c:1091
 #, c-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: lib/pipeline.c:1115
+#: lib/pipeline.c:1116
 #, c-format
 msgid "waitpid failed"
 msgstr "функция waitpid вернула ошибку"
 
-#: lib/pipeline.c:1173
+#: lib/pipeline.c:1175
 #, c-format
 msgid "can't install SIGCHLD handler"
 msgstr "не удалось установить обработчик SIGCHLD"
@@ -166,7 +166,7 @@ msgid "The man database defaults to %s%s."
 msgstr "По умолчанию база данных man расположена в %s%s."
 
 #: src/accessdb.c:65 src/catman.c:99 src/globbing_test.c:57
-#: src/lexgrog_test.c:66 src/man.c:245 src/manconv.c:106 src/mandb.c:97
+#: src/lexgrog_test.c:66 src/man.c:245 src/manconv.c:109 src/mandb.c:97
 #: src/manpath.c:66 src/whatis.c:114 src/zsoelim.l:91
 msgid "emit debugging messages"
 msgstr "показывать сообщения отладки"
@@ -180,11 +180,11 @@ msgstr "не удалось открыть %s на чтение"
 msgid "[SECTION...]"
 msgstr "[СЕКЦИЯ...]"
 
-#: src/catman.c:100 src/man.c:264 src/whatis.c:123
+#: src/catman.c:100 src/man.c:266 src/whatis.c:123
 msgid "PATH"
 msgstr "ПУТЬ"
 
-#: src/catman.c:100 src/man.c:264 src/whatis.c:123
+#: src/catman.c:100 src/man.c:266 src/whatis.c:123
 msgid "set search path for manual pages to PATH"
 msgstr "установить путь к страницам руководства в значение ПУТЬ"
 
@@ -338,7 +338,7 @@ msgstr "не учитывать регистр при поиске (по умо�
 msgid "look for pages case-sensitively"
 msgstr "учитывать регистр при поиске"
 
-#: src/lexgrog.l:345
+#: src/lexgrog.l:346
 #, c-format
 msgid "warning: whatis for %s exceeds %d bytes, truncating."
 msgstr "предупреждение: результат whatis для %s превысил %d байт, обрезание."
@@ -367,15 +367,15 @@ msgstr "показать информацию whatis"
 msgid "show guessed series of preprocessing filters"
 msgstr "показать серию предположений фильтров предварительной обработки"
 
-#: src/lexgrog_test.c:71 src/man.c:280
+#: src/lexgrog_test.c:71 src/man.c:261 src/man.c:280
 msgid "ENCODING"
 msgstr "КОДИРОВКА"
 
-#: src/lexgrog_test.c:71
-msgid "override character set"
-msgstr "изменить кодировку символов"
+#: src/lexgrog_test.c:71 src/man.c:280
+msgid "use selected output encoding"
+msgstr "использовать выбранную кодировку выходных данных"
 
-#: src/lexgrog_test.c:114 src/man.c:481
+#: src/lexgrog_test.c:114 src/man.c:482
 #, c-format
 msgid "%s: incompatible options"
 msgstr "%s: несовместимые параметры"
@@ -429,33 +429,29 @@ msgstr "воспринимать аргумент(ы) СТРАНИЦА как и
 msgid "used by catman to reformat out of date cat pages"
 msgstr "используется catman для переформатирования устаревших cat страниц"
 
-#: src/man.c:261 src/manconv.c:105
-msgid "CODE"
-msgstr "КОДИРОВКА"
-
 #: src/man.c:261
-msgid "output source page encoded in CODE"
-msgstr "результирующая исходная страница в заданной КОДИРОВКЕ"
+msgid "output source page encoded in ENCODING"
+msgstr "вывести исходную страницу в КОДИРОВКЕ"
 
 #: src/man.c:263
 msgid "Finding manual pages:"
 msgstr "Поиск страниц руководства:"
 
-#: src/man.c:265 src/whatis.c:124
+#: src/man.c:264 src/whatis.c:124
 msgid "LOCALE"
 msgstr "ЛОКАЛЬ"
 
-#: src/man.c:265
+#: src/man.c:264
 msgid "define the locale for this particular man search"
 msgstr "задать локаль для поиска"
 
-#: src/man.c:266 src/manpath.c:69 src/whatis.c:122
+#: src/man.c:265 src/manpath.c:69 src/whatis.c:122
 msgid "SYSTEM"
 msgstr "СИСТЕМА"
 
-#: src/man.c:266
-msgid "search for man pages from other unix system(s)"
-msgstr "искать man страницы от других систем unix"
+#: src/man.c:265 src/manpath.c:69 src/whatis.c:122
+msgid "use manual pages from other systems"
+msgstr "использовать страницы руководства от других систем"
 
 #: src/man.c:267
 msgid "LIST"
@@ -497,10 +493,6 @@ msgstr "использовать пейджер `less' с подсказкой"
 msgid "display ASCII translation of certain latin1 chars"
 msgstr "показать трансляцию ASCII определённых символов latin1"
 
-#: src/man.c:280
-msgid "use the selected nroff device and display in pager"
-msgstr "использовать выбранное nroff-устройство и показать в пейджере"
-
 #: src/man.c:281
 msgid ""
 "STRING indicates which preprocessors to run:\n"
@@ -535,14 +527,10 @@ msgid "use %s or BROWSER to display HTML output"
 msgstr "использовать %s или БРАУЗЕР для показа HTML"
 
 #: src/man.c:295
-msgid "use groff and force it to produce ditroff"
-msgstr "использовать groff и заставить его генерировать ditroff"
-
-#: src/man.c:296
 msgid "RESOLUTION"
 msgstr "РАЗРЕШЕНИЕ"
 
-#: src/man.c:298
+#: src/man.c:297
 msgid ""
 "use groff and display through gxditview (X11):\n"
 "-X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12"
@@ -550,95 +538,99 @@ msgstr ""
 "использовать groff и показывать с помощью gxditview (X11):\n"
 "-X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12"
 
-#: src/man.c:528 src/man.c:600
+#: src/man.c:299
+msgid "use groff and force it to produce ditroff"
+msgstr "использовать groff и заставить его генерировать ditroff"
+
+#: src/man.c:529 src/man.c:601
 #, c-format
 msgid "No manual entry for %s\n"
 msgstr "Нет справочного руководства для %s\n"
 
-#: src/man.c:530
+#: src/man.c:531
 #, c-format
 msgid "(Alternatively, what manual page do you want from section %s?)\n"
 msgstr "(Или же, какая страница руководства вам нужна из раздела %s?)\n"
 
-#: src/man.c:534
+#: src/man.c:535
 msgid "What manual page do you want?\n"
 msgstr "Какая страница руководства вам нужна?\n"
 
-#: src/man.c:597
+#: src/man.c:598
 #, c-format
 msgid "No manual entry for %s in section %s\n"
 msgstr "Нет справочного руководства для %s в разделе %s\n"
 
-#: src/man.c:605
+#: src/man.c:606
 #, c-format
 msgid "See '%s' for help when manual pages are not available.\n"
 msgstr "Смотрите '%s' в помощи, если недоступны страницы руководства.\n"
 
-#: src/man.c:766 src/man.c:2103
+#: src/man.c:767 src/man.c:2119
 #, c-format
 msgid "can't chdir to %s"
 msgstr "не удалось выполнить функцию chdir в %s"
 
-#: src/man.c:949
+#: src/man.c:950
 msgid " Manual page "
 msgstr " Страница руководства "
 
-#: src/man.c:1019 src/man.c:2952
+#: src/man.c:1020 src/man.c:2968
 #, c-format
 msgid "mandb command failed with exit status %d"
 msgstr "команда mandb завершилась неудачно (код выхода %d)"
 
-#: src/man.c:1461
+#: src/man.c:1476
 #, c-format
 msgid "ignoring unknown preprocessor `%c'"
 msgstr "игнорирование неизвестного препроцессора `%c'"
 
-#: src/man.c:1739 src/mandb.c:299
+#: src/man.c:1755 src/mandb.c:299
 #, c-format
 msgid "can't chown %s"
 msgstr "не удалось выполнить функцию chown %s"
 
-#: src/man.c:1751 src/mandb.c:213
+#: src/man.c:1767 src/mandb.c:213
 #, c-format
 msgid "can't chmod %s"
 msgstr "не удалось выполнить функцию chmod %s"
 
-#: src/man.c:1762 src/mandb.c:204
+#: src/man.c:1778 src/mandb.c:204
 #, c-format
 msgid "can't rename %s to %s"
 msgstr "не удалось переименовать %s в %s"
 
-#: src/man.c:1781
+#: src/man.c:1797
 #, c-format
 msgid "can't set times on %s"
 msgstr "не удалось установить время доступа для %s"
 
-#: src/man.c:1790
+#: src/man.c:1806
 #, c-format
 msgid "can't unlink %s"
 msgstr "не удалось выполнить функцию unlink %s"
 
-#: src/man.c:1823
+#: src/man.c:1839
 #, c-format
 msgid "can't create temporary cat for %s"
 msgstr "не удалось создать временный cat файл %s"
 
-#: src/man.c:1952 src/man.c:1994 src/man.c:2024
+#: src/man.c:1968 src/man.c:2010 src/man.c:2040
 #, c-format
 msgid "can't change to directory %s"
 msgstr "не удалось сменить каталог на %s"
 
-#: src/man.c:1965
+#: src/man.c:1981
 #, c-format
 msgid "can't open temporary file %s"
 msgstr "не удалось открыть временный файл %s"
 
-#: src/man.c:2000 src/man.c:2029
+#: src/man.c:2016 src/man.c:2045
 #, c-format
 msgid "can't remove directory %s"
 msgstr "не удалось удалить каталог %s"
 
-#: src/man.c:2252
+#: src/man.c:2268
 #, c-format
 msgid ""
 "\n"
@@ -647,52 +639,62 @@ msgstr ""
 "\n"
 "не удалось записать в %s в режиме catman"
 
-#: src/man.c:2806
+#: src/man.c:2822
 #, c-format
 msgid "%s: relying on whatis refs is deprecated\n"
 msgstr "%s: полагаться на ссылки whatis настоятельно не рекомендуется\n"
 
-#: src/man.c:3146
+#: src/man.c:3162
 #, c-format
 msgid "internal error: candidate type %d out of range"
 msgstr "внутренняя ошибка: тип кандидата %d вне диапазона"
 
-#: src/man.c:3269
+#: src/man.c:3285
 #, c-format
 msgid "--Man-- next: %s [ view (return) | skip (Ctrl-D) | quit (Ctrl-C) ]\n"
 msgstr ""
 "--Man-- след: %s [ просм (ввод) | пропуск (Ctrl-D) | выход (Ctrl-C) ]\n"
 
-#: src/manconv.c:101
-msgid "-f CODE:... -t CODE [FILENAME]"
-msgstr "-f КОДИРОВКА:... -t КОДИРОВКА [ИМЯ-ФАЙЛА]"
+#: src/manconv.c:103
+msgid "-f CODE[:...] -t CODE [FILENAME]"
+msgstr "-f КОДИРОВКА[:...] -t КОДИРОВКА [ИМЯ-ФАЙЛА]"
 
-#: src/manconv.c:104
-msgid "CODE:..."
-msgstr "КОДИРОВКА:..."
+#: src/manconv.c:106
+msgid "CODE[:...]"
+msgstr "КОДИРОВКА[:...]"
 
-#: src/manconv.c:104
+#: src/manconv.c:107
 msgid "possible encodings of original text"
 msgstr "возможные кодировки исходного текста"
 
-#: src/manconv.c:105
+#: src/manconv.c:108
+msgid "CODE"
+msgstr "КОДИРОВКА"
+
+#: src/manconv.c:108
 msgid "encoding for output"
 msgstr "кодировка вывода"
 
-#: src/manconv.c:138 src/manconv.c:147
+#: src/manconv.c:110 src/manpath.c:67
+msgid "produce fewer warnings"
+msgstr "выводить некоторые предупреждения"
+
+#: src/manconv.c:145 src/manconv.c:154
+#, c-format
 msgid "must specify an input encoding"
 msgstr "должна быть указана кодировка входных данных"
 
-#: src/manconv.c:142
+#: src/manconv.c:149
+#, c-format
 msgid "must specify an output encoding"
 msgstr "должна быть указана кодировка выходных данных"
 
-#: src/manconv.c:265 src/manconv.c:290
+#: src/manconv.c:280 src/manconv.c:305
 #, c-format
 msgid "can't write to standard output"
 msgstr "не удалось записать в стандартный выходной поток"
 
-#: src/manconv.c:300
+#: src/manconv.c:319
 #, c-format
 msgid "iconv: incomplete character at end of buffer"
 msgstr "iconv: неполный символ в конце буфера"
@@ -877,14 +879,6 @@ msgstr "показать относительные catpath"
 msgid "show the entire global manpath"
 msgstr "показать весь глобальный manpath"
 
-#: src/manpath.c:67
-msgid "produce fewer warnings"
-msgstr "выводить некоторые предупреждения"
-
-#: src/manpath.c:69
-msgid "express which `systems' to use"
-msgstr "определить, какие `системы' использовать"
-
 #: src/manpath.c:132
 #, c-format
 msgid "warning: no global manpaths set in config file %s"
@@ -964,10 +958,6 @@ msgstr "СЕКЦИЯ"
 #: src/whatis.c:121
 msgid "search only this section"
 msgstr "искать только в этой секции"
-
-#: src/whatis.c:122
-msgid "include alternate systems' man pages"
-msgstr "включать man станицы альтернативных систем"
 
 #: src/whatis.c:124
 msgid "define the locale for this search"

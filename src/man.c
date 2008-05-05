@@ -198,6 +198,7 @@ static struct hashtable *db_hash = NULL;
 
 static int troff;
 static const char *roff_device = NULL;
+static const char *want_encoding = NULL;
 #ifdef TROFF_IS_GROFF
 static const char *const default_roff_warnings = "mac";
 static struct string_llist *roff_warnings = NULL;
@@ -213,7 +214,6 @@ static const char *recode = NULL;
 
 static int ascii;		/* insert tr in the output pipe */
 static int save_cat; 		/* security breach? Can we save the cat? */
-static int different_encoding;	/* was an explicit encoding specified? */
 
 static int first_arg;
 
@@ -258,26 +258,26 @@ static struct argp_option options[] = {
 	{ "location-cat",	0,	0,		OPTION_ALIAS },
 	{ "local-file",		'l',	0,		0,		N_("interpret PAGE argument(s) as local filename(s)") },
 	{ "catman",		'c',	0,		0,		N_("used by catman to reformat out of date cat pages"),		11 },
-	{ "recode",		'R',	N_("CODE"),	0,		N_("output source page encoded in CODE") },
+	{ "recode",		'R',	N_("ENCODING"),	0,		N_("output source page encoded in ENCODING") },
 
 	{ 0,			0,	0,		0,		N_("Finding manual pages:"),					20 },
-	{ "manpath",		'M',	N_("PATH"),	0,		N_("set search path for manual pages to PATH") },
 	{ "locale",		'L',	N_("LOCALE"),	0,		N_("define the locale for this particular man search") },
-	{ "systems",		'm',	N_("SYSTEM"),	0,		N_("search for man pages from other unix system(s)") },
-	{ "sections",		'S',	N_("LIST"),	0,		N_("use colon separated section list") },
+	{ "systems",		'm',	N_("SYSTEM"),	0,		N_("use manual pages from other systems") },
+	{ "manpath",		'M',	N_("PATH"),	0,		N_("set search path for manual pages to PATH") },
+	{ "sections",		'S',	N_("LIST"),	0,		N_("use colon separated section list"),				21 },
 	{ 0,			's',	0,		OPTION_ALIAS },
 	{ "extension",		'e',	N_("EXTENSION"),
-							0,		N_("limit search to extension type EXTENSION") },
-	{ "ignore-case",	'i',	0,		0,		N_("look for pages case-insensitively (default)"),		21 },
+							0,		N_("limit search to extension type EXTENSION"),			22 },
+	{ "ignore-case",	'i',	0,		0,		N_("look for pages case-insensitively (default)"),		23 },
 	{ "match-case",		'I',	0,		0,		N_("look for pages case-sensitively") },
-	{ "all",		'a',	0,		0,		N_("find all matching manual pages"),				22 },
+	{ "all",		'a',	0,		0,		N_("find all matching manual pages"),				24 },
 	{ "update",		'u',	0,		0,		N_("force a cache consistency check") },
 
 	{ 0,			0,	0,		0,		N_("Controlling formatted output:"),				30 },
 	{ "pager",		'P',	N_("PAGER"),	0,		N_("use program PAGER to display output") },
 	{ "prompt",		'r',	N_("STRING"),	0,		N_("provide the `less' pager with a prompt") },
 	{ "ascii",		'7',	0,		0,		N_("display ASCII translation of certain latin1 chars"),	31 },
-	{ "encoding",		'E',	N_("ENCODING"),	0,		N_("use the selected nroff device and display in pager") },
+	{ "encoding",		'E',	N_("ENCODING"),	0,		N_("use selected output encoding") },
 	{ "preprocessor",	'p',	N_("STRING"),	0,		N_("STRING indicates which preprocessors to run:\n"
 									   "e - [n]eqn, p - pic, t - tbl,\n"
 									   "g - grap, r - refer, v - vgrind") },
@@ -291,12 +291,12 @@ static struct argp_option options[] = {
 #  define MAYBE_HIDDEN OPTION_HIDDEN
 # endif
 	{ "html",		'H',	N_("BROWSER"),	MAYBE_HIDDEN | OPTION_ARG_OPTIONAL,
-									N_("use %s or BROWSER to display HTML output") },
-	{ "ditroff",		'Z',	0,		MAYBE_HIDDEN,	N_("use groff and force it to produce ditroff") },
+									N_("use %s or BROWSER to display HTML output"),			33 },
 	{ "gxditview",		'X',	N_("RESOLUTION"),
 							MAYBE_HIDDEN | OPTION_ARG_OPTIONAL,
 									N_("use groff and display through gxditview (X11):\n"
 									   "-X = -TX75, -X100 = -TX100, -X100-12 = -TX100-12") },
+	{ "ditroff",		'Z',	0,		MAYBE_HIDDEN,	N_("use groff and force it to produce ditroff") },
 #endif /* HAS_TROFF */
 
 	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
@@ -320,16 +320,15 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			local_man_file = findall = update = catman =
 				debug_level = troff =
 				print_where = print_where_cat =
-				ascii = different_encoding =
-				match_case = 0;
+				ascii = match_case = 0;
 #ifdef TROFF_IS_GROFF
 			ditroff = 0;
 			gxditview = NULL;
 			htmlout = 0;
 			html_pager = NULL;
 #endif
-			roff_device = extension = pager = locale =
-				alt_system_name = external =
+			roff_device = want_encoding = extension = pager =
+				locale = alt_system_name = external =
 				preprocessors = NULL;
 			colon_sep_section_list = manp = NULL;
 			return 0;
@@ -380,14 +379,14 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			ult_flags &= ~SO_LINK;
 			return 0;
 
-		case 'M':
-			manp = arg;
-			return 0;
 		case 'L':
 			locale = arg;
 			return 0;
 		case 'm':
 			alt_system_name = arg;
+			return 0;
+		case 'M':
+			manp = arg;
 			return 0;
 		case 'S':
 		case 's':
@@ -420,8 +419,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			ascii = 1;
 			return 0;
 		case 'E':
-			roff_device = arg;
-			different_encoding = 1;
+			want_encoding = arg;
+			if (is_roff_device (want_encoding))
+				roff_device = want_encoding;
 			return 0;
 		case 'p':
 			preprocessors = arg;
@@ -447,16 +447,16 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			roff_device = "html";
 # endif /* TROFF_IS_GROFF */
 			return 0;
-		case 'Z':
-# ifdef TROFF_IS_GROFF
-			ditroff = 1;
-			troff = 1;
-# endif /* TROFF_IS_GROFF */
-			return 0;
 		case 'X':
 # ifdef TROFF_IS_GROFF
 			troff = 1;
 			gxditview = (arg ? arg : "75");
+# endif /* TROFF_IS_GROFF */
+			return 0;
+		case 'Z':
+# ifdef TROFF_IS_GROFF
+			ditroff = 1;
+			troff = 1;
 # endif /* TROFF_IS_GROFF */
 			return 0;
 #endif /* HAS_TROFF */
@@ -1308,7 +1308,10 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 #define STRC(s, otherwise) ((s) ? (s) : (otherwise))
 
 			cat_charset = get_standard_output_encoding (lang);
-			locale_charset = get_locale_charset ();
+			if (want_encoding && !is_roff_device (want_encoding))
+				locale_charset = want_encoding;
+			else
+				locale_charset = get_locale_charset ();
 			debug ("cat_charset = %s\n",
 			       STRC (cat_charset, "NULL"));
 			debug ("locale_charset = %s\n",
@@ -1370,6 +1373,17 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 					get_less_charset (locale_charset);
 				debug ("less_charset = %s\n", less_charset);
 				setenv ("LESSCHARSET", less_charset, 1);
+			}
+
+			if (!getenv ("JLESSCHARSET")) {
+				const char *jless_charset =
+					get_jless_charset (locale_charset);
+				if (jless_charset) {
+					debug ("jless_charset = %s\n",
+					       jless_charset);
+					setenv ("JLESSCHARSET",
+						jless_charset, 1);
+				}
 			}
 		}
 
@@ -1497,7 +1511,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				break;
 		} while (*pp_string++);
 
-		if (!different_encoding && output_encoding && locale_charset &&
+		if ((!want_encoding || !is_roff_device (want_encoding)) &&
+		    output_encoding && locale_charset &&
 		    !STREQ (output_encoding, locale_charset))
 			pipeline_command_args (p, "iconv", "-c",
 					       "-f", output_encoding,
@@ -2177,7 +2192,7 @@ static int display (const char *dir, const char *man_file,
 		 * refuse gracefully if the file isn't writeable.
 		 */
 
-		if (different_encoding
+		if (want_encoding
 #ifdef TROFF_IS_GROFF
 		    || htmlout
 #endif
@@ -2694,7 +2709,7 @@ static int try_section (const char *path, const char *sec, const char *name,
 		if (catman)
 			return 1;
 
-		if (!troff && !different_encoding && !recode) {
+		if (!troff && !want_encoding && !recode) {
 			names = look_for_file (path, sec, name, 1, match_case);
 			cat = 1;
 		}
@@ -2739,7 +2754,7 @@ static int display_filesystem (struct candidate *candp)
 	char *title = appendstr (NULL, candp->source->name,
 				 "(", candp->source->ext, ")", NULL);
 	if (candp->cat) {
-		if (troff || different_encoding || recode)
+		if (troff || want_encoding || recode)
 			return 0;
 		return display (candp->path, NULL, filename, title, NULL);
 	} else {
@@ -2856,7 +2871,7 @@ static int display_database (struct candidate *candp)
 		/* If explicitly asked for troff or a different encoding,
 		 * don't show a stray cat.
 		 */
-		if (troff || different_encoding || recode) {
+		if (troff || want_encoding || recode) {
 			free (title);
 			return found;
 		}

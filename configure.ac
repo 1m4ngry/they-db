@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.5.1], [cjwatson@debian.org])
+AC_INIT([man-db], [2.5.2], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR(tools)
 AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
 AC_PREREQ([2.59])
@@ -16,7 +16,7 @@ AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-datemark=20080128
+datemark=20080505
 date=`LANG=C date -d $datemark +'%Y-%m-%d'`
 AC_SUBST(date)dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
@@ -333,6 +333,9 @@ AM_GNU_GETTEXT_VERSION([0.17])
 AC_SUBST(LINGUAS)
 AM_ICONV
 AM_CONDITIONAL([NLS], [test "$USE_NLS" = yes])
+AC_CHECK_PROGS([PO4A], [po4a])
+AC_SUBST([PO4A])
+AM_CONDITIONAL([PO4A], [test -n "$PO4A"])
 
 # Checks for structures and compiler characteristics.
 AC_C_CONST
@@ -344,7 +347,6 @@ AC_TYPE_SIZE_T
 # Checks for functions.
 AC_TYPE_SIGNAL
 AC_FUNC_VFORK
-MAN_FUNC_STRSIGNAL
 
 # Find a suitable database interface header and library.
 #
@@ -442,11 +444,13 @@ AC_CONFIG_FILES(Makefile
 	src/man_db.conf
 	man/Makefile
 	man/replace.sin
+	man/po4a/Makefile
 	man/de/Makefile
 	man/es/Makefile
 	man/fr/Makefile
 	man/it/Makefile
 	man/ja/Makefile
+	man/pl/Makefile
 	manual/Makefile
 	libdb/Makefile
 	docs/Makefile

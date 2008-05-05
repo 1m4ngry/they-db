@@ -724,6 +724,7 @@ void pipeline_start (pipeline *p)
 		/* Ignore SIGINT and SIGQUIT while subprocesses are running,
 		 * just like system().
 		 */
+		memset (&sa, 0, sizeof sa);
 		sa.sa_handler = SIG_IGN;
 		sigemptyset (&sa.sa_mask);
 		sa.sa_flags = 0;
@@ -1085,11 +1086,11 @@ int pipeline_wait (pipeline *p)
 						       _("%s: %s "
 							 "(core dumped)"),
 						       p->commands[i]->name,
-						       xstrsignal (sig));
+						       strsignal (sig));
 					else
 						error (0, 0, _("%s: %s"),
 						       p->commands[i]->name,
-						       xstrsignal (sig));
+						       strsignal (sig));
 #ifdef SIGPIPE
 				}
 #endif /* SIGPIPE */
@@ -1140,14 +1141,15 @@ int pipeline_wait (pipeline *p)
 
 static void pipeline_sigchld (int signum)
 {
-	assert (signum == SIGCHLD);
+	/* really an assert, but that's not async-signal-safe */
+	if (signum == SIGCHLD) {
+		++sigchld;
 
-	++sigchld;
-
-	if (!queue_sigchld) {
-		int save_errno = errno;
-		reap_children (0);
-		errno = save_errno;
+		if (!queue_sigchld) {
+			int save_errno = errno;
+			reap_children (0);
+			errno = save_errno;
+		}
 	}
 }
 
@@ -1244,6 +1246,7 @@ void pipeline_pump (pipeline *p, ...)
 	}
 
 #ifdef SIGPIPE
+	memset (&sa, 0, sizeof sa);
 	sa.sa_handler = SIG_IGN;
 	sigemptyset (&sa.sa_mask);
 	sa.sa_flags = 0;

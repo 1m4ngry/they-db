@@ -2,7 +2,7 @@
  * lexgrog_test.c: test whatis extraction from man/cat pages
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -68,7 +68,7 @@ static struct argp_option options[] = {
 	{ "cat",	'c',	0,		0,	N_("parse as cat page") },
 	{ "whatis",	'w',	0,		0,	N_("show whatis information"),				2 },
 	{ "filters",	'f',	0,		0,	N_("show guessed series of preprocessing filters") },
-	{ "encoding",	'E',	N_("ENCODING"),	0,	N_("override character set"),				3 },
+	{ "encoding",	'E',	N_("ENCODING"),	0,	N_("use selected output encoding"),			3 },
 	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
 	{ 0 }
 };

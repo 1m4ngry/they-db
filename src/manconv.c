@@ -60,6 +60,8 @@
 #include "encodings.h"
 
 char *program_name;
+int quiet = 0;
+
 static const char *from_codes;
 static char *to_code;
 static char **from_code;
@@ -98,12 +100,14 @@ const char *argp_program_version = "manconv " PACKAGE_VERSION;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
 error_t argp_err_exit_status = FAIL;
 
-static const char args_doc[] = N_("-f CODE:... -t CODE [FILENAME]");
+static const char args_doc[] = N_("-f CODE[:...] -t CODE [FILENAME]");
 
 static struct argp_option options[] = {
-	{ "from-code",	'f',	N_("CODE:..."),	0,	N_("possible encodings of original text") },
+	{ "from-code",	'f',	N_("CODE[:...]"),
+						0,	N_("possible encodings of original text") },
 	{ "to-code",	't',	N_("CODE"),	0,	N_("encoding for output") },
 	{ "debug",	'd',	0,		0,	N_("emit debugging messages") },
+	{ "quiet",	'q',	0,		0,	N_("produce fewer warnings") },
 	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
 	{ 0 }
 };
@@ -122,6 +126,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			return 0;
 		case 'd':
 			debug_level = 1;
+			return 0;
+		case 'q':
+			quiet = 1;
 			return 0;
 		case 'h':
 			argp_state_help (state, state->out_stream,
@@ -200,6 +207,7 @@ static char *check_preprocessor_encoding (pipeline *p)
 
 static int try_iconv (pipeline *p, const char *try_from_code, int last)
 {
+	char *try_to_code = xstrdup (to_code);
 	static const size_t buf_size = 65536;
 	size_t input_size = buf_size;
 	const char *input;
@@ -207,12 +215,19 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 	iconv_t cd;
 	int ret = 0;
 
-	debug ("trying encoding %s -> %s\n", try_from_code, to_code);
+	/* Only handle //IGNORE for the last encoding. */
+	if (!last) {
+		char *ignore = strstr (try_to_code, "//IGNORE");
+		if (ignore)
+			*ignore = '\0';
+	}
+	debug ("trying encoding %s -> %s\n", try_from_code, try_to_code);
 
-	cd = iconv_open (to_code, try_from_code);
+	cd = iconv_open (try_to_code, try_from_code);
 	if (cd == (iconv_t) -1) {
 		error (0, errno, "iconv_open (\"%s\", \"%s\")",
-		       to_code, try_from_code);
+		       try_to_code, try_from_code);
+		free (try_to_code);
 		return -1;
 	}
 
@@ -242,14 +257,14 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 			   &outptr, &outleft);
 
 		if (n == (size_t) -1 &&
-		    errno == EILSEQ && strstr (to_code, "//IGNORE"))
+		    errno == EILSEQ && strstr (try_to_code, "//IGNORE"))
 			errno = 0;
 
 		/* If we need to try the next encoding, do that before
 		 * writing anything.
 		 */
 		if (!last && n == (size_t) -1 &&
-		    ((errno == EILSEQ && !strstr (to_code, "//IGNORE")) ||
+		    ((errno == EILSEQ && !strstr (try_to_code, "//IGNORE")) ||
 		     (errno == EINVAL && input_size < buf_size))) {
 			ret = -1;
 			break;
@@ -293,12 +308,18 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 			}
 		} else {
 			/* !last case handled above */
-			if (errno == EILSEQ && !strstr (to_code, "//IGNORE"))
-				error (FATAL, errno, "iconv");
-			else if (errno == EINVAL && input_size < buf_size)
-				error (FATAL, 0,
-				       _("iconv: incomplete character "
-					 "at end of buffer"));
+			if (errno == EILSEQ &&
+			    !strstr (try_to_code, "//IGNORE")) {
+				if (!quiet)
+					error (0, errno, "iconv");
+				exit (FATAL);
+			} else if (errno == EINVAL && input_size < buf_size) {
+				if (!quiet)
+					error (FATAL, 0,
+					       _("iconv: incomplete character "
+						 "at end of buffer"));
+				exit (FATAL);
+			}
 		}
 
 		if (input_size < buf_size)
@@ -316,6 +337,7 @@ static int try_iconv (pipeline *p, const char *try_from_code, int last)
 	}
 
 	iconv_close (cd);
+	free (try_to_code);
 
 	return ret;
 }

@@ -39,7 +39,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU coreutils 5.3.0\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2007-12-31 15:23+0000\n"
+"POT-Creation-Date: 2008-05-05 02:08+0100\n"
 "PO-Revision-Date: 2005-06-30 16:34+0200\n"
 "Last-Translator: Michael Piefel <piefel@informatik.hu-berlin.de>\n"
 "Language-Team: German <de@li.org>\n"
@@ -153,59 +153,59 @@ msgstr "%s: keine korrekt formatierte %s-Prüfsummenzeile gefunden"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr ""
 
-#: gnulib/lib/getopt.c:530 gnulib/lib/getopt.c:546
+#: gnulib/lib/getopt.c:526 gnulib/lib/getopt.c:542
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
 msgstr "%s: Option „%s“ ist mehrdeutig\n"
 
-#: gnulib/lib/getopt.c:579 gnulib/lib/getopt.c:583
+#: gnulib/lib/getopt.c:575 gnulib/lib/getopt.c:579
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
 msgstr "%s: Option „--%s“ erlaubt kein Argument\n"
 
-#: gnulib/lib/getopt.c:592 gnulib/lib/getopt.c:597
+#: gnulib/lib/getopt.c:588 gnulib/lib/getopt.c:593
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
 msgstr "%s: Option „%c%s“ erlaubt kein Argument\n"
 
-#: gnulib/lib/getopt.c:640 gnulib/lib/getopt.c:659 gnulib/lib/getopt.c:975
-#: gnulib/lib/getopt.c:994
+#: gnulib/lib/getopt.c:636 gnulib/lib/getopt.c:655 gnulib/lib/getopt.c:971
+#: gnulib/lib/getopt.c:990
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
 msgstr "%s: Option „%s“ erfordert ein Argument\n"
 
-#: gnulib/lib/getopt.c:697 gnulib/lib/getopt.c:700
+#: gnulib/lib/getopt.c:693 gnulib/lib/getopt.c:696
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
 msgstr "%s: unbekannte Option „--%s“\n"
 
-#: gnulib/lib/getopt.c:708 gnulib/lib/getopt.c:711
+#: gnulib/lib/getopt.c:704 gnulib/lib/getopt.c:707
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
 msgstr "%s: unbekannte Option „%c%s“\n"
 
-#: gnulib/lib/getopt.c:763 gnulib/lib/getopt.c:766
+#: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
 #, c-format
 msgid "%s: illegal option -- %c\n"
 msgstr "%s: ungültige Option -- %c\n"
 
-#: gnulib/lib/getopt.c:772 gnulib/lib/getopt.c:775
+#: gnulib/lib/getopt.c:768 gnulib/lib/getopt.c:771
 #, c-format
 msgid "%s: invalid option -- %c\n"
 msgstr "%s: ungültige Option -- %c\n"
 
-#: gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:843 gnulib/lib/getopt.c:1047
-#: gnulib/lib/getopt.c:1065
+#: gnulib/lib/getopt.c:823 gnulib/lib/getopt.c:839 gnulib/lib/getopt.c:1043
+#: gnulib/lib/getopt.c:1061
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
 msgstr "%s: Option erfordert ein Argument -- %c\n"
 
-#: gnulib/lib/getopt.c:896 gnulib/lib/getopt.c:912
+#: gnulib/lib/getopt.c:892 gnulib/lib/getopt.c:908
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
 msgstr "%s: Option „-W %s“ ist mehrdeutig\n"
 
-#: gnulib/lib/getopt.c:936 gnulib/lib/getopt.c:954
+#: gnulib/lib/getopt.c:932 gnulib/lib/getopt.c:950
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: Option „-W %s“ erlaubt kein Argument\n"
@@ -302,6 +302,154 @@ msgstr ""
 msgid "No previous regular expression"
 msgstr "Fehler bei Suche mit regulären Ausdrücken"
 
+#: gnulib/lib/siglist.h:30
+msgid "Hangup"
+msgstr ""
+
+#: gnulib/lib/siglist.h:33
+msgid "Interrupt"
+msgstr ""
+
+#: gnulib/lib/siglist.h:36
+msgid "Quit"
+msgstr ""
+
+#: gnulib/lib/siglist.h:39
+msgid "Illegal instruction"
+msgstr ""
+
+#: gnulib/lib/siglist.h:42
+msgid "Trace/breakpoint trap"
+msgstr ""
+
+#: gnulib/lib/siglist.h:45
+msgid "Aborted"
+msgstr ""
+
+#: gnulib/lib/siglist.h:48
+msgid "Floating point exception"
+msgstr ""
+
+#: gnulib/lib/siglist.h:51
+msgid "Killed"
+msgstr ""
+
+#: gnulib/lib/siglist.h:54
+#, fuzzy
+msgid "Bus error"
+msgstr "Schreibfehler"
+
+#: gnulib/lib/siglist.h:57
+msgid "Segmentation fault"
+msgstr ""
+
+#: gnulib/lib/siglist.h:60
+msgid "Broken pipe"
+msgstr ""
+
+#: gnulib/lib/siglist.h:63
+msgid "Alarm clock"
+msgstr ""
+
+#: gnulib/lib/siglist.h:66
+msgid "Terminated"
+msgstr ""
+
+#: gnulib/lib/siglist.h:69
+msgid "Urgent I/O condition"
+msgstr ""
+
+#: gnulib/lib/siglist.h:72
+msgid "Stopped (signal)"
+msgstr ""
+
+#: gnulib/lib/siglist.h:75
+msgid "Stopped"
+msgstr ""
+
+#: gnulib/lib/siglist.h:78
+msgid "Continued"
+msgstr ""
+
+#: gnulib/lib/siglist.h:81
+msgid "Child exited"
+msgstr ""
+
+#: gnulib/lib/siglist.h:84
+msgid "Stopped (tty input)"
+msgstr ""
+
+#: gnulib/lib/siglist.h:87
+msgid "Stopped (tty output)"
+msgstr ""
+
+#: gnulib/lib/siglist.h:90
+msgid "I/O possible"
+msgstr ""
+
+#: gnulib/lib/siglist.h:93
+msgid "CPU time limit exceeded"
+msgstr ""
+
+#: gnulib/lib/siglist.h:96
+msgid "File size limit exceeded"
+msgstr ""
+
+#: gnulib/lib/siglist.h:99
+msgid "Virtual timer expired"
+msgstr ""
+
+#: gnulib/lib/siglist.h:102
+msgid "Profiling timer expired"
+msgstr ""
+
+#: gnulib/lib/siglist.h:105
+msgid "Window changed"
+msgstr ""
+
+#: gnulib/lib/siglist.h:108
+msgid "User defined signal 1"
+msgstr ""
+
+#: gnulib/lib/siglist.h:111
+msgid "User defined signal 2"
+msgstr ""
+
+#: gnulib/lib/siglist.h:116
+msgid "EMT trap"
+msgstr ""
+
+#: gnulib/lib/siglist.h:119
+msgid "Bad system call"
+msgstr ""
+
+#: gnulib/lib/siglist.h:122
+msgid "Stack fault"
+msgstr ""
+
+#: gnulib/lib/siglist.h:125
+msgid "Information request"
+msgstr ""
+
+#: gnulib/lib/siglist.h:127
+#, fuzzy
+msgid "Power failure"
+msgstr "merkwürdige Datei"
+
+#: gnulib/lib/siglist.h:130
+msgid "Resource lost"
+msgstr ""
+
+#: gnulib/lib/strsignal.c:111
+#, c-format
+msgid "Real-time signal %d"
+msgstr ""
+
+#: gnulib/lib/strsignal.c:115
+#, c-format
+msgid "Unknown signal %d"
+msgstr ""
+
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "Speicher ausgeschöpft"
@@ -382,9 +530,6 @@ msgstr "Speicher ausgeschöpft"
 #~ msgid "typed memory object"
 #~ msgstr "Objekt getypten Speichers"
 
-#~ msgid "weird file"
-#~ msgstr "merkwürdige Datei"
-
 #, fuzzy
 #~ msgid "Address family for hostname not supported"
 #~ msgstr "FIFO-Dateien werden nicht unterstützt"
@@ -396,10 +541,6 @@ msgstr "Speicher ausgeschöpft"
 #, fuzzy
 #~ msgid "ai_socktype not supported"
 #~ msgstr "FIFO-Dateien werden nicht unterstützt"
-
-#, fuzzy
-#~ msgid "System error"
-#~ msgstr "Schreibfehler"
 
 #, fuzzy
 #~ msgid "Unknown error"

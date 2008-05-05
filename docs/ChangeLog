@@ -1,3 +1,397 @@
+Mon May  5 02:11:38 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.2.
+	* po/man-db.pot, po/*.po: Update.
+
+Mon May  5 02:07:00 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Document previous commit.
+
+Mon May  5 01:39:22 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	Fix jless support to avoid breaking less (Debian bug #217519).
+
+	* src/encodings.c (less_charset_table): Add jless_charset members.
+	  Move EUC-JP less_charset to jless_charset, falling back to iso8859
+	  for less. Use the more explicit japanese-ujis rather than ja.
+	* src/encodings.c (get_jless_charset): New function.
+	* src/encodings.h (get_jless_charset): Add prototype.
+	* src/man.c (make_roff_command): Set JLESSCHARSET to the return
+	  value of get_jless_charset if non-NULL.
+
+Mon May  5 01:06:56 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	Clean up some loose ends of Chinese support (thanks, Wu Songhai;
+	Debian bug #354321).
+
+	* src/encodings.c (directory_table): Add zh_SG, defaulting to the
+	  GBK encoding.
+	  (charset_alias_table): Map EUCTW to EUC-TW.
+	  (charset_table): Add EUC-TW, defaulting to the nippon driver.
+	  (compatible_encodings): Recognise EUC-TW encoding.
+
+Mon May  5 00:05:19 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Upgrade to 20080501.
+
+Sun May  4 23:16:59 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/cleanup.c (sighandler, trap_signal), lib/pipeline.c
+	  (pipeline_start, pipeline_pump): Zero sigaction structures before
+	  using them. (I believe we set all required fields anyway; this is
+	  just an extra safety catch.)
+
+Mon Apr 28 09:54:48 BST 2008  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Mon Apr 28 09:38:53 BST 2008  Benno Schulenberg  <benno@vertaalt.nl>
+
+	* po/nl.po: Update from Translation Project.
+
+Sun Apr 27 22:41:54 BST 2008  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+
+Sun Apr 27 11:47:19 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* po/man-db.pot, po/*.po: Update (sync with 2.5.2-pre2 tarball).
+
+Sun Apr 27 11:27:46 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.2-pre2.
+	* po/man-db.pot, po/*.po: Update.
+
+Sun Apr 27 11:24:24 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_sigchld): assert is not
+	  async-signal-safe, so avoid calling it in a signal handler and use
+	  an if guard instead (Ubuntu bug #221635, although exactly why the
+	  assertion is failing there is unclear).
+
+Sun Apr 27 01:40:32 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Upgrade to 20080401.
+
+Sun Apr 27 01:32:58 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (ko_name): Add another possible translation, seen in
+	  hdparm(1).
+
+Sun Apr 27 01:31:47 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (try_iconv): Don't handle //IGNORE unless this is
+	  the last encoding to be tried.
+	* src/encodings.c (add_manconv): Append //IGNORE to the target
+	  encoding.
+	* docs/NEWS: Document this.
+
+Sun Apr 27 00:54:05 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	Don't emit encoding conversion errors in mandb's quiet mode (Debian
+	bug #473862).
+
+	* src/manconv.c (options, parse_opt): Accept -q/--quiet.
+	  (try_iconv): Suppress iconv errors under --quiet.
+	* man/man1/manconv.man1 (SYNOPSIS, OPTIONS): Document --quiet.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/pl.po: Update.
+	* po/man-db.pot, po/*.po: Update.
+
+	* src/encoding.c (add_manconv): Pass -q to manconv if this is mandb
+	  in quiet mode.
+
+Sat Apr 26 14:34:26 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (DESCRIPTION): Bring list of conventional
+	  section names more into sync with man-pages(7).
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/pl.po: Update.
+
+Sat Apr 26 13:51:27 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/de/man1/apropos.man1, man/de/man1/man.man1,
+	  man/de/man1/manpath.man1, man/de/man1/whatis.man1,
+	  man/de/man1/zsoelim.man1, man/de/man5/manpath.man5,
+	  man/de/man8/catman.man8, man/es/man1/man.man1,
+	  man/fr/man1/man.man1, man/it/man8/accessdb.man8: Fix various small
+	  mistakes that caused warnings from groff.
+
+Sun Mar 30 20:39:34 BST 2008  Benno Schulenberg  <benno@vertaalt.nl>
+
+	* po/nl.po: Update from Translation Project.
+
+Mon Mar 17 19:29:43 GMT 2008  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Fri Mar 14 14:24:58 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Persuade 'make distcheck' to pass again.
+
+	* man/po4a/po4a.cfg: Use paths relative to $(srcdir) and
+	  $(builddir).
+	* man/po4a/Makefile.am (PO4A_ARGS): Define srcdir and builddir
+	  variables.
+	  (all-local, update-po, clean-local): Pass $(PO4A_ARGS) to $(PO4A).
+	  Read po4a.cfg from $(srcdir).
+	* man/po4a/*.pl.add: Consolidate into ...
+	* man/pl/translator.add: ... this.
+	* man/Rules.man (dist-hook): Only do anything if PO4A_LINGUA is not
+	  set to yes.
+	  (distclean-hook): Remove man1, man5, and man8 if PO4A_LINGUA is
+	  set to yes.
+	* man/pl/Makefile.am (PO4A_LINGUA): Set to yes.
+	  (EXTRA_DIST): Distribute translator.add.
+	* .bzrignore: Ignore man/pl/man1, man/pl/man5, and man/pl/man8,
+	  rather than just some files within those directories.
+
+Fri Mar 14 01:06:42 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (Controlling formatted output): Change
+	  'soft-hyphen' string to 'softhyphen' to work around Debian bug
+	  #470849.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/pl.po: Update.
+
+Fri Mar 14 00:57:37 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Build Polish manual pages. The method used scales rather poorly and
+	will probably need to be revisited at some point.
+
+	* configure.ac (AC_CONFIG_FILES): Add man/pl/Makefile.
+	* man/Makefile.am (MAYBE_PO4A_LINGUAS): New, containing pl.
+	  (SUBDIRS): Add $(MAYBE_PO4A_LINGUAS) if po4a is present.
+	* man/pl/Makefile.am: New file.
+	* man/po4a/Makefile.am (POFILES): New, containing po/pl.po.
+	  (EXTRA_DIST): Add $(POFILES).
+	  (all-local, clean-local): New rules to generate and remove
+	  translated documents.
+	  (update-po): Add --no-translations option.
+	* man/po4a/po4a.cfg (po4a_langs): Replace zh_CN with pl. (zh_CN can
+	  come back once it has a translation.)
+	* man/THANKS: Credit Robert Luberda with man/pl as well as pl.po.
+
+	* .bzrignore: Add man/pl/man1/*.man1, man/pl/man5/*.man5, and
+	  man/pl/man8/*.man8.
+	* man/po4a/po/man-db-manpages.pot: Update.
+
+Fri Mar 14 00:55:15 GMT 2008  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: New from Translation Project.
+	* man/po4a/accessdb.pl.add, man/po4a/apropos.pl.add,
+	  man/po4a/catman.pl.add, man/po4a/lexgrog.pl.add,
+	  man/po4a/man.pl.add, man/po4a/manconv.pl.add,
+	  man/po4a/mandb.pl.add, man/po4a/manpath.pl.add,
+	  man/po4a/whatis.pl.add, man/po4a/zsoelim.pl.add: New files.
+
+Thu Mar 13 09:56:53 GMT 2008  Robert Luberda  <robert@debian.org>
+
+	* po/pl.po: Update from Translation Project.
+
+Wed Mar 12 18:29:32 GMT 2008  Yuri Kozlov  <kozlov.y@gmail.com>
+
+	* po/ru.po: Update from Translation Project.
+
+Wed Mar 12 13:52:02 GMT 2008  Benno Schulenberg  <benno@vertaalt.nl>
+
+	* po/nl.po: Update from Translation Project.
+
+Wed Mar 12 12:30:09 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (parse_opt): Only set html_pager if arg is non-NULL.
+	* docs/NEWS: Document this.
+
+Wed Mar 12 12:20:50 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Check for po4a. Define an Automake conditional based
+	  on whether it is present.
+	* man/Makefile.am (SUBDIRS): Add the po4a subdirectory only if the
+	  po4a program is present.
+	* man/po4a/Makefile.am (update-po): Use PO4A variable.
+
+Wed Mar 12 08:53:48 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/Makefile.am (update-po): New target.
+
+Wed Mar 12 08:53:32 GMT 2008  Robert Luberda  <robert@debian.org>
+
+	* man/man1/apropos.man1 (OPTIONS, FILES), man/man1/man.man1
+	  (ENVIRONMENT, FILES), man/man1/manconv.man1 (OPTIONS),
+	  man/man1/manpath.man1 (OPTIONS, FILES), man/man1/whatis.man1
+	  (OPTIONS, EXIT STATUS, FILES), man/man8/mandb.man8 (OPTIONS):
+	  Consolidate various nearly-identical strings.
+	* man/po4a/po/man-db-manpages.pot: Update.
+
+Tue Mar 11 10:41:05 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.2-pre1 (really this time).
+
+Tue Mar 11 10:39:45 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AC_CONFIG_FILES): Add man/po4a/Makefile.
+	* man/Makefile.am (SUBDIRS): Add po4a.
+	* man/po4a/Makefile.am: New file. Distribute po4a.cfg and
+	  po/man-db-manpages.pot.
+
+Tue Mar 11 10:26:49 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.2-pre1.
+	* po/man-db.pot, po/*.po: Update.
+
+Mon Mar 10 19:42:19 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (Controlling formatted output): Quote %pager,
+	  since it may expand to multiple words.
+
+Mon Mar 10 16:07:11 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: More updates for 2.5.2.
+
+Mon Mar 10 16:00:15 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/man-db.pot: Rename to ...
+	* man/po4a/po/man-db-manpages.pot: ... this, so that the translation
+	  domain name stops clashing with that used for program translations
+	  (per Benno Schulenberg).
+	* man/po4a/po4a.cfg (po4a_paths): Adjust for rename.
+
+Mon Mar 10 01:05:57 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man (.man1.1, .man8.8): Substitute name of manual page
+	  being processed as %program%.
+	* man/man1/apropos.man1 (OPTIONS), man/man1/man.man1 (Finding manual
+	  pages), man/man1/whatis.man1 (OPTIONS): Consolidate
+	  nearly-identical descriptions of --locale using %program% (thanks,
+	  Robert Luberda).
+	* man/po4a/po/man-db.pot: Update.
+
+Tue Mar  4 09:24:40 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Upgrade to 20080301.
+
+Tue Mar  4 09:18:43 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (options): Force --extension to appear after --sections
+	  in --help output.
+
+Mon Mar  3 21:46:36 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/man-db.pot: Update.
+
+Sun Mar  2 12:41:13 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* po/man-db.pot, po/*.po: Update.
+
+Sun Mar  2 12:37:43 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (options): Describe --recode's argument as ENCODING, not
+	  CODE (thanks, Benno Schulenberg).
+
+Sun Mar  2 12:35:28 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (options), src/manpath.c (options), src/whatis.c
+	  (options): Use a unified description for --systems (thanks, Benno
+	  Schulenberg).
+
+Sun Mar  2 12:29:57 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (args_doc, options): Describe argument to -f as
+	  "CODE[:...]" rather than "CODE:..." (thanks, Benno Schulenberg).
+
+Sun Mar  2 12:28:40 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (OPTIONS): Reorganise into subsections, with
+	  options listed in the same order as in 'man --help' output.
+	* src/man.c (options, parse_opt): Rearrange a few options slightly
+	  so that the ordering makes more sense.
+
+Sun Mar  2 11:56:48 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1, src/encodings.c, src/encodings.h,
+	  src/lexgrog_test.c: Update copyright notices.
+
+Sun Mar  2 11:03:21 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Improve 'man -E' to allow overriding the output encoding explicitly,
+	rather than implicitly (and unreliably) by changing the *roff device
+	(Debian bug #466396).
+
+	* src/encodings.c (device_table): Add stub entries for troff
+	  devices.
+	  (is_roff_device): New function.
+	* src/encodings.h (is_roff_device): Add prototype.
+	* src/man.c (options): Change description of -E to allow general
+	  encoding selection.
+	  (parse_opt): Only assign the argument of -E to roff_device if it
+	  is actually a *roff device; otherwise it is presumed to be a true
+	  character encoding and stored in want_encoding. Remove
+	  different_encoding, since testing whether want_encoding is set
+	  supersedes that.
+	  (make_roff_command): If want_encoding is set and is not a *roff
+	  device, recode to it rather than to the locale's encoding.
+	  (display, try_section, display_filesystem, display_database): Test
+	  want_encoding rather than different_encoding.
+	* man/man1/man.man1 (OPTIONS): Adjust documentation of -E.
+	* docs/NEWS: Document this.
+
+	* src/lexgrog_test.c (options): Bring description of -E into sync
+	  with man.
+
+Sat Mar  1 22:14:43 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (get_roff_encoding): In the CJK UTF-8 special
+	  case, check the canonicalised encoding in order that locale
+	  specifications such as "zh_CN.utf8" work (Debian bug #467249).
+
+Fri Feb 29 09:59:23 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* autogen.sh: Run autoreconf with -f.
+	* tools/config.guess, tools/config.sub, tools/depcomp,
+	  tools/install-sh, tools/ylwrap: Update.
+
+Thu Feb 28 10:47:22 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Terminate MAN_NAME at .ie or .if conditionals
+	  (Debian bug #467444).
+
+Sun Feb 17 17:17:16 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (def_path): Fix brace indentation.
+
+Sun Feb 17 17:13:55 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import the strsignal module.
+	* lib/pipeline.c (pipeline_wait): Call strsignal rather than
+	  xstrsignal.
+	* lib/xstrsignal.c: Remove.
+	* lib/README (xstrsignal): Remove.
+	* lib/Makefile.am (libman_a_SOURCES): Remove xstrsignal.c.
+	* include/manconfig.h.in (xstrsignal): Remove.
+	* m4/man-strsignal.m4: Remove.
+	* configure.ac (MAN_FUNC_STRSIGNAL): Remove.
+
+Sun Feb 17 16:59:22 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Makefile.in, aclocal.m4, config.h.in, configure, docs/Makefile.in,
+	  gnulib, lib/Makefile.in, libdb/Makefile.in, man/Makefile.in,
+	  man/de/Makefile.in, man/es/Makefile.in, man/fr/Makefile.in,
+	  man/it/Makefile.in, man/ja/Makefile.in, manual/Makefile.in,
+	  src/Makefile.in, tools/Makefile.in: Upgrade to Automake 1.10.1 and
+	  Gnulib 20080201.
+
+Mon Feb  4 08:28:33 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man_db.conf.in: Make /usr/local/share/man mandatory rather
+	  than /usr/local/man (thanks, Reuben Thomas; Debian bug #463892).
+
+Fri Feb  1 09:01:34 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/replace.sin.in: Strip off ".if !'po4a'hide' " from input
+	  manual pages. It's a no-op except for po4a's purposes, and
+	  removing it helps non-groff manual page renderers.
+
+Mon Jan 28 08:54:47 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/man-db.lsm: Update to 2.5.1.
+
 Mon Jan 28 08:47:51 GMT 2008  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.5.1.
