@@ -15,6 +15,8 @@ man-db (2.5.2-1) UNRELEASED; urgency=low
     - Clean up some loose ends of Chinese support, adding zh_SG and EUC-TW
       support (thanks, Wu Songhai; closes: #354321).
     - Fix jless support to avoid breaking less (closes: #217519).
+  * Backport from trunk:
+    - #include <string.h> in lib/cleanup.c for memset.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 05 May 2008 02:22:09 +0100
 
