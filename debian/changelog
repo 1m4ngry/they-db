@@ -1,4 +1,4 @@
-man-db (2.5.2-1) UNRELEASED; urgency=low
+man-db (2.5.2-1) unstable; urgency=low
 
   * New upstream release.
     - Make /usr/local/share/man mandatory rather than /usr/local/man
@@ -18,7 +18,7 @@ man-db (2.5.2-1) UNRELEASED; urgency=low
   * Backport from trunk:
     - #include <string.h> in lib/cleanup.c for memset.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 05 May 2008 02:22:09 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 May 2008 09:54:21 +0100
 
 man-db (2.5.1-4) unstable; urgency=low
 
