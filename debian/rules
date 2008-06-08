@@ -4,7 +4,7 @@
 package = man-db
 dtmp    = debian/$(package)
 
-ifeq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+ifeq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS = -O2 -g -Wall
 LDFLAGS = -g
 else
