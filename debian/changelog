@@ -1,11 +1,11 @@
-man-db (2.5.2-2) UNRELEASED; urgency=low
+man-db (2.5.2-2) unstable; urgency=low
 
   * Update DEB_BUILD_OPTIONS parsing code from policy 3.8.0.
   * Skip building the database on buildds (just Ubuntu buildds for now,
     since Debian buildds aren't detectable; see the comment in the postinst
     for more detail).
 
- -- Colin Watson <cjwatson@debian.org>  Sun, 08 Jun 2008 21:43:42 +0100
+ -- Colin Watson <cjwatson@debian.org>  Tue, 08 Jul 2008 21:39:42 +0100
 
 man-db (2.5.2-1) unstable; urgency=low
 
