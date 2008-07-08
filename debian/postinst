@@ -1,6 +1,15 @@
 #!/bin/sh -e
 
 run_mandb () {
+    if [ -f /CurrentlyBuilding ]; then
+	# Skip building the database when running in a buildd environment,
+	# to avoid wasting time. (At the moment, this check only works for
+	# Ubuntu's buildds. Furthermore, detectable buildds are a
+	# double-edged sword, so maybe this should be replaced with the
+	# ability to preseed something to prevent building the database.)
+	echo "... skipping, since this is a buildd" >&2
+	return 0
+    fi
     perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
 	     exec "/usr/bin/mandb", @ARGV' -- "$@" || true
 }
