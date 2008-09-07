@@ -1,3 +1,15 @@
+man-db (2.5.2-3) UNRELEASED; urgency=low
+
+  * Backport from trunk:
+    - src/manconv.c (try_iconv): Remove premature optimisation that
+      sometimes caused us to write incomplete output.
+    - src/encodings.c (add_manconv): Always use manconv even if iconv could
+      theoretically do the job, as manconv has slightly more permissive
+      behaviour that is generally more suitable for converting manual page
+      source (closes: #498082).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Sep 2008 15:52:18 +0100
+
 man-db (2.5.2-2) unstable; urgency=low
 
   * Update DEB_BUILD_OPTIONS parsing code from policy 3.8.0.
