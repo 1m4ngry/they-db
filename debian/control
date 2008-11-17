@@ -4,6 +4,7 @@ Priority: important
 Maintainer: Colin Watson <cjwatson@debian.org>
 Standards-Version: 3.7.3
 Build-Depends: debhelper (>= 5.0.59), flex, gettext, groff, libgdbm-dev, zlib1g-dev
+Homepage: http://man-db.nongnu.org/
 
 Package: man-db
 Architecture: any
