@@ -1,4 +1,4 @@
-man-db (2.5.3-1) UNRELEASED; urgency=low
+man-db (2.5.3-1) experimental; urgency=low
 
   * New upstream release.
     - Cleaned up a number of possible crashes, memory leaks, and missing
@@ -30,7 +30,7 @@ man-db (2.5.3-1) UNRELEASED; urgency=low
     have to keep up with the set of warnings that configure decides to
     enable.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 17 Nov 2008 12:05:54 +0000
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Nov 2008 13:20:59 +0000
 
 man-db (2.5.2-3) unstable; urgency=low
 
