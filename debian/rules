@@ -22,8 +22,7 @@ endif
 
 configure-stamp:
 	./configure --prefix=/usr --libexecdir=\$${libdir} \
-	            --enable-setuid --with-db=gdbm \
-	            --enable-undoc='man 7 undocumented' \
+	            --enable-setuid --enable-undoc='man 7 undocumented' \
 	            --with-device=latin1 --enable-mb-groff \
 	            --with-config-file=/etc/manpath.config \
 	            --with-browser=www-browser --with-pager=pager \
