@@ -1,3 +1,32 @@
+man-db (2.5.3-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Cleaned up a number of possible crashes, memory leaks, and missing
+      error checks found by the Coverity Scan project.
+    - The LANGUAGE environment variable is now tokenised properly, rather
+      than only taking the first two characters of each element.
+    - man now correctly propagates the exit code of whatis or apropos when
+      called with the -f or -k option respectively (closes: #477305).
+    - Fix several manual page synopsis problems (thanks, Yuri Kozlov;
+      closes: #480678, #481226, #482424, #482791, #482792, #482810, #483589,
+      #483862, #483951).
+    - Reduce the number of warnings emitted when using an unrecognised
+      locale (closes: #494989).
+    - manconv and zsoelim are now called internally rather than by executing
+      external programs, to improve performance.
+    - Manual pages may now be compressed with LZMA (although this is
+      probably only worth it for very large pages).
+    - Duplicate manual page hierarchies due to symlinks (e.g. /usr/man ->
+      /usr/share/man) are detected and removed from the search order.
+    - A locale modifier (e.g. @latin) in a directory name must now match the
+      locale if the former is set, in addition to the language and
+      territory.
+    - Bare .so includes (e.g. ".so foo.1" rather than ".so man1/foo.1") now
+      work, although only within the same manual page hierarchy for now
+      (partially fixes #503472).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Nov 2008 12:05:54 +0000
+
 man-db (2.5.2-3) unstable; urgency=low
 
   * Backport from trunk:

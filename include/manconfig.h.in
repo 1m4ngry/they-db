@@ -228,6 +228,7 @@
 #  define GUNZIP "@gunzip@"
 #  define UNCOMPRESS "@uncompress@"
 #  define BUNZIP2 "@bunzip2@"
+#  define UNLZMA "@unlzma@"
 #endif /* COMP_SRC */
 
 /*-----------------------------------------------------------------------*/
@@ -294,6 +295,17 @@ extern void __chkr_garbage_detector (void);
 #else
 #  define chkr_garbage_detector()
 #endif
+
+/* GNU gettext needs to know when the locale changes. This macro tells it. */
+#ifdef ENABLE_NLS
+#  define locale_changed() \
+	do { \
+		extern int _nl_msg_cat_cntr; \
+		++_nl_msg_cat_cntr; \
+	} while (0)
+#else /* !ENABLE_NLS */
+#  define locale_changed()
+#endif /* ENABLE_NLS */
 
 /* This structure definition is only really needed if COMP_SRC==1, but it is
    used in external declarations quite freely, so it's included

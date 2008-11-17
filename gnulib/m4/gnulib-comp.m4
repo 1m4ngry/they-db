@@ -46,6 +46,8 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([AC_LIBOBJ], m4_defn([gl_LIBOBJ]))
   m4_pushdef([AC_REPLACE_FUNCS], m4_defn([gl_REPLACE_FUNCS]))
   m4_pushdef([AC_LIBSOURCES], m4_defn([gl_LIBSOURCES]))
+  m4_pushdef([gl_LIBSOURCES_LIST], [])
+  m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='gnulib/lib'
   gl_EOVERFLOW
@@ -120,6 +122,9 @@ AC_DEFUN([gl_INIT],
   gl_STDLIB_MODULE_INDICATOR([mkdtemp])
   gl_FUNC_MKSTEMP
   gl_STDLIB_MODULE_INDICATOR([mkstemp])
+  gl_FUNC_OPEN
+  gl_MODULE_INDICATOR([open])
+  gl_FCNTL_MODULE_INDICATOR([open])
   gl_FUNC_OPENAT
   gl_PATHMAX
   gl_FUNC_RAWMEMCHR
@@ -195,6 +200,19 @@ AC_DEFUN([gl_INIT],
   gl_XVASPRINTF
   m4_ifdef([AM_XGETTEXT_OPTION],
     [AM_XGETTEXT_OPTION([--flag=xasprintf:1:c-format])])
+  m4_ifval(gl_LIBSOURCES_LIST, [
+    m4_syscmd([test ! -d ]m4_defn([gl_LIBSOURCES_DIR])[ ||
+      for gl_file in ]gl_LIBSOURCES_LIST[ ; do
+        if test ! -r ]m4_defn([gl_LIBSOURCES_DIR])[/$gl_file ; then
+          echo "missing file ]m4_defn([gl_LIBSOURCES_DIR])[/$gl_file" >&2
+          exit 1
+        fi
+      done])dnl
+      m4_if(m4_sysval, [0], [],
+        [AC_FATAL([expected source file, required through AC_LIBSOURCES, not found])])
+  ])
+  m4_popdef([gl_LIBSOURCES_DIR])
+  m4_popdef([gl_LIBSOURCES_LIST])
   m4_popdef([AC_LIBSOURCES])
   m4_popdef([AC_REPLACE_FUNCS])
   m4_popdef([AC_LIBOBJ])
@@ -217,8 +235,23 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([AC_LIBOBJ], m4_defn([gltests_LIBOBJ]))
   m4_pushdef([AC_REPLACE_FUNCS], m4_defn([gltests_REPLACE_FUNCS]))
   m4_pushdef([AC_LIBSOURCES], m4_defn([gltests_LIBSOURCES]))
+  m4_pushdef([gltests_LIBSOURCES_LIST], [])
+  m4_pushdef([gltests_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='tests'
+  m4_ifval(gltests_LIBSOURCES_LIST, [
+    m4_syscmd([test ! -d ]m4_defn([gltests_LIBSOURCES_DIR])[ ||
+      for gl_file in ]gltests_LIBSOURCES_LIST[ ; do
+        if test ! -r ]m4_defn([gltests_LIBSOURCES_DIR])[/$gl_file ; then
+          echo "missing file ]m4_defn([gltests_LIBSOURCES_DIR])[/$gl_file" >&2
+          exit 1
+        fi
+      done])dnl
+      m4_if(m4_sysval, [0], [],
+        [AC_FATAL([expected source file, required through AC_LIBSOURCES, not found])])
+  ])
+  m4_popdef([gltests_LIBSOURCES_DIR])
+  m4_popdef([gltests_LIBSOURCES_LIST])
   m4_popdef([AC_LIBSOURCES])
   m4_popdef([AC_REPLACE_FUNCS])
   m4_popdef([AC_LIBOBJ])
@@ -249,13 +282,6 @@ AC_DEFUN([gl_LIBOBJ], [
   gl_LIBOBJS="$gl_LIBOBJS $1.$ac_objext"
 ])
 
-# m4_foreach_w is provided by autoconf-2.59c and later.
-# This definition is to accommodate developers using versions
-# of autoconf older than that.
-m4_ifndef([m4_foreach_w],
-  [m4_define([m4_foreach_w],
-    [m4_foreach([$1], m4_split(m4_normalize([$2]), [ ]), [$3])])])
-
 # Like AC_REPLACE_FUNCS, except that the module name goes
 # into gl_LIBOBJS instead of into LIBOBJS.
 AC_DEFUN([gl_REPLACE_FUNCS], [
@@ -264,15 +290,14 @@ AC_DEFUN([gl_REPLACE_FUNCS], [
 ])
 
 # Like AC_LIBSOURCES, except the directory where the source file is
-# expected is derived from the gnulib-tool parametrization,
+# expected is derived from the gnulib-tool parameterization,
 # and alloca is special cased (for the alloca-opt module).
 # We could also entirely rely on EXTRA_lib..._SOURCES.
 AC_DEFUN([gl_LIBSOURCES], [
   m4_foreach([_gl_NAME], [$1], [
     m4_if(_gl_NAME, [alloca.c], [], [
-      m4_syscmd([test -r gnulib/lib/]_gl_NAME[ || test ! -d gnulib/lib])dnl
-      m4_if(m4_sysval, [0], [],
-        [AC_FATAL([missing gnulib/lib/]_gl_NAME)])
+      m4_define([gl_LIBSOURCES_DIR], [gnulib/lib])
+      m4_append([gl_LIBSOURCES_LIST], _gl_NAME, [ ])
     ])
   ])
 ])
@@ -284,13 +309,6 @@ AC_DEFUN([gltests_LIBOBJ], [
   gltests_LIBOBJS="$gltests_LIBOBJS $1.$ac_objext"
 ])
 
-# m4_foreach_w is provided by autoconf-2.59c and later.
-# This definition is to accommodate developers using versions
-# of autoconf older than that.
-m4_ifndef([m4_foreach_w],
-  [m4_define([m4_foreach_w],
-    [m4_foreach([$1], m4_split(m4_normalize([$2]), [ ]), [$3])])])
-
 # Like AC_REPLACE_FUNCS, except that the module name goes
 # into gltests_LIBOBJS instead of into LIBOBJS.
 AC_DEFUN([gltests_REPLACE_FUNCS], [
@@ -299,15 +317,14 @@ AC_DEFUN([gltests_REPLACE_FUNCS], [
 ])
 
 # Like AC_LIBSOURCES, except the directory where the source file is
-# expected is derived from the gnulib-tool parametrization,
+# expected is derived from the gnulib-tool parameterization,
 # and alloca is special cased (for the alloca-opt module).
 # We could also entirely rely on EXTRA_lib..._SOURCES.
 AC_DEFUN([gltests_LIBSOURCES], [
   m4_foreach([_gl_NAME], [$1], [
     m4_if(_gl_NAME, [alloca.c], [], [
-      m4_syscmd([test -r tests/]_gl_NAME[ || test ! -d tests])dnl
-      m4_if(m4_sysval, [0], [],
-        [AC_FATAL([missing tests/]_gl_NAME)])
+      m4_define([gltests_LIBSOURCES_DIR], [tests])
+      m4_append([gltests_LIBSOURCES_LIST], _gl_NAME, [ ])
     ])
   ])
 ])
@@ -414,6 +431,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/mkdtemp.c
   lib/mkstemp.c
   lib/open-safer.c
+  lib/open.c
   lib/openat-die.c
   lib/openat-priv.h
   lib/openat-proc.c
@@ -558,6 +576,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/mkdtemp.m4
   m4/mkstemp.m4
   m4/onceonly.m4
+  m4/open.m4
   m4/openat.m4
   m4/pathmax.m4
   m4/printf.m4

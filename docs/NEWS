@@ -1,3 +1,64 @@
+man-db 2.5.3 (17 November 2008)
+===============================
+
+Major changes since man-db 2.5.2:
+
+	Fixes:
+	------
+
+	o Cleaned up a number of possible crashes, memory leaks, and missing
+	  error checks found by the Coverity Scan project.
+
+	o Fix build if MAN_CATS is undefined.
+
+	o If the LINGUAS environment variable is set while running
+	  configure, it now controls building and installation of localised
+	  manual pages as well as program translations.
+
+	o The LANGUAGE environment variable is now tokenised properly,
+	  rather than only taking the first two characters of each element.
+
+	o Fix build if --disable-nls is used or iconv is not available.
+
+	o man now correctly propagates the exit code of whatis or apropos
+	  when called with the -f or -k option respectively.
+
+	Improvements:
+	-------------
+
+	o A number of inconsistencies and readability problems with man-db's
+	  own manual pages have been cleaned up, thanks mainly to Yuri
+	  Kozlov.
+
+	o Reduce the number of warnings emitted when using an unrecognised
+	  locale.
+
+	o manconv and zsoelim are now called internally rather than by
+	  executing external programs, to improve performance.
+
+	o man-db now uses GDBM (--with-db=gdbm) in preference to Berkeley DB
+	  (--with-db=db or --with-db=dbN where N is 1, 2, 3, or 4) by
+	  default, since hardware improvements have rendered Berkeley DB's
+	  speed advantages negligible for our purposes and the relatively
+	  frequent SONAME and on-disk format changes are not worth the
+	  hassle. Distributors should note that if they follow this change
+	  then they will need to arrange for databases to be rebuilt on
+	  upgrade to this version.
+
+	o Manual pages may now be compressed with LZMA (although this is
+	  probably only worth it for very large pages).
+
+	o Duplicate manual page hierarchies due to symlinks (e.g. /usr/man
+	  -> /usr/share/man) are detected and removed from the search order.
+
+	o A locale modifier (e.g. @latin) in a directory name must now match
+	  the locale if the former is set, in addition to the language and
+	  territory.
+
+	o Bare .so includes (e.g. ".so foo.1" rather than ".so man1/foo.1")
+	  now work, although only within the same manual page hierarchy for
+	  now.
+
 man-db 2.5.2 (5 May 2008)
 =========================
 

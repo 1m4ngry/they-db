@@ -1,3 +1,437 @@
+Mon Nov 17 11:44:17 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.3.
+	* po/man-db.pot, po/*.po: Update.
+
+Mon Nov 17 11:07:50 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (command_new_function): Initialise discard_err.
+	  (pipeline_start): Zero-initialise pids and statuses arrays on
+	  allocation, and don't unblock SIGCHLD until after doing so.
+	* src/manconv.c (manconv): Don't free elements of from here, as when
+	  called from manconv_stdin they will be freed by
+	  free_manconv_codes.
+	* src/manconv_main.c (main): Free elements of from_code here
+	  instead.
+
+Mon Nov 17 10:45:55 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_storage.h (infoalloc): Implement as a macro rather than
+	  as an inline function; seems to cause fewer problems when building
+	  without optimisation.
+
+Mon Nov 17 10:18:10 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* m4/longdouble.m4: Remove; gettext no longer installs this.
+	* man/Makefile.am (EXTRA_DIST): Distribute LINGUAS and LINGUAS.po4a.
+
+Mon Nov 17 09:59:19 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* release.sh: Use 'make distcheck' rather than 'make dist'.
+
+Mon Nov 17 01:13:17 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* po/POTFILES.in: Add src/manconv_main.c and src/zsoelim_main.c.
+	* po/man-db.pot, po/*.po: Update.
+
+Mon Nov 17 00:53:33 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Update.
+
+Mon Nov 17 00:39:14 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_wait): Mangle return value into a value
+	  suitable for passing to exit (Debian bug #477305).
+
+Mon Nov 17 00:06:28 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Make bare .so includes (e.g. ".so foo.1" rather than ".so
+	man1/foo.1") work, although only within the same manual page
+	hierarchy for now. Reported by Mike Frysinger; partially fixes
+	Debian bug #503472.
+
+	* src/zsoelim.l (zsoelim_open_file): Attempt to handle bare .so
+	  includes using look_for_file.
+	* src/Makefile.am (zsoelim_SOURCES): Add globbing.c, globbing.h, and
+	  util.c.
+
+Sun Nov 16 23:34:02 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Improve handling of systems without internationalisation support.
+	Reported by Mike Frysinger.
+
+	* include/manconfig.h.in (locale_changed): New macro.
+	* src/man.c (main), src/whatis.c (main): Use it.
+	* src/manconv.c (check_preprocessor_encoding, try_iconv): Declare
+	  only if HAVE_ICONV is defined.
+	  (manconv): If HAVE_ICONV is not defined, supply a replacement that
+	  just passes data straight through.
+	* src/whatis.c (simple_convert): Declare only if HAVE_ICONV is
+	  defined and supply a macro replacement otherwise, since in the
+	  latter case iconv_t is not defined.
+
+Sun Nov 16 18:40:09 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* manual/misc.me (Credits): Update with contributors of
+	  non-translation patches since I started maintaining man-db;
+	  mention man/THANKS for translator credits. Probably still missing
+	  some people, as ever ...
+
+Sun Nov 16 18:16:55 GMT 2008  Chusslove Illich  <caslav.ilic@gmx.net>
+
+	* src/encodings.c (directory_table): Add Serbian Latin ->
+	  ISO-8859-2.
+	* src/lexgrog.l (sr_name): Add another possible translation.
+	  (srlatin_name): Add.
+
+Sun Nov 16 18:00:23 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (main), src/whatis.c (main): Tokenise LANGUAGE properly
+	  rather than only taking the first two characters of each entry.
+	  Based on a suggestion from Chusslove Illich in Savannah patch
+	  #6658.
+
+Sun Nov 16 17:57:57 GMT 2008  Chusslove Illich  <caslav.ilic@gmx.net>
+
+	* src/manp.c (add_nls_manpath): Check that modifiers match if set
+	  (Savannah patch #6658).
+
+Wed Nov 12 12:32:17 GMT 2008  Arif E. Nugroho  <arif_endro@yahoo.com>
+
+	* po/id.po: New from Translation Project.
+	* po/LINGUAS: Add id.
+	* man/THANKS: Add translator credit.
+
+Sun Nov  9 16:23:12 GMT 2008  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+
+Sun Oct 26 12:44:42 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (create_pathlist): Eliminate duplicates due to
+	  symlinks. Reported by Mike Frysinger.
+	* src/man.c (main): Emit "manpath search path" debugging message
+	  before calling create_pathlist.
+	* docs/NEWS: Document this.
+
+Sun Oct 26 11:58:37 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Support LINGUAS environment variable to control installation of
+	localised manual pages. Reported by Mike Frysinger.
+
+	* m4/man-po4a.m4, m4/man-linguas.m4: New files.
+	* configure.ac: Call MAN_PO4A instead of inline code. Remove NLS and
+	  PO4A Automake conditionals, no longer needed. Call MAN_LINGUAS.
+	* man/LINGUAS, man/LINGUAS.po4a: New files.
+	* man/Makefile.am (SUBDIRS): Set to $(MAN_SUBDIRS) rather than
+	  computing the list here.
+	  (DIST_SUBDIRS): Add, since we no longer use Automake conditionals.
+	* docs/NEWS: Document this.
+
+Sun Oct 26 01:53:36 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Check for lzma.
+	* include/comp_src.h.in (comp_list): Add lzma.
+	* include/manconfig.h.in: Define UNLZMA.
+	* docs/NEWS: Document this.
+
+Wed Oct  1 12:19:29 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/TODO: Remove entry about Berkeley DB's error handling, fixed
+	  in Berkeley DB 4.1 (see http://bugs.debian.org/180379).
+
+Tue Sep 30 16:39:19 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (directory_table): Add Norwegian Bokmål and
+	  Norwegian Nynorsk (following a comment on
+	  http://www.linuxfromscratch.org/lfs/view/development/chapter06/man-db.html).
+
+Sun Sep 28 11:35:18 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* manual/files.me (NLS manual pages): Describe automatic detection
+	  of manual pages encoded in UTF-8. Recommend that character set
+	  components not be used in directory names.
+
+Sun Sep 28 11:30:40 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Check for GDBM before Berkeley DB.
+	* docs/man-db.lsm: List GDBM before Berkeley DB.
+	* manual/db.me (Database types): Explain why GDBM is preferred.
+	* manual/intro.me (Arguments to configure), README (Non-generic
+	  arguments to configure): Update --with-db description.
+	* docs/NEWS: Document this, with a note to distributors on upgrade
+	  handling.
+
+Thu Sep 18 02:00:54 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/apropos.man1 (AUTHOR), man/man1/manpath.man1 (AUTHOR),
+	  man/man1/whatis.man1 (AUTHOR), man/man8/catman.man8 (AUTHOR): Add
+	  my name.
+
+Thu Sep 18 01:42:34 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	Call zsoelim as an internal function rather than as an external
+	process, to improve performance.
+
+	* src/Makefile.am (man_SOURCES): Add zsoelim.h and zsoelim.l.
+	  (zsoelim_SOURCES): Add zsoelim.h and zsoelim_main.c.
+	* src/man.c (make_roff_command): Call zsoelim_stdin as an internal
+	  function.
+	* src/zsoelim.l (open_file): Rename to ...
+	  (zsoelim_open_file): ... this. Make external. Update all callers.
+	  (parse_file): Rename to ...
+	  (zsoelim_parse_file): ... this. Make external. Update all callers.
+	  (zsoelim_stdin): New function.
+	  (parse_opt, main): Move to ...
+	* src/zsoelim_main.c: ... here. New file.
+	* src/zsoelim.h: New file.
+	* docs/NEWS: Document this.
+
+	* man/man1/zsoelim.man1 (AUTHOR): Add my name.
+
+Mon Sep  8 09:21:34 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	Call manconv as an internal function rather than as an external
+	process, to improve performance. Indirectly suggested by Dr. Werner
+	Fink in Savannah bug #24043.
+
+	* src/Makefile.am (whatis_LDADD): Add $(LIBCOMPRESS).
+	  (lexgrog_SOURCES, man_SOURCES, mandb_SOURCES, whatis_SOURCES): Add
+	  manconv.c and manconv.h.
+	  (manconv_SOURCES): Add manconv.h and manconv_main.c.
+	* src/encodings.c (manconv_stdin, free_manconv_codes): New
+	  functions.
+	  (add_manconv): Call manconv as an internal function.
+	* src/manconv.c (try_iconv): Take the target code as an argument
+	  rather than using a global variable.
+	  (manconv): New function, split out of main.
+	  (split_codes, parse_opt, main): Move to ...
+	* src/manconv_main.c: ... here. New file.
+	* src/manconv.h: New file.
+	* docs/NEWS: Document this.
+
+Mon Sep  8 09:09:06 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	Add support for freeing command_function data.
+
+	* lib/pipeline.c (command_new_function): Add free_func argument.
+	  (command_dup): Copy it.
+	  (pipeline_connect): Adjust command_new_function call.
+	  (pipeline_start): Free command_function data before exiting.
+	  (pipeline_wait): Free command_function data while cleaning up
+	  pipeline.
+	* lib/pipeline.h: Add command_function_free_type typedef.
+	  (struct command [struct command_function]): Add free_func member.
+	  (command_new_function): Update prototype.
+	* lib/decompress.c (decompress_open, decompress_fdopen): Adjust
+	  command_new_function calls.
+
+Sun Sep  7 15:26:25 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (try_iconv): Remove premature optimisation that
+	  sometimes caused us to write incomplete output.
+
+	* src/encodings.c (add_manconv): Always use manconv even if iconv
+	  could theoretically do the job, as manconv has slightly more
+	  permissive behaviour that is generally more suitable for
+	  converting manual page source (Debian bug #498082).
+
+Sun Aug 31 18:38:34 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Update.
+
+Sun Aug 31 18:17:14 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Upgrade to 20080801.
+
+Sun Aug 17 16:42:43 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/accessdb.c (main), src/catman.c (main), src/globbing_test.c
+	  (main), src/lexgrog_test.c (main), src/man.c (main), src/manconv.c
+	  (main), src/mandb.c (main), src/manpath.c (main), src/whatis.c
+	  (main), src/zsoelim.l (main): Suppress locale warning if being
+	  called by another man-db program (Debian bug #494989).
+
+Sun Aug 17 00:27:07 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (tmp_cat_fd, man_modtime, discard_stderr): Move
+	  definitions outside MAN_CATS guard; these are needed by catman
+	  handling and (in the case of discard_stderr) manual page
+	  formatting functions as well as cat handling in man itself
+	  (Savannah bug #24044).
+
+Thu Aug  7 02:12:09 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display): If we fail to decompress man_file and it
+	  matters (i.e. we aren't just displaying a stray cat), then emit an
+	  error message and return early (Coverity CID #5, #6).
+
+Wed Aug  6 22:36:48 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_lookup.c (infoalloc): Move to ...
+	* libdb/db_storage.h (infoalloc): ... here (as inline function).
+	  Include "xalloc.h" for this.
+	  (dblookup_all, dblookup_exact, gripe_lock, gripe_corrupt_data):
+	  Stop declaring inline.
+	* src/security.h (drop_effective_privs, regain_effective_privs):
+	  Stop declaring inline.
+
+Wed Aug  6 22:23:41 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display): If display_to_stdout is set, assert that
+	  man_file is non-NULL; all the stray-cat code paths ensure that
+	  neither troff nor recode is set by this point (Coverity CID #5).
+
+Wed Aug  6 21:40:37 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (manopt_to_env): Duplicate options assigned to elements
+	  of argv, and free the copy of manopt before returning. This isn't
+	  really a bug as such, but it appeases Coverity CID #22.
+
+Thu Jul 31 02:10:06 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (get_section_list): Fix leak of get_sections return
+	  value if the configuration file contains no SECTIONS directives
+	  (Coverity CID #21).
+
+Thu Jul 31 02:03:46 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (try_section): Free info and info_buffer if there is a
+	  failure before adding a candidate (Coverity CID #24).
+
+Thu Jul 31 01:41:17 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (add_nls_manpath): Copy manpathlist to omanpathlist
+	  after the initial locale checks, to avoid memory leaks (Coverity
+	  CID #20).
+	  (get_manpath): Free return value of add_system_manpath (Coverity
+	  CID #18) and guess_manpath (Coverity CID #19) when they're simply
+	  interpolated into another string.
+
+Thu Jul 31 01:18:59 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display): Check for failure to open the preformatted
+	  cat file (Coverity CID #14).
+
+Thu Jul 31 01:01:13 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/util.c (lang_dir): Free ld if returning xstrdup ("C") instead
+	  (Coverity CID #17).
+
+Thu Jul 31 00:55:36 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pathsearch.c (pathsearch): Free path if returning early due to
+	  being given a qualified name (Coverity CID #16).
+
+Thu Jul 31 00:51:58 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_pump): Free known_source before returning
+	  (Coverity CID #15).
+
+Thu Jul 31 00:47:43 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (word_fnmatch): Free lowwhatis on return paths
+	  (Coverity CID #25).
+
+Thu Jul 31 00:40:29 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* src/catman.c (parse_for_sec): Fix initialisation of initial_bit
+	  (Coverity CID #28).
+
+Tue Jul 15 15:58:24 BST 2008  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Sat Jul 12 16:47:11 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.3-pre1.
+	* po/man-db.pot, po/*.po: Update.
+
+Sat Jul 12 16:43:07 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Start 2.5.3.
+
+Sat Jul  5 11:33:16 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Upgrade to 20080701.
+
+Mon Jun  9 13:47:50 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Upgrade to 20080601.
+
+Mon Jun  9 09:31:04 BST 2008  Yuri Kozlov  <kozlov.y@gmail.com>
+
+	* man/po4a/po/ru.po: Update.
+
+Tue Jun  3 09:54:17 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/ru.po: Update with msgmerge.
+
+Tue Jun  3 09:53:59 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/ru/translator.add: Add dummy file.
+
+Tue Jun  3 00:07:47 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/ru.po: New from Translation Project (thanks, Yuri
+	  Kozlov).
+	* configure.ac (AC_CONFIG_FILES): Add man/ru/Makefile.
+	* man/Makefile.am (MAYBE_PO4A_LINGUAS): Add ru.
+	* man/ru/Makefile.am: New file.
+	* man/po4a/Makefile.am (POFILES): Add po/ru.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add ru.
+	* man/THANKS: Credit Yuri Kozlov with man/ru as well as ru.po.
+	* .bzrignore: Add man/ru/man1, man/ru/man5, and man/ru/man8.
+
+Sun Jun  1 16:40:12 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man8/mandb.man8 (SYNOPSIS): Document -t (thanks, Yuri Kozlov;
+	  Debian bug #483951).
+
+Sun Jun  1 04:01:12 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/whatis.man1 (SYNOPSIS): Document -v (thanks, Yuri Kozlov;
+	  Debian bug #483862).
+
+Fri May 30 00:11:15 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/manconv.man1 (SYNOPSIS), man/man1/manpath.man1
+	  (SYNOPSIS): Document -h and -V here as well as in OPTIONS (thanks,
+	  Yuri Kozlov; Debian bug #483589).
+
+Sun May 25 18:51:47 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (SYNOPSIS): Fix minor formatting error in -w|-W
+	  synopsis.
+
+Sun May 25 18:46:55 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (SYNOPSIS): Restructure to include all options
+	  from the OPTIONS section and to use approximately the same order.
+	  Thanks to Yuri Kozlov; Debian bugs #482424, #482791, #482792, and
+	  #482810.
+
+Sun May 25 18:29:28 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/lexgrog.man1 (SYNOPSIS): Correct -s to -E.
+	  (OPTIONS): Correct -e to -E.
+	  Thanks to Yuri Kozlov; Debian bug #481226.
+
+Sun May 25 19:23:00 CEST 2008  Yuri Kozlov  <kozlov.y@gmail.com>
+
+	* man/man1/apropos.man1 (SYNOPSIS): Document -v (Debian bug
+	  #480678).
+
+Mon May  5 09:53:19 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/cleanup.c: #include <string.h> for memset.
+
+Mon May  5 02:34:52 BST 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/man-db.lsm: Update to 2.5.2.
+	* docs/HACKING: Note requirement for docs/man-db.lsm update just
+	  before release.
+
 Mon May  5 02:11:38 BST 2008  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.5.2.

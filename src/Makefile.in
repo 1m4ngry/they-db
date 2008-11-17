@@ -97,6 +97,7 @@ am__aclocal_m4_deps = $(top_srcdir)/gnulib/m4/alloca.m4 \
 	$(top_srcdir)/gnulib/m4/mkdtemp.m4 \
 	$(top_srcdir)/gnulib/m4/mkstemp.m4 \
 	$(top_srcdir)/gnulib/m4/onceonly.m4 \
+	$(top_srcdir)/gnulib/m4/open.m4 \
 	$(top_srcdir)/gnulib/m4/openat.m4 \
 	$(top_srcdir)/gnulib/m4/pathmax.m4 \
 	$(top_srcdir)/gnulib/m4/printf.m4 \
@@ -158,6 +159,7 @@ am__aclocal_m4_deps = $(top_srcdir)/gnulib/m4/alloca.m4 \
 	$(top_srcdir)/m4/man-compress-lib.m4 \
 	$(top_srcdir)/m4/man-gcc-warning.m4 \
 	$(top_srcdir)/m4/man-gnu-nroff.m4 \
+	$(top_srcdir)/m4/man-linguas.m4 $(top_srcdir)/m4/man-po4a.m4 \
 	$(top_srcdir)/m4/man-trans-subst.m4 $(top_srcdir)/m4/nls.m4 \
 	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/printf-posix.m4 \
 	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/size_max.m4 \
@@ -193,25 +195,27 @@ globbing_OBJECTS = $(am_globbing_OBJECTS)
 globbing_DEPENDENCIES = $(LIBMAN)
 am_lexgrog_OBJECTS = compression.$(OBJEXT) descriptions.$(OBJEXT) \
 	encodings.$(OBJEXT) fake_security.$(OBJEXT) lexgrog.$(OBJEXT) \
-	lexgrog_test.$(OBJEXT) ult_src.$(OBJEXT) util.$(OBJEXT)
+	lexgrog_test.$(OBJEXT) manconv.$(OBJEXT) ult_src.$(OBJEXT) \
+	util.$(OBJEXT)
 lexgrog_OBJECTS = $(am_lexgrog_OBJECTS)
 lexgrog_DEPENDENCIES = $(LIBMAN) $(am__DEPENDENCIES_1)
 am_man_OBJECTS = compression.$(OBJEXT) convert_name.$(OBJEXT) \
 	encodings.$(OBJEXT) filenames.$(OBJEXT) globbing.$(OBJEXT) \
-	man.$(OBJEXT) manp.$(OBJEXT) security.$(OBJEXT) \
-	ult_src.$(OBJEXT) util.$(OBJEXT)
+	man.$(OBJEXT) manconv.$(OBJEXT) manp.$(OBJEXT) \
+	security.$(OBJEXT) ult_src.$(OBJEXT) util.$(OBJEXT) \
+	zsoelim.$(OBJEXT)
 man_OBJECTS = $(am_man_OBJECTS)
 man_DEPENDENCIES = $(am__DEPENDENCIES_2) $(LIBMAN) \
 	$(am__DEPENDENCIES_1)
-am_manconv_OBJECTS = manconv.$(OBJEXT)
+am_manconv_OBJECTS = manconv.$(OBJEXT) manconv_main.$(OBJEXT)
 manconv_OBJECTS = $(am_manconv_OBJECTS)
 manconv_DEPENDENCIES = $(LIBMAN) $(am__DEPENDENCIES_1)
 am_mandb_OBJECTS = check_mandirs.$(OBJEXT) compression.$(OBJEXT) \
 	descriptions.$(OBJEXT) descriptions_store.$(OBJEXT) \
 	encodings.$(OBJEXT) filenames.$(OBJEXT) globbing.$(OBJEXT) \
-	lexgrog.$(OBJEXT) mandb.$(OBJEXT) manp.$(OBJEXT) \
-	security.$(OBJEXT) straycats.$(OBJEXT) ult_src.$(OBJEXT) \
-	util.$(OBJEXT)
+	lexgrog.$(OBJEXT) manconv.$(OBJEXT) mandb.$(OBJEXT) \
+	manp.$(OBJEXT) security.$(OBJEXT) straycats.$(OBJEXT) \
+	ult_src.$(OBJEXT) util.$(OBJEXT)
 mandb_OBJECTS = $(am_mandb_OBJECTS)
 mandb_DEPENDENCIES = $(am__DEPENDENCIES_2) $(LIBMAN) \
 	$(am__DEPENDENCIES_1)
@@ -220,14 +224,16 @@ am_manpath_OBJECTS = fake_security.$(OBJEXT) manp.$(OBJEXT) \
 manpath_OBJECTS = $(am_manpath_OBJECTS)
 manpath_DEPENDENCIES = $(LIBMAN)
 am_whatis_OBJECTS = encodings.$(OBJEXT) fake_security.$(OBJEXT) \
-	manp.$(OBJEXT) util.$(OBJEXT) whatis.$(OBJEXT)
+	manconv.$(OBJEXT) manp.$(OBJEXT) util.$(OBJEXT) \
+	whatis.$(OBJEXT)
 whatis_OBJECTS = $(am_whatis_OBJECTS)
 whatis_DEPENDENCIES = $(am__DEPENDENCIES_2) $(LIBMAN) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_wrapper_OBJECTS = wrapper.$(OBJEXT)
 wrapper_OBJECTS = $(am_wrapper_OBJECTS)
 wrapper_DEPENDENCIES = $(LIBMAN)
-am_zsoelim_OBJECTS = zsoelim.$(OBJEXT)
+am_zsoelim_OBJECTS = globbing.$(OBJEXT) util.$(OBJEXT) \
+	zsoelim.$(OBJEXT) zsoelim_main.$(OBJEXT)
 zsoelim_OBJECTS = $(am_zsoelim_OBJECTS)
 zsoelim_DEPENDENCIES = $(LIBMAN) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -337,6 +343,8 @@ GNULIB_MEMPCPY = @GNULIB_MEMPCPY@
 GNULIB_MEMRCHR = @GNULIB_MEMRCHR@
 GNULIB_MKDTEMP = @GNULIB_MKDTEMP@
 GNULIB_MKSTEMP = @GNULIB_MKSTEMP@
+GNULIB_OBSTACK_PRINTF = @GNULIB_OBSTACK_PRINTF@
+GNULIB_OBSTACK_PRINTF_POSIX = @GNULIB_OBSTACK_PRINTF_POSIX@
 GNULIB_OPEN = @GNULIB_OPEN@
 GNULIB_PRINTF_POSIX = @GNULIB_PRINTF_POSIX@
 GNULIB_PUTENV = @GNULIB_PUTENV@
@@ -378,6 +386,7 @@ HAVE_DECL_GETLINE = @HAVE_DECL_GETLINE@
 HAVE_DECL_GETLOGIN_R = @HAVE_DECL_GETLOGIN_R@
 HAVE_DECL_MEMMEM = @HAVE_DECL_MEMMEM@
 HAVE_DECL_MEMRCHR = @HAVE_DECL_MEMRCHR@
+HAVE_DECL_OBSTACK_PRINTF = @HAVE_DECL_OBSTACK_PRINTF@
 HAVE_DECL_SNPRINTF = @HAVE_DECL_SNPRINTF@
 HAVE_DECL_STRDUP = @HAVE_DECL_STRDUP@
 HAVE_DECL_STRERROR = @HAVE_DECL_STRERROR@
@@ -483,6 +492,7 @@ LTLIBOBJS = @LTLIBOBJS@
 LTLIBPTH = @LTLIBPTH@
 LTLIBTHREAD = @LTLIBTHREAD@
 MAKEINFO = @MAKEINFO@
+MAN_SUBDIRS = @MAN_SUBDIRS@
 MKDIR_P = @MKDIR_P@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -537,6 +547,7 @@ REPLACE_LSEEK = @REPLACE_LSEEK@
 REPLACE_MEMMEM = @REPLACE_MEMMEM@
 REPLACE_MKDIR = @REPLACE_MKDIR@
 REPLACE_MKSTEMP = @REPLACE_MKSTEMP@
+REPLACE_OBSTACK_PRINTF = @REPLACE_OBSTACK_PRINTF@
 REPLACE_OPEN = @REPLACE_OPEN@
 REPLACE_PRINTF = @REPLACE_PRINTF@
 REPLACE_PUTENV = @REPLACE_PUTENV@
@@ -654,6 +665,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lzma = @lzma@
 man_mode = @man_mode@
 man_owner = @man_owner@
 mandir = @mandir@
@@ -681,6 +693,7 @@ top_srcdir = @top_srcdir@
 tr = @tr@
 troff = @troff@
 uncompress = @uncompress@
+unlzma = @unlzma@
 vgrind = @vgrind@
 pkglibexecdir = $(libexecdir)/@PACKAGE@
 noinst_DATA = man_db.conf
@@ -710,7 +723,7 @@ man_LDADD = $(LIBMANDB) $(LIBMAN) $(LIBCOMPRESS)
 manconv_LDADD = $(LIBMAN) $(LIBCOMPRESS)
 mandb_LDADD = $(LIBMANDB) $(LIBMAN) $(LIBCOMPRESS)
 manpath_LDADD = $(LIBMAN)
-whatis_LDADD = $(LIBMANDB) $(LIBMAN) $(LIBICONV)
+whatis_LDADD = $(LIBMANDB) $(LIBMAN) $(LIBICONV) $(LIBCOMPRESS)
 wrapper_LDADD = $(LIBMAN)
 zsoelim_LDADD = $(LIBMAN) $(LIBCOMPRESS)
 accessdb_SOURCES = \
@@ -739,6 +752,8 @@ lexgrog_SOURCES = \
 	fake_security.c \
 	lexgrog.l \
 	lexgrog_test.c \
+	manconv.c \
+	manconv.h \
 	security.h \
 	ult_src.c \
 	ult_src.h \
@@ -756,16 +771,22 @@ man_SOURCES = \
 	globbing.h \
 	man.c \
 	man.h \
+	manconv.c \
+	manconv.h \
 	manp.c \
 	manp.h \
 	security.c \
 	security.h \
 	ult_src.c \
 	ult_src.h \
-	util.c
+	util.c \
+	zsoelim.h \
+	zsoelim.l
 
 manconv_SOURCES = \
-	manconv.c
+	manconv.c \
+	manconv.h \
+	manconv_main.c
 
 mandb_SOURCES = \
 	check_mandirs.c \
@@ -781,6 +802,8 @@ mandb_SOURCES = \
 	globbing.c \
 	globbing.h \
 	lexgrog.l \
+	manconv.c \
+	manconv.h \
 	mandb.c \
 	manp.c \
 	manp.h \
@@ -802,6 +825,8 @@ whatis_SOURCES = \
 	encodings.c \
 	encodings.h \
 	fake_security.c \
+	manconv.c \
+	manconv.h \
 	manp.c \
 	manp.h \
 	util.c \
@@ -811,7 +836,12 @@ wrapper_SOURCES = \
 	wrapper.c
 
 zsoelim_SOURCES = \
-	zsoelim.l
+	globbing.c \
+	globbing.h \
+	util.c \
+	zsoelim.h \
+	zsoelim.l \
+	zsoelim_main.c
 
 CLEANFILES = apropos man_db.conf
 EXTRA_DIST = \
@@ -984,6 +1014,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lexgrog_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/man.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manconv.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manconv_main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mandb.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manpath.Po@am__quote@
@@ -994,6 +1025,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/whatis.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wrapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zsoelim.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zsoelim_main.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

@@ -203,9 +203,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 static struct argp apropos_argp = { options, parse_opt, args_doc, apropos_doc };
 static struct argp whatis_argp = { options, parse_opt, args_doc };
 
+#ifdef HAVE_ICONV
 static char *simple_convert (iconv_t conv, char *string)
 {
-#ifdef HAVE_ICONV
 	if (conv != (iconv_t) -1) {
 		size_t string_conv_alloc = strlen (string) + 1;
 		char *string_conv = xmalloc (string_conv_alloc);
@@ -230,9 +230,11 @@ static char *simple_convert (iconv_t conv, char *string)
 		}
 		return string_conv;
 	} else
-#endif /* HAVE_ICONV */
 		return xstrdup (string);
 }
+#else /* !HAVE_ICONV */
+#  define simple_convert(conv, string) xstrdup (string)
+#endif /* HAVE_ICONV */
 
 /* do the old thing, if we cannot find the relevant database */
 static inline int use_grep (char *page, char *manpath)
@@ -486,12 +488,15 @@ static int word_fnmatch (char *lowpage, char *whatis)
 			begin++;
 		else {
 			*p = '\0';
-			if (fnmatch (lowpage, begin, 0) == 0)
+			if (fnmatch (lowpage, begin, 0) == 0) {
+				free (lowwhatis);
 				return 1;
+			}
 			begin = p + 1;
 		}
 	}
 
+	free (lowwhatis);
 	return 0;
 }
 
@@ -724,10 +729,11 @@ int main (int argc, char *argv[])
 	}
 
 	/* initialise the locale */
-	if (!setlocale (LC_ALL, ""))
+	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
+	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);
@@ -736,12 +742,16 @@ int main (int argc, char *argv[])
 	/* Use LANGUAGE only when LC_MESSAGES locale category is
 	 * neither "C" nor "POSIX". */
 	if (internal_locale && strcmp (internal_locale, "C") &&
-	    strcmp (internal_locale, "POSIX")) {
+	    strcmp (internal_locale, "POSIX"))
 		multiple_locale = getenv ("LANGUAGE");
-		if (multiple_locale && *multiple_locale)
-			internal_locale = multiple_locale;
-	}
-	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
+	if (multiple_locale && *multiple_locale) {
+		const char *colon = strchr (multiple_locale, ':');
+		internal_locale = colon ?
+			xstrndup (multiple_locale, colon - multiple_locale) :
+			xstrdup (multiple_locale);
+	} else
+		internal_locale = xstrdup (internal_locale ?
+					   internal_locale : "C");
 
 	if (argp_parse (am_apropos ? &apropos_argp : &whatis_argp, argc, argv,
 			0, 0, 0))
@@ -758,9 +768,8 @@ int main (int argc, char *argv[])
 		debug ("main(): locale = %s, internal_locale = %s\n",
 		       locale, internal_locale);
 		if (internal_locale) {
-			extern int _nl_msg_cat_cntr;
 			setenv ("LANGUAGE", internal_locale, 1);
-			++_nl_msg_cat_cntr;
+			locale_changed ();
 			multiple_locale = NULL;
 		}
 	}
@@ -769,26 +778,19 @@ int main (int argc, char *argv[])
 
 	/* sort out the internal manpath */
 	if (manp == NULL) {
-		char tmp_locale[3];
-		int idx;
-
 		manp = add_nls_manpath (get_manpath (alt_systems),
 					internal_locale);
 		/* Handle multiple :-separated locales in LANGUAGE */
-		idx = multiple_locale ? strlen (multiple_locale) : 0;
-		while (idx) {
-			while (idx && multiple_locale[idx] != ':')
-				idx--;
-			if (multiple_locale[idx] == ':')
-				idx++;
-			tmp_locale[0] = multiple_locale[idx];
-			tmp_locale[1] = multiple_locale[idx + 1];
-			tmp_locale[2] = 0;
-			/* step back over preceding ':' */
-			if (idx) idx--;
-			if (idx) idx--;
-			debug ("checking for locale %s\n", tmp_locale);
-			manp = add_nls_manpath (manp, tmp_locale);
+		if (multiple_locale && *multiple_locale) {
+			char *localetok = xstrdup (multiple_locale), *tok;
+			char *localetok_ptr = localetok;
+			for (tok = strsep (&localetok_ptr, ":"); tok;
+			     tok = strsep (&localetok_ptr, ":")) {
+				if (!*tok)	/* ignore empty fields */
+					continue;
+				debug ("checking for locale %s\n", tok);
+				manp = add_nls_manpath (manp, tok);
+			}
 		}
 	} else
 		free (get_manpath (NULL));

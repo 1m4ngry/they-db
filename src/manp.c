@@ -3,7 +3,7 @@
  *
  * Copyright (C) 1990, 1991 John W. Eaton.
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -57,6 +57,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "canonicalize.h"
 #include "xgetcwd.h"
 
 #include "gettext.h"
@@ -431,7 +432,7 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 	char *manpath = NULL;
 	char *path;
 	struct locale_bits lbits;
-	char *omanpathlist = xstrdup (manpathlist);
+	char *omanpathlist;
 	char *manpathlist_ptr = manpathlist;
 
 	debug ("add_nls_manpath(): processing %s\n", manpathlist);
@@ -443,6 +444,8 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 		free_locale_bits (&lbits);
 		return manpathlist;
 	}
+
+	omanpathlist = xstrdup (manpathlist);
 
 	for (path = strsep (&manpathlist_ptr, ":"); path;
 	     path = strsep (&manpathlist_ptr, ":")) {
@@ -473,7 +476,9 @@ char *add_nls_manpath (char *manpathlist, const char *locale)
 			unpack_locale_bits (name, &mbits);
 			if (STREQ (lbits.language, mbits.language) &&
 			    (!*mbits.territory ||
-			     STREQ (lbits.territory, mbits.territory)))
+			     STREQ (lbits.territory, mbits.territory)) &&
+			    (!*mbits.modifier ||
+			     STREQ (lbits.modifier, mbits.modifier)))
 				manpath = add_to_manpath (manpath, fullpath);
 			free_locale_bits (&mbits);
 			free (fullpath);
@@ -618,6 +623,7 @@ char *get_manpath (const char *systems)
 
 	manpathlist = getenv ("MANPATH");
 	if (manpathlist && *manpathlist) {
+		char *system1, *system2, *guessed;
 		char *pos;
 		/* This must be it. */
 		if (manpathlist[0] == ':') {
@@ -626,22 +632,22 @@ char *get_manpath (const char *systems)
 				       _("warning: $MANPATH set, "
 					 "prepending %s"),
 				       CONFIG_FILE);
-			manpathlist = appendstr (NULL,
-						 guess_manpath (systems),
-						 add_system_manpath
-							(systems, manpathlist),
-						 NULL);
+			system1 = add_system_manpath (systems, manpathlist);
+			guessed = guess_manpath (systems);
+			manpathlist = appendstr (NULL, guessed, system1, NULL);
+			free (guessed);
+			free (system1);
 		} else if (manpathlist[strlen (manpathlist) - 1] == ':') {
 			if (!quiet)
 				error (0, 0,
 				       _("warning: $MANPATH set, "
 					 "appending %s"),
 				       CONFIG_FILE);
-			manpathlist = appendstr (NULL,
-						 add_system_manpath
-							(systems, manpathlist),
-						 guess_manpath (systems),
-						 NULL);
+			system1 = add_system_manpath (systems, manpathlist);
+			guessed = guess_manpath (systems);
+			manpathlist = appendstr (NULL, system1, guessed, NULL);
+			free (guessed);
+			free (system1);
 		} else if ((pos = strstr (manpathlist,"::"))) {
 			*(pos++) = '\0';
 			if (!quiet)
@@ -649,13 +655,14 @@ char *get_manpath (const char *systems)
 				       _("warning: $MANPATH set, "
 					 "inserting %s"),
 				       CONFIG_FILE);
-			manpathlist = appendstr (NULL,
-						 add_system_manpath
-							(systems, manpathlist),
-						 ":", guess_manpath (systems),
-						 add_system_manpath
-							(systems, pos),
-						 NULL);
+			system1 = add_system_manpath (systems, manpathlist);
+			guessed = guess_manpath (systems);
+			system2 = add_system_manpath (systems, pos);
+			manpathlist = appendstr (NULL, system1, ":", guessed,
+						 system2, NULL);
+			free (system2);
+			free (guessed);
+			free (system1);
 		} else {
 			if (!quiet)
 				error (0, 0,
@@ -1093,6 +1100,38 @@ void create_pathlist (const char *manp, char **mp)
 		}
 	}
 	*mp = NULL;
+
+	/* Eliminate duplicates due to symlinks. */
+	mp = mphead;
+	while (*mp) {
+		char *target;
+		char **dupcheck;
+		int found_dup = 0;
+
+		/* After resolving all symlinks, is the target also in the
+		 * manpath?
+		 */
+		target = canonicalize_file_name (*mp);
+		if (!target) {
+			++mp;
+			continue;
+		}
+		for (dupcheck = mphead; *dupcheck; ++dupcheck) {
+			if (mp == dupcheck || !STREQ (target, *dupcheck))
+				continue;
+			debug ("Removing duplicate manpath entry %s -> %s\n",
+			       *mp, target);
+			free (*mp);
+			for (dupcheck = mp; *(dupcheck + 1); ++dupcheck)
+				*dupcheck = *(dupcheck + 1);
+			*dupcheck = NULL;
+			found_dup = 1;
+			break;
+		}
+		free (target);
+		if (!found_dup)
+			++mp;
+	}
 }
 
 void free_pathlist (char **mp)

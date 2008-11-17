@@ -8,7 +8,7 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 33
+#define YY_FLEX_SUBMINOR_VERSION 35
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -30,7 +30,7 @@
 
 /* C99 systems have <inttypes.h>. Non-C99 systems may or may not. */
 
-#if __STDC_VERSION__ >= 199901L
+#if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
 /* C99 says to define __STDC_LIMIT_MACROS before including stdint.h,
  * if you want the limit (max/min) macros for int types. 
@@ -53,7 +53,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -84,6 +83,8 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#endif /* ! C99 */
+
 #endif /* ! FLEXINT_H */
 
 #ifdef __cplusplus
@@ -93,11 +94,12 @@ typedef unsigned int flex_uint32_t;
 
 #else	/* ! __cplusplus */
 
-#if __STDC__
+/* C99 requires __STDC__ to be defined as 1. */
+#if defined (__STDC__)
 
 #define YY_USE_CONST
 
-#endif	/* __STDC__ */
+#endif	/* defined (__STDC__) */
 #endif	/* ! __cplusplus */
 
 #ifdef YY_USE_CONST
@@ -177,14 +179,9 @@ extern FILE *yyin, *yyout;
 
 #define unput(c) yyunput( c, (yytext_ptr)  )
 
-/* The following is because we cannot portably get our hands on size_t
- * (without autoconf's help, which isn't available because we want
- * flex-generated scanners to compile on their own).
- */
-
 #ifndef YY_TYPEDEF_YY_SIZE_T
 #define YY_TYPEDEF_YY_SIZE_T
-typedef unsigned int yy_size_t;
+typedef size_t yy_size_t;
 #endif
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
@@ -335,7 +332,7 @@ void yyfree (void *  );
 
 /* Begin user sect3 */
 
-#define yywrap() 1
+#define yywrap(n) 1
 #define YY_SKIP_YYWRAP
 
 typedef unsigned char YY_CHAR;
@@ -766,7 +763,7 @@ char *yytext;
 #line 2 "zsoelim.l"
 
 /*
- * soelim.l: eliminate .so includes within *roff source
+ * zsoelim.l: eliminate .so includes within *roff source
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
  * Copyright (C) 1997 Fabrizio Polacco.
@@ -813,18 +810,15 @@ char *yytext;
 #include <fcntl.h>
 #include <errno.h>
 
-#include "dirname.h"
-
 #define NAME	so_name[so_stack_ptr]
 #define LINE	so_line[so_stack_ptr]
 #define PIPE	so_pipe[so_stack_ptr]
 
+#include "xgetcwd.h"
+
 #include "gettext.h"
 #include <locale.h>
 #define _(String) gettext (String)
-#define N_(String) gettext_noop (String)
-
-#include "argp.h"
 
 #include "manconfig.h"
 
@@ -832,7 +826,9 @@ char *yytext;
 #include "pipeline.h"
 #include "decompress.h"
 
-static int open_file (const char *filename);
+#include "globbing.h"
+
+int zsoelim_open_file (const char *filename);
 
 #ifdef ACCEPT_QUOTES
 #  define ZAP_QUOTES	zap_quotes ()
@@ -841,60 +837,12 @@ static void zap_quotes (void);
 #  define ZAP_QUOTES
 #endif
 
-char *program_name;
-
-static char **files;
-static int num_files;
-
-const char *argp_program_version = "zsoelim " PACKAGE_VERSION;
-const char *argp_program_bug_address = PACKAGE_BUGREPORT;
-error_t argp_err_exit_status = FAIL;
-
-static const char args_doc[] = N_("FILE...");
-
-static struct argp_option options[] = {
-	{ "debug",	'd',	0,	0,	N_("emit debugging messages") },
-	{ "compatible",	'C',	0,	0,	N_("compatibility switch (ignored)"),	1 },
-	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
-	{ 0 }
-};
-
-static error_t parse_opt (int key, char *arg ATTRIBUTE_UNUSED,
-			  struct argp_state *state)
-{
-	switch (key) {
-		case 'd':
-			debug_level = 1;
-			return 0;
-		case 'C':
-			return 0; /* compatibility with GNU soelim */
-		case 'h':
-			argp_state_help (state, state->out_stream,
-					 ARGP_HELP_STD_HELP);
-			break;
-		case ARGP_KEY_NO_ARGS:
-			/* open stdin */
-			files = xmalloc (sizeof *files);
-			files[0] = xstrdup ("-");
-			num_files = 1;
-			return 0;
-		case ARGP_KEY_ARGS:
-			files = state->argv + state->next;
-			num_files = state->argc - state->next;
-			return 0;
-	}
-	return ARGP_ERR_UNKNOWN;
-}
-
-static struct argp argp = { options, parse_opt, args_doc };
-
 static YY_BUFFER_STATE so_stack[MAX_SO_DEPTH];
 static char *so_name[MAX_SO_DEPTH];
 static int so_line[MAX_SO_DEPTH];
 static pipeline *so_pipe[MAX_SO_DEPTH];
 static int so_stack_ptr;
 static int no_newline;
-static int status = OK;
 
 /* The flex documentation says that yyin is only used by YY_INPUT, so we
  * should safely be able to abuse it as a handy way to keep track of the
@@ -915,7 +863,7 @@ static int status = OK;
 
 
 
-#line 919 "zsoelim.c"
+#line 867 "zsoelim.c"
 
 #define INITIAL 0
 #define so 1
@@ -937,6 +885,35 @@ static int status = OK;
 #endif
 
 static int yy_init_globals (void );
+
+/* Accessor methods to globals.
+   These are made visible to non-reentrant scanners for convenience. */
+
+int yylex_destroy (void );
+
+int yyget_debug (void );
+
+void yyset_debug (int debug_flag  );
+
+YY_EXTRA_TYPE yyget_extra (void );
+
+void yyset_extra (YY_EXTRA_TYPE user_defined  );
+
+FILE *yyget_in (void );
+
+void yyset_in  (FILE * in_str  );
+
+FILE *yyget_out (void );
+
+void yyset_out  (FILE * out_str  );
+
+int yyget_leng (void );
+
+char *yyget_text (void );
+
+int yyget_lineno (void );
+
+void yyset_lineno (int line_number  );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -970,7 +947,8 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
-#define YY_READ_BUF_SIZE 8192
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -978,7 +956,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO (void) fwrite( yytext, yyleng, 1, yyout )
+#define ECHO fwrite( yytext, yyleng, 1, yyout )
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -1074,10 +1052,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 162 "zsoelim.l"
+#line 113 "zsoelim.l"
 
 
-#line 1081 "zsoelim.c"
+#line 1059 "zsoelim.c"
 
 	if ( !(yy_init) )
 		{
@@ -1151,7 +1129,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 164 "zsoelim.l"
+#line 115 "zsoelim.l"
 {	
 			no_newline = 1;
 			ECHO;
@@ -1160,7 +1138,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 170 "zsoelim.l"
+#line 121 "zsoelim.l"
 {	
 			no_newline = 1;
 			BEGIN (so);	/* Now we're in the .so environment */
@@ -1168,7 +1146,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 175 "zsoelim.l"
+#line 126 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;		/* Now we're in the .lf environment */
@@ -1176,26 +1154,26 @@ YY_RULE_SETUP
 		}
 	YY_BREAK
 case 4:
-#line 182 "zsoelim.l"
+#line 133 "zsoelim.l"
 case 5:
 /* rule 5 can match eol */
-#line 183 "zsoelim.l"
+#line 134 "zsoelim.l"
 case 6:
 /* rule 6 can match eol */
-#line 184 "zsoelim.l"
+#line 135 "zsoelim.l"
 case 7:
 /* rule 7 can match eol */
-#line 185 "zsoelim.l"
+#line 136 "zsoelim.l"
 case 8:
 /* rule 8 can match eol */
-#line 186 "zsoelim.l"
+#line 137 "zsoelim.l"
 case 9:
 /* rule 9 can match eol */
-#line 187 "zsoelim.l"
+#line 138 "zsoelim.l"
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 187 "zsoelim.l"
+#line 138 "zsoelim.l"
 {
 				no_newline = 1;
 				ECHO;
@@ -1204,7 +1182,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 192 "zsoelim.l"
+#line 143 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1213,7 +1191,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 199 "zsoelim.l"
+#line 150 "zsoelim.l"
 { 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
@@ -1227,7 +1205,7 @@ YY_RULE_SETUP
 
 			no_newline = 0;
 
-			if (open_file (yytext)) {
+			if (zsoelim_open_file (yytext)) {
 				--so_stack_ptr;
 #ifndef __alpha
 				error (OK, 0, 
@@ -1248,7 +1226,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 230 "zsoelim.l"
+#line 181 "zsoelim.l"
 {
 			no_newline = 0;
 			BEGIN (INITIAL);
@@ -1257,7 +1235,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 235 "zsoelim.l"
+#line 186 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1271,7 +1249,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 246 "zsoelim.l"
+#line 197 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1280,7 +1258,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 252 "zsoelim.l"
+#line 203 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1289,7 +1267,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 257 "zsoelim.l"
+#line 208 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1298,7 +1276,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 264 "zsoelim.l"
+#line 215 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1309,7 +1287,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 272 "zsoelim.l"
+#line 223 "zsoelim.l"
 {	/* file names including whitespace ?? */
 			no_newline = 1;
 			ECHO;
@@ -1323,7 +1301,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 283 "zsoelim.l"
+#line 234 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1331,7 +1309,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 288 "zsoelim.l"
+#line 239 "zsoelim.l"
 {
 			no_newline = 1;
 			error (OK, 0,
@@ -1345,7 +1323,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 298 "zsoelim.l"
+#line 249 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1363,7 +1341,7 @@ case YY_STATE_EOF(de):
 case YY_STATE_EOF(end_request):
 case YY_STATE_EOF(lfnumber):
 case YY_STATE_EOF(lfname):
-#line 309 "zsoelim.l"
+#line 260 "zsoelim.l"
 {
 		pipeline_wait (PIPE);
 		pipeline_free (PIPE);
@@ -1387,10 +1365,10 @@ case YY_STATE_EOF(lfname):
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 329 "zsoelim.l"
+#line 280 "zsoelim.l"
 ECHO;
 	YY_BREAK
-#line 1394 "zsoelim.c"
+#line 1372 "zsoelim.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1642,6 +1620,14 @@ static int yy_get_next_buffer (void)
 
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
+
+	if ((yy_size_t) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+		/* Extend the array by 50%, plus the number we really need. */
+		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
+		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
+			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
+	}
 
 	(yy_n_chars) += number_to_move;
 	YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)] = YY_END_OF_BUFFER_CHAR;
@@ -2014,7 +2000,9 @@ static void yyensure_buffer_stack (void)
 		(yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
-		
+		if ( ! (yy_buffer_stack) )
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
+								  
 		memset((yy_buffer_stack), 0, num_to_alloc * sizeof(struct yy_buffer_state*));
 				
 		(yy_buffer_stack_max) = num_to_alloc;
@@ -2032,6 +2020,8 @@ static void yyensure_buffer_stack (void)
 								((yy_buffer_stack),
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
+		if ( ! (yy_buffer_stack) )
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
 		memset((yy_buffer_stack) + (yy_buffer_stack_max), 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -2090,8 +2080,8 @@ YY_BUFFER_STATE yy_scan_string (yyconst char * yystr )
 
 /** Setup the input buffer state to scan the given bytes. The next call to yylex() will
  * scan from a @e copy of @a bytes.
- * @param bytes the byte buffer to scan
- * @param len the number of bytes in the buffer pointed to by @a bytes.
+ * @param yybytes the byte buffer to scan
+ * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
@@ -2330,7 +2320,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 329 "zsoelim.l"
+#line 280 "zsoelim.l"
 
 
 
@@ -2351,7 +2341,7 @@ static void zap_quotes (void)
 #endif
 
 /* initialise the stack and call the parser */
-static void parse_file (void)
+void zsoelim_parse_file (void)
 {
 	so_stack_ptr = 0;
 	printf (".lf 1 %s\n", NAME);
@@ -2359,38 +2349,9 @@ static void parse_file (void)
 	yylex ();
 }
 
-int main (int argc, char *argv[])
-{
-	int i;
-
-	program_name = base_name (argv[0]);
-
-	if (!setlocale (LC_ALL, ""))
-		/* Obviously can't translate this. */
-		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
-			     "are correct");
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
-	textdomain (PACKAGE);
-
-	if (argp_parse (&argp, argc, argv, 0, 0, 0))
-		exit (FAIL);
-
-	pipeline_install_sigchld ();
-
-	/* parse files in command line order */
-	for (i = 0; i < num_files; ++i) {
-		if (open_file (files[i]))
-			continue;
-		parse_file ();
-	}
-
-	return status;
-}
-
 /* This routine is used to open the specified file or uncompress a compressed
    version and open that instead */
-static int open_file (const char *filename)
+int zsoelim_open_file (const char *filename)
 {
 	pipeline *decomp;
 
@@ -2422,6 +2383,37 @@ static int open_file (const char *filename)
 				free (compfile);
 		}
 
+		/* This is insufficient, but we don't know the full search
+		 * path here so it's the best we can do for the time being;
+		 * with any luck it should cover most of the cases people
+		 * migrating from man to man-db need. See Debian bug
+		 * #503472.
+		 */
+		if (!decomp && !strchr (filename, '/') &&
+		    strchr (filename, '.')) {
+			char *pwd = xgetcwd ();
+			const char *dot = strchr (filename, '.');
+			char *name = xstrndup (filename, dot - filename);
+			const char *dot2 = dot ? strchr (dot + 1, '.') : NULL;
+			char *sec = dot2 ?
+				xstrndup (dot + 1, dot2 - (dot + 1)) :
+				xstrdup (dot + 1);
+			char **names = look_for_file (pwd, sec, name, 0, 1);
+			char **np;
+
+			for (np = names; np && *np; ++np) {
+				decomp = decompress_open (*np);
+				if (decomp) {
+					NAME = xstrdup (*np);
+					break;
+				}
+			}
+
+			free (sec);
+			free (name);
+			free (pwd);
+		}
+
 		if (!decomp) {
 			error (0, errno, _("can't open %s"), filename);
 			return 1;
@@ -2434,5 +2426,11 @@ static int open_file (const char *filename)
 	yyin = (FILE *) decomp;
 
 	return 0;
+}
+
+void zsoelim_stdin (void *data ATTRIBUTE_UNUSED)
+{
+	zsoelim_open_file ("-");
+	zsoelim_parse_file ();
 }
 

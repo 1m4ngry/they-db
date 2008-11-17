@@ -14,7 +14,7 @@
 %manpath% \- determine search path for manual pages
 .SH SYNOPSIS
 .B %manpath%  
-.RB [\| \-qgdc \|] 
+.RB [\| \-qgdchV \|] 
 .RB [\| \-m
 .IR system \|[\|,.\|.\|.\|]\|]
 .RB [\| \-C
@@ -130,4 +130,5 @@ man-db configuration file.
 .nf
 .if !'po4a'hide' Wilf. (G.Wilford@ee.surrey.ac.uk).
 .if !'po4a'hide' Fabrizio Polacco (fpolacco@debian.org).
+.if !'po4a'hide' Colin Watson (cjwatson@debian.org).
 .fi

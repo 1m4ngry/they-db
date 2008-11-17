@@ -241,7 +241,9 @@ command *command_new_argstr (const char *argstr)
 }
 
 command *command_new_function (const char *name,
-			       command_function_type *func, void *data)
+			       command_function_type *func,
+			       command_function_free_type *free_func,
+			       void *data)
 {
 	command *cmd = XMALLOC (command);
 	struct command_function *cmdf;
@@ -249,10 +251,12 @@ command *command_new_function (const char *name,
 	cmd->tag = COMMAND_FUNCTION;
 	cmd->name = xstrdup (name);
 	cmd->nice = 0;
+	cmd->discard_err = 0;
 
 	cmdf = &cmd->u.function;
 
 	cmdf->func = func;
+	cmdf->free_func = free_func;
 	cmdf->data = data;
 
 	return cmd;
@@ -291,6 +295,7 @@ command *command_dup (command *cmd)
 			struct command_function *newcmdf = &newcmd->u.function;
 
 			newcmdf->func = cmdf->func;
+			newcmdf->free_func = cmdf->free_func;
 			newcmdf->data = cmdf->data;
 
 			break;
@@ -559,7 +564,7 @@ void pipeline_connect (pipeline *source, pipeline *sink, ...)
 		 */
 		if (arg->ncommands == 0) {
 			command *cmd = command_new_function
-				("cat", &passthrough, NULL);
+				("cat", &passthrough, NULL, NULL);
 			pipeline_command (arg, cmd);
 		}
 	}
@@ -768,12 +773,12 @@ void pipeline_start (pipeline *p)
 	assert (i < max_active_pipelines);
 	++n_active_pipelines;
 
+	p->pids = xcalloc (p->ncommands, sizeof *p->pids);
+	p->statuses = xcalloc (p->ncommands, sizeof *p->statuses);
+
 	/* Unblock SIGCHLD. */
 	while (sigprocmask (SIG_SETMASK, &oset, NULL) == -1 && errno == EINTR)
 		;
-
-	p->pids = xnmalloc (p->ncommands, sizeof *p->pids);
-	p->statuses = xnmalloc (p->ncommands, sizeof *p->statuses);
 
 	if (p->want_in < 0) {
 		if (pipe (infd) < 0)
@@ -909,6 +914,10 @@ void pipeline_start (pipeline *p)
 					struct command_function *cmdf =
 						&p->commands[i]->u.function;
 					(*cmdf->func) (cmdf->data);
+					/* pacify valgrind et al */
+					if (cmdf->free_func)
+						(*cmdf->free_func)
+							(cmdf->data);
 					exit (0);
 				}
 			}
@@ -1098,8 +1107,19 @@ int pipeline_wait (pipeline *p)
 				error (0, 0, "unexpected status %d",
 				       status);
 
-			if (i == p->ncommands - 1)
-				ret = status;
+			if (p->commands[i]->tag == COMMAND_FUNCTION) {
+				struct command_function *cmdf =
+					&p->commands[i]->u.function;
+				if (cmdf->free_func)
+					(*cmdf->free_func) (cmdf->data);
+			}
+
+			if (i == p->ncommands - 1) {
+				if (WIFSIGNALED (status))
+					ret = 128 + WTERMSIG (status);
+				else
+					ret = WEXITSTATUS (status);
+			}
 		}
 
 		assert (proc_count >= 0);
@@ -1508,6 +1528,7 @@ next_sink:		;
 	free (waiting);
 	free (blocking_out);
 	free (blocking_in);
+	free (known_source);
 	free (pieces);
 	free (pos);
 }

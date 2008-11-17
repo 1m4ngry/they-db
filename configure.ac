@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.5.2], [cjwatson@debian.org])
+AC_INIT([man-db], [2.5.3], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR(tools)
 AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
 AC_PREREQ([2.59])
@@ -16,7 +16,7 @@ AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-datemark=20080505
+datemark=20081117
 date=`LANG=C date -d $datemark +'%Y-%m-%d'`
 AC_SUBST(date)dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
@@ -283,7 +283,12 @@ if test -n "$bzip2"
 then
 	bunzip2="$bzip2 -dc"
 fi
-if test -n "$gzip" || test -n "$compress" || test -n "$bzip2"
+MAN_CHECK_PROGS([lzma], [LZMA], [use LZMA as Lempel-Ziv-Markov chain-Algorithm compression utility], [lzma])
+if test -n "$lzma"
+then
+	unlzma="$lzma -dc"
+fi
+if test -n "$gzip" || test -n "$compress" || test -n "$bzip2" || test -n "$lzma"
 then
 	AC_DEFINE(COMP_CAT, 1, [Define if you have compressors and want to support compressed cat files.])
 	AC_DEFINE(COMP_SRC, 1, [Define if you have compressors and want to support compressed manual source.])
@@ -293,6 +298,7 @@ AC_SUBST(compress_ext)
 AC_SUBST(gunzip)
 AC_SUBST(uncompress)
 AC_SUBST(bunzip2)
+AC_SUBST(unlzma)
 MAN_COMPRESS_LIB([z], [gzopen])
 dnl To add more decompressors just follow the scheme above.
 
@@ -332,10 +338,8 @@ AM_GNU_GETTEXT
 AM_GNU_GETTEXT_VERSION([0.17])
 AC_SUBST(LINGUAS)
 AM_ICONV
-AM_CONDITIONAL([NLS], [test "$USE_NLS" = yes])
-AC_CHECK_PROGS([PO4A], [po4a])
-AC_SUBST([PO4A])
-AM_CONDITIONAL([PO4A], [test -n "$PO4A"])
+MAN_PO4A
+MAN_LINGUAS
 
 # Checks for structures and compiler characteristics.
 AC_C_CONST
@@ -350,20 +354,6 @@ AC_FUNC_VFORK
 
 # Find a suitable database interface header and library.
 #
-# Check for Berkeley db routines (first version API).
-MAN_CHECK_BDB([db4 db], [db4/db_185.h db_185.h], [db4 db-4])
-MAN_CHECK_BDB([db3 db], [db3/db_185.h db_185.h], [db3])
-MAN_CHECK_BDB([db2 db], [db_185.h db2/db_185.h db2_185.h], [db2 db])
-MAN_CHECK_BDB([db1 db], [db/db.h db.h db1/db.h], [db db1])
-
-dnl MAN_CHECK_BDB([db2], [db2_185.h], [db2 db c], [AC_DEFINE(DB_ON_LIBC)])
-dnl MAN_CHECK_BDB([db2], [db2/db_185.h], [db2 db c])
-dnl # from package libdb1-dev
-dnl MAN_CHECK_BDB([db], [db/db.h], [db c])
-dnl # from package libc6-dev
-dnl # ########## statically linked #####
-dnl MAN_CHECK_BDB([db], [db1/db.h], [db c], [AC_DEFINE(DB_ON_LIBC)])
-
 # Check for GNU dbm routines.
 if test "$db" = "no" || test "$db" = "gdbm"
 then
@@ -384,6 +374,20 @@ then
       fi
     done], db=no)
 fi
+
+# Check for Berkeley db routines (first version API).
+MAN_CHECK_BDB([db4 db], [db4/db_185.h db_185.h], [db4 db-4])
+MAN_CHECK_BDB([db3 db], [db3/db_185.h db_185.h], [db3])
+MAN_CHECK_BDB([db2 db], [db_185.h db2/db_185.h db2_185.h], [db2 db])
+MAN_CHECK_BDB([db1 db], [db/db.h db.h db1/db.h], [db db1])
+
+dnl MAN_CHECK_BDB([db2], [db2_185.h], [db2 db c], [AC_DEFINE(DB_ON_LIBC)])
+dnl MAN_CHECK_BDB([db2], [db2/db_185.h], [db2 db c])
+dnl # from package libdb1-dev
+dnl MAN_CHECK_BDB([db], [db/db.h], [db c])
+dnl # from package libc6-dev
+dnl # ########## statically linked #####
+dnl MAN_CHECK_BDB([db], [db1/db.h], [db c], [AC_DEFINE(DB_ON_LIBC)])
 
 # Check for UNIX ndbm routines.
 if test "$db" = "no" || test "$db" = "ndbm"
@@ -451,6 +455,7 @@ AC_CONFIG_FILES(Makefile
 	man/it/Makefile
 	man/ja/Makefile
 	man/pl/Makefile
+	man/ru/Makefile
 	manual/Makefile
 	libdb/Makefile
 	docs/Makefile

@@ -289,7 +289,7 @@ static int parse_for_sec (const char *manpath, const char *section)
 	if (locale) {
 		args[arg_no++] = xstrdup ("-L");	/* locale option */
 		args[arg_no++] = xstrdup (locale);	/* The locale */
-		initial_bit += sizeof "-L" + strlen (locale) + 1;
+		initial_bit = sizeof "-L" + strlen (locale) + 1;
 	} else
 		initial_bit = 0;
 
@@ -299,8 +299,8 @@ static int parse_for_sec (const char *manpath, const char *section)
 
 	first_arg = arg_no;		/* first pagename argument */
 	
-	initial_bit = sizeof "man" + sizeof "-caM" + 
-		      strlen (manpath) + strlen (section) + 2;
+	initial_bit += sizeof "man" + sizeof "-caM" + 
+		       strlen (manpath) + strlen (section) + 2;
 
 	arg_size = initial_bit;
 	key = MYDBM_FIRSTKEY (dbf);
@@ -415,10 +415,12 @@ int main (int argc, char *argv[])
 	locale = xstrdup (setlocale (LC_ALL, ""));
 	if (!locale) {
 		/* Obviously can't translate this. */
-		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
-			     "are correct");
+		if (!getenv ("MAN_NO_LOCALE_WARNING"))
+			error (0, 0, "can't set the locale; make sure $LC_* "
+				     "and $LANG are correct");
 		locale = xstrdup ("C");
 	}
+	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);

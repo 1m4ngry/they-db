@@ -38,7 +38,9 @@
 
 #include "pathsearch.h"
 #include "pipeline.h"
+#include "decompress.h"
 
+#include "manconv.h"
 #include "encodings.h"
 
 
@@ -93,7 +95,9 @@ static struct directory_entry directory_table[] = {
 	{ "id",		"ISO-8859-1",	"ISO-8859-1"		}, /* Indonesian */
 	{ "is",		"ISO-8859-1",	"ISO-8859-1"		}, /* Icelandic */
 	{ "it",		"ISO-8859-1",	"ISO-8859-1"		}, /* Italian */
+	{ "nb",		"ISO-8859-1",	"ISO-8859-1"		}, /* Norwegian Bokmål */
 	{ "nl",		"ISO-8859-1",	"ISO-8859-1"		}, /* Dutch */
+	{ "nn",		"ISO-8859-1",	"ISO-8859-1"		}, /* Norwegian Nynorsk */
 	{ "no",		"ISO-8859-1",	"ISO-8859-1"		}, /* Norwegian */
 	{ "pt",		"ISO-8859-1",	"ISO-8859-1"		}, /* Portuguese */
 	{ "sv",		"ISO-8859-1",	"ISO-8859-1"		}, /* Swedish */
@@ -111,6 +115,8 @@ static struct directory_entry directory_table[] = {
 	{ "pl",		"ISO-8859-2",	"ISO-8859-2"		}, /* Polish */
 	{ "ru",		"KOI8-R",	"KOI8-R"		}, /* Russian */
 	{ "sk",		"ISO-8859-2",	"ISO-8859-2"		}, /* Slovak */
+	/* sr@latin must precede sr, due to top-down left-substring matching later */
+	{ "sr@latin",   "ISO-8859-2",   "ISO-8859-2"            }, /* Serbian Latin */
 	{ "sr",		"ISO-8859-5",	"ISO-8859-5"		}, /* Serbian */
 	{ "tr",		"ISO-8859-9",	"ISO-8859-9"		}, /* Turkish */
 	{ "vi",		"TCVN5712-1",	"TCVN5712-1"		}, /* Vietnamese */
@@ -686,24 +692,63 @@ const char *get_jless_charset (const char *locale_charset)
 	return NULL;
 }
 
+struct manconv_codes {
+	char **from;
+	char *to;
+};
+
+static void manconv_stdin (void *data)
+{
+	struct manconv_codes *codes = data;
+	pipeline *p = decompress_fdopen (dup (STDIN_FILENO));
+
+	pipeline_start (p);
+	manconv (p, codes->from, codes->to);
+	pipeline_wait (p);
+}
+
+static void free_manconv_codes (void *data)
+{
+	struct manconv_codes *codes = data;
+	char **try_from;
+
+	for (try_from = codes->from; *try_from; ++try_from)
+		free (*try_from);
+	free (codes->from);
+	free (codes->to);
+	free (codes);
+}
+
 void add_manconv (pipeline *p, const char *source, const char *target)
 {
-	char *sources, *target_ignore;
+	struct manconv_codes *codes = xmalloc (sizeof *codes);
+	char *name;
 	command *cmd;
 
 	if (STREQ (source, "UTF-8") && STREQ (target, "UTF-8"))
 		return;
 
-	if (STREQ (source, "UTF-8"))
-		sources = xstrdup (source);
-	else
-		sources = appendstr (NULL, "UTF-8:", source, NULL);
-	target_ignore = appendstr (NULL, target, "//IGNORE", NULL);
-	cmd = command_new_args (MANCONV, "-f", sources,
-				"-t", target_ignore, NULL);
-	free (target_ignore);
-	free (sources);
+	/* informational only; no shell quoting concerns */
+	name = appendstr (NULL, MANCONV, " -f ", NULL);
+	if (STREQ (source, "UTF-8")) {
+		codes->from = XNMALLOC (2, char *);
+		codes->from[0] = xstrdup (source);
+		codes->from[1] = NULL;
+		name = appendstr (name, source, NULL);
+	} else {
+		codes->from = XNMALLOC (3, char *);
+		codes->from[0] = xstrdup ("UTF-8");
+		codes->from[1] = xstrdup (source);
+		codes->from[2] = NULL;
+		name = appendstr (name, "UTF-8:", source, NULL);
+	}
+	codes->to = appendstr (NULL, target, "//IGNORE", NULL);
+	/* informational only; no shell quoting concerns */
+	name = appendstr (name, " -t ", codes->to, NULL);
 	if (quiet >= 2)
-		command_arg (cmd, "-q");
+		name = appendstr (name, " -q", NULL);
+	cmd = command_new_function (name, &manconv_stdin, &free_manconv_codes,
+				    codes);
+	free (name);
 	pipeline_command (p, cmd);
 }

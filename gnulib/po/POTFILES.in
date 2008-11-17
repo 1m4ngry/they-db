@@ -107,6 +107,7 @@ gnulib/lib/mkdirat.c
 gnulib/lib/mkdtemp.c
 gnulib/lib/mkstemp.c
 gnulib/lib/open-safer.c
+gnulib/lib/open.c
 gnulib/lib/openat-die.c
 gnulib/lib/openat-priv.h
 gnulib/lib/openat-proc.c

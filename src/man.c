@@ -99,6 +99,7 @@ static char *cwd;
 #include "security.h"
 #include "encodings.h"
 #include "convert_name.h"
+#include "zsoelim.h"
 #include "man.h"
 
 #ifdef SECURE_MAN_UID
@@ -221,10 +222,10 @@ static int found_a_stray;		/* found a straycat */
 
 #ifdef MAN_CATS
 static char *tmp_cat_file;	/* for open_cat_stream(), close_cat_stream() */
-static int tmp_cat_fd;
 static int created_tmp_cat;			/* dto. */
-static int man_modtime;		/* modtime of man page, for commit_tmp_cat() */
 #endif
+static int tmp_cat_fd;
+static int man_modtime;		/* modtime of man page, for commit_tmp_cat() */
 
 # ifdef TROFF_IS_GROFF
 static int ditroff;
@@ -638,13 +639,13 @@ static void do_extern (int argc, char *argv[])
 /* lookup $MANOPT and if available, put in *argv[] format for argp */
 static inline char **manopt_to_env (int *argc)
 {
-	char *manopt, *opt_start, **argv;
+	char *manopt, *manopt_copy, *opt_start, **argv;
 
 	manopt = getenv ("MANOPT");
 	if (manopt == NULL || *manopt == '\0')
 		return NULL;
 
-	opt_start = manopt = xstrdup (manopt);
+	opt_start = manopt = manopt_copy = xstrdup (manopt);
 
 	/* allocate space for the program name */
 	*argc = 0;
@@ -661,7 +662,7 @@ static inline char **manopt_to_env (int *argc)
 					*manopt = '\0';
 					argv = xnrealloc (argv, *argc + 3,
 							  sizeof (char *));
-					argv[(*argc)++] = opt_start;
+					argv[(*argc)++] = xstrdup (opt_start);
 				}
 				while (CTYPE (isspace, *(manopt + 1)))
 					*++manopt = '\0';
@@ -678,9 +679,10 @@ static inline char **manopt_to_env (int *argc)
 	}
 
 	if (*opt_start)
-		argv[(*argc)++] = opt_start;
+		argv[(*argc)++] = xstrdup (opt_start);
 	argv[*argc] = NULL;			
 
+	free (manopt_copy);
 	return argv;
 }
 
@@ -826,10 +828,11 @@ int main (int argc, char *argv[])
 
 	umask (022);
 	/* initialise the locale */
-	if (!setlocale (LC_ALL, ""))
+	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
 		/* Obviously can't translate this. */
 		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
 			     "are correct");
+	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
 	bindtextdomain (PACKAGE, LOCALEDIR);
 	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
 	textdomain (PACKAGE);
@@ -838,12 +841,16 @@ int main (int argc, char *argv[])
 	/* Use LANGUAGE only when LC_MESSAGES locale category is
 	 * neither "C" nor "POSIX". */
 	if (internal_locale && strcmp (internal_locale, "C") &&
-	    strcmp (internal_locale, "POSIX")) {
+	    strcmp (internal_locale, "POSIX"))
 		multiple_locale = getenv ("LANGUAGE");
-		if (multiple_locale && *multiple_locale)
-			internal_locale = multiple_locale;
-	}
-	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
+	if (multiple_locale && *multiple_locale) {
+		const char *colon = strchr (multiple_locale, ':');
+		internal_locale = colon ?
+			xstrndup (multiple_locale, colon - multiple_locale) :
+			xstrdup (multiple_locale);
+	} else
+		internal_locale = xstrdup (internal_locale ?
+					   internal_locale : "C");
 
 /* export argv, it might be needed when invoking the vendor supplied browser */
 #if defined _AIX || defined __sgi
@@ -920,9 +927,8 @@ int main (int argc, char *argv[])
 		debug ("main(): locale = %s, internal_locale = %s\n",
 		       locale, internal_locale);
 		if (internal_locale) {
-			extern int _nl_msg_cat_cntr;
 			setenv ("LANGUAGE", internal_locale, 1);
-			++_nl_msg_cat_cntr;
+			locale_changed ();
 			multiple_locale = NULL;
 		}
 	}
@@ -978,33 +984,26 @@ int main (int argc, char *argv[])
 	}
 
 	if (manp == NULL) {
-		char tmp_locale[3];
-		int idx;
-
 		manp = add_nls_manpath (get_manpath (alt_system_name),
 					internal_locale);
 		/* Handle multiple :-separated locales in LANGUAGE */
-		idx = multiple_locale ? strlen (multiple_locale) : 0;
-		while (idx) {
-			while (idx && multiple_locale[idx] != ':')
-				idx--;
-			if (multiple_locale[idx] == ':')
-				idx++;
-			tmp_locale[0] = multiple_locale[idx];
-			tmp_locale[1] = multiple_locale[idx + 1];
-			tmp_locale[2] = 0;
-			/* step back over preceding ':' */
-			if (idx) idx--;
-			if (idx) idx--;
-			debug ("checking for locale %s\n", tmp_locale);
-			manp = add_nls_manpath (manp, tmp_locale);
+		if (multiple_locale && *multiple_locale) {
+			char *localetok = xstrdup (multiple_locale), *tok;
+			char *localetok_ptr = localetok;
+			for (tok = strsep (&localetok_ptr, ":"); tok;
+			     tok = strsep (&localetok_ptr, ":")) {
+				if (!*tok)	/* ignore empty fields */
+					continue;
+				debug ("checking for locale %s\n", tok);
+				manp = add_nls_manpath (manp, tok);
+			}
 		}
 	} else
 		free (get_manpath (NULL));
 
-	create_pathlist (manp, manpathlist);
-
 	debug ("*manpath search path* = %s\n", manp);
+
+	create_pathlist (manp, manpathlist);
 
 	/* finished manpath processing, regain privs */
 	regain_effective_privs ();
@@ -1292,9 +1291,11 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		char *cat_charset = NULL;
 		const char *groff_preconv;
 
-		if (!recode)
-			pipeline_command_argstr (p, get_def ("soelim",
-							     SOELIM));
+		if (!recode) {
+			cmd = command_new_function (SOELIM, &zsoelim_stdin,
+						    NULL, NULL);
+			pipeline_command (p, cmd);
+		}
 
 		page_encoding = get_page_encoding (lang);
 		source_encoding = get_source_encoding (lang);
@@ -1809,6 +1810,17 @@ static int commit_tmp_cat (const char *cat_file, const char *tmp_cat,
 	return status;
 }
 
+/* TODO: This should all be refactored after work on the decompression
+ * library is complete.
+ */
+void discard_stderr (pipeline *p)
+{
+	int i;
+
+	for (i = 0; i < p->ncommands; ++i)
+		p->commands[i]->discard_err = 1;
+}
+
 #ifdef MAN_CATS
 
 /* Return pipeline to write formatted manual page to for saving as cat file. */
@@ -1883,17 +1895,6 @@ static int close_cat_stream (pipeline *cat_p, const char *cat_file,
 	}
 	free (tmp_cat_file);
 	return status;
-}
-
-/* TODO: This should all be refactored after work on the decompression
- * library is complete.
- */
-void discard_stderr (pipeline *p)
-{
-	int i;
-
-	for (i = 0; i < p->ncommands; ++i)
-		p->commands[i]->discard_err = 1;
 }
 
 /*
@@ -2110,6 +2111,7 @@ static int display (const char *dir, const char *man_file,
 	pipeline *format_cmd;	/* command to format man_file to stdout */
 	int display_to_stdout;
 	pipeline *decomp = NULL;
+	int decomp_errno = 0;
 
 	/* if dir is set chdir to it */
 	if (dir) {
@@ -2133,8 +2135,10 @@ static int display (const char *dir, const char *man_file,
 		pipeline_start (decomp);
 		format_cmd = make_roff_command (dir, man_file, decomp,
 						dbfilters);
-	} else
+	} else {
 		format_cmd = NULL;
+		decomp_errno = errno;
+	}
 
 	/* Get modification time, for commit_tmp_cat(). */
 	if (man_file && *man_file) {
@@ -2157,6 +2161,12 @@ static int display (const char *dir, const char *man_file,
 		/* If we're reading stdin via '-l -', man_file is "". See
 		 * below.
 		 */
+		assert (man_file);
+		if (!decomp) {
+			assert (!format_cmd); /* no need to free it */
+			error (0, decomp_errno, _("can't open %s"), man_file);
+			return 0;
+		}
 		if (*man_file == '\0')
 			found = 1;
 		else
@@ -2169,12 +2179,9 @@ static int display (const char *dir, const char *man_file,
 				return 0;
 			}
 			drop_effective_privs ();
-			if (decomp) {
-				pipeline_connect (decomp, format_cmd, NULL);
-				pipeline_pump (decomp, format_cmd, NULL);
-				pipeline_wait (decomp);
-			} else
-				pipeline_start (format_cmd);
+			pipeline_connect (decomp, format_cmd, NULL);
+			pipeline_pump (decomp, format_cmd, NULL);
+			pipeline_wait (decomp);
 			status = pipeline_wait (format_cmd);
 			regain_effective_privs ();
 			if (status != 0)
@@ -2225,6 +2232,17 @@ static int display (const char *dir, const char *man_file,
 			if (!save_cat)
 				debug ("cat dir %s does not exist\n", cat_dir);
 			free (cat_dir);
+		}
+
+		if (format && (!format_cmd || !decomp)) {
+			assert (man_file);
+			/* format_cmd is NULL iff decomp is NULL; no need to
+			 * free either of them.
+			 */
+			assert (!format_cmd);
+			assert (!decomp);
+			error (0, decomp_errno, _("can't open %s"), man_file);
+			return 0;
 		}
 
 		/* if we're trying to read stdin via '-l -' then man_file
@@ -2315,6 +2333,12 @@ static int display (const char *dir, const char *man_file,
 			}
 
 			decomp_cat = decompress_open (cat_file);
+			if (!decomp_cat) {
+				error (0, errno, _("can't open %s"), cat_file);
+				pipeline_free (format_cmd);
+				pipeline_free (decomp);
+				return 0;
+			}
 			disp_cmd = make_display_command (NULL, title);
 			format_display (decomp_cat, NULL, disp_cmd, man_file);
 			pipeline_free (disp_cmd);
@@ -2719,8 +2743,10 @@ static int try_section (const char *path, const char *sec, const char *name,
 		struct mandata *info = infoalloc ();
 		char *info_buffer = filename_info (*np, info, name);
 		const char *ult;
-		if (!info_buffer)
+		if (!info_buffer) {
+			free_mandata_struct (info);
 			continue;
+		}
 		info->addr = info_buffer;
 
 		/* What kind of page is this? Since it's a real file, it
@@ -2731,6 +2757,9 @@ static int try_section (const char *path, const char *sec, const char *name,
 		if (!ult) {
 			/* already warned */
 			debug ("try_section(): bad link %s\n", *np);
+			free (info_buffer);
+			info->addr = NULL;
+			free_mandata_struct (info);
 			continue;
 		}
 		if (STREQ (ult, *np))
@@ -3241,8 +3270,10 @@ static const char **get_section_list (void)
 	 * empty.
 	 */
 	config_sections = get_sections ();
-	if (!*config_sections)
+	if (!*config_sections) {
+		free (config_sections);
 		config_sections = std_sections;
+	}
 
 	if (colon_sep_section_list == NULL)
 		colon_sep_section_list = getenv ("MANSECT");
