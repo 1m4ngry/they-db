@@ -1,10 +1,10 @@
-man-db (2.5.2-4) UNRELEASED; urgency=low
+man-db (2.5.2-4) unstable; urgency=low
 
   * Backport from trunk:
     - Update manual page search order to permit FHS-compliant installation
       of packages in /opt. Reported by Matt Domsch.
 
- -- Colin Watson <cjwatson@debian.org>  Sat, 24 Jan 2009 12:28:12 +0000
+ -- Colin Watson <cjwatson@debian.org>  Sat, 24 Jan 2009 12:29:08 +0000
 
 man-db (2.5.2-3) unstable; urgency=low
 
