@@ -1,4 +1,4 @@
-man-db (2.5.4-1) UNRELEASED; urgency=low
+man-db (2.5.4-1) unstable; urgency=low
 
   * New upstream release.
     - Exit as soon as possible if database writes return ENOSPC (closes:
@@ -25,7 +25,7 @@ man-db (2.5.4-1) UNRELEASED; urgency=low
       rather oddly, it effectively handled LANGUAGE in reverse order
       (closes: #516133).
 
- -- Colin Watson <cjwatson@debian.org>  Sat, 31 Jan 2009 12:42:30 +0000
+ -- Colin Watson <cjwatson@debian.org>  Tue, 24 Feb 2009 02:41:53 +0000
 
 man-db (2.5.3-3) experimental; urgency=low
 
