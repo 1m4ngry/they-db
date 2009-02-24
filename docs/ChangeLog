@@ -1,3 +1,547 @@
+Tue Feb 24 01:06:46 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.4.
+	* po/man-db.pot, po/*.po: Update.
+
+Tue Feb 24 01:00:56 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/id.po: Fix groff syntax error.
+
+Mon Feb 23 22:37:36 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Sending patches): Refer to new man-db-devel mailing
+	  list.
+
+Mon Feb 23 22:29:43 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Things to do): Improve bug tracking system link.
+
+Mon Feb 23 22:17:50 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (locale_macros, display): Only load per-locale groff
+	  macros if preconv is available, since those macros may change the
+	  assumed input encoding.
+
+Mon Feb 23 22:11:56 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Update.
+
+Sat Feb 21 12:01:55 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	Load per-locale groff macros if possible. This only works with groff
+	1.20.2 (as yet unreleased) or better, since that introduces
+	facilities to allow us to avoid an error message if there is no
+	macro file for the relevant locale.
+
+	* src/man.c (locale_macros): New function.
+	  (display): Check the page language, and add locale_macros to the
+	  formatting pipeline provided that the language is not empty or
+	  "C".
+
+Fri Feb 20 09:58:13 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	Partially rewrite building of manpath according to locale. The
+	previous code was completely wrong: as well as handling duplicates
+	rather oddly, it effectively handled LANGUAGE in reverse order
+	(Debian bug #516133).
+
+	* src/manp.c (add_nls_manpath): Rename to ...
+	  (get_nls_manpath): ... this. Some minor adjustments. Make
+	  manpathlist argument const and always return a freshly-allocated
+	  string. Explicitly add the top-level directory to the string in
+	  the case of English locales (although we still look for
+	  subdirectories in case of things like en_GB.UTF-8); C and POSIX
+	  already just return a copy of manpathlist.
+	  (add_nls_manpaths): New function to iterate over a colon-separated
+	  list of locales, concatenating the result of get_nls_manpath for
+	  each. Stop worrying about deduplication at this point as we used
+	  to; instead, we let create_pathlist sort that out.
+	  (create_pathlist): Keep the first of any set of duplicates rather
+	  than the last, in order to keep item order stable.
+	* src/manp.h (add_nls_manpath): Remove prototype.
+	  (add_nls_manpaths): Add prototype.
+	* src/man.c (main), src/whatis.c (main): Call add_nls_manpaths
+	  rather than add_nls_manpath, with appropriate adjustments.
+
+	* src/man.c (main), src/whatis.c (main): Don't set internal_locale
+	  to the first component of multiple_locale. We will account for
+	  this in search paths, but shouldn't forget about internal_locale
+	  entirely.
+
+Thu Feb 19 21:50:44 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (add_to_manpath): Remove; this just called pathappend
+	  with the same arguments and so is pointless cruft.
+	  (add_nls_manpath): Update all callers.
+
+Tue Feb 17 00:49:28 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Check for gpreconv/preconv properly, i.e. by using
+	  AC_CHECK_PROGS rather than by using 'which'.
+
+Mon Feb 16 01:45:59 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Update.
+
+Mon Feb 16 00:49:47 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_roff_command): If we have preconv, it's silly to
+	  recode to the assumed page encoding and risk problems with
+	  characters unrepresentable in that encoding; we might as well just
+	  recode to UTF-8 and feed that to preconv.
+
+Mon Feb 16 00:39:22 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_roff_command): Append //TRANSLIT to iconv -t
+	  argument (specifically, so that hyphens get properly
+	  transliterated when using preconv and groff -Tutf8 in a non-UTF-8
+	  locale; thanks, Matthew Burgess and Alexander Patrakov).
+
+Mon Feb 16 00:20:07 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Check for gpreconv/preconv, which is evidence of a
+	  version of groff supporting Unicode input, and therefore good
+	  enough to assume --enable-mb-groff (thanks, Matthew Burgess).
+
+Sun Feb 15 23:48:51 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (compare_candidates): Remove obsolete first-pass
+	  language code comparison. Language codes are already handled by
+	  later code here, and this comparison caused English pages to be
+	  preferred over pages for languages whose names sort later than
+	  "man".
+
+Thu Feb 12 11:23:19 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv_main.c (main): Correct error message if the given
+	  filename cannot be opened.
+
+Wed Feb  4 13:53:47 CET 2009  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* man/po4a/po/ru.po: Update from Translation Project (trivial).
+
+Sun Feb  1 16:40:16 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Directory layout): Mention gnulib.
+
+Sun Feb  1 16:36:01 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* lib/linelength.c (get_line_length): Use line length from standard
+	  input, but only if standard output is not a terminal; this allows
+	  commands such as 'MAN_KEEP_STDERR=1 man foo >/dev/null' to report
+	  errors based on the current line length.
+
+Sat Jan 31 12:20:42 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Update.
+
+Sat Jan 31 12:14:10 GMT 2009  Arif E. Nugroho  <arif_endro@yahoo.com>
+
+	* po/id.po: Update from Translation Project.
+
+Tue Jan 27 09:54:25 GMT 2009  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project (trivial).
+
+Tue Jan 27 09:52:18 GMT 2009  Erwin Poeze  <erwin.poeze@gmail.com>
+
+	* po/nl.po: Update from Translation Project.
+	* man/THANKS: Update.
+
+Mon Jan 26 13:40:30 GMT 2009  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Mon Jan 26 13:38:11 GMT 2009  Robert Luberda  <robert@debian.org>
+
+	* po/pl.po, man/po4a/po/pl.po: Update from Translation Project.
+
+Sun Jan 18 23:27:11 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* lib/linelength.c (get_line_length): Line length is a property of
+	  output, not input, so only check whether standard output is a
+	  terminal, not also standard input (Debian bug #512233).
+
+Thu Jan 15 16:04:01 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* po/Makevars (XGETTEXT_OPTIONS): Add --flag=debug:1:c-format
+	  --flag=debug_error:1:c-format.
+
+Thu Jan 15 00:00:05 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	Update manual page search order to permit FHS-compliant installation
+	of packages in /opt. Reported by Matt Domsch.
+
+	* src/manp.c (has_mandir): Use xasprintf rather than clumsier
+	  xmalloc/strncpy/strcpy combination. Try ../share/man and share/man
+	  subdirectories too.
+	  (get_manpath_from_path): Update header comment and debug output.
+	* manual/files.me (Determination of the internal manpath): Update
+	  description of directory search order.
+	* docs/NEWS: Document this.
+
+Mon Jan  5 17:47:55 GMT 2009  Yuri Kozlov  <kozlov.y@gmail.com>
+
+	* po/ru.po, man/po4a/po/ru.po: Update from Translation Project.
+
+Mon Jan  5 17:35:02 GMT 2009  Arif E. Nugroho  <arif_endro@yahoo.com>
+
+	* man/po4a/po/id.po: Update from Translation Project.
+
+Wed Dec 31 12:28:55 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Trust the database if it tells us that a page is ULT_MAN (i.e. not a
+	hard link, symbolic link, or .so link), and avoid passing the
+	SO_LINK flag to ult_src which requires it to open the page to look
+	for .so links. Produces roughly a threefold speed improvement for
+	searches with thousands of results.
+
+	* src/man.c (get_ult_flags): New function.
+	  (add_candidate, display_database): Use it.
+
+Wed Dec 31 11:51:41 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Sort manual page candidates in one go just before displaying them,
+	rather than insertion-sorting them along the way. Produces, very
+	roughly, a 25% speed improvement for searches with many results
+	(e.g. with --regex).
+
+	* src/man.c (duplicate_candidates, compare_candidates): Simplify
+	  interface by passing 'struct candidate' for both sides.
+	  (compare_candidates): Explicitly stabilise the comparison as a
+	  last resort, using a new add_index member.
+	  (compare_candidates_qsort, free_candidate): New functions.
+	  (add_candidate): Adjust calls to duplicate_candidates and
+	  compare_candidates, requiring us to create the candidate structure
+	  earlier. Note that the search produces quadratic-time behaviour.
+	  Only compare candidates in cases of duplicates; otherwise just add
+	  them to the end of the list and defer sorting until later. Use
+	  free_candidate to free search->ult as well as search when freeing
+	  superseded duplicates.
+	  (sort_candidates): New function.
+	  (man): Sort candidates before displaying them.
+
+Tue Dec 30 13:08:35 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.4-pre2.
+	* po/man-db.pot, po/*.po: Update.
+
+Tue Dec 30 12:55:59 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man5/manpath.man5 (FORMAT): Add space between
+	  "MINCATWIDTH"/"MAXCATWIDTH"/"CATWIDTH" and "width".
+	* man/po4a/po/id.po: Unfuzzy translations.
+
+Tue Dec 30 12:52:26 GMT 2008  Arif E. Nugroho  <arif_endro@yahoo.com>
+
+	* po/id.po, man/po4a/po/id.po: Update from Translation Project.
+
+Sun Dec 28 00:27:23 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.4-pre1.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po, po/man-db.pot,
+	  po/*.po: Update.
+
+Sun Dec 28 00:17:45 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/Makefile.am (PO4A_ARGS): Always generate output files
+	  even if poorly translated, since Automake's generated rules will
+	  get upset otherwise.
+
+Sat Dec 27 23:47:19 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/Makefile.am (dist-hook): Update PO and POT files on 'make
+	  dist'.
+
+Sat Dec 27 23:42:53 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (Controlling formatted output): Hide ".B
+	  \-\-no\-hyphenation" from po4a.
+
+Sat Dec 27 11:38:43 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* docs/NEWS: Start 2.5.4.
+
+Sat Dec 27 00:00:01 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Add option to disable hyphenation (Debian bug #166701).
+
+	* src/man.c (options, parse_opt): Accept --no-hyphenation. Reset
+	  corresponding variable with -D.
+	  (disable_hyphenation): New function.
+	  (display): Append disable_hyphenation to the decompressor pipeline
+	  if --no-hyphenation is used.
+	* man/man1/man.man1 (SYNOPSIS, Controlling formatted output):
+	  Document --no-hyphenation.
+
+Thu Dec 25 22:09:01 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Add regular expression and shell wildcard search facilities to man
+	(Debian bug #461319).
+
+	* src/whatis.c (lower): Move to ...
+	* lib/lower.c: ... here, with optimisation from name_to_key. New
+	  file.
+	* lib/lower.h: New file.
+
+	* src/whatis.c (word_fnmatch): Move to ...
+	* lib/wordfnmatch.c: ... here, with more generic argument names. New
+	  file.
+	* lib/wordfnmatch.h: New file.
+
+	* src/whatis.c (main): Factor regcomp error handling out to ...
+	* lib/xregcomp.c: ... here. New file.
+	* lib/xregcomp.h: New file.
+
+	* lib/Makefile.am (libman_a_SOURCES): Add lower.c, lower.h,
+	  wordfnmatch.c, wordfnmatch.h, xregcomp.c, and xregcomp.h.
+	* po/POTFILES.in: Add lib/xregcomp.c; remove src/globbing.c.
+
+	* libdb/db_lookup.c (name_to_key): Use lower.
+	  (dblookup_pattern): New function.
+	* libdb/db_storage.h (dblookup_pattern): Add prototype.
+	* src/globbing.c (end_pattern): Rename to ...
+	  (make_pattern): ... this. Create the whole pattern rather than
+	  merely appending section or extension components. Handle regexes
+	  if the new opts argument has the LFF_REGEX bit set.
+	  (match_in_directory): Take an opts disjunction rather than a
+	  boolean ignore_case argument; ignore_case is replaced by the
+	  LFF_MATCHCASE bit being unset. Handle regexes if opts has the
+	  LFF_REGEX bit set.
+	  (look_for_file): Take an opts disjunction rather than a boolean
+	  match_case argument; match_case is replaced by the LFF_MATCHCASE
+	  bit being set. Handle regexes if opts has the LFF_REGEX bit set.
+	  Handle shell wildcards if opts has the LFF_WILDCARD bit set (which
+	  simply means not shell-escaping unesc_name). Call make_pattern
+	  rather than end_pattern (with appropriate adjustments).
+	* src/globbing.h (enum look_for_file_opts): New enumeration.
+	  (look_for_file): Update prototype.
+	* src/globbing_test.c (options, parse_opt): Accept -r/--regex and
+	  -w/--wildcard.
+	  (main): Update look_for_file arguments, including passing
+	  LFF_REGEX or LFF_WILDCARD if the corresponding options are used.
+	* src/check_mandirs.c (purge_whatis, purge_missing), src/zsoelim.l
+	  (zsoelim_open_file): Update look_for_file arguments.
+	* src/whatis.c (main): Only free preg if a regular expression was
+	  compiled into it in the first place.
+
+	* src/man.c (options, parse_opt): Accept --regex, --wildcard, and
+	  --names-only. Reset corresponding variables with -D. Refuse to
+	  accept both --regex and --wildcard.
+	  (try_section): Update look_for_file arguments, including passing
+	  LFF_REGEX or LFF_WILDCARD if the corresponding options are used.
+	  (try_db): Use dblookup_pattern if --regex or --wildcard is used,
+	  with corresponding options.
+	* man/man1/man.man1 (SYNOPSIS, Finding manual pages): Document
+	  --regex, --wildcard, and --names-only.
+
+Tue Dec 23 11:17:01 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Sync supported language list with Fedora's patch to man
+	(http://cvs.fedora.redhat.com/viewvc/rpms/man/F-10/man-1.6b-i18n_nroff.patch?view=markup,
+	with corrections based on /usr/share/i18n/SUPPORTED).
+
+	* src/encodings.c (directory_table): Add Estonian -> ISO-8859-1,
+	  Belarusian -> CP1251, Greek -> ISO-8859-7, Lithuanian ->
+	  ISO-8859-13, Latvian -> ISO-8859-13, Macedonian -> ISO-8859-5,
+	  Romanian -> ISO-8859-2, Slovenian -> ISO-8859-2, and Ukrainian ->
+	  KOI8-U.
+	  (charset_alias_table): Map KOI8U to KOI8-U.
+	  (less_charset_table): Map KOI8-U to koi8-r (possibly not quite
+	  right but with any luck good enough).
+
+Mon Dec  8 13:08:22 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_store.c (compare_ids): If the promote_links argument is
+	  true, consider SO_MAN equivalent to ULT_MAN.
+	  (replace_if_necessary): Update call to compare_ids.
+	* libdb/db_storage.h (compare_ids): Update prototype.
+	* src/man.c (compare_candidates): Consider SO_MAN equivalent to
+	  ULT_MAN for the purposes of sorting candidate pages for display
+	  (Debian bug #384301).
+
+Mon Dec  8 10:08:45 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Improve sorting and de-duplication of manual page candidates (Debian
+	bugs #389762 and #496172).
+
+	* src/man.c (struct candidate): Add ult member.
+	  (duplicate_candidates): Pare down to only check for duplication
+	  rather than trying to compare as well; the latter function is now
+	  handled entirely by compare_candidates. Compare the ultimate
+	  source file as the first test.
+	  (compare_candidates): Compare locale elements in candidate paths
+	  before comparing sections.
+	  (add_candidates): Look up the ultimate source file if necessary,
+	  and save it in the candidate structure. Use duplicate_candidates
+	  for duplicate testing only and compare_candidates for comparison.
+	  Insert elements at the latest possible position rather than the
+	  earliest possible.
+	  (try_section): Pass the ultimate source file that was already
+	  looked up here.
+	  (try_db): Adjust for new add_candidate signature.
+
+Sun Dec  7 17:43:21 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Make handling of terminal widths for cat pages configurable (Debian
+	bug #121997).
+
+	* src/manp.c (add_to_dirlist): Recognise new MINCATWIDTH,
+	  MAXCATWIDTH, and CATWIDTH directives.
+	* src/man_db.conf.in: Add MINCATWIDTH, MAXCATWIDTH, and CATWIDTH.
+	* src/man.c (get_roff_line_length): Use CATWIDTH rather than the
+	  terminal width if the former is non-zero.
+	  (add_roff_line_length): Check the terminal width against
+	  MINCATWIDTH and MAXCATWIDTH rather than checking whether it
+	  differs from groff's default (via get_roff_line_length). Allow cat
+	  page saving regardless in catman mode.
+	  (make_roff_command): Forbid saving cat pages in troff mode here
+	  rather than via add_roff_line_length/get_roff_line_length.
+	* man/man5/manpath.man5 (FORMAT): Document MINCATWIDTH, MAXCATWIDTH,
+	  and CATWIDTH.
+
+Sun Dec  7 17:17:34 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man5/manpath.man5 (FORMAT): Document SECTION.
+
+Sat Dec  6 22:57:14 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Reorganise lexgrog to stop on any unrecognised roff request, rather
+	than continuing and often littering the database with garbage
+	(Debian bug #271402). This also involved extending lexgrog to
+	recognise some additional requests.
+
+	* src/lexgrog.l (word): New definition.
+	  (typeface): Add .SB and .SM.
+	  (MAN_PRENAME): Go straight to MAN_REST on encountering a section
+	  request or EOF. Go to MAN_NAME on encountering roff requests that
+	  would ordinarily be processed and removed. Skip over any other
+	  roff requests, including spacing and comments.
+	  (MAN_NAME): Process .Tn and .Nm by handling their arguments as
+	  text. Process .At, .Bsx, .Bx, .Fx, .Nx, .Ox, and .Ux by inserting
+	  the appropriate text (introducing several new mini-scanners).
+	  Process .Dq by surrounding its arguments by double quotes. Go to
+	  MAN_REST on encountering any unrecognised roff request.
+	  (add_wordn_to_whatis, add_word_to_whatis, mdoc_text): New
+	  functions to support scanning of .At and friends.
+
+Fri Dec  5 22:27:03 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/man8/mandb.man8 (FILES): List FHS database cache location
+	  first, and indicate more clearly that the others are old locations
+	  (from a comment in Debian bug #243763).
+
+Fri Dec  5 13:52:14 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Make it possible to override man's default of discarding stderr when
+	stdout is a terminal (Debian bug #480996).
+
+	* src/man.c (discard_stderr): Make static.
+	  (maybe_discard_stderr): New function, checking MAN_KEEP_STDERR.
+	  (format_display_and_save, format_display, display_catman): Use
+	  maybe_discard_stderr.
+	* man/man1/man.man1 (ENVIRONMENT): Document this.
+
+Thu Dec  4 15:03:08 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	Exit as soon as possible if database writes return ENOSPC (Debian
+	bug #167159).
+
+	* src/check_mandirs.c (testmandirs, create_db, update_db,
+	  purge_normal, purge_whatis, check_multi_key, purge_missing):
+	  Return int rather than short, to make space for -errno.
+	* src/mandb.c (update_one_file, update_db_wrapper, mandb,
+	  process_manpath): Likewise.
+	* src/check_mandirs.h (create_db, update_db, purge_missing): Update
+	  prototypes.
+
+	* src/check_mandirs.c (create_db): Return -errno for database open
+	  errors other than EACCES and EROFS.
+	* src/mandb.c (mandb): Return early on errors from create_db and
+	  update_db_wrapper. Propagate errors from xcopy as well as
+	  returning early.
+	  (process_manpath): Return early on errors from mandb.
+	  (main): Exit FATAL on errors from process_manpath.
+
+Wed Dec  3 10:54:53 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_lookup.c (make_content): Cast time_t value to long before
+	  trying to print as %ld.
+
+	* libdb/db_ndbm.c (ndbm_flclose, ndbm_flopen): Rename dbf to db to
+	  avoid shadowing a global variable.
+	* libdb/mydbm.h: Update prototypes and gdbm/ndbm macros likewise.
+
+Wed Dec  3 10:45:07 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* lib/Makefile.am (libman_a_CPPFLAGS), libdb/Makefile.am
+	  (libmandb_a_CPPFLAGS), src/Makefile.am (AM_CPPFLAGS): Add
+	  -I$(top_builddir)/intl.
+
+Wed Dec  3 10:38:33 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import the gettext module. The practical effect of this is
+	  to get the intl directory included while compiling files in
+	  gnulib/lib.
+	* autogen.sh: Prefer gnulib's version of tools/config.rpath over
+	  gettext's.
+
+Wed Dec  3 10:17:50 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-po4a.m4 (MAN_PO4A): Define a PO4A Automake conditional
+	  (again).
+	* man/po4a/Makefile.am: Define all-local, update-po, and clean-local
+	  rules only if PO4A is set, so that (in particular) distclean works
+	  if po4a isn't installed.
+
+Tue Dec  2 16:25:53 GMT 2008  Arif E. Nugroho  <arif_endro@yahoo.com>
+
+	* man/po4a/po/id.po: Update from Translation Project (trivial).
+
+Tue Dec  2 14:50:12 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/id.po: New from Translation Project (thanks, Arif E.
+	  Nugroho).
+	* configure.ac (AC_CONFIG_FILES): Add man/id/Makefile.
+	* man/Makefile.am (DIST_SUBDIRS): Add id.
+	* man/id/Makefile.am: New file.
+	* man/po4a/Makefile.am (POFILES): Add po/id.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add id.
+	* man/THANKS: Credit Arif E. Nugroho with man/id as well as id.po.
+	* .bzrignore: Add man/id/man1, man/id/man5, and man/id/man8.
+
+Mon Nov 17 19:26:50 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Now that we use the ISO 8601 date format rather than
+	  language-specific date variants, there's no reason to call out to
+	  date (using options specific to GNU date) to format the date
+	  string, so just hardcode it.
+	* docs/HACKING (Release process): datemark -> date.
+
+Mon Nov 17 17:55:35 GMT 2008  Colin Watson  <cjwatson@debian.org>
+
+	FreeBSD build fixes.
+
+	* man/Rules.man (replace.sed): Spell out
+	  $(top_builddir)/man/replace.sin in full since $< is unspecified in
+	  target rules.
+	* src/Makefile.am (accessdb_LDADD, catman_LDADD, globbing_LDADD,
+	  lexgrog_LDADD, man_LDADD, manconv_LDADD, mandb_LDADD,
+	  manpath_LDADD, whatis_LDADD, wrapper_LDADD, zsoelim_LDADD): Add
+	  @LIBINTL@.
+	  (apropos$(EXEEXT)): Remove target before creating symlink. Spell
+	  out whatis$(EXEEXT) in full since $< is unspecified in target
+	  rules.
+
+	* src/check_mandirs.c (testmandirs): Cast time_t values to long
+	  before trying to print as %ld.
+	* src/descriptions.c (parse_descriptions): Rename base_name to base
+	  and seen_base_name to seen_base.
+	* src/descriptions_store.c (store_descriptions): Rename base_name to
+	  base.
+	* src/descriptions.h (parse_descriptions, store_descriptions):
+	  Update prototypes.
+
 Mon Nov 17 11:44:17 GMT 2008  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.5.3.

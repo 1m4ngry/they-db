@@ -3,7 +3,8 @@
  *
  * Copyright (C) 1990, 1991 John W. Eaton.
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
+ * Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -145,7 +146,9 @@ struct candidate {
 	char from_db;
 	char cat;
 	const char *path;
+	char *ult;
 	struct mandata *source;
+	int add_index; /* for sort stabilisation */
 	struct candidate *next;
 };
 
@@ -160,6 +163,10 @@ static inline void gripe_system (pipeline *p, int status)
 
 enum opts {
 	OPT_WARNINGS = 256,
+	OPT_REGEX,
+	OPT_WILDCARD,
+	OPT_NAMES,
+	OPT_NO_HYPHENATION,
 	OPT_MAX
 };
 
@@ -180,6 +187,7 @@ MYDBM_FILE dbf;
 extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
 extern int disable_cache;
+extern int min_cat_width, max_cat_width, cat_width;
 
 /* locals */
 static const char *alt_system_name;
@@ -210,8 +218,12 @@ static int local_man_file;
 static int findall;
 static int update;
 static int match_case;
+static int regex_opt;
+static int wildcard;
+static int names_only;
 static int ult_flags = SO_LINK | SOFT_LINK | HARD_LINK;
 static const char *recode = NULL;
+static int no_hyphenation;
 
 static int ascii;		/* insert tr in the output pipe */
 static int save_cat; 		/* security breach? Can we save the cat? */
@@ -271,7 +283,11 @@ static struct argp_option options[] = {
 							0,		N_("limit search to extension type EXTENSION"),			22 },
 	{ "ignore-case",	'i',	0,		0,		N_("look for pages case-insensitively (default)"),		23 },
 	{ "match-case",		'I',	0,		0,		N_("look for pages case-sensitively") },
-	{ "all",		'a',	0,		0,		N_("find all matching manual pages"),				24 },
+	{ "regex",	  OPT_REGEX,	0,		0,		N_("show all pages matching regex"),				24 },
+	{ "wildcard",  OPT_WILDCARD,	0,		0,		N_("show all pages matching wildcard") },
+	{ "names-only",	  OPT_NAMES,	0,		0,		N_("make --regex and --wildcard match page names only, not "
+									   "descriptions"),						25 },
+	{ "all",		'a',	0,		0,		N_("find all matching manual pages"),				26 },
 	{ "update",		'u',	0,		0,		N_("force a cache consistency check") },
 
 	{ 0,			0,	0,		0,		N_("Controlling formatted output:"),				30 },
@@ -279,6 +295,8 @@ static struct argp_option options[] = {
 	{ "prompt",		'r',	N_("STRING"),	0,		N_("provide the `less' pager with a prompt") },
 	{ "ascii",		'7',	0,		0,		N_("display ASCII translation of certain latin1 chars"),	31 },
 	{ "encoding",		'E',	N_("ENCODING"),	0,		N_("use selected output encoding") },
+	{ "no-hyphenation",
+		 OPT_NO_HYPHENATION,	0,		0,		N_("turn off hyphenation") },
 	{ "preprocessor",	'p',	N_("STRING"),	0,		N_("STRING indicates which preprocessors to run:\n"
 									   "e - [n]eqn, p - pic, t - tbl,\n"
 									   "g - grap, r - refer, v - vgrind") },
@@ -321,7 +339,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			local_man_file = findall = update = catman =
 				debug_level = troff =
 				print_where = print_where_cat =
-				ascii = match_case = 0;
+				ascii = match_case =
+				regex_opt = wildcard = names_only =
+				no_hyphenation = 0;
 #ifdef TROFF_IS_GROFF
 			ditroff = 0;
 			gxditview = NULL;
@@ -403,6 +423,17 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'I':
 			match_case = 1;
 			return 0;
+		case OPT_REGEX:
+			regex_opt = 1;
+			findall = 1;
+			return 0;
+		case OPT_WILDCARD:
+			wildcard = 1;
+			findall = 1;
+			return 0;
+		case OPT_NAMES:
+			names_only = 1;
+			return 0;
 		case 'a':
 			findall = 1;
 			return 0;
@@ -423,6 +454,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			want_encoding = arg;
 			if (is_roff_device (want_encoding))
 				roff_device = want_encoding;
+			return 0;
+		case OPT_NO_HYPHENATION:
+			no_hyphenation = 1;
 			return 0;
 		case 'p':
 			preprocessors = arg;
@@ -478,6 +512,16 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 					 catman ? "-c " : "",
 					 print_where ? "-w " : "",
 					 print_where_cat ? "-W " : "",
+					 NULL);
+				argp_error (state,
+					    _("%s: incompatible options"),
+					    badopts);
+			}
+			if (regex_opt + wildcard > 1) {
+				char *badopts = appendstr
+					(NULL,
+					 regex_opt ? "--regex " : "",
+					 wildcard ? "--wildcard " : "",
 					 NULL);
 				argp_error (state,
 					    _("%s: incompatible options"),
@@ -559,7 +603,7 @@ static void get_term (void)
 
 static int get_roff_line_length (void)
 {
-	int line_length = get_line_length ();
+	int line_length = cat_width ? cat_width : get_line_length ();
 
 	/* groff >= 1.18 defaults to 78. */
 	if (!troff && line_length != 80) {
@@ -574,11 +618,28 @@ static int get_roff_line_length (void)
 
 static void add_roff_line_length (command *cmd, int *save_cat_p)
 {
-	int length = get_roff_line_length ();
+	int length;
+
+	if (!catman) {
+		int line_length = get_line_length ();
+		debug ("Terminal width %d\n", line_length);
+		if (line_length >= min_cat_width &&
+		    line_length <= max_cat_width)
+			debug ("Terminal width %d within cat page range "
+			       "[%d, %d]\n",
+			       line_length, min_cat_width, max_cat_width);
+		else {
+			debug ("Terminal width %d not within cat page range "
+			       "[%d, %d]\n",
+			       line_length, min_cat_width, max_cat_width);
+			*save_cat_p = 0;
+		}
+	}
+
+	length = get_roff_line_length ();
 	if (length) {
 		char optionll[32], optionlt[32];
 		debug ("Using %d-character lines\n", length);
-		*save_cat_p = 0;
 		sprintf (optionll, "-rLL=%dn", length);
 		sprintf (optionlt, "-rLT=%dn", length);
 		command_args (cmd, optionll, optionlt, NULL);
@@ -843,14 +904,7 @@ int main (int argc, char *argv[])
 	if (internal_locale && strcmp (internal_locale, "C") &&
 	    strcmp (internal_locale, "POSIX"))
 		multiple_locale = getenv ("LANGUAGE");
-	if (multiple_locale && *multiple_locale) {
-		const char *colon = strchr (multiple_locale, ':');
-		internal_locale = colon ?
-			xstrndup (multiple_locale, colon - multiple_locale) :
-			xstrdup (multiple_locale);
-	} else
-		internal_locale = xstrdup (internal_locale ?
-					   internal_locale : "C");
+	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
 
 /* export argv, it might be needed when invoking the vendor supplied browser */
 #if defined _AIX || defined __sgi
@@ -984,24 +1038,29 @@ int main (int argc, char *argv[])
 	}
 
 	if (manp == NULL) {
-		manp = add_nls_manpath (get_manpath (alt_system_name),
-					internal_locale);
-		/* Handle multiple :-separated locales in LANGUAGE */
+		char *all_locales;
+
 		if (multiple_locale && *multiple_locale) {
-			char *localetok = xstrdup (multiple_locale), *tok;
-			char *localetok_ptr = localetok;
-			for (tok = strsep (&localetok_ptr, ":"); tok;
-			     tok = strsep (&localetok_ptr, ":")) {
-				if (!*tok)	/* ignore empty fields */
-					continue;
-				debug ("checking for locale %s\n", tok);
-				manp = add_nls_manpath (manp, tok);
-			}
+			if (internal_locale && *internal_locale)
+				all_locales = xasprintf ("%s:%s",
+							 multiple_locale,
+							 internal_locale);
+			else
+				all_locales = xstrdup (multiple_locale);
+		} else {
+			if (internal_locale && *internal_locale)
+				all_locales = xstrdup (internal_locale);
+			else
+				all_locales = NULL;
 		}
+
+		manp = add_nls_manpaths (get_manpath (alt_system_name),
+					 all_locales);
+		free (all_locales);
 	} else
 		free (get_manpath (NULL));
 
-	debug ("*manpath search path* = %s\n", manp);
+	debug ("manpath search path (with duplicates) = %s\n", manp);
 
 	create_pathlist (manp, manpathlist);
 
@@ -1355,9 +1414,9 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		if (recode)
 			add_manconv (p, page_encoding, recode);
 		else if (groff_preconv) {
-			add_manconv (p, page_encoding, page_encoding);
+			add_manconv (p, page_encoding, "UTF-8");
 			pipeline_command_args
-				(p, groff_preconv, "-e", page_encoding, NULL);
+				(p, groff_preconv, "-e", "UTF-8", NULL);
 		} else if (roff_encoding)
 			add_manconv (p, page_encoding, roff_encoding);
 		else
@@ -1442,10 +1501,11 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			case '-':
 			case 0:
 				/* done with preprocessors, now add roff */
-                                if (troff)
+				if (troff) {
 					cmd = command_new_argstr
 						(get_def ("troff", TROFF));
-                                else
+					save_cat = 0;
+				} else
 					cmd = command_new_argstr
 						(get_def ("nroff", NROFF));
 
@@ -1514,10 +1574,15 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 
 		if ((!want_encoding || !is_roff_device (want_encoding)) &&
 		    output_encoding && locale_charset &&
-		    !STREQ (output_encoding, locale_charset))
+		    !STREQ (output_encoding, locale_charset)) {
+			char *locale_charset_translit =
+				xasprintf ("%s//TRANSLIT", locale_charset);
 			pipeline_command_args (p, "iconv", "-c",
 					       "-f", output_encoding,
-					       "-t", locale_charset, NULL);
+					       "-t", locale_charset_translit,
+					       NULL);
+			free (locale_charset_translit);
+		}
 
 		if (!troff && *COL) {
 			/* get rid of special characters if not writing to a
@@ -1813,12 +1878,19 @@ static int commit_tmp_cat (const char *cat_file, const char *tmp_cat,
 /* TODO: This should all be refactored after work on the decompression
  * library is complete.
  */
-void discard_stderr (pipeline *p)
+static void discard_stderr (pipeline *p)
 {
 	int i;
 
 	for (i = 0; i < p->ncommands; ++i)
 		p->commands[i]->discard_err = 1;
+}
+
+static void maybe_discard_stderr (pipeline *p)
+{
+	const char *man_keep_stderr = getenv ("MAN_KEEP_STDERR");
+	if ((!man_keep_stderr || !*man_keep_stderr) && isatty (STDOUT_FILENO))
+		discard_stderr (p);
 }
 
 #ifdef MAN_CATS
@@ -1913,8 +1985,7 @@ static int format_display_and_save (pipeline *decomp,
 	if (global_manpath)
 		drop_effective_privs ();
 
-	if (isatty (STDOUT_FILENO))
-		discard_stderr (format_cmd);
+	maybe_discard_stderr (format_cmd);
 
 	pipeline_connect (decomp, format_cmd, NULL);
 	if (sav_p) {
@@ -1950,8 +2021,8 @@ static void format_display (pipeline *decomp,
 	char *old_cwd = NULL;
 	char *htmldir = NULL, *htmlfile = NULL;
 
-	if (format_cmd && isatty (STDOUT_FILENO))
-		discard_stderr (format_cmd);
+	if (format_cmd)
+		maybe_discard_stderr (format_cmd);
 
 	drop_effective_privs ();
 
@@ -2069,8 +2140,7 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 				 get_def ("compressor", COMPRESSOR));
 #endif /* COMP_CAT */
 
-	if (isatty (STDOUT_FILENO))
-		discard_stderr (format_cmd);
+	maybe_discard_stderr (format_cmd);
 	format_cmd->want_out = tmp_cat_fd;
 
 	push_cleanup ((cleanup_fun) unlink, tmpcat, 1);
@@ -2094,6 +2164,62 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 	pop_cleanup();
 	free (tmpcat);
 }
+
+/* TODO: This function would be more efficient if the disabling sequence
+ * were simply written in sequence before starting the decompressor.
+ * However, that requires a new COMMAND_SEQUENCE type in the pipeline
+ * library. If that is ever needed for another reason, then this function
+ * should be rewritten using it.
+ */
+static void disable_hyphenation (void *data ATTRIBUTE_UNUSED)
+{
+	fputs (".nh\n"
+	       ".de hy\n"
+	       "..\n", stdout);
+
+	for (;;) {
+		char buffer[4096];
+		int r = read (STDIN_FILENO, buffer, 4096);
+		if (r <= 0)
+			break;
+		if (fwrite (buffer, 1, (size_t) r, stdout) < (size_t) r)
+			break;
+	}
+}
+
+#ifdef TROFF_IS_GROFF
+/* TODO: This function would be more efficient if the macro requests were
+ * simply written in sequence before starting the decompressor. However,
+ * that requires a new COMMAND_SEQUENCE type in the pipeline library. If
+ * that is ever needed for another reason, then this function should be
+ * rewritten using it.
+ */
+static void locale_macros (void *data)
+{
+	printf (
+		/* If we're using groff >= 1.20.2 (for the 'file' warning
+		 * category):
+		 */
+		".if (\\n[.g] & ((\\n[.x] > 1) :"
+		" ((\\n[.x] == 1) & (\\n[.y] >= 20)) :"
+		" ((\\n[.x] == 1) & (\\n[.y] == 20) & (\\n[.Y] >= 2)))) \\{\n"
+		/*   disable warnings of category 'file' */
+		".  warn (\\n[.warn] -"
+		" (\\n[.warn] / 1048576 %% 2 * 1048576))\n"
+		/*   and load the appropriate per-locale macros */
+		".  mso %s.tmac\n"
+		".\\}\n", (const char *) data);
+
+	for (;;) {
+		char buffer[4096];
+		int r = read (STDIN_FILENO, buffer, 4096);
+		if (r <= 0)
+			break;
+		if (fwrite (buffer, 1, (size_t) r, stdout) < (size_t) r)
+			break;
+	}
+}
+#endif /* TROFF_IS_GROFF */
 
 /*
  * optionally chdir to dir, if necessary update cat_file from man_file
@@ -2129,6 +2255,39 @@ static int display (const char *dir, const char *man_file,
 			decomp = decompress_open (man_file);
 		else
 			decomp = decompress_fdopen (dup (STDIN_FILENO));
+
+		if (no_hyphenation) {
+			command *hcmd = command_new_function (
+				"(echo .nh && echo .de hy && echo .. && cat)",
+				disable_hyphenation, NULL, NULL);
+			pipeline_command (decomp, hcmd);
+		}
+
+#ifdef TROFF_IS_GROFF
+		/* This only works with preconv, since the per-locale macros
+		 * may change the assumed input encoding.
+		 */
+		if (*man_file && get_groff_preconv ()) {
+			char *page_lang = lang_dir (man_file);
+
+			if (page_lang && *page_lang &&
+			    !STREQ (page_lang, "C")) {
+				struct locale_bits bits;
+				char *name;
+				command *lcmd;
+
+				unpack_locale_bits (page_lang, &bits);
+				name = xasprintf (
+					"(echo .mso %s.tmac && "
+					"cat)", bits.language);
+				lcmd = command_new_function (
+					name, locale_macros, free, page_lang);
+				pipeline_command (decomp, lcmd);
+				free (name);
+				free_locale_bits (&bits);
+			}
+		}
+#endif /* TROFF_IS_GROFF */
 	}
 
 	if (decomp) {
@@ -2433,145 +2592,166 @@ static char *find_cat_file (const char *path, const char *original,
 	return cat_file;
 }
 
+static int get_ult_flags (char from_db, char id)
+{
+	if (!from_db)
+		return ult_flags;
+	else if (id == ULT_MAN)
+		/* Checking .so links is expensive, as we have to open the
+		 * file. Therefore, if the database lists it as ULT_MAN,
+		 * that's good enough for us and we won't recheck that. This
+		 * does mean that if a page changes from ULT_MAN to SO_MAN
+		 * then you might get duplicates until mandb is next run,
+		 * but that isn't a big deal.
+		 */
+		return ult_flags & ~SO_LINK;
+	else
+		return ult_flags;
+}
+
 /* Is this candidate substantially a duplicate of a previous one?
- * Returns 0 if it is distinct, 1 if source/path is no better than search,
- * and 2 if source/path is better than search.
+ * Returns non-zero if so, otherwise zero.
  */
-static int duplicate_candidates (struct mandata *source, const char *path,
-				 struct candidate *search)
+static int duplicate_candidates (struct candidate *left,
+				 struct candidate *right)
 {
 	const char *slash1, *slash2;
-	char *locale_copy, *p;
-	struct locale_bits bits1, bits2, lbits;
-	const char *codeset1, *codeset2;
+	struct locale_bits bits1, bits2;
 	int ret;
 
-	if (!STREQ (source->name, search->source->name) ||
-	    !STREQ (source->sec, search->source->sec) ||
-	    !STREQ (source->ext, search->source->ext))
+	if (left->ult && right->ult && STREQ (left->ult, right->ult))
+		return 1; /* same ultimate source file */
+
+	if (!STREQ (left->source->name, right->source->name) ||
+	    !STREQ (left->source->sec, right->source->sec) ||
+	    !STREQ (left->source->ext, right->source->ext))
 		return 0; /* different name/section/extension */
 
-	if (STREQ (path, search->path)) {
-		debug ("duplicate candidate\n");
-		return 1;
-	}
+	if (STREQ (left->path, right->path))
+		return 1; /* same path */
 
 	/* Figure out if we've had a sufficiently similar candidate for this
 	 * language already.
 	 */
-	slash1 = strrchr (path, '/');
-	slash2 = strrchr (search->path, '/');
+	slash1 = strrchr (left->path, '/');
+	slash2 = strrchr (right->path, '/');
 	if (!slash1 || !slash2 ||
-	    !STRNEQ (path, search->path,
-		     MAX (slash1 - path, slash2 - search->path)))
+	    !STRNEQ (left->path, right->path,
+		     MAX (slash1 - left->path, slash2 - right->path)))
 		return 0; /* different path base */
 
 	unpack_locale_bits (++slash1, &bits1);
 	unpack_locale_bits (++slash2, &bits2);
 
-	if (!STREQ (bits1.language, bits2.language)) {
-		ret = 0; /* different language */
-		goto out;
-	}
-
-	/* From here on in we need the current locale as well. */
-	locale_copy = xstrdup (internal_locale);
-	p = strchr (locale_copy, ':');
-	if (p)
-		*p = '\0';
-	unpack_locale_bits (locale_copy, &lbits);
-	free (locale_copy);
-
-	/* For different territories, prefer one that matches the locale if
-	 * possible.
-	 */
-	if (*lbits.territory) {
-		if (STREQ (lbits.territory, bits1.territory)) {
-			if (!STREQ (lbits.territory, bits2.territory)) {
-				ret = 2;
-				goto out_locale;
-			}
-		} else {
-			if (STREQ (lbits.territory, bits2.territory)) {
-				ret = 1;
-				goto out_locale;
-			}
-		}
-	}
-	if (!STREQ (bits1.territory, bits2.territory)) {
-		ret = 0; /* different territories, no help from locale */
-		goto out_locale;
-	}
-
-	/* For different modifiers, prefer one that matches the locale if
-	 * possible.
-	 */
-	if (*lbits.modifier) {
-		if (STREQ (lbits.modifier, bits1.modifier)) {
-			if (!STREQ (lbits.modifier, bits2.modifier)) {
-				ret = 2;
-				goto out_locale;
-			}
-		} else {
-			if (STREQ (lbits.modifier, bits2.modifier)) {
-				ret = 1;
-				goto out_locale;
-			}
-		}
-	}
-	if (!STREQ (bits1.modifier, bits2.modifier)) {
-		ret = 0; /* different modifiers, no help from locale */
-		goto out_locale;
-	}
-
-	/* Prefer UTF-8 if available. Otherwise, the last one is probably
-	 * just as good as this one.
-	 */
-	codeset1 = get_canonical_charset_name (bits1.codeset);
-	codeset2 = get_canonical_charset_name (bits2.codeset);
-	if (STREQ (codeset1, "UTF-8")) {
-		if (!STREQ (codeset2, "UTF-8")) {
-			ret = 2;
-			goto out_locale;
-		}
-	} else {
-		/* Either codeset2 is UTF-8 or it's some other legacy
-		 * encoding; either way, we prefer it.
+	if (!STREQ (bits1.language, bits2.language) ||
+	    !STREQ (bits1.territory, bits2.territory) ||
+	    !STREQ (bits1.modifier, bits2.modifier))
+		ret = 0; /* different language/territory/modifier */
+	else
+		/* Everything seems to be the same; we can find nothing to
+		 * choose between them.
 		 */
 		ret = 1;
-		goto out_locale;
-	}
 
-	/* Everything seems to be the same; we can find nothing to choose
-	 * between them. Prefer the one that got there first.
-	 */
-	ret = 1;
-
-out_locale:
-	free_locale_bits (&lbits);
-out:
 	free_locale_bits (&bits1);
 	free_locale_bits (&bits2);
 	return ret;
 }
 
-static int compare_candidates (const struct mandata *left,
-			       const struct mandata *right,
-			       const char *req_name)
+static int compare_candidates (const struct candidate *left,
+			       const struct candidate *right)
 {
+	const struct mandata *lsource = left->source, *rsource = right->source;
 	int sec_left = 0, sec_right = 0;
 	int cmp;
+	const char *slash1, *slash2;
 
 	/* If one candidate matches the requested name exactly, sort it
 	 * first. This makes --ignore-case behave more sensibly.
 	 */
 	/* name is never NULL here, see add_candidate() */
-	if (STREQ (left->name, req_name)) {
-		if (!STREQ (right->name, req_name))
+	if (STREQ (lsource->name, left->req_name)) {
+		if (!STREQ (rsource->name, right->req_name))
 			return -1;
 	} else {
-		if (STREQ (right->name, req_name))
+		if (STREQ (rsource->name, right->req_name))
 			return 1;
+	}
+
+	/* Try comparing based on language. Assuming we've got the right
+	 * name, then it's better to display a page in the user's preferred
+	 * language than a page from a better section.
+	 */
+	slash1 = strrchr (left->path, '/');
+	slash2 = strrchr (right->path, '/');
+	if (slash1 && slash2) {
+		char *locale_copy, *p;
+		struct locale_bits bits1, bits2, lbits;
+		const char *codeset1, *codeset2;
+
+		unpack_locale_bits (++slash1, &bits1);
+		unpack_locale_bits (++slash2, &bits2);
+
+		/* We need the current locale as well. */
+		locale_copy = xstrdup (internal_locale);
+		p = strchr (locale_copy, ':');
+		if (p)
+			*p = '\0';
+		unpack_locale_bits (locale_copy, &lbits);
+		free (locale_copy);
+
+#define COMPARE_LOCALE_ELEMENTS(elt) do { \
+	/* For different elements, prefer one that matches the locale if
+	 * possible.
+	 */ \
+	if (*lbits.elt) { \
+		if (STREQ (lbits.elt, bits1.elt)) { \
+			if (!STREQ (lbits.elt, bits2.elt)) { \
+				cmp = -1; \
+				goto out; \
+			} \
+		} else { \
+			if (STREQ (lbits.elt, bits2.elt)) { \
+				cmp = 1; \
+				goto out; \
+			} \
+		} \
+	} \
+	cmp = strcmp (bits1.territory, bits2.territory); \
+	if (cmp) \
+		/* No help from locale; might as well sort lexically. */ \
+		goto out; \
+} while (0)
+
+		COMPARE_LOCALE_ELEMENTS (language);
+		COMPARE_LOCALE_ELEMENTS (territory);
+		COMPARE_LOCALE_ELEMENTS (modifier);
+
+#undef COMPARE_LOCALE_ELEMENTS
+
+		/* Prefer UTF-8 if available. Otherwise, consider them
+		 * equal.
+		 */
+		codeset1 = get_canonical_charset_name (bits1.codeset);
+		codeset2 = get_canonical_charset_name (bits2.codeset);
+		if (STREQ (codeset1, "UTF-8")) {
+			if (!STREQ (codeset2, "UTF-8")) {
+				cmp = -1;
+				goto out;
+			}
+		} else {
+			if (STREQ (codeset2, "UTF-8")) {
+				cmp = 1;
+				goto out;
+			}
+		}
+
+out:
+		free_locale_bits (&lbits);
+		free_locale_bits (&bits1);
+		free_locale_bits (&bits2);
+		if (cmp)
+			return cmp;
 	}
 
 	/* Compare pure sections first, then ids, then extensions.
@@ -2584,21 +2764,21 @@ static int compare_candidates (const struct mandata *left,
 	 * becomes a pure section; this allows extensions to be selectively
 	 * moved out of order with respect to their parent sections.
 	 */
-	if (strcmp (left->ext, right->ext)) {
-		/* Find out whether left->ext is ahead of right->ext in
+	if (strcmp (lsource->ext, rsource->ext)) {
+		/* Find out whether lsource->ext is ahead of rsource->ext in
 		 * section_list.
 		 */
 		const char **sp;
 		for (sp = section_list; *sp; ++sp) {
 			if (!*(*sp + 1)) {
 				/* No extension */
-				if (!sec_left  && **sp == *(left->ext))
+				if (!sec_left  && **sp == *(lsource->ext))
 					sec_left  = sp - section_list + 1;
-				if (!sec_right && **sp == *(right->ext))
+				if (!sec_right && **sp == *(rsource->ext))
 					sec_right = sp - section_list + 1;
-			} else if (STREQ (*sp, left->ext)) {
+			} else if (STREQ (*sp, lsource->ext)) {
 				sec_left  = sp - section_list + 1;
-			} else if (STREQ (*sp, right->ext)) {
+			} else if (STREQ (*sp, rsource->ext)) {
 				sec_right = sp - section_list + 1;
 			}
 			/* Keep looking for a more specific match */
@@ -2606,13 +2786,13 @@ static int compare_candidates (const struct mandata *left,
 		if (sec_left != sec_right)
 			return sec_left - sec_right;
 
-		cmp = strcmp (left->sec, right->sec);
+		cmp = strcmp (lsource->sec, rsource->sec);
 		if (cmp)
 			return cmp;
 	}
 
-	/* ULT_MAN comes first, etc. */
-	cmp = compare_ids (left->id, right->id);
+	/* ULT_MAN comes first, etc. Consider SO_MAN equivalent to ULT_MAN. */
+	cmp = compare_ids (lsource->id, rsource->id, 1);
 	if (cmp)
 		return cmp;
 
@@ -2620,32 +2800,80 @@ static int compare_candidates (const struct mandata *left,
 	 * everything not mentioned explicitly there, we just compare
 	 * lexically.
 	 */
-	cmp = strcmp (left->ext, right->ext);
+	cmp = strcmp (lsource->ext, rsource->ext);
 	if (cmp)
 		return cmp;
 
-	/* add_candidate() will keep equal candidates in order of insertion
-	 * so that manpath ordering (e.g. language-specific hierarchies)
-	 * works.
+	/* Explicitly stabilise the sort as a last resort, so that manpath
+	 * ordering (e.g. language-specific hierarchies) works.
 	 */
+	if (left->add_index < right->add_index)
+		return -1;
+	else if (left->add_index > right->add_index)
+		return 1;
+	else
+		return 0;
+
 	return 0;
+}
+
+static int compare_candidates_qsort (const void *l, const void *r)
+{
+	const struct candidate *left = *(const struct candidate **)l;
+	const struct candidate *right = *(const struct candidate **)r;
+
+	return compare_candidates (left, right);
+}
+
+static void free_candidate (struct candidate *candidate)
+{
+	if (candidate)
+		free (candidate->ult);
+	free (candidate);
 }
 
 /* Add an entry to the list of candidates. */
 static int add_candidate (struct candidate **head, char from_db, char cat,
 			  const char *req_name, const char *path,
-			  struct mandata *source)
+			  const char *ult, struct mandata *source)
 {
 	struct candidate *search, *prev, *insert, *candp;
-	int insert_found = 0;
+	static int add_index = 0;
 
-	debug ("candidate: %d %d %s %s %c %s %s %s\n",
-	       from_db, cat, req_name, path,
+	if (!ult) {
+		const char *name;
+		char *filename;
+
+		if (*source->pointer != '-')
+			name = source->pointer;
+		else if (source->name)
+			name = source->name;
+		else
+			name = req_name;
+
+		filename = make_filename (path, name, source, cat ? "cat" : "man");
+		ult = ult_src (filename, path, NULL,
+			       get_ult_flags (from_db, source->id));
+		free (filename);
+	}
+
+	debug ("candidate: %d %d %s %s %s %c %s %s %s\n",
+	       from_db, cat, req_name, path, ult,
 	       source->id, source->name ? source->name : "-",
 	       source->sec, source->ext);
 
 	if (!source->name)
 		source->name = xstrdup (req_name);
+
+	candp = XMALLOC (struct candidate);
+	candp->req_name = req_name;
+	candp->from_db = from_db;
+	candp->cat = cat;
+	candp->path = path;
+	candp->ult = xstrdup (ult);
+	candp->source = source;
+	candp->add_index = add_index++;
+	candp->next = NULL;
 
 	/* insert will be NULL (insert at start) or a pointer to the element
 	 * after which this element should be inserted.
@@ -2653,30 +2881,49 @@ static int add_candidate (struct candidate **head, char from_db, char cat,
 	insert = NULL;
 	search = *head;
 	prev = NULL;
+	/* This search produces quadratic-time behaviour, although in
+	 * practice it doesn't seem to be too bad at the moment since the
+	 * run-time is dominated by calls to ult_src. In future it might be
+	 * worth optimising this; the reason I haven't done this yet is that
+	 * it involves quite a bit of tedious bookkeeping. A practical
+	 * approach would be to keep two hashes, one that's just a set to
+	 * keep track of whether candp->ult has been seen already, and one
+	 * that keeps a list of candidates for each candp->name that could
+	 * then be quickly checked by brute force.
+	 */
 	while (search) {
+		int dupcand = duplicate_candidates (candp, search);
+
+		debug ("search: %d %d %s %s %s %c %s %s %s "
+		       "(dup: %d)\n",
+		       search->from_db, search->cat, search->req_name,
+		       search->path, search->ult, search->source->id,
+		       search->source->name ? search->source->name : "-",
+		       search->source->sec, search->source->ext, dupcand);
+
 		/* Check for duplicates. */
-		int dupcand = duplicate_candidates (source, path, search);
-		if (dupcand == 1) {
-			debug ("duplicate candidate\n");
-			return 0;
-		} else if (dupcand == 2) {
-			debug ("superior duplicate candidate\n");
-			if (prev) {
-				prev->next = search->next;
-				free (search);
-				search = prev->next;
+		if (dupcand) {
+			int cmp = compare_candidates (candp, search);
+
+			if (cmp >= 0) {
+				debug ("other duplicate is at least as "
+				       "good\n");
+				free_candidate (candp);
+				return 0;
 			} else {
-				*head = search->next;
-				free (search);
-				search = *head;
+				debug ("this duplicate is better; removing "
+				       "old one\n");
+				if (prev) {
+					prev->next = search->next;
+					free_candidate (search);
+					search = prev->next;
+				} else {
+					*head = search->next;
+					free_candidate (search);
+					search = *head;
+				}
+				continue;
 			}
-			continue;
-		}
-		if (!insert_found &&
-		    compare_candidates (source, search->source,
-					req_name) < 0) {
-			insert = prev;
-			insert_found = 1;
 		}
 
 		prev = search;
@@ -2685,15 +2932,12 @@ static int add_candidate (struct candidate **head, char from_db, char cat,
 		else
 			break;
 	}
-	if (!insert_found)
-		insert = prev;
+	/* Insert the new candidate at the end of the list (having had to go
+	 * through them all looking for duplicates anyway); we'll sort it
+	 * into place later.
+	 */
+	insert = prev;
 
-	candp = XMALLOC (struct candidate);
-	candp->req_name = req_name;
-	candp->from_db = from_db;
-	candp->cat = cat;
-	candp->path = path;
-	candp->source = source;
 	candp->next = insert ? insert->next : *head;
 	if (insert)
 		insert->next = candp;
@@ -2701,6 +2945,38 @@ static int add_candidate (struct candidate **head, char from_db, char cat,
 		*head = candp;
 
 	return 1;
+}
+
+/* Sort the entire list of candidates. */
+static void sort_candidates (struct candidate **candidates)
+{
+	struct candidate *cand, **allcands;
+	size_t count, i;
+
+	for (cand = *candidates; cand; cand = cand->next)
+		++count;
+
+	if (count == 0)
+		return;
+
+	allcands = XNMALLOC (count, struct candidate *);
+	i = 0;
+	for (cand = *candidates; cand; cand = cand->next) {
+		assert (i < count);
+		allcands[i++] = cand;
+	}
+	assert (i == count);
+
+	qsort (allcands, count, sizeof *allcands, compare_candidates_qsort);
+
+	*candidates = cand = allcands[0];
+	for (i = 1; i < count; ++i) {
+		cand->next = allcands[i];
+		cand = cand->next;
+	}
+	cand->next = NULL;
+
+	free (allcands);
 }
 
 /*
@@ -2713,6 +2989,9 @@ static int try_section (const char *path, const char *sec, const char *name,
 	int found = 0;
 	char **names = NULL, **np;
 	char cat = 0;
+	int lff_opts = (match_case ? LFF_MATCHCASE : 0) |
+		       (regex_opt ? LFF_REGEX : 0) |
+		       (wildcard ? LFF_WILDCARD : 0);
 
 	debug ("trying section %s with globbing\n", sec);
 
@@ -2721,7 +3000,7 @@ static int try_section (const char *path, const char *sec, const char *name,
   	 * Look for man page source files.
   	 */
 
-	names = look_for_file (path, sec, name, 0, match_case);
+	names = look_for_file (path, sec, name, 0, lff_opts);
 	if (!names)
 		/*
     		 * No files match.  
@@ -2734,7 +3013,7 @@ static int try_section (const char *path, const char *sec, const char *name,
 			return 1;
 
 		if (!troff && !want_encoding && !recode) {
-			names = look_for_file (path, sec, name, 1, match_case);
+			names = look_for_file (path, sec, name, 1, lff_opts);
 			cat = 1;
 		}
 	}
@@ -2768,7 +3047,7 @@ static int try_section (const char *path, const char *sec, const char *name,
 			info->id = SO_MAN;
 
 		found += add_candidate (cand_head, CANDIDATE_FILESYSTEM,
-					cat, name, path, info);
+					cat, name, path, ult, info);
 		/* Don't free info and info_buffer here. */
 	}
 
@@ -2866,7 +3145,7 @@ static int display_database (struct candidate *candp)
 			char *cat_file;
 
 			man_file = ult_src (file, candp->path, NULL,
-					    ult_flags);
+					    get_ult_flags (1, in->id));
 			if (man_file == NULL) {
 				free (title);
 				return found; /* zero */
@@ -3051,7 +3330,13 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 
 			/* if section is set, only return those that match,
 			   otherwise NULL retrieves all available */
-			data = dblookup_all (name, section, match_case);
+			if (regex_opt || wildcard)
+				data = dblookup_pattern
+					(name, section, match_case,
+					 regex_opt, !names_only);
+			else
+				data = dblookup_all (name, section,
+						     match_case);
 			hash_install (db_hash, manpath, strlen (manpath),
 				      data);
 			MYDBM_CLOSE (dbf);
@@ -3113,7 +3398,7 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 		    (!extension || STREQ (extension, loc->ext)
 				|| STREQ (extension, loc->ext + strlen (sec))))
 			found += add_candidate (cand_head, CANDIDATE_DATABASE,
-						0, name, manpath, loc);
+						0, name, manpath, NULL, loc);
 
 	return found;
 }
@@ -3246,6 +3531,8 @@ static int man (const char *name, int *found)
 						       &candidates);
 		}
 	}
+
+	sort_candidates (&candidates);
 
 	if (*found)
 		*found = display_pages (candidates);

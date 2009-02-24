@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.5.3], [cjwatson@debian.org])
+AC_INIT([man-db], [2.5.4], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR(tools)
 AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
 AC_PREREQ([2.59])
@@ -16,8 +16,7 @@ AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-datemark=20081117
-date=`LANG=C date -d $datemark +'%Y-%m-%d'`
+date=2009-02-24
 AC_SUBST(date)dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST(roff_version)dnl
@@ -221,15 +220,20 @@ else
 	troff="(troff not installed)"
 fi
 
-AC_MSG_CHECKING([for groff with Debian multibyte patch])
+AC_CHECK_PROGS([preconv], [gpreconv preconv])
+
+AC_MSG_CHECKING([for groff with Debian multibyte patch or real Unicode support])
 man_mb_groff=no
 AC_ARG_ENABLE(mb-groff,
-[AS_HELP_STRING([--enable-mb-groff], [expect groff with Debian multibyte patch])],
+[AS_HELP_STRING([--enable-mb-groff], [expect groff with Debian multibyte patch or real Unicode support])],
 	[if test "$enableval" = "yes"
 	 then
 		man_mb_groff=yes
 	 fi],
-	[if test -n "$troff" && test "$troff_is_groff" = "yes"
+	[if test -n "$preconv"
+	 then
+		man_mb_groff=yes
+	 elif test -n "$troff" && test "$troff_is_groff" = "yes"
 	 then
 		if $troff -Tnippon </dev/null >/dev/null 2>&1
 		then
@@ -452,6 +456,7 @@ AC_CONFIG_FILES(Makefile
 	man/de/Makefile
 	man/es/Makefile
 	man/fr/Makefile
+	man/id/Makefile
 	man/it/Makefile
 	man/ja/Makefile
 	man/pl/Makefile

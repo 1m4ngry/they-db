@@ -2,7 +2,7 @@
  * whatis.c: search the index or whatis database(s) for words.
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -55,6 +55,7 @@
 #include "argp.h"
 #include "dirname.h"
 #include "fnmatch.h"
+#include "xvasprintf.h"
 
 #include "manconfig.h"
 
@@ -62,6 +63,9 @@
 #include "pipeline.h"
 #include "linelength.h"
 #include "hashtable.h"
+#include "lower.h"
+#include "wordfnmatch.h"
+#include "xregcomp.h"
 
 #include "mydbm.h"
 #include "db_storage.h"
@@ -391,24 +395,6 @@ static void display (struct mandata *info, char *page)
 	free (string);
 }
 
-/* return lowered version of s */
-static char *lower (char *s)
-{
-	char *low, *p;
-
-	p = low = xmalloc (strlen (s) + 1);
-
-	while (*s) {
-		if (CTYPE (isupper, *s))
-			*p++ = CTYPE (tolower, *s++);
-		else
-			*p++ = *s++;
-	}
-
-	*p = *s;
-	return low;
-}
-
 /* lookup the page and display the results */
 static inline int do_whatis (char *page)
 {
@@ -468,35 +454,6 @@ static int match (char *lowpage, char *whatis)
 	}
 
 	free (begin);
-	return 0;
-}
-
-/* TODO: How on earth do we allow multiple-word matches without
- * reimplementing fnmatch()?
- */
-static int word_fnmatch (char *lowpage, char *whatis)
-{
-	char *lowwhatis = lower (whatis);
-	char *begin = lowwhatis, *p;
-
-	for (p = lowwhatis; *p; p++) {
-		if (CTYPE (islower, *p) || *p == '_')
-			continue;
-
-		/* Check for multiple non-word characters in a row. */
-		if (p <= begin + 1)
-			begin++;
-		else {
-			*p = '\0';
-			if (fnmatch (lowpage, begin, 0) == 0) {
-				free (lowwhatis);
-				return 1;
-			}
-			begin = p + 1;
-		}
-	}
-
-	free (lowwhatis);
 	return 0;
 }
 
@@ -744,14 +701,7 @@ int main (int argc, char *argv[])
 	if (internal_locale && strcmp (internal_locale, "C") &&
 	    strcmp (internal_locale, "POSIX"))
 		multiple_locale = getenv ("LANGUAGE");
-	if (multiple_locale && *multiple_locale) {
-		const char *colon = strchr (multiple_locale, ':');
-		internal_locale = colon ?
-			xstrndup (multiple_locale, colon - multiple_locale) :
-			xstrdup (multiple_locale);
-	} else
-		internal_locale = xstrdup (internal_locale ?
-					   internal_locale : "C");
+	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
 
 	if (argp_parse (am_apropos ? &apropos_argp : &whatis_argp, argc, argv,
 			0, 0, 0))
@@ -778,20 +728,25 @@ int main (int argc, char *argv[])
 
 	/* sort out the internal manpath */
 	if (manp == NULL) {
-		manp = add_nls_manpath (get_manpath (alt_systems),
-					internal_locale);
-		/* Handle multiple :-separated locales in LANGUAGE */
+		char *all_locales;
+
 		if (multiple_locale && *multiple_locale) {
-			char *localetok = xstrdup (multiple_locale), *tok;
-			char *localetok_ptr = localetok;
-			for (tok = strsep (&localetok_ptr, ":"); tok;
-			     tok = strsep (&localetok_ptr, ":")) {
-				if (!*tok)	/* ignore empty fields */
-					continue;
-				debug ("checking for locale %s\n", tok);
-				manp = add_nls_manpath (manp, tok);
-			}
+			if (internal_locale && *internal_locale)
+				all_locales = xasprintf ("%s:%s",
+							 multiple_locale,
+							 internal_locale);
+			else
+				all_locales = xstrdup (multiple_locale);
+		} else {
+			if (internal_locale && *internal_locale)
+				all_locales = xstrdup (internal_locale);
+			else
+				all_locales = NULL;
 		}
+
+		manp = add_nls_manpaths (get_manpath (alt_systems),
+					 all_locales);
+		free (all_locales);
 	} else
 		free (get_manpath (NULL));
 
@@ -807,22 +762,13 @@ int main (int argc, char *argv[])
 #endif /* HAVE_ICONV */
 
 	for (i = 0; i < num_keywords; ++i) {
-		if (regex_opt) {
-			int errcode = regcomp (&preg, keywords[i],
-					       REG_EXTENDED |
-					       REG_NOSUB |
-					       REG_ICASE);
-						   
-			if (errcode) {
-				char error_string[64];
-				regerror (errcode, &preg, error_string, 64);
-				error (FAIL, 0, _("fatal: regex `%s': %s"),
-				       keywords[i], error_string);
-			}
-		}
+		if (regex_opt)
+			xregcomp (&preg, keywords[i],
+				  REG_EXTENDED | REG_NOSUB | REG_ICASE);
 		if (!search (keywords[i]))
 			status = NOT_FOUND;
-		regfree (&preg);
+		if (regex_opt)
+			regfree (&preg);
 	}
 
 #ifdef HAVE_ICONV

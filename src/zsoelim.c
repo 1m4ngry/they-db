@@ -947,8 +947,12 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
 /* On IA-64, the buffer size is 16k, not 8k */
 #define YY_READ_BUF_SIZE 16384
+#else
+#define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -956,7 +960,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO fwrite( yytext, yyleng, 1, yyout )
+#define ECHO do { if (fwrite( yytext, yyleng, 1, yyout )) {} } while (0)
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -1055,7 +1059,7 @@ YY_DECL
 #line 113 "zsoelim.l"
 
 
-#line 1059 "zsoelim.c"
+#line 1063 "zsoelim.c"
 
 	if ( !(yy_init) )
 		{
@@ -1368,7 +1372,7 @@ YY_RULE_SETUP
 #line 280 "zsoelim.l"
 ECHO;
 	YY_BREAK
-#line 1372 "zsoelim.c"
+#line 1376 "zsoelim.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2398,7 +2402,8 @@ int zsoelim_open_file (const char *filename)
 			char *sec = dot2 ?
 				xstrndup (dot + 1, dot2 - (dot + 1)) :
 				xstrdup (dot + 1);
-			char **names = look_for_file (pwd, sec, name, 0, 1);
+			char **names = look_for_file (pwd, sec, name, 0,
+						      LFF_MATCHCASE);
 			char **np;
 
 			for (np = names; np && *np; ++np) {

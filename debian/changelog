@@ -1,3 +1,32 @@
+man-db (2.5.4-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Exit as soon as possible if database writes return ENOSPC (closes:
+      #167159).
+    - Make it possible to override man's default of discarding stderr when
+      stdout is a terminal (closes: #480996).
+    - Reorganise lexgrog to stop on any unrecognised roff request, rather
+      than continuing and often littering the database with garbage (closes:
+      #271402).
+    - Make handling of terminal widths for cat pages configurable (closes:
+      #121997).
+    - Improve sorting and de-duplication of manual page candidates (closes:
+      #389762, #496172).
+    - Consider SO_MAN equivalent to ULT_MAN for the purposes of sorting
+      candidate pages for display (closes: #384301).
+    - Add regular expression and shell wildcard search facilities to man
+      (closes: #461319).
+    - Add option to disable hyphenation (closes: #166701).
+    - Line length is a property of output, not input, so only check whether
+      standard output is a terminal, not also standard input (closes:
+      #512233).
+    - Partially rewrite building of manpath according to locale. The
+      previous code was completely wrong: as well as handling duplicates
+      rather oddly, it effectively handled LANGUAGE in reverse order
+      (closes: #516133).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 31 Jan 2009 12:42:30 +0000
+
 man-db (2.5.3-3) experimental; urgency=low
 
   * Backport from trunk:

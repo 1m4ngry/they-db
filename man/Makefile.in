@@ -604,6 +604,7 @@ oldincludedir = @oldincludedir@
 pager = @pager@
 pdfdir = @pdfdir@
 pic = @pic@
+preconv = @preconv@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -624,7 +625,7 @@ uncompress = @uncompress@
 unlzma = @unlzma@
 vgrind = @vgrind@
 SUBDIRS = $(MAN_SUBDIRS)
-DIST_SUBDIRS = po4a de es fr it ja pl ru
+DIST_SUBDIRS = po4a de es fr id it ja pl ru
 LINGUA = .
 man1_MANS = \
 	man1/apropos.1 \
@@ -1101,7 +1102,7 @@ uninstall-man: uninstall-man1 uninstall-man5 uninstall-man8
 
 
 replace.sed: $(top_builddir)/man/replace.sin
-	sed -e 's,%REPLACE_CONFIG_FILE%,$(config_file),g' $< > $@
+	sed -e 's,%REPLACE_CONFIG_FILE%,$(config_file),g' $(top_builddir)/man/replace.sin > $@
 
 .man1.1: replace.sed
 	$(MKDIR_P) man1

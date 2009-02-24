@@ -10,7 +10,7 @@ Directory layout
 ----------------
 
 The source tree looks something like this, ignoring some directories added
-by autoconf, automake, and gettext:
+by autoconf, automake, gettext, and gnulib:
 
   docs/
     Assorted documentation.
@@ -94,7 +94,7 @@ docs/TODO has a number of outstanding projects. Things near the bottom are
 usually more detailed and accurate.
 
 The Debian bug tracking system has a number of outstanding reports on man-db
-at <http://bugs.debian.org/man-db>.
+at <http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=man-db;ordering=upstream>.
 
 Much of the work needed on man-db is for maintainability. Patches that take
 difficult-to-understand code with hairy memory allocation and replace it
@@ -112,9 +112,9 @@ Sending patches
 ---------------
 
 Please send patches in unified diff format (use GNU diff with the -u option)
-to cjwatson@debian.org. There is currently no man-db development mailing
-list, but if interest picks up then one will be created, together with some
-kind of policy on commit access.
+to man-db-devel@nongnu.org. See
+http://lists.nongnu.org/mailman/listinfo/man-db-devel for subscription
+instructions.
 
 
 Revision control
@@ -157,8 +157,8 @@ Release process
 
 4. Ensure that docs/NEWS and docs/man-db.lsm are up to date. Commit.
 
-5. Update the AC_INIT version number and 'datemark' in configure.ac, but
-   don't commit yet.
+5. Update the AC_INIT version number and 'date' in configure.ac, but don't
+   commit yet.
 
 6. Run ./release.sh, which will spit out a tarball. Test it.
 

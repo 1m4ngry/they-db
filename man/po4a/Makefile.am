@@ -18,12 +18,16 @@
 ## along with man-db; if not, write to the Free Software Foundation,
 ## Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-POFILES = po/pl.po po/ru.po
+POFILES = po/id.po po/pl.po po/ru.po
 
 EXTRA_DIST = po4a.cfg po/man-db-manpages.pot $(POFILES)
 
+if PO4A
+# Always generate output files even if poorly translated, since Automake's
+# generated rules will get upset otherwise.
 PO4A_ARGS = --variable srcdir=$(top_srcdir)/man \
-	    --variable builddir=$(top_builddir)/man
+	    --variable builddir=$(top_builddir)/man \
+	    --keep 0
 
 all-local:
 	$(PO4A) $(PO4A_ARGS) $(srcdir)/po4a.cfg
@@ -33,3 +37,6 @@ update-po:
 
 clean-local:
 	$(PO4A) $(PO4A_ARGS) --rm-translations $(srcdir)/po4a.cfg
+
+dist-hook: update-po
+endif

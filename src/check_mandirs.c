@@ -2,7 +2,7 @@
  * check_mandirs.c: used to auto-update the database caches
  *
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2007, 2008 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -334,12 +334,12 @@ static inline void add_dir_entries (const char *path, char *infile)
  * any dirs of the tree that have been modified (ie added to) will then be
  * scanned for new files, which are then added to the db.
  */
-static short testmandirs (const char *path, time_t last)
+static int testmandirs (const char *path, time_t last)
 {
 	DIR *dir;
 	struct dirent *mandir;
 	struct stat stbuf;
-	short amount = 0;
+	int amount = 0;
 
 	debug ("Testing %s for new files\n", path);
 
@@ -364,7 +364,8 @@ static short testmandirs (const char *path, time_t last)
 		if (last && stbuf.st_mtime <= last) {
 			/* scanned already */
 			debug ("%s modified %ld, db modified %ld\n",
-			       mandir->d_name, stbuf.st_mtime, last);
+			       mandir->d_name, (long) stbuf.st_mtime,
+			       (long) last);
 			continue;
 		}
 
@@ -493,9 +494,9 @@ success:
 }
 
 /* routine to prepare/create the db prior to calling testmandirs() */
-short create_db (const char *manpath)
+int create_db (const char *manpath)
 {
-	short amount;
+	int amount;
 	
 	debug ("create_db(%s): %s\n", manpath, database);
 
@@ -506,13 +507,14 @@ short create_db (const char *manpath)
 
 	dbf = MYDBM_CTRWOPEN (database);
 	if (dbf == NULL) {
-		if (errno == EACCES || errno == EROFS)
+		if (errno == EACCES || errno == EROFS) {
 			debug ("database %s is read-only\n", database);
-		else
+			return 0;
+		} else {
 			error (0, errno, _("can't create index cache %s"),
 			       database);
-		return 0;
-		/* should really return EOF */
+			return -errno;
+		}
 	}
 
 	dbver_wr (dbf);
@@ -531,7 +533,7 @@ short create_db (const char *manpath)
 
 /* routine to update the db, ensure that it is consistent with the 
    filesystem */
-short update_db (const char *manpath)
+int update_db (const char *manpath)
 {
 	if (make_database_directory (database) != 0)
 		return 0;
@@ -543,7 +545,7 @@ short update_db (const char *manpath)
 	}
 	if (dbf) {
 		datum key, content;
-		short new;
+		int new;
 
 		memset (&key, 0, sizeof key);
 		memset (&content, 0, sizeof content);
@@ -671,8 +673,8 @@ static int count_glob_matches (const char *name, const char *ext,
 /* Decide whether to purge a reference to a "normal" (ULT_MAN or SO_MAN)
  * page.
  */
-static short purge_normal (const char *name, struct mandata *info,
-			   char **found)
+static int purge_normal (const char *name, struct mandata *info,
+			 char **found)
 {
 	/* TODO: On some systems, the cat page extension differs from the
 	 * man page extension, so this may be too strict.
@@ -690,8 +692,8 @@ static short purge_normal (const char *name, struct mandata *info,
 }
 
 /* Decide whether to purge a reference to a WHATIS_MAN or WHATIS_CAT page. */
-static short purge_whatis (const char *path, int cat, const char *name,
-			   struct mandata *info, char **found)
+static int purge_whatis (const char *path, int cat, const char *name,
+			 struct mandata *info, char **found)
 {
 	/* TODO: On some systems, the cat page extension differs from the
 	 * man page extension, so this may be too strict.
@@ -734,7 +736,7 @@ static short purge_whatis (const char *path, int cat, const char *name,
 		int save_debug = debug_level;
 		debug_level = 0;
 		real_found = look_for_file (path, info->ext,
-					    info->pointer, cat, 1);
+					    info->pointer, cat, LFF_MATCHCASE);
 		debug_level = save_debug;
 
 		if (count_glob_matches (info->pointer, info->ext, real_found))
@@ -750,7 +752,7 @@ static short purge_whatis (const char *path, int cat, const char *name,
 }
 
 /* Check that multi keys are correctly constructed. */
-static short check_multi_key (const char *name, const char *content)
+static int check_multi_key (const char *name, const char *content)
 {
 	const char *walk, *next;
 
@@ -791,11 +793,11 @@ static short check_multi_key (const char *name, const char *content)
 /* Go through the database and purge references to man pages that no longer
  * exist.
  */
-short purge_missing (const char *manpath, const char *catpath)
+int purge_missing (const char *manpath, const char *catpath)
 {
 	struct stat st;
 	datum key;
-	short count = 0;
+	int count = 0;
 
 	if (stat (database, &st) != 0)
 		/* nothing to purge */
@@ -861,12 +863,12 @@ short purge_missing (const char *manpath, const char *catpath)
 			found = look_for_file (manpath, entry.ext,
 					       entry.name ? entry.name
 							  : nicekey,
-					       0, 1);
+					       0, LFF_MATCHCASE);
 		else
 			found = look_for_file (catpath, entry.ext,
 					       entry.name ? entry.name
 							  : nicekey,
-					       1, 1);
+					       1, LFF_MATCHCASE);
 		debug_level = save_debug;
 
 		/* Now actually decide whether to purge, depending on the

@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 ##
 ## Copyright (C) 1994, 1995 Graeme Wilford.
-## Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007 Colin Watson.
+## Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
 ##
 ## This file is part of man-db.
 ##
@@ -24,6 +24,7 @@ dist_noinst_DATA = README
 
 libman_a_CPPFLAGS = \
 	-I$(top_builddir)/include \
+	-I$(top_builddir)/intl \
 	-I$(top_srcdir)/gnulib/lib \
 	-I$(top_builddir)/gnulib/lib
 
@@ -38,11 +39,17 @@ libman_a_SOURCES = \
 	hashtable.h \
 	linelength.c \
 	linelength.h \
+	lower.c \
+	lower.h \
 	pathsearch.c \
 	pathsearch.h \
 	pipeline.c \
 	pipeline.h \
-	tempfile.c
+	tempfile.c \
+	wordfnmatch.c \
+	wordfnmatch.h \
+	xregcomp.c \
+	xregcomp.h
 
 ## Headers that are used conditionally. Automake can't detect these itself.
 libman_a_SOURCES += \
