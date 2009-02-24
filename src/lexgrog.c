@@ -141,7 +141,15 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -2486,7 +2494,7 @@ static pipeline *decomp;
 */
 /* NOME also works for gl, pt */
 /* eptgrv : eqn, pic, tbl, grap, refer, vgrind */
-#line 2490 "lexgrog.c"
+#line 2498 "lexgrog.c"
 
 #define INITIAL 0
 #define MAN_PRENAME 1
@@ -2691,7 +2699,7 @@ YY_DECL
 
 
  /* begin NAME section processing */
-#line 2695 "lexgrog.c"
+#line 2703 "lexgrog.c"
 
 	if ( !(yy_init) )
 		{
@@ -3603,7 +3611,7 @@ YY_RULE_SETUP
 #line 504 "lexgrog.l"
 ECHO;
 	YY_BREAK
-#line 3607 "lexgrog.c"
+#line 3615 "lexgrog.c"
 
 	case YY_END_OF_BUFFER:
 		{
