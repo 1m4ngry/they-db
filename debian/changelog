@@ -1,3 +1,12 @@
+man-db (2.5.4-2) UNRELEASED; urgency=low
+
+  * Backport from trunk:
+    - Fix handling of pages that declare a non-default encoding in their
+      preprocessor lines. Thanks to Hugo Herbelin for some of the ideas here
+      (closes: #519095).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 10 Mar 2009 23:49:56 +0000
+
 man-db (2.5.4-1) unstable; urgency=low
 
   * New upstream release.
