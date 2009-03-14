@@ -1,17 +1,11 @@
-# German translation of coreutils messages.
-# Copyright © 1996, 1997, 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
-# This file is distributed under the same license as the coreutils package.
+# German translation of gnulib messages.
+# Copyright © 2008 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gnulib package.
 # Karl Eichwalder <ke@suse.de>, 2001-2002.
 # Lutz Behnke <lutz.behnke@gmx.de>, 1996, 1997, 1998, 1999, 2000, 2001.
 # Michael Schmidt <michael@guug.de>, 1996, 1997, 1998, 1999, 2000.
-# Michael Piefel <piefel@informatik.hu-berlin.de>, 2001, 2002, 2003.
-#
-# The first 200+ lines are translations for the lib directory. This is very
-# similar or even identical to other tools' lib directories. Therefore take
-# care to have consistent translation. I have made this identical to the
-# translation in sh-utils and fileutils. -MPi
-# PS: This file now contains sh-utils and fileutils, but the lib dir is in
-# other projects, too.
+# Michael Piefel <piefel@informatik.hu-berlin.de>, 2001, 2002, 2003, 2009.
+# Kai Wasserbäch <debian@carbon-project.org>, 2009.
 #
 # TAB: spell it out („Tabulatoren“). -ke-
 # Don't use obscure abbreviations, please.  -ke-
@@ -37,12 +31,12 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GNU coreutils 5.3.0\n"
+"Project-Id-Version: GNU gnulib-1.1\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
 "POT-Creation-Date: 2008-07-31 00:31+0100\n"
-"PO-Revision-Date: 2005-06-30 16:34+0200\n"
+"PO-Revision-Date: 2009-03-13 10:26+0100\n"
 "Last-Translator: Michael Piefel <piefel@informatik.hu-berlin.de>\n"
-"Language-Team: German <de@li.org>\n"
+"Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,61 +45,57 @@ msgstr ""
 #: gnulib/lib/argp-help.c:147
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
-msgstr ""
+msgstr "ARGP_HELP_FMT: Der Wert %s ist kleiner oder gleich %s"
 
 #: gnulib/lib/argp-help.c:220
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
-msgstr ""
+msgstr "%.*s: ARGP_HELP_FMT Parameter benötigt einen Wert"
 
 #: gnulib/lib/argp-help.c:226
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
-msgstr ""
+msgstr "%.*s: ARGP_HELP_FMT Parameter muss positiv sein"
 
 #: gnulib/lib/argp-help.c:235
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
-msgstr ""
+msgstr "%.*s: Unbekannter ARGP_HELP_FMT Parameter"
 
 #: gnulib/lib/argp-help.c:247
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
-msgstr ""
+msgstr "Müll in ARGP_HELP_FMT: %s"
 
 #: gnulib/lib/argp-help.c:1246
-#, fuzzy
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
 msgstr ""
-"Erforderliche Argumente für lange Optionen sind auch für kurze "
-"erforderlich.\n"
+"Erforderliche oder optionale Argumente für lange Optionen sind auch für "
+"kurze erforderlich bzw. optional."
 
 #: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
-msgstr ""
+msgstr "Aufruf:"
 
 #: gnulib/lib/argp-help.c:1643
 msgid "  or: "
-msgstr ""
+msgstr " oder: "
 
 #: gnulib/lib/argp-help.c:1655
-#, fuzzy
 msgid " [OPTION...]"
-msgstr "Aufruf: %s [OPTION]...\n"
+msgstr " [OPTIONEN] "
 
 #: gnulib/lib/argp-help.c:1682
-#, fuzzy, c-format
+#, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
-msgstr "„%s --help“ gibt weitere Informationen.\n"
+msgstr "»%s --help« oder »%s --usage« liefert weitere Informationen.\n"
 
 #: gnulib/lib/argp-help.c:1710
-#, fuzzy, c-format
+#, c-format
 msgid "Report bugs to %s.\n"
-msgstr ""
-"\n"
-"Melden Sie Fehler (auf Englisch, mit LC_ALL=C) an <%s>.\n"
+msgstr "Melden Sie Fehler (auf Englisch, mit LC_ALL=C) an <%s>.\n"
 
 #: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
 msgid "Unknown system error"
@@ -113,11 +103,11 @@ msgstr "Unbekannter Systemfehler"
 
 #: gnulib/lib/argp-parse.c:81
 msgid "give this help list"
-msgstr ""
+msgstr "zeigt diese Hilfeliste"
 
 #: gnulib/lib/argp-parse.c:82
 msgid "give a short usage message"
-msgstr ""
+msgstr "zeigt eine Kurzfassung des Aufrufs"
 
 #: gnulib/lib/argp-parse.c:83
 msgid "NAME"
@@ -125,64 +115,63 @@ msgstr "NAME"
 
 #: gnulib/lib/argp-parse.c:83
 msgid "set the program name"
-msgstr ""
+msgstr "den Programmnamen setzen"
 
 #: gnulib/lib/argp-parse.c:84
 msgid "SECS"
-msgstr ""
+msgstr "SEK"
 
 #: gnulib/lib/argp-parse.c:85
 msgid "hang for SECS seconds (default 3600)"
-msgstr ""
+msgstr "warte für SEK Sekunden (Standardwert 3600)"
 
 #: gnulib/lib/argp-parse.c:142
-#, fuzzy
 msgid "print program version"
-msgstr "Lesefehler"
+msgstr "zeige Programmversion an"
 
 #: gnulib/lib/argp-parse.c:158
 msgid "(PROGRAM ERROR) No version known!?"
-msgstr ""
+msgstr "(PROGRAMM FEHLER) Keine Version bekannt!?"
 
 #: gnulib/lib/argp-parse.c:611
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Too many arguments\n"
-msgstr "%s: keine korrekt formatierte %s-Prüfsummenzeile gefunden"
+msgstr "%s: zu viele Argumente\n"
 
 #: gnulib/lib/argp-parse.c:754
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
-msgstr ""
+msgstr "(PROGRAMM FEHLER) Option hätte erkannt werden müssen!?"
 
 #: gnulib/lib/getopt.c:526 gnulib/lib/getopt.c:542
 #, c-format
 msgid "%s: option `%s' is ambiguous\n"
-msgstr "%s: Option „%s“ ist mehrdeutig\n"
+msgstr "%s: Option »%s« ist mehrdeutig\n"
 
 #: gnulib/lib/getopt.c:575 gnulib/lib/getopt.c:579
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s: Option „--%s“ erlaubt kein Argument\n"
+msgstr "%s: Option »--%s« erlaubt kein Argument\n"
 
 #: gnulib/lib/getopt.c:588 gnulib/lib/getopt.c:593
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s: Option „%c%s“ erlaubt kein Argument\n"
+msgstr "%s: Option »%c%s« erlaubt kein Argument\n"
 
 #: gnulib/lib/getopt.c:636 gnulib/lib/getopt.c:655 gnulib/lib/getopt.c:971
 #: gnulib/lib/getopt.c:990
 #, c-format
 msgid "%s: option `%s' requires an argument\n"
-msgstr "%s: Option „%s“ erfordert ein Argument\n"
+msgstr "%s: Option »%s« erfordert ein Argument\n"
 
 #: gnulib/lib/getopt.c:693 gnulib/lib/getopt.c:696
 #, c-format
 msgid "%s: unrecognized option `--%s'\n"
-msgstr "%s: unbekannte Option „--%s“\n"
+msgstr "%s: unbekannte Option »--%s«\n"
 
 #: gnulib/lib/getopt.c:704 gnulib/lib/getopt.c:707
 #, c-format
 msgid "%s: unrecognized option `%c%s'\n"
-msgstr "%s: unbekannte Option „%c%s“\n"
+msgstr "%s: unbekannte Option »%c%s«\n"
 
 #: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
 #, c-format
@@ -203,233 +192,224 @@ msgstr "%s: Option erfordert ein Argument -- %c\n"
 #: gnulib/lib/getopt.c:892 gnulib/lib/getopt.c:908
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
-msgstr "%s: Option „-W %s“ ist mehrdeutig\n"
+msgstr "%s: Option »-W %s« ist mehrdeutig\n"
 
 #: gnulib/lib/getopt.c:932 gnulib/lib/getopt.c:950
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr "%s: Option „-W %s“ erlaubt kein Argument\n"
+msgstr "%s: Option »-W %s« erlaubt kein Argument\n"
 
 #: gnulib/lib/openat-die.c:33
-#, fuzzy, c-format
+#, c-format
 msgid "unable to record current working directory"
-msgstr "openat: kann aktuelles Verzeichnisses nicht aufzeichnen"
+msgstr "aktuelles Arbeitsverzeichnisses kann nicht aufgezeichnet werden"
 
 #: gnulib/lib/openat-die.c:46
 #, c-format
 msgid "failed to return to initial working directory"
-msgstr "konnte nicht in ursprüngliches Arbeitsverzeichnis zurückkehren"
+msgstr ""
+"es konnte nicht ins ursprüngliche Arbeitsverzeichnis zurückgekehrt werden"
 
 #: gnulib/lib/regcomp.c:131
 msgid "Success"
-msgstr ""
+msgstr "Erfolg"
 
 #: gnulib/lib/regcomp.c:134
 msgid "No match"
-msgstr ""
+msgstr "Keine Übereinstimmung"
 
 #: gnulib/lib/regcomp.c:137
-#, fuzzy
 msgid "Invalid regular expression"
-msgstr "%s: ungültiger regulärer Ausdruck: %s"
+msgstr "ungültiger regulärer Ausdruck"
 
 #: gnulib/lib/regcomp.c:140
-#, fuzzy
 msgid "Invalid collation character"
-msgstr "Ungültige Zeichenklasse „%s“"
+msgstr "Ungültige Zeichenklasse"
 
 #: gnulib/lib/regcomp.c:143
-#, fuzzy
 msgid "Invalid character class name"
-msgstr "Ungültige Zeichenklasse „%s“"
+msgstr "Ungültiger Zeichenklassenname"
 
 #: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
-msgstr ""
+msgstr "abschließender Backslash"
 
 #: gnulib/lib/regcomp.c:149
-#, fuzzy
 msgid "Invalid back reference"
-msgstr "Ungültige Typbezeichnung „%s“"
+msgstr "Ungültige Rückreferenz"
 
 #: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
-msgstr ""
+msgstr "Keine Übereinstimmung für [ oder [^"
 
 #: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
-msgstr ""
+msgstr "Keine Übereinstimmung für ( oder \\("
 
 #: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
-msgstr ""
+msgstr "Keine Übereinstimmung für \\{"
 
 #: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
-msgstr ""
+msgstr "Ungültiger Inhalt in \\{\\}"
 
 #: gnulib/lib/regcomp.c:164
-#, fuzzy
 msgid "Invalid range end"
-msgstr "Ungültige Typbezeichnung „%s“"
+msgstr "Ungültiges Bereichsende"
 
 #: gnulib/lib/regcomp.c:167
-#, fuzzy
 msgid "Memory exhausted"
 msgstr "Speicher ausgeschöpft"
 
 #: gnulib/lib/regcomp.c:170
-#, fuzzy
 msgid "Invalid preceding regular expression"
-msgstr "%s: ungültiger regulärer Ausdruck: %s"
+msgstr "ungültiger vorhergehender regulärer Ausdruck"
 
 #: gnulib/lib/regcomp.c:173
-#, fuzzy
 msgid "Premature end of regular expression"
-msgstr "Fehler bei Suche mit regulären Ausdrücken"
+msgstr "Vorzeitiges Ende des regulären Ausdrucks"
 
 #: gnulib/lib/regcomp.c:176
-#, fuzzy
 msgid "Regular expression too big"
-msgstr "%s: ungültiger regulärer Ausdruck: %s"
+msgstr "Der reguläre Ausdruck ist zu groß"
 
 #: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
-msgstr ""
+msgstr "Keine Übereinstimmung für ) oder \\)"
 
 #: gnulib/lib/regcomp.c:680
-#, fuzzy
 msgid "No previous regular expression"
-msgstr "Fehler bei Suche mit regulären Ausdrücken"
+msgstr "Kein vorhergehender regulärer Ausdruck"
 
 #: gnulib/lib/siglist.h:30
 msgid "Hangup"
-msgstr ""
+msgstr "Aufgehängt"
 
 #: gnulib/lib/siglist.h:33
 msgid "Interrupt"
-msgstr ""
+msgstr "Unterbrechung"
 
 #: gnulib/lib/siglist.h:36
 msgid "Quit"
-msgstr ""
+msgstr "Beendet"
 
 #: gnulib/lib/siglist.h:39
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Ungültige Anweisung"
 
 #: gnulib/lib/siglist.h:42
 msgid "Trace/breakpoint trap"
-msgstr ""
+msgstr "Trace-/Breakpoint-Falle"
 
 #: gnulib/lib/siglist.h:45
 msgid "Aborted"
-msgstr ""
+msgstr "Abgebrochen"
 
 #: gnulib/lib/siglist.h:48
 msgid "Floating point exception"
-msgstr ""
+msgstr "Fließkomma-Ausnahme"
 
 #: gnulib/lib/siglist.h:51
 msgid "Killed"
-msgstr ""
+msgstr "Getötet"
 
 #: gnulib/lib/siglist.h:54
 #, fuzzy
 msgid "Bus error"
-msgstr "Schreibfehler"
+msgstr "Systemfehler"
 
 #: gnulib/lib/siglist.h:57
 msgid "Segmentation fault"
-msgstr ""
+msgstr "Speicheraufteilungsfehler"
 
 #: gnulib/lib/siglist.h:60
 msgid "Broken pipe"
-msgstr ""
+msgstr "Unterbrochene Weiterleitung"
 
 #: gnulib/lib/siglist.h:63
 msgid "Alarm clock"
-msgstr ""
+msgstr "Alarmuhr"
 
 #: gnulib/lib/siglist.h:66
 msgid "Terminated"
-msgstr ""
+msgstr "Terminiert"
 
 #: gnulib/lib/siglist.h:69
 msgid "Urgent I/O condition"
-msgstr ""
+msgstr "Dringende I/O-Bedingung"
 
 #: gnulib/lib/siglist.h:72
 msgid "Stopped (signal)"
-msgstr ""
+msgstr "Gestoppt (Signal)"
 
 #: gnulib/lib/siglist.h:75
 msgid "Stopped"
-msgstr ""
+msgstr "Gestoppt"
 
 #: gnulib/lib/siglist.h:78
 msgid "Continued"
-msgstr ""
+msgstr "Fortgesetzt"
 
 #: gnulib/lib/siglist.h:81
 msgid "Child exited"
-msgstr ""
+msgstr "Kind verlassen"
 
 #: gnulib/lib/siglist.h:84
 msgid "Stopped (tty input)"
-msgstr ""
+msgstr "Gestoppt (tty-Eingabe)"
 
 #: gnulib/lib/siglist.h:87
 msgid "Stopped (tty output)"
-msgstr ""
+msgstr "Gestoppt (tty-Ausgabe)"
 
 #: gnulib/lib/siglist.h:90
 msgid "I/O possible"
-msgstr ""
+msgstr "I/O möglich"
 
 #: gnulib/lib/siglist.h:93
 msgid "CPU time limit exceeded"
-msgstr ""
+msgstr "CPU-Zeitbegrenzung überschritten"
 
 #: gnulib/lib/siglist.h:96
 msgid "File size limit exceeded"
-msgstr ""
+msgstr "Dateigrößenbegrenzung überschritten"
 
 #: gnulib/lib/siglist.h:99
 msgid "Virtual timer expired"
-msgstr ""
+msgstr "Virtueller Zeitgeber abgelaufen"
 
 #: gnulib/lib/siglist.h:102
 msgid "Profiling timer expired"
-msgstr ""
+msgstr "Zeitmesser zur Leistungsmessung abgelaufen"
 
 #: gnulib/lib/siglist.h:105
 msgid "Window changed"
-msgstr ""
+msgstr "Fenster geändert"
 
 #: gnulib/lib/siglist.h:108
 msgid "User defined signal 1"
-msgstr ""
+msgstr "Benutzerdefiniertes Signal 1"
 
 #: gnulib/lib/siglist.h:111
 msgid "User defined signal 2"
-msgstr ""
+msgstr "Benutzerdefiniertes Signal 2"
 
 #: gnulib/lib/siglist.h:116
 msgid "EMT trap"
-msgstr ""
+msgstr "EMT-Falle"
 
 #: gnulib/lib/siglist.h:119
 msgid "Bad system call"
-msgstr ""
+msgstr "Fehlerhafter Systemaufruf"
 
 #: gnulib/lib/siglist.h:122
 msgid "Stack fault"
-msgstr ""
+msgstr "Stapelfehler"
 
 #: gnulib/lib/siglist.h:125
 msgid "Information request"
-msgstr ""
+msgstr "Informationsanfrage"
 
 #: gnulib/lib/siglist.h:127
 #, fuzzy
@@ -438,17 +418,17 @@ msgstr "merkwürdige Datei"
 
 #: gnulib/lib/siglist.h:130
 msgid "Resource lost"
-msgstr ""
+msgstr "Ressource verloren"
 
 #: gnulib/lib/strsignal.c:111
 #, c-format
 msgid "Real-time signal %d"
-msgstr ""
+msgstr "Echtzeitsignal %d"
 
 #: gnulib/lib/strsignal.c:115
 #, c-format
 msgid "Unknown signal %d"
-msgstr ""
+msgstr "Unbekanntes Signal %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -463,36 +443,41 @@ msgstr "Speicher ausgeschöpft"
 #~ msgid "Valid arguments are:"
 #~ msgstr "Gültige Argumente sind:"
 
+#~ msgid "program error"
+#~ msgstr "Programmfehler"
+
+#~ msgid "stack overflow"
+#~ msgstr "Stacküberlauf"
+
 #~ msgid "write error"
 #~ msgstr "Schreibfehler"
 
-#, fuzzy
 #~ msgid "error while opening \"%s\" for reading"
-#~ msgstr "%s kann nicht zum Lesen geöffnet werden"
+#~ msgstr "Fehler beim Versuch, „%s“ zum Lesen zu öffnen"
 
-#, fuzzy
 #~ msgid "cannot open backup file \"%s\" for writing"
-#~ msgstr "%s kann nicht zum Schreiben geöffnet werden"
+#~ msgstr "kann Sicherungsdatei „%s“ nicht zum Schreiben öffnen"
 
-#, fuzzy
 #~ msgid "error reading \"%s\""
-#~ msgstr "Fehler beim Lesen von %s"
+#~ msgstr "Fehler beim Lesen von „%s“"
 
-#, fuzzy
 #~ msgid "error writing \"%s\""
-#~ msgstr "Fehler beim Schreiben von %s"
+#~ msgstr "Fehler beim Schreiben von „%s“"
 
-#, fuzzy
 #~ msgid "error after reading \"%s\""
-#~ msgstr "Fehler beim Lesen von %s"
+#~ msgstr "Fehler nach dem Lesen von „%s“"
 
-#, fuzzy
 #~ msgid "fdopen() failed"
-#~ msgstr "Fehler beim Öffnen"
+#~ msgstr "Fehler bei fdopen()"
 
-#, fuzzy
+#~ msgid "C# compiler not found, try installing pnet"
+#~ msgstr "C#-Compiler nicht gefunden, versuchen Sie, pnet zu installieren"
+
+#~ msgid "C# virtual machine not found, try installing pnet"
+#~ msgstr "C#-VM nicht gefunden, versuchen Sie, pnet zu installieren"
+
 #~ msgid "%s subprocess failed"
-#~ msgstr "%s: Seek fehlgeschlagen"
+#~ msgstr "%s: Unterprozess fehlgeschlagen"
 
 #~ msgid "regular empty file"
 #~ msgstr "reguläre leere Datei"
@@ -530,47 +515,96 @@ msgstr "Speicher ausgeschöpft"
 #~ msgid "typed memory object"
 #~ msgstr "Objekt getypten Speichers"
 
-#, fuzzy
 #~ msgid "Address family for hostname not supported"
-#~ msgstr "FIFO-Dateien werden nicht unterstützt"
+#~ msgstr "Adressfamilie für Hostnamen nicht unterstützt"
 
-#, fuzzy
+#~ msgid "Temporary failure in name resolution"
+#~ msgstr "Temporäre Störung der Namensauflösung"
+
+#~ msgid "Bad value for ai_flags"
+#~ msgstr "Ungültiger Wert für ai_flags"
+
+#~ msgid "Non-recoverable failure in name resolution"
+#~ msgstr "Nicht zu umgehende Störung der Namensauflösung"
+
 #~ msgid "ai_family not supported"
-#~ msgstr "FIFO-Dateien werden nicht unterstützt"
+#~ msgstr "ai_family nicht unterstützt"
 
-#, fuzzy
+#~ msgid "Memory allocation failure"
+#~ msgstr "Speicherallokationsfehler"
+
+#~ msgid "No address associated with hostname"
+#~ msgstr "Keine Adresse mit Hostnamen verbunden"
+
+#~ msgid "Name or service not known"
+#~ msgstr "Name oder Service unbekannt"
+
+#~ msgid "Servname not supported for ai_socktype"
+#~ msgstr "Servname nicht unterstützt für ai_socktype"
+
 #~ msgid "ai_socktype not supported"
-#~ msgstr "FIFO-Dateien werden nicht unterstützt"
+#~ msgstr "ai_socktype nicht unterstützt"
 
-#, fuzzy
+#~ msgid "Argument buffer too small"
+#~ msgstr "Argumentpuffer zu klein"
+
+#~ msgid "Processing request in progress"
+#~ msgstr "Verarbeitungsanfrage in Bearbeitung"
+
+#~ msgid "Request canceled"
+#~ msgstr "Anfrage abgebrochen"
+
+#~ msgid "Request not canceled"
+#~ msgstr "Anfrage nicht abgebrochen"
+
+#~ msgid "All requests done"
+#~ msgstr "Alle Anfragen erledigt"
+
+#~ msgid "Interrupted by a signal"
+#~ msgstr "Durch Signal unterbrochen"
+
+#~ msgid "Parameter string not correctly encoded"
+#~ msgstr "Parameterzeichenkette nicht korrekt kodiert"
+
 #~ msgid "Unknown error"
-#~ msgstr "Unbekannter Systemfehler"
+#~ msgstr "Unbekannter Fehler"
 
 #~ msgid "block size"
 #~ msgstr "Blockgröße"
 
-#~ msgid "%s exists but is not a directory"
-#~ msgstr "%s existiert, ist aber kein Verzeichnis"
+#~ msgid "invalid source_version argument to compile_java_class"
+#~ msgstr "ungültiges Argument source_version für compile_java_class"
 
-#~ msgid "cannot change owner and/or group of %s"
-#~ msgstr "kann Besitzer und/oder Gruppe von %s nicht ändern."
+#~ msgid "invalid target_version argument to compile_java_class"
+#~ msgstr "ungültiges Argument target_version für compile_java_class"
 
-#~ msgid "cannot create directory %s"
-#~ msgstr "kann Verzeichnis %s nicht anlegen"
+#~ msgid "failed to create \"%s\""
+#~ msgstr "konnte „%s“ nicht erzeugen"
 
-#~ msgid "cannot chdir to directory %s"
-#~ msgstr "kann nicht in Verzeichnis %s wechseln"
+#~ msgid "error while writing \"%s\" file"
+#~ msgstr "Fehler beim Schreiben von der Datei „%s“"
+
+#~ msgid "Java compiler not found, try installing gcj or set $JAVAC"
+#~ msgstr ""
+#~ "Java-Compiler nicht gefunden, versuchen Sie, gcj zu installieren oder "
+#~ "setzen Sie $JAVAC"
+
+#~ msgid "Java virtual machine not found, try installing gij or set $JAVA"
+#~ msgstr ""
+#~ "Java-VM nicht gefunden, versuchen Sie, gij zu installieren oder setzen "
+#~ "Sie $JAVA"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "kann Zugriffsrechte von %s nicht ändern"
 
-#, fuzzy
-#~ msgid "Failed to open /dev/zero for read"
-#~ msgstr "%s: Datei zu lang"
+#~ msgid "cannot create directory %s"
+#~ msgstr "kann Verzeichnis %s nicht anlegen"
 
-#, fuzzy
+#~ msgid "Failed to open /dev/zero for read"
+#~ msgstr "Konnte /dev/zero nicht zum Lesen öffnen"
+
 #~ msgid "cannot create pipe"
-#~ msgstr "Erzeugen von Verknüpfung %s nicht möglich"
+#~ msgstr "kann Pipe nicht erzeugen"
 
 #~ msgid "`"
 #~ msgstr "„"
@@ -605,24 +639,25 @@ msgstr "Speicher ausgeschöpft"
 #~ msgid "invalid group"
 #~ msgstr "ungültige Gruppe"
 
-#~ msgid "cannot get the login group of a numeric UID"
-#~ msgstr "kann die Login-Gruppe einer numerischen UID nicht ermitteln"
+#~ msgid "invalid spec"
+#~ msgstr "ungültige Spec"
 
-#, fuzzy
+#~ msgid "(C)"
+#~ msgstr "©"
+
 #~ msgid ""
 #~ "\n"
-#~ "This is free software.  You may redistribute copies of it under the terms "
-#~ "of\n"
-#~ "the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.\n"
+#~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
+#~ "html>\n"
+#~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
 #~ "\n"
 #~ msgstr ""
-#~ "Dieses Programm ist freie Software; Sie dürfen es weitergeben und/oder\n"
-#~ "verändern gemäß den Bestimmungen der GNU General Public License, "
-#~ "veröffentlicht\n"
-#~ "von der Free Software Foundation; entweder in Version 2, oder (nach "
-#~ "Wahl)\n"
-#~ "einer späteren Version.\n"
+#~ "\n"
+#~ "Lizenz GPLv3+: GNU GPL Version 3 oder höher <http://gnu.org/licenses/gpl."
+#~ "html>\n"
+#~ "Dies ist freie Software: Sie können sie ändern und weitergeben.\n"
+#~ "Es gibt keinerlei Garantien, soweit wie es das Gesetz erlaubt.\n"
 #~ "\n"
 
 #~ msgid "Written by %s.\n"
@@ -688,6 +723,12 @@ msgstr "Speicher ausgeschöpft"
 #~ "Geschrieben von %s, %s, %s,\n"
 #~ "%s, %s, %s, %s,\n"
 #~ "%s, %s und anderen.\n"
+
+#~ msgid "%s subprocess"
+#~ msgstr "%s-Unterprozess"
+
+#~ msgid "%s subprocess got fatal signal %d"
+#~ msgstr "%s-Unterprozess bekam tödliches Signal %d"
 
 #~ msgid "string comparison failed"
 #~ msgstr "Zeichenkettenvergleich fehlgeschlagen"
