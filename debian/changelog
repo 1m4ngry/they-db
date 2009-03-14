@@ -1,4 +1,4 @@
-man-db (2.5.5-1) UNRELEASED; urgency=low
+man-db (2.5.5-1) unstable; urgency=low
 
   * New upstream release:
     - Fix an uninitialised variable when sorting manual page candidates that
@@ -7,7 +7,7 @@ man-db (2.5.5-1) UNRELEASED; urgency=low
     - man(1): Fix missing backslash in -r default (thanks, Will Day; closes:
       #519162).
 
- -- Colin Watson <cjwatson@debian.org>  Sat, 14 Mar 2009 23:29:24 +0000
+ -- Colin Watson <cjwatson@debian.org>  Sat, 14 Mar 2009 23:32:45 +0000
 
 man-db (2.5.4-2) unstable; urgency=low
 
