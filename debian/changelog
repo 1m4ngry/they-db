@@ -4,6 +4,8 @@ man-db (2.5.5-1) UNRELEASED; urgency=low
     - Fix an uninitialised variable when sorting manual page candidates that
       could lead to excessive memory allocation and possible crashes
       (thanks, Dustin Marquess; closes: #519647).
+    - man(1): Fix missing backslash in -r default (thanks, Will Day; closes:
+      #519162).
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 14 Mar 2009 23:29:24 +0000
 
