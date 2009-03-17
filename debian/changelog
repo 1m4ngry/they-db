@@ -1,3 +1,9 @@
+man-db (2.5.5-2) UNRELEASED; urgency=low
+
+  * Run the (as yet rather small) test suite on build.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 17 Mar 2009 02:14:29 +0000
+
 man-db (2.5.5-1) unstable; urgency=low
 
   * New upstream release:

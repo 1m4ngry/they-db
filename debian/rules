@@ -38,6 +38,7 @@ build-stamp: configure-stamp
 # Builds the binary package.
 	dh_testdir
 	$(MAKE)
+	$(MAKE) check
 	touch $@
 
 clean:
