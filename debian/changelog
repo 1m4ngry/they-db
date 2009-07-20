@@ -1,9 +1,9 @@
-man-db (2.5.5-3) UNRELEASED; urgency=low
+man-db (2.5.5-3) unstable; urgency=low
 
   * Use dh_lintian.
   * Fix locale_macros groff version test not to think that 1.20.1 >= 1.20.2.
 
- -- Colin Watson <cjwatson@ubuntu.com>  Wed, 03 Jun 2009 14:55:44 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon, 20 Jul 2009 11:00:03 +0100
 
 man-db (2.5.5-2) unstable; urgency=low
 
