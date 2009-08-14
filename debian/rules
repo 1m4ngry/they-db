@@ -1,27 +1,21 @@
 #! /usr/bin/make -f
+%:
+	dh $@
 
-# The name of the package
 package = man-db
 dtmp    = debian/$(package)
 
+# Cf. #497653
 ifeq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS = -O2 -g
 else
 CFLAGS = -g
 endif
-LDFLAGS = -g
 
-DEB_BUILD_GNU_TYPE = $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-DEB_HOST_GNU_TYPE = $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
-CONFARGS = --build=$(DEB_HOST_GNU_TYPE)
-else
-CONFARGS = --build=$(DEB_HOST_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE)
-endif
-
-configure-stamp:
-	CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" ./configure \
-		    --prefix=/usr --libexecdir=\$${libdir} \
+# --libexecdir still needed due to #541458
+override_dh_auto_configure:
+	CFLAGS="$(CFLAGS)" dh_auto_configure -- \
+		    --libexecdir=\$${libdir} \
 	            --enable-setuid --enable-undoc='man 7 undocumented' \
 	            --with-device=latin1 --enable-mb-groff \
 	            --with-config-file=/etc/manpath.config \
@@ -29,47 +23,21 @@ configure-stamp:
 	            --with-col=col --with-vgrind=vgrind --with-grap=grap \
 	            --with-compress=compress --with-bzip2=bzip2 \
 		    --with-lzma=lzma \
-		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7' \
-	            $(CONFARGS)
-	touch $@
+		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
 
-build: build-stamp
-build-stamp: configure-stamp
-# Builds the binary package.
-	dh_testdir
-	$(MAKE)
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	$(MAKE) check
-endif
-	touch $@
-
-clean:
-	dh_testdir
-	[ ! -f Makefile ] || $(MAKE) -i distclean
-	-rm -f configure-stamp build-stamp install-stamp man/index.*
-	dh_clean
-
-install: install-stamp
-install-stamp: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k
-	dh_installdirs
-	$(MAKE) install DESTDIR=$(CURDIR)/$(dtmp)
+override_dh_auto_install:
+	dh_auto_install
 	# Debian man-db used to put potentially setuid executables in a
 	# private directory in order to do wrapper magic. The wrapper isn't
 	# used any more, but migration is complicated enough that these stay
 	# in /usr/lib/man-db (for now).
 	mv $(dtmp)/usr/bin/man			$(dtmp)/usr/lib/man-db/man
 	mv $(dtmp)/usr/bin/mandb		$(dtmp)/usr/lib/man-db/mandb
+	# Not executable in the tarball, so needs manual installation.
 	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)
-	touch $@
 
-binary-indep: build install
-
-binary-arch: build install
-	dh_testdir
-	dh_testroot
+# This will no longer be needed as of man-db 2.5.6.
+override_dh_installdocs:
 	dh_installdocs
 	install -m644 manual/man_db.cat \
 		$(dtmp)/usr/share/doc/man-db/man-db-manual.txt
@@ -77,26 +45,12 @@ binary-arch: build install
 		$(dtmp)/usr/share/doc/man-db/man-db-manual.dvi
 	install -m644 manual/man_db.ps \
 		$(dtmp)/usr/share/doc/man-db/man-db-manual.ps
-	dh_installexamples docs/manpage.example*
-	install -m644 $(dtmp)/etc/manpath.config \
-		$(dtmp)/usr/share/doc/$(package)/examples/manpath.config
-	install -m644 debian/bug.presubj \
-		$(dtmp)/usr/share/bug/man-db/presubj
+
+# This will no longer be needed as of man-db 2.5.6.
+override_dh_installchangelogs:
 	dh_installchangelogs docs/ChangeLog
-	dh_installcron
-	dh_installdebconf
-	dh_lintian
-	dh_strip
-	dh_compress
+
+override_dh_fixperms:
 	dh_fixperms
-	dh_installdeb
 	chown man:root $(dtmp)/var/cache/man
 	chmod 2755     $(dtmp)/var/cache/man
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-
-.PHONY: build clean install binary binary-arch binary-indep

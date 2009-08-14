@@ -2,6 +2,5 @@ etc
 usr/bin
 usr/lib/man-db
 usr/sbin
-usr/share/bug/man-db
 usr/share/man-db
 var/cache/man
