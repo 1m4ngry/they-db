@@ -27,12 +27,6 @@ override_dh_auto_configure:
 
 override_dh_auto_install:
 	dh_auto_install
-	# Debian man-db used to put potentially setuid executables in a
-	# private directory in order to do wrapper magic. The wrapper isn't
-	# used any more, but migration is complicated enough that these stay
-	# in /usr/lib/man-db (for now).
-	mv $(dtmp)/usr/bin/man			$(dtmp)/usr/lib/man-db/man
-	mv $(dtmp)/usr/bin/mandb		$(dtmp)/usr/lib/man-db/mandb
 	# Not executable in the tarball, so needs manual installation. This
 	# will no longer be needed as of man-db 2.5.6.
 	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)

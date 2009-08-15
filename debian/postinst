@@ -56,11 +56,10 @@ fi
 for x in $maybesetuid; do
     # No statoverrides available or none exist for us ...
     if [ ! -x /usr/sbin/dpkg-statoverride ] || \
-	    ! dpkg-statoverride --list /usr/lib/man-db/$x >/dev/null; then
-	chown $owner /usr/lib/man-db/$x || true
-	chmod $mode  /usr/lib/man-db/$x
+	    ! dpkg-statoverride --list /usr/bin/$x >/dev/null; then
+	chown $owner /usr/bin/$x || true
+	chmod $mode  /usr/bin/$x
     fi
-    ln -sf ../lib/man-db/$x /usr/bin/$x
 done
 
 if [ -e /etc/cron.daily/man.moved-by-preinst ]; then

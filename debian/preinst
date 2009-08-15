@@ -18,6 +18,18 @@ if [ "$1" = upgrade ] && dpkg --compare-versions "$2" ge 2.3.16; then
     rm -f /var/lib/dpkg/info/man-db.postrm
 fi
 
+# Migrate old statoverrides to new paths.
+if dpkg --compare-versions "$2" lt 2.5.5-4; then
+    for x in $maybesetuid; do
+	overrides="$(dpkg-statoverride --list /usr/lib/man-db/$x || true)"
+	[ "$overrides" ] || continue
+	echo "$overrides" | while read owner group mode file; do
+	    dpkg-statoverride --remove "$file" || true
+	    dpkg-statoverride --add "$owner" "$group" "$mode" /usr/bin/$x || true
+	done
+    done
+fi
+
 #DEBHELPER#
 
 exit 0
