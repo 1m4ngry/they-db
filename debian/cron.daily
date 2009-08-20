@@ -18,7 +18,7 @@ if [ -d /var/cache/man ]; then
     chown -R man /var/cache/man || true		# just in case
   fi
   start-stop-daemon --start --pidfile /dev/null --startas /bin/sh \
-	--oknodo --chuid man -- -c \
+	--oknodo --chuid man --iosched idle -- -c \
 	"find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | \
 	 xargs -r0 rm -f"
 fi
@@ -29,6 +29,7 @@ if [ -x /usr/bin/mandb ]; then
     # but we want to start it like one.
     start-stop-daemon --start --pidfile /dev/null \
 		      --startas /usr/bin/mandb --oknodo --chuid man \
+		      --iosched idle \
 		      -- --no-purge --quiet
 fi
 

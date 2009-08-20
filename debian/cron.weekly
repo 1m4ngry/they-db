@@ -17,6 +17,7 @@ if [ -x /usr/bin/mandb ]; then
     # but we want to start it like one.
     start-stop-daemon --start --pidfile /dev/null \
 		      --startas /usr/bin/mandb --oknodo --chuid man \
+		      --iosched idle \
 		      -- --quiet
 fi
 

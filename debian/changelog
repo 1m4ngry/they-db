@@ -3,6 +3,8 @@ man-db (2.5.5-4) UNRELEASED; urgency=low
   * Upgrade to debhelper v7.
   * Reverse the direction of the man and mandb symlinks, and migrate any
     statoverrides referring to the old locations in /usr/lib/man-db/.
+  * Run cron jobs at idle I/O priority (closes: #448400); requires dpkg
+    1.15.0.
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 14 Aug 2009 12:39:02 +0100
 
