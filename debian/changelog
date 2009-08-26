@@ -1,4 +1,4 @@
-man-db (2.5.6-1) UNRELEASED; urgency=low
+man-db (2.5.6-1) unstable; urgency=low
 
   * New upstream release:
     - Implement 'man -K', which was the last major remaining missing feature
@@ -40,7 +40,7 @@ man-db (2.5.6-1) UNRELEASED; urgency=low
     (closes: #448400).
   * Policy version 3.8.2: no changes required.
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 14 Aug 2009 12:39:02 +0100
+ -- Colin Watson <cjwatson@debian.org>  Wed, 26 Aug 2009 11:38:46 +0100
 
 man-db (2.5.5-3) unstable; urgency=low
 
