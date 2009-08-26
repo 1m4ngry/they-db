@@ -3,11 +3,13 @@ Makefile
 alloca.h
 charset.alias
 configmake.h
+dirent.h
 fcntl.h
 getopt.h
 glob.h
 ref-add.sed
 ref-del.sed
+signal.h
 stdio.h
 stdlib.h
 string.h
