@@ -8,7 +8,7 @@ Homepage: http://man-db.nongnu.org/
 
 Package: man-db
 Architecture: any
-Depends: groff-base (>= 1.18.1.1-15), bsdmainutils, debconf (>= 1.2.0) | debconf-2.0, dpkg (>= 1.15.0), ${shlibs:Depends}, ${misc:Depends}
+Depends: groff-base (>= 1.18.1.1-15), bsdmainutils, debconf (>= 1.2.0) | debconf-2.0, dpkg (>= 1.9.0), ${shlibs:Depends}, ${misc:Depends}
 Suggests: groff, less, www-browser
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
