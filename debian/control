@@ -2,7 +2,7 @@ Source: man-db
 Section: doc
 Priority: important
 Maintainer: Colin Watson <cjwatson@debian.org>
-Standards-Version: 3.8.0
+Standards-Version: 3.8.2
 Build-Depends: debhelper (>= 7.2.3), flex, gettext, groff, libgdbm-dev, po4a, zlib1g-dev
 Homepage: http://man-db.nongnu.org/
 
