@@ -71,6 +71,7 @@ static char *cwd;
 #include "argp.h"
 #include "dirname.h"
 #include "minmax.h"
+#include "regex.h"
 #include "xvasprintf.h"
 #include "xgetcwd.h"
 
@@ -88,6 +89,7 @@ static char *cwd;
 #include "pathsearch.h"
 #include "linelength.h"
 #include "decompress.h"
+#include "xregcomp.h"
 
 #include "mydbm.h"
 #include "db_storage.h"
@@ -167,6 +169,7 @@ enum opts {
 	OPT_WILDCARD,
 	OPT_NAMES,
 	OPT_NO_HYPHENATION,
+	OPT_NO_SUBPAGES,
 	OPT_MAX
 };
 
@@ -212,6 +215,7 @@ static const char *want_encoding = NULL;
 static const char *const default_roff_warnings = "mac";
 static struct string_llist *roff_warnings = NULL;
 #endif /* TROFF_IS_GROFF */
+static int global_apropos;
 static int print_where, print_where_cat;
 static int catman;
 static int local_man_file;
@@ -224,6 +228,7 @@ static int names_only;
 static int ult_flags = SO_LINK | SOFT_LINK | HARD_LINK;
 static const char *recode = NULL;
 static int no_hyphenation;
+static int subpages = 1;
 
 static int ascii;		/* insert tr in the output pipe */
 static int save_cat; 		/* security breach? Can we save the cat? */
@@ -265,6 +270,7 @@ static struct argp_option options[] = {
 	{ 0,			0,	0,		0,		N_("Main modes of operation:"),					10 },
 	{ "whatis",		'f',	0,		0,		N_("equivalent to whatis") },
 	{ "apropos",		'k',	0,		0,		N_("equivalent to apropos") },
+	{ "global-apropos",	'K',	0,		0,		N_("search for text in all pages") },
 	{ "where",		'w',	0,		0,		N_("print physical location of man page(s)") },
 	{ "location",		0,	0,		OPTION_ALIAS },
 	{ "where-cat",		'W',	0,		0,		N_("print physical location of cat file(s)") },
@@ -289,6 +295,8 @@ static struct argp_option options[] = {
 									   "descriptions"),						25 },
 	{ "all",		'a',	0,		0,		N_("find all matching manual pages"),				26 },
 	{ "update",		'u',	0,		0,		N_("force a cache consistency check") },
+	{ "no-subpages",
+		    OPT_NO_SUBPAGES,	0,		0,		N_("don't try subpages, e.g. 'man foo bar' => 'man foo-bar'"),	27 },
 
 	{ 0,			0,	0,		0,		N_("Controlling formatted output:"),				30 },
 	{ "pager",		'P',	N_("PAGER"),	0,		N_("use program PAGER to display output") },
@@ -337,7 +345,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'D':
 			/* discard all preset options */
 			local_man_file = findall = update = catman =
-				debug_level = troff =
+				debug_level = troff = global_apropos =
 				print_where = print_where_cat =
 				ascii = match_case =
 				regex_opt = wildcard = names_only =
@@ -382,6 +390,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 		case 'k':
 			external = APROPOS;
 			apropos = 1;
+			return 0;
+		case 'K':
+			global_apropos = 1;
 			return 0;
 		case 'w':
 			print_where = 1;
@@ -439,6 +450,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			return 0;
 		case 'u':
 			update = 1;
+			return 0;
+		case OPT_NO_SUBPAGES:
+			subpages = 0;
 			return 0;
 
 		case 'P':
@@ -788,11 +802,15 @@ static int run_mandb (int create, const char *manpath, const char *filename)
 	else
 		command_arg (mandb_cmd, "-q");
 
+	if (user_config_file)
+		command_args (mandb_cmd, "-C", user_config_file, NULL);
+
 	if (filename)
 		command_args (mandb_cmd, "-f", filename, NULL);
-	else if (create)
+	else if (create) {
 		command_arg (mandb_cmd, "-c");
-	else
+		command_setenv (mandb_cmd, "MAN_MUST_CREATE", "1");
+	} else
 		command_arg (mandb_cmd, "-p");
 
 	if (manpath)
@@ -959,7 +977,7 @@ int main (int argc, char *argv[])
 
 	pipeline_install_sigchld ();
 
-	read_config_file (local_man_file);
+	read_config_file (local_man_file || user_config_file);
 
 	/* if the user wants whatis or apropos, give it to them... */
 	if (external)
@@ -1111,7 +1129,23 @@ int main (int argc, char *argv[])
 
 		/* this is where we actually start looking for the man page */
 		skip = 0;
-		status = man (nextarg, &found);
+		if (global_apropos)
+			status = do_global_apropos (nextarg, &found);
+		else {
+			int found_subpage = 0;
+			if (subpages && first_arg < argc) {
+				char *subname = xasprintf (
+					"%s-%s", nextarg, argv[first_arg]);
+				status = man (subname, &found);
+				free (subname);
+				if (status == OK) {
+					found_subpage = 1;
+					++first_arg;
+				}
+			}
+			if (!found_subpage)
+				status = man (nextarg, &found);
+		}
 
 		/* clean out the cache of database lookups for each man page */
 		hash_free (db_hash);
@@ -1122,11 +1156,23 @@ int main (int argc, char *argv[])
 				/* Maybe the section wasn't a section after
 				 * all? e.g. 'man 9wm fvwm'.
 				 */
+				int found_subpage = 0;
 				debug ("\nRetrying section %s as name\n",
 				       section);
 				tmp = section;
 				section = NULL;
-				status = man (tmp, &found);
+				if (subpages) {
+					char *subname = xasprintf (
+						"%s-%s", tmp, nextarg);
+					status = man (subname, &found);
+					free (subname);
+					if (status == OK) {
+						found_subpage = 1;
+						++first_arg;
+					}
+				}
+				if (!found_subpage)
+					status = man (tmp, &found);
 				hash_free (db_hash);
 				db_hash = NULL;
 				/* ... but don't gripe about it if it doesn't
@@ -1291,7 +1337,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	char *fmt_prog;
 	pipeline *p = pipeline_new ();
 	command *cmd;
-	char *page_encoding;
+	char *page_encoding = NULL;
 	const char *output_encoding = NULL;
 	const char *locale_charset = NULL;
 
@@ -2041,6 +2087,9 @@ static void format_display (pipeline *decomp,
 			old_cwd[0] = '\0';
 		}
 		htmldir = create_tempdir ("hman");
+		if (!htmldir)
+			error (FATAL, errno,
+			       _("can't create temporary directory"));
 		if (chdir (htmldir) == -1)
 			error (FATAL, errno, _("can't change to directory %s"),
 			       htmldir);
@@ -3430,7 +3479,7 @@ static int locate_page (const char *manpath, const char *sec, const char *name,
 
 	found = try_section (manpath, sec, name, candidates);
 
-	if (!found || findall) {
+	if ((!found || findall) && !global_apropos) {
 		db_ok = try_db (manpath, sec, name, candidates);
 
 #ifdef MAN_DB_CREATES
@@ -3490,6 +3539,142 @@ static int display_pages (struct candidate *candidates)
 	}
 
 	return found;
+}
+
+/*
+ * Search for text in all manual pages.
+ *
+ * This is not a real full-text search, but a brute-force on-demand search.
+ * The idea, name, and approach originate in the 'man' package, added (I
+ * believe) by Andries Brouwer, although the implementation is new for
+ * man-db and much faster due to running in-process.
+ *
+ * Conceptually, this really belongs in whatis.c, as part of apropos.
+ * However, the implementation in 'man' offers pages for immediate display
+ * on request rather than simply listing them, which is currently awkward to
+ * do in apropos. If we ever add support to apropos/whatis for either
+ * calling back to man or displaying pages directly, we should revisit this.
+ */
+static int grep (const char *file, const char *string, const regex_t *search)
+{
+	struct stat st;
+	pipeline *decomp;
+	const char *line;
+	int ret = 0;
+
+	/* pipeline_start makes file open failures unconditionally fatal.
+	 * Here, we'd rather just ignore any such files.
+	 */
+	if (stat (file, &st) < 0)
+		return 0;
+
+	decomp = decompress_open (file);
+	if (!decomp)
+		return 0;
+	pipeline_start (decomp);
+	while ((line = pipeline_readline (decomp)) != NULL) {
+		if (regex_opt) {
+			if (regexec (search, line,
+				     0, (regmatch_t *) 0, 0) == 0) {
+				ret = 1;
+				break;
+			}
+		} else {
+			if (match_case ?
+			    strstr (line, string) :
+			    strcasestr (line, string)) {
+				ret = 1;
+				break;
+			}
+		}
+	}
+
+	pipeline_free (decomp);
+	return ret;
+}
+
+static int do_global_apropos_section (const char *path, const char *sec,
+				      const char *name)
+{
+	int found = 0;
+	char **names, **np;
+	regex_t search;
+
+	global_manpath = is_global_mandir (path);
+	if (!global_manpath)
+		drop_effective_privs ();
+
+	debug ("searching in %s, section %s\n", path, sec);
+
+	names = look_for_file (path, sec, "*", 0, LFF_WILDCARD);
+	if (regex_opt)
+		xregcomp (&search, name,
+			  REG_EXTENDED | REG_NOSUB |
+			  (match_case ? 0 : REG_ICASE));
+	else
+		memset (&search, 0, sizeof search);
+
+	for (np = names; np && *np; ++np) {
+		struct mandata *info;
+		char *info_buffer;
+		char *title = NULL;
+		const char *man_file;
+		char *cat_file = NULL;
+
+		if (!grep (*np, name, &search))
+			continue;
+
+		info = infoalloc ();
+		info_buffer = filename_info (*np, info, NULL);
+		if (!info_buffer)
+			goto next;
+		info->addr = info_buffer;
+
+		title = appendstr (NULL, strchr (info_buffer, '\0') + 1,
+				   "(", info->ext, ")", NULL);
+		man_file = ult_src (*np, path, NULL, ult_flags);
+		if (!man_file)
+			goto next;
+		cat_file = find_cat_file (path, *np, man_file);
+		if (display (path, man_file, cat_file, title, NULL))
+			found = 1;
+
+next:
+		free (cat_file);
+		free (title);
+		free_mandata_struct (info);
+	}
+
+	if (regex_opt)
+		regfree (&search);
+
+	if (!global_manpath)
+		regain_effective_privs ();
+
+	return found;
+}
+
+static int do_global_apropos (const char *name, int *found)
+{
+	const char **my_section_list;
+	const char **sp;
+	char **mp;
+
+	if (section) {
+		my_section_list = XNMALLOC (2, const char *);
+		my_section_list[0] = section;
+		my_section_list[1] = NULL;
+	} else
+		my_section_list = section_list;
+
+	for (sp = my_section_list; *sp; sp++)
+		for (mp = manpathlist; *mp; mp++)
+			*found += do_global_apropos_section (*mp, *sp, name);
+
+	if (section)
+		free (my_section_list);
+
+	return *found ? OK : NOT_FOUND;
 }
 
 /*

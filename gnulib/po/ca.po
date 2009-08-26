@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailutils 0.6.90\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
 "PO-Revision-Date: 2005-05-21 04:10+0200\n"
 "Last-Translator: Jordi Mallach <jordi@gnu.org>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
@@ -72,7 +72,7 @@ msgstr "Proveu «%s --help» o «%s --usage» per a obtindre més informació.\n
 msgid "Report bugs to %s.\n"
 msgstr "Informeu dels errors a %s.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "S'ha produït un error desconegut del sistema"
 
@@ -180,95 +180,95 @@ msgstr "%s: l'opció «-W %s» és ambigua\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: l'opció «-W %s» no accepta arguments\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, fuzzy, c-format
 msgid "unable to record current working directory"
 msgstr "openat: no s'ha pogut registrar el directori de treball actual"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "no s'ha pogut tornar al directori inicial de treball"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s: l'expressió regular no és vàlida: %s"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "la classe de caràcters «%s» no és vàlida"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "la classe de caràcters «%s» no és vàlida"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 #, fuzzy
 msgid "Invalid back reference"
 msgstr "El número no és vàlid"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 #, fuzzy
 msgid "Invalid content of \\{\\}"
 msgstr "L'opció no és vàlida -- %s"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 #, fuzzy
 msgid "Invalid range end"
 msgstr "el rang de pàgines no és vàlid: «%s»"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "la memòria s'ha exhaurit"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s: l'expressió regular no és vàlida: %s"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "error en la recerca de l'expressió regular"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s: l'expressió regular no és vàlida: %s"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "error en la recerca de l'expressió regular"

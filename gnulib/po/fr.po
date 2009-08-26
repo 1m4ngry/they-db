@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU gnulib-1.1\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
 "PO-Revision-Date: 2008-09-27 20:25+0100\n"
 "Last-Translator: Nicolas Provost <nprovost@quadriv.com>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -74,7 +74,7 @@ msgstr "Essayer « %s --help » ou « %s --usage » pour plus d'informations.\n"
 msgid "Report bugs to %s.\n"
 msgstr "Rapportez toute anomalie à %s.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "Erreur système inconnue"
 
@@ -176,85 +176,85 @@ msgstr "%s : l'option \"-W %s\" est ambiguë\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s : l'option \"-W %s\" ne prend pas d'argument\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, c-format
 msgid "unable to record current working directory"
 msgstr "impossible de mémoriser le répertoire de travail courant"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "échec de retour au répertoire initial de travail"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr "Succès"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr "Pas de correspondance"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 msgid "Invalid regular expression"
 msgstr "Expression régulière non valide"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 msgid "Invalid collation character"
 msgstr "Caractère d'assemblage non valide"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 msgid "Invalid character class name"
 msgstr "Nom de classe de caractères non valide"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr "Antislash en suffixe"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 msgid "Invalid back reference"
 msgstr "Référence en arrière non valide"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr "[ ou [^ non appairés"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr "( ou \\( non appairés"
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr "\\{ non appairé"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 msgid "Invalid content of \\{\\}"
 msgstr "Le contenu de \\{\\} n'est pas valide"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 msgid "Invalid range end"
 msgstr "Borne finale de l'intervalle non valide"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 msgid "Memory exhausted"
 msgstr "Mémoire épuisée"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 msgid "Invalid preceding regular expression"
 msgstr "Expression régulière précédente non valide"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 msgid "Premature end of regular expression"
 msgstr "Fin prématurée d'expression régulière"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 msgid "Regular expression too big"
 msgstr "Expression régulière trop grande"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr ") ou \\) non appairés"
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 msgid "No previous regular expression"
 msgstr "Pas d'expression régulière précédente"
 
@@ -425,6 +425,22 @@ msgstr "mémoire épuisée"
 #~ msgid "stack overflow"
 #~ msgstr "dépassement de pile"
 
+#, fuzzy
+#~ msgid "cannot create a temporary directory using template \"%s\""
+#~ msgstr "impossible de créer le répertoire %s"
+
+#, fuzzy
+#~ msgid "cannot remove temporary file %s"
+#~ msgstr "impossible de créer le répertoire %s"
+
+#, fuzzy
+#~ msgid "cannot remove temporary directory %s"
+#~ msgstr "impossible de créer le répertoire %s"
+
+#, fuzzy
+#~ msgid "error closing file"
+#~ msgstr "erreur durant l'écriture du fichier \"%s\""
+
 #~ msgid "write error"
 #~ msgstr "erreur d'écriture"
 
@@ -545,8 +561,9 @@ msgstr "mémoire épuisée"
 #~ msgid "Unknown error"
 #~ msgstr "Erreur inconnue"
 
-#~ msgid "block size"
-#~ msgstr "taille de bloc"
+#, fuzzy
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "sous-processus %s"
 
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "argument \"source_version\" non valide pour \"compile_java_class\""
@@ -570,6 +587,9 @@ msgstr "mémoire épuisée"
 #~ "Machine virtuelle Java non trouvée, essayez d'installer \"gij\" ou de "
 #~ "positionner $JAVAC"
 
+#~ msgid "cannot create pipe"
+#~ msgstr "impossible de créer un tube (\"pipe\")"
+
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "impossible de changer les permissions de %s"
 
@@ -578,9 +598,6 @@ msgstr "mémoire épuisée"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "Echec d'ouverture de /dev/zero en lecture"
-
-#~ msgid "cannot create pipe"
-#~ msgstr "impossible de créer un tube (\"pipe\")"
 
 #~ msgid "`"
 #~ msgstr "\""
@@ -618,13 +635,27 @@ msgstr "mémoire épuisée"
 #~ msgid "invalid spec"
 #~ msgstr "spécification non valide"
 
+#, fuzzy
+#~ msgid "preserving permissions for %s"
+#~ msgstr "impossible de changer les permissions de %s"
+
+#~ msgid "string comparison failed"
+#~ msgstr "échec de comparaison de chaîne"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "Définir LC_ALL='C' pour contourner le problème."
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "Les chaînes comparées étaient %s et %s."
+
 #~ msgid "(C)"
 #~ msgstr "©"
 
+#, fuzzy
 #~ msgid ""
 #~ "\n"
 #~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-#~ "html>\n"
+#~ "html>.\n"
 #~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
 #~ "\n"
@@ -700,20 +731,32 @@ msgstr "mémoire épuisée"
 #~ "%s, %s, %s, %s,\n"
 #~ "%s, %s et d'autres.\n"
 
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Report bugs to <%s>.\n"
+#~ msgstr "Rapportez toute anomalie à %s.\n"
+
+#, fuzzy
+#~ msgid "invalid %s%s argument `%s'"
+#~ msgstr "argument %s non valide pour %s"
+
+#, fuzzy
+#~ msgid "invalid suffix in %s%s argument `%s'"
+#~ msgstr "argument %s non valide pour %s"
+
+#, fuzzy
+#~ msgid "setting permissions for %s"
+#~ msgstr "impossible de changer les permissions de %s"
+
 #~ msgid "%s subprocess"
 #~ msgstr "sous-processus %s"
 
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "le sous-processus %s a reçu un signal fatal %d"
 
-#~ msgid "string comparison failed"
-#~ msgstr "échec de comparaison de chaîne"
-
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "Définir LC_ALL='C' pour contourner le problème."
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "Les chaînes comparées étaient %s et %s."
+#~ msgid "block size"
+#~ msgstr "taille de bloc"
 
 #~ msgid "%s exists but is not a directory"
 #~ msgstr "%s existe mais n'est pas un répertoire"

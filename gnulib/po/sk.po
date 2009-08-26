@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: textutils 2.0.14\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
 "PO-Revision-Date: 2001-06-08 22:10 +02:00\n"
 "Last-Translator: Stanislav Meduna <stano@trillian.eunet.sk>\n"
 "Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
@@ -72,7 +72,7 @@ msgstr ""
 "anglicky), pripomienky k prekladu zasielajte na adresu <sk@li.org> "
 "(slovensky)."
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "Neznáma systémová chyba"
 
@@ -175,93 +175,93 @@ msgstr "%s: prepínaè `-W %s' nie je jednoznaèný\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: prepínaè `-W %s' nepovoµuje argument\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, fuzzy, c-format
 msgid "unable to record current working directory"
 msgstr "nie je mo¾né vytvori» adresár %s"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, fuzzy, c-format
 msgid "failed to return to initial working directory"
 msgstr "nie je mo¾né vytvori» adresár %s"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s: chybný regulárny výraz: %s"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "chybná trieda znaku `%s'"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "chybná trieda znaku `%s'"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 msgid "Invalid back reference"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 #, fuzzy
 msgid "Invalid range end"
 msgstr "%s: chybný regulárny výraz: %s"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "vyèerpaná pamä»"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s: chybný regulárny výraz: %s"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "chyba pri vyhµadávaní pomocou regulárneho výrazu"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s: chybný regulárny výraz: %s"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "chyba pri vyhµadávaní pomocou regulárneho výrazu"

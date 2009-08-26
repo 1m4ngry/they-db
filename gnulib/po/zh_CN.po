@@ -8,10 +8,10 @@
 # Ji ZhengYu <zhengyuji@gmail.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 1.1\n"
+"Project-Id-Version: gnulib 1.0.0.1991.dbebf\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
-"PO-Revision-Date: 2009-01-04 14:13+0800\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
+"PO-Revision-Date: 2009-05-01 14:10中国标准时间\n"
 "Last-Translator: Ji ZhengYu <zhengyuji@gmail.com>\n"
 "Language-Team: Chinese (simplified) <translation-team-zh-cn@lists."
 "sourceforge.net>\n"
@@ -75,7 +75,7 @@ msgstr "请尝试执行“%s --help”或“%s --usage”来获取更多信息�
 msgid "Report bugs to %s.\n"
 msgstr "请向 %s 报告错误。\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "未知的系统错误"
 
@@ -177,87 +177,86 @@ msgstr "%s：选项“-W %s”不明确\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s：选项“-W %s”不允许参数\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, c-format
 msgid "unable to record current working directory"
 msgstr "无法记录当前工作的目录"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "返回到初始工作目录失败"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr "成功"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr "不匹配"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 msgid "Invalid regular expression"
 msgstr "正则表达式无效"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 #, fuzzy
 msgid "Invalid collation character"
-msgstr "无效的字符排序"
+msgstr "无效的重组字符"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 msgid "Invalid character class name"
 msgstr "无效的字符类名"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr "多余的反斜杠"
 
-#: gnulib/lib/regcomp.c:149
-#, fuzzy
+#: gnulib/lib/regcomp.c:150
 msgid "Invalid back reference"
-msgstr "无效的后引用"
+msgstr "无效的向后索引"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr "[ 或 [^ 不匹配"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr "( 或 \\( 不匹配"
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr "\\{ 不匹配"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 msgid "Invalid content of \\{\\}"
 msgstr "\\{\\} 的内容无效"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 msgid "Invalid range end"
 msgstr "无效的范围结尾"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 msgid "Memory exhausted"
 msgstr "内存用尽"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 msgid "Invalid preceding regular expression"
 msgstr "前置的正则表达式无效"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 msgid "Premature end of regular expression"
 msgstr "正则表达式结尾过早"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 msgid "Regular expression too big"
 msgstr "正则表达式太大"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr ") 或 \\) 不匹配"
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 msgid "No previous regular expression"
 msgstr "没有前次正则表达式"
 
@@ -402,12 +401,12 @@ msgstr ""
 #: gnulib/lib/strsignal.c:111
 #, c-format
 msgid "Real-time signal %d"
-msgstr ""
+msgstr "实时信号 %d"
 
 #: gnulib/lib/strsignal.c:115
 #, c-format
 msgid "Unknown signal %d"
-msgstr ""
+msgstr "未知信号 %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -427,6 +426,21 @@ msgstr "内存用尽"
 
 #~ msgid "stack overflow"
 #~ msgstr "堆栈溢出"
+
+#~ msgid "cannot find a temporary directory, try setting $TMPDIR"
+#~ msgstr "无法找到一个临时目录，请尝试设置 $TMPDIR 环境变量"
+
+#~ msgid "cannot create a temporary directory using template \"%s\""
+#~ msgstr "无法以模板“%s”创建一个临时目录"
+
+#~ msgid "cannot remove temporary file %s"
+#~ msgstr "无法删除临时文件 %s"
+
+#~ msgid "cannot remove temporary directory %s"
+#~ msgstr "无法删除临时目录 %s"
+
+#~ msgid "error closing file"
+#~ msgstr "关闭文件时发生错误"
 
 #~ msgid "write error"
 #~ msgstr "写入错误"
@@ -548,8 +562,8 @@ msgstr "内存用尽"
 #~ msgid "Unknown error"
 #~ msgstr "未知错误"
 
-#~ msgid "block size"
-#~ msgstr "块大小"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "%s 子进程输入/输出错误"
 
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "compile_java_class 的 source_version 参数无效"
@@ -569,6 +583,9 @@ msgstr "内存用尽"
 #~ msgid "Java virtual machine not found, try installing gij or set $JAVA"
 #~ msgstr "未找到 Java 虚拟机，尝试安装 gij 或是设置 $JAVA"
 
+#~ msgid "cannot create pipe"
+#~ msgstr "无法创建管道"
+
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "无法更改 %s 的权限"
 
@@ -577,9 +594,6 @@ msgstr "内存用尽"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "无法以读方式打开 /dev/zero"
-
-#~ msgid "cannot create pipe"
-#~ msgstr "无法创建管道"
 
 #~ msgid "`"
 #~ msgstr "“"
@@ -614,9 +628,26 @@ msgstr "内存用尽"
 #~ msgid "invalid group"
 #~ msgstr "无效的组"
 
-#, fuzzy
 #~ msgid "invalid spec"
 #~ msgstr "无效的 spec"
+
+#~ msgid "unable to display error message"
+#~ msgstr "无法显示错误信息"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "保留 %s 的权限"
+
+#~ msgid "string comparison failed"
+#~ msgstr "字符串比较出现错误"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "请设定 LC_ALL='C' 避免问题出现。"
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "要比较的字符串为 %s 和 %s。"
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "无法执行格式化输出"
 
 #~ msgid "(C)"
 #~ msgstr "(C)"
@@ -624,7 +655,7 @@ msgstr "内存用尽"
 #~ msgid ""
 #~ "\n"
 #~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-#~ "html>\n"
+#~ "html>.\n"
 #~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
 #~ "\n"
@@ -700,20 +731,42 @@ msgstr "内存用尽"
 #~ "%s、%s、%s、%s、\n"
 #~ "%s、%s、和其他人编写。\n"
 
+#~ msgid ""
+#~ "\n"
+#~ "Report bugs to <%s>.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "请向 <%s> 报告错误。\n"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
+#~ msgstr "%s 主页: <http://www.gnu.org/software/%s/>。\n"
+
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
+#~ msgstr "GNU 软件的通用帮助: <http://www.gnu.org/gethelp/>。\n"
+
+#~ msgid "invalid %s%s argument `%s'"
+#~ msgstr "%s%s 参数‘%s’无效"
+
+#~ msgid "invalid suffix in %s%s argument `%s'"
+#~ msgstr "%s%s 参数‘%s’的后缀无效"
+
+#~ msgid "%s%s argument `%s' too large"
+#~ msgstr "%s%s 参数‘%s’太长"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "设置 %s 的权限"
+
 #~ msgid "%s subprocess"
 #~ msgstr "%s 子进程"
 
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "%s 子进程获得终结信号 %d"
 
-#~ msgid "string comparison failed"
-#~ msgstr "字符串比较出现错误"
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "写入一个已关闭的管道或套接字时发生错误"
 
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "请设定 LC_ALL='C' 避免问题出现。"
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "要比较的字符串为 %s 和 %s。"
+#~ msgid "block size"
+#~ msgstr "块大小"
 
 #~ msgid "%s exists but is not a directory"
 #~ msgstr "%s 存在但并非目录"

@@ -2,9 +2,10 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.5.5], [cjwatson@debian.org])
+AC_INIT([man-db], [2.5.6], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR(tools)
 AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR(src/man.c)
 
@@ -16,7 +17,7 @@ AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2009-03-14
+date=2009-08-26
 AC_SUBST(date)dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST(roff_version)dnl
@@ -85,7 +86,7 @@ AC_ARG_WITH(config-file,
 config_file_basename=${withval##*/}
 config_file_dirname=`AS_DIRNAME(["$config_file"])`
 AC_ARG_WITH(sections,
-[AS_HELP_STRING([--with-sections=SECTIONS], [use manual page sections SECTIONS @<:@1 n l 8 3 2 5 4 9 6 7@:>@])],
+[AS_HELP_STRING([--with-sections=SECTIONS], [use manual page sections SECTIONS @<:@1 n l 8 3 0 2 5 4 9 6 7@:>@])],
 	[if test "$withval" = "yes" || test "$withval" = "no"
 	 then
 		AC_MSG_ERROR(--with-sections requires an argument)
@@ -93,6 +94,26 @@ AC_ARG_WITH(sections,
 		sections="$withval"
 	 fi],
 	[: ${sections=1 n l 8 3 2 5 4 9 6 7}])
+AC_ARG_ENABLE(automatic-create,
+[AS_HELP_STRING([--enable-automatic-create], [allow man to create user databases on the fly])],
+	[if test "$enableval" = "yes"
+	 then
+		AC_DEFINE([MAN_DB_CREATES], [1], [Allow man to create user databases on the fly.])
+	 fi])
+AC_ARG_ENABLE(automatic-update,
+[AS_HELP_STRING([--disable-automatic-update], [don't allow man to update databases on the fly])],
+	[if test "$enableval" = "yes"
+	 then
+		AC_DEFINE([MAN_DB_UPDATES], [1], [Allow man to update databases on the fly.])
+	 fi],
+	[AC_DEFINE([MAN_DB_UPDATES], [1], [Allow man to update databases on the fly.])])
+AC_ARG_ENABLE(cats,
+[AS_HELP_STRING([--disable-cats], [don't allow man to create/update cat files])],
+	[if test "$enableval" = "yes"
+	 then
+		AC_DEFINE([MAN_CATS], [1], [Allow man to create/update cat files.])
+	 fi],
+	[AC_DEFINE([MAN_CATS], [1], [Allow man to create/update cat files.])])
 
 # Finish the argument parsing.
 AC_SUBST(man_owner)dnl
@@ -116,6 +137,7 @@ then
 	MAN_GCC_WARNING([strict-prototypes])
 	MAN_GCC_WARNING([shadow])
 	MAN_GCC_WARNING([format-security])
+	MAN_GCC_WARNING([redundant-decls])
 	MAN_GCC_WARNING([no-missing-field-initializers])
 fi
 AC_PROG_INSTALL
@@ -366,7 +388,8 @@ then
     do
       AC_CHECK_LIB($lib, gdbm_fetch,
 		   test "$lib" = "c" || DBLIBS="-l$lib" 
-		   [AC_DEFINE(GDBM, 1, [Define if you have, and want to use, gdbm interface routines.])]
+		   [AC_DEFINE(GDBM, 1, [Define if you have, and want to use, gdbm interface routines.])
+		    AC_SUBST([DBTYPE], [gdbm])]
 		   db=yes, db=no)
       if test "$db" = "yes" 
       then
@@ -401,7 +424,8 @@ then
     do
       AC_CHECK_LIB($lib, dbm_fetch,
 		   test "$lib" = "c" || DBLIBS="-l$lib"
-		   [AC_DEFINE(NDBM, 1, [Define if you have, and want to use, ndbm interface routines.])]
+		   [AC_DEFINE(NDBM, 1, [Define if you have, and want to use, ndbm interface routines.])
+		    AC_SUBST([DBTYPE], [ndbm])]
 		   db=yes, db=no)
       test "$db" = "yes" && break
       done], db=no)
@@ -450,6 +474,7 @@ AC_CONFIG_FILES(Makefile
 	lib/Makefile
 	src/Makefile
 	src/man_db.conf
+	src/tests/Makefile
 	man/Makefile
 	man/replace.sin
 	man/po4a/Makefile

@@ -42,16 +42,11 @@
 #include "mydbm.h"
 #include "db_storage.h"
 
-/* deal with situation where we cannot insert an unused key */
-static void gripe_insert_unused (char *data)
-{
-	error (0, 0, _("cannot insert unused key %s"), data);
-	gripe_corrupt_data ();
-}
-
-/* compare_ids(a,b) is true if id 'a' is preferred to id 'b', i.e. if 'a' is
- * a more canonical database entry than 'b'. This usually goes in comparison
- * order, but there's a special exception when FAVOUR_STRAYCATS is set.
+/* compare_ids(a,b) is negative if id 'a' is preferred to id 'b', i.e. if
+ * 'a' is a more canonical database entry than 'b'; positive if 'b' is
+ * preferred to 'a'; and zero if they are equivalent. This usually goes in
+ * comparison order, but there's a special exception when FAVOUR_STRAYCATS
+ * is set.
  *
  * If promote_links is true, consider SO_MAN equivalent to ULT_MAN. This is
  * appropriate when sorting candidate pages for display.
@@ -87,22 +82,32 @@ static int replace_if_necessary (struct mandata *newdata,
 				 struct mandata *olddata,
 				 datum newkey, datum newcont)
 {
-	if (compare_ids (newdata->id, olddata->id, 0) < 0)
+	/* It's OK to replace ULT_MAN with SO_MAN if the mtime is newer. It
+	 * isn't OK to replace a real page (either ULT_MAN or SO_MAN) with a
+	 * whatis reference; if the real page really went away then
+	 * purge_missing will catch that in time, but a real page that still
+	 * exists should always take precedence.
+	 */
+	if (compare_ids (newdata->id, olddata->id, 1) <= 0 &&
+	    newdata->_st_mtime > olddata->_st_mtime) {
+		debug ("replace_if_necessary(): newer mtime; replacing\n");
 		if (MYDBM_REPLACE (dbf, newkey, newcont))
 			gripe_replace_key (MYDBM_DPTR (newkey));
+		return 0;
+	}
+
+	if (compare_ids (newdata->id, olddata->id, 0) < 0) {
+		if (MYDBM_REPLACE (dbf, newkey, newcont))
+			gripe_replace_key (MYDBM_DPTR (newkey));
+		return 0;
+	}
 
 	/* TODO: name fields should be collated with the requested name */
 
 	if (newdata->id == olddata->id) {
-		if (STREQ (dash_if_unset (newdata->comp), olddata->comp)) {
-			if (newdata->_st_mtime != olddata->_st_mtime) {
-				debug ("replace_if_necessary(): replace\n");
-				if (MYDBM_REPLACE (dbf, newkey, newcont))
-					gripe_replace_key (
-						MYDBM_DPTR (newkey));
-			}
+		if (STREQ (dash_if_unset (newdata->comp), olddata->comp))
 			return 0; /* same file */
-		} else {
+		else {
 			debug ("ignoring differing compression "
 			       "extensions: %s\n", MYDBM_DPTR (newkey));
 			return 1; /* differing exts */
@@ -174,8 +179,8 @@ int dbstore (struct mandata *in, const char *base)
 		if (!STREQ (base, MYDBM_DPTR (oldkey)))
 			in->name = xstrdup (base);
 		oldcont = make_content (in);
-		if (MYDBM_INSERT (dbf, oldkey, oldcont))
-			gripe_insert_unused (MYDBM_DPTR (oldkey));
+		if (MYDBM_REPLACE (dbf, oldkey, oldcont))
+			gripe_replace_key (MYDBM_DPTR (oldkey));
 		free (MYDBM_DPTR (oldcont));
 		free (in->name);
 		in->name = NULL;
@@ -283,8 +288,13 @@ int dbstore (struct mandata *in, const char *base)
 
 		lastcont = make_content (&old);
 
-		if (MYDBM_INSERT (dbf, lastkey, lastcont))
-			gripe_insert_unused (MYDBM_DPTR (lastkey));
+		/* We always replace here; if the multi key already exists
+		 * in the database, then that indicates some kind of
+		 * database corruption, but our new multi key is almost
+		 * certainly better.
+		 */
+		if (MYDBM_REPLACE (dbf, lastkey, lastcont))
+			gripe_replace_key (MYDBM_DPTR (lastkey));
 
 		free (MYDBM_DPTR (lastkey));
 		free (MYDBM_DPTR (lastcont));
@@ -292,8 +302,8 @@ int dbstore (struct mandata *in, const char *base)
 		newkey = make_multi_key (base, in->ext);
 		newcont = make_content (in);
 
-		if (MYDBM_INSERT (dbf, newkey, newcont))
-			gripe_insert_unused (MYDBM_DPTR (newkey));
+		if (MYDBM_REPLACE (dbf, newkey, newcont))
+			gripe_replace_key (MYDBM_DPTR (newkey));
 
 		free (MYDBM_DPTR (newkey));
 		free (MYDBM_DPTR (newcont));

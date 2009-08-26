@@ -342,18 +342,18 @@ static int update_one_file (const char *manpath, const char *filename)
 }
 
 /* dont actually create any dbs, just do an update */
-static inline int update_db_wrapper (const char *manpath)
+static inline int update_db_wrapper (const char *manpath, const char *catpath)
 {
 	int amount;
 
 	if (single_filename)
 		return update_one_file (manpath, single_filename);
 
-	amount = update_db (manpath);
+	amount = update_db (manpath, catpath);
 	if (amount != EOF)
 		return amount;
 
-	return create_db (manpath);
+	return create_db (manpath, catpath);
 }
 
 /* remove incomplete databases */
@@ -428,7 +428,7 @@ static int mandb (const char *catpath, const char *manpath)
 	tmpdbfile = appendstr (NULL, database, ".db", NULL);
 	if (create || force_rescan || opt_test) {
 		xremove (tmpdbfile);
-		ret = create_db (manpath);
+		ret = create_db (manpath, catpath);
 		if (ret < 0)
 			return ret;
 		amount = ret;
@@ -436,7 +436,7 @@ static int mandb (const char *catpath, const char *manpath)
 		ret = xcopy (dbfile, tmpdbfile);
 		if (ret < 0)
 			return ret;
-		ret = update_db_wrapper (manpath);
+		ret = update_db_wrapper (manpath, catpath);
 		if (ret < 0)
 			return ret;
 		amount = ret;
@@ -450,7 +450,7 @@ static int mandb (const char *catpath, const char *manpath)
 	if (create || force_rescan || opt_test) {
 		xremove (tmpdirfile);
 		xremove (tmppagfile);
-		ret = create_db (manpath);
+		ret = create_db (manpath, catpath);
 		if (ret < 0)
 			return ret;
 		amount = ret;
@@ -461,7 +461,7 @@ static int mandb (const char *catpath, const char *manpath)
 		ret = xcopy (pagfile, tmppagfile);
 		if (ret < 0)
 			return ret;
-		ret = update_db_wrapper (manpath);
+		ret = update_db_wrapper (manpath, catpath);
 		if (ret < 0)
 			return ret;
 		amount = ret;
@@ -472,7 +472,7 @@ static int mandb (const char *catpath, const char *manpath)
 	xtmpfile = database;
 	if (create || force_rescan || opt_test) {
 		xremove (xtmpfile);
-		ret = create_db (manpath);
+		ret = create_db (manpath, catpath);
 		if (ret < 0)
 			return ret;
 		amount = ret;
@@ -480,7 +480,7 @@ static int mandb (const char *catpath, const char *manpath)
 		ret = xcopy (xfile, xtmpfile);
 		if (ret < 0)
 			return ret;
-		ret = update_db_wrapper (manpath);
+		ret = update_db_wrapper (manpath, catpath);
 		if (ret < 0)
 			return ret;
 		amount = ret;
@@ -617,6 +617,7 @@ int main (int argc, char *argv[])
 		user = 1;
 #endif /* SECURE_MAN_UID */
 
+	read_config_file (user);
 
 	/* This is required for get_catpath(), regardless */
 	manp = get_manpath (NULL);	/* also calls read_config_file() */
@@ -723,9 +724,12 @@ next_manpath:
 	free_pathlist (manpathlist);
 	free (manp);
 	if (create && !amount) {
+		const char *must_create;
 		if (!quiet)
 			fprintf (stderr, _("No databases created."));
-		exit (FAIL);
+		must_create = getenv ("MAN_MUST_CREATE");
+		if (STREQ (must_create, "1"))
+			exit (FAIL);
 	}
 	free (program_name);
 	exit (OK);

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 1.0\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
 "PO-Revision-Date: 2006-07-28 09:50+0300\n"
 "Last-Translator: Toomas Soome <Toomas.Soome@microlink.ee>\n"
 "Language-Team: Estonian <et@li.org>\n"
@@ -69,7 +69,7 @@ msgstr "Lisainfo saamiseks proovige `%s --help' või `%s --usage'.\n"
 msgid "Report bugs to %s.\n"
 msgstr "Vigadest teatage palun aadressil %s.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "Tundmatu süsteemne viga"
 
@@ -172,85 +172,85 @@ msgstr "%s: võti `-W %s' on segane\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: võti `-W %s' ei luba kasutada argumenti\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, c-format
 msgid "unable to record current working directory"
 msgstr "ei õnnestu registreerida jooksvat töökataloogi"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "esialgsesse töökataloogi ei õnnestu tagasi minna"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 msgid "Invalid regular expression"
 msgstr "Vigane regulaaravaldis"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 msgid "Invalid collation character"
 msgstr "Vigane võrdlussümbol"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 msgid "Invalid character class name"
 msgstr "Vigane sümbolite klassi nimi"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 msgid "Invalid back reference"
 msgstr "Vigane tagasiviide"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 msgid "Invalid range end"
 msgstr "Vigane vahemiku lõpp"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 msgid "Memory exhausted"
 msgstr "Mälu on otsas"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 msgid "Invalid preceding regular expression"
 msgstr "Vigane eelnev regulaaravaldis"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 msgid "Premature end of regular expression"
 msgstr "Enneaegne regulaaravaldise lõpp"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 msgid "Regular expression too big"
 msgstr "Regulaaravaldis on liiga pikk"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 msgid "No previous regular expression"
 msgstr "Eelmist regulaaravaldist pole"
 

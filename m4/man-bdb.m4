@@ -1,4 +1,4 @@
-# man-bdb.m4 serial 2
+# man-bdb.m4 serial 3
 dnl MAN_CHECK_BDB(WITH-DB, HEADERS, LIBS, [ACTION-IF-FOUND])
 dnl Helper to check Berkeley DB linkage when particular header files and
 dnl libraries are included. ACTION-IF-FOUND may contain $head and $lib.
@@ -37,6 +37,7 @@ then
                                   [Define if you have, and want to use, Berkeley database header files.])
                AC_DEFINE_UNQUOTED([BTREE], [1],
                                   [Define if you have, and want to use, the Berkeley database library.])
+               AC_SUBST([DBTYPE], [btree])
                DBLIBS="-l$lib"
                db=yes],
               [db=no])

@@ -1,5 +1,5 @@
 # Dutch translations for gnulib.
-# Copyright (C) 2007 Free Software Foundation, Inc.
+# Copyright (C) 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 #
 # Erick Branderhorst <branderh@debian.org>, 1996.
@@ -8,11 +8,11 @@
 # Benno Schulenberg <benno@vertaalt.nl>, 2007, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 1.1\n"
+"Project-Id-Version: gnulib-1.0.0.1991.dbebf\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
-"PO-Revision-Date: 2008-03-21 13:25+0100\n"
-"Last-Translator: Benno Schulenberg <benno@vertaalt.nl>\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
+"PO-Revision-Date: 2009-05-10 16:23+0100\n"
+"Last-Translator: Erwin Poeze <erwin.poeze@gmail.com>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -75,7 +75,7 @@ msgstr ""
 "Rapporteer gebreken in het programma aan %s;\n"
 "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "Onbekende systeemfout"
 
@@ -177,85 +177,85 @@ msgstr "%s: optie '-W %s' is niet eenduidig\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: optie '-W %s' staat geen argument toe\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, c-format
 msgid "unable to record current working directory"
 msgstr "kan de huidige werkmap niet vastleggen"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "kan niet terugkeren naar de initiële werkmap"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr "Gelukt"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr "Geen overeenkomsten"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 msgid "Invalid regular expression"
 msgstr "Ongeldige reguliere expressie"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 msgid "Invalid collation character"
 msgstr "Ongeldig samengesteld teken"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 msgid "Invalid character class name"
 msgstr "Ongeldige tekenklassenaam"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr "Backslash aan het eind"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 msgid "Invalid back reference"
 msgstr "Ongeldige terugverwijzing"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr "Ongepaarde [ of [^"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr "Ongepaarde ( of \\("
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr "Ongepaarde \\{"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 msgid "Invalid content of \\{\\}"
 msgstr "Ongeldige inhoud van \\{\\}"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 msgid "Invalid range end"
 msgstr "Ongeldig bereikeinde"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 msgid "Memory exhausted"
 msgstr "Onvoldoende geheugen beschikbaar"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 msgid "Invalid preceding regular expression"
 msgstr "Ongeldige voorafgaande reguliere expressie"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 msgid "Premature end of regular expression"
 msgstr "Voortijdig einde van reguliere expressie"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 msgid "Regular expression too big"
 msgstr "Reguliere expressie is te groot"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr "Ongepaarde ) of \\)"
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 msgid "No previous regular expression"
 msgstr "Geen eerdere reguliere expressie"
 
@@ -400,12 +400,12 @@ msgstr ""
 #: gnulib/lib/strsignal.c:111
 #, c-format
 msgid "Real-time signal %d"
-msgstr ""
+msgstr "Direct signaal %d"
 
 #: gnulib/lib/strsignal.c:115
 #, c-format
 msgid "Unknown signal %d"
-msgstr ""
+msgstr "Onbekend signaal %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -425,6 +425,21 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "stack overflow"
 #~ msgstr "stack-overloop"
+
+#~ msgid "cannot find a temporary directory, try setting $TMPDIR"
+#~ msgstr "Kan geen tijdelijke map vinden, probeer $TMPDIR in te stellen"
+
+#~ msgid "cannot create a temporary directory using template \"%s\""
+#~ msgstr "kan tijdelijke map niet aanmaken met sjabloon \"%s\""
+
+#~ msgid "cannot remove temporary file %s"
+#~ msgstr "kan tijdelijk bestand %s niet verwijderen"
+
+#~ msgid "cannot remove temporary directory %s"
+#~ msgstr "kan tijdelijke map %s niet verwijderen"
+
+#~ msgid "error closing file"
+#~ msgstr "fout bij afsluiten van bestand"
 
 #~ msgid "write error"
 #~ msgstr "schrijffout"
@@ -546,8 +561,8 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "Unknown error"
 #~ msgstr "Onbekende fout"
 
-#~ msgid "block size"
-#~ msgstr "blokgrootte"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "in- of uitoverfout subproces %s"
 
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "ongeldige waarde voor 'source_version' in compile_java_class()"
@@ -568,6 +583,9 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgstr ""
 #~ "Virtuele Java-machine is niet gevonden; installeer 'gcj' of zet $JAVA"
 
+#~ msgid "cannot create pipe"
+#~ msgstr "kan geen pijp aanmaken"
+
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "kan de toegangsrechten van %s niet veranderen"
 
@@ -576,9 +594,6 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "Openen van /dev/zero voor lezen is mislukt"
-
-#~ msgid "cannot create pipe"
-#~ msgstr "kan geen pijp aanmaken"
 
 #~ msgid "`"
 #~ msgstr "‘"
@@ -616,22 +631,40 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "invalid spec"
 #~ msgstr "ongeldige aanduiding"
 
+#~ msgid "unable to display error message"
+#~ msgstr "foutmeldingen tonen is mislukt"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "toegangsrechten van %s worden behouden"
+
+#~ msgid "string comparison failed"
+#~ msgstr "vergelijking van tekenreeksen is mislukt"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "Zet LC_ALL='C' om het probleem te omzeilen."
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "De te vergelijken tekenreeksen waren %s en %s."
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "opgemaakte uitvoer aanmaken is mislukt"
+
 #~ msgid "(C)"
 #~ msgstr "©"
 
 #~ msgid ""
 #~ "\n"
 #~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-#~ "html>\n"
+#~ "html>.\n"
 #~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
 #~ "\n"
 #~ msgstr ""
 #~ "\n"
+#~ "Licentie GPLv3+: GNU GPL versie 3 of nieuwer <http://gnu.org/licenses/gpl."
+#~ "html>.\n"
 #~ "Dit is vrije software: u mag het vrijelijk wijzigen en verder "
 #~ "verspreiden.\n"
-#~ "De precieze licentie is GPLv3+: GNU GPL versie 3 of later.\n"
-#~ "Zie http://gnu.org/licenses/gpl.html voor de volledige tekst.\n"
 #~ "Er is GEEN GARANTIE, voor zover de wet dit toestaat.\n"
 #~ "\n"
 
@@ -699,17 +732,42 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ "%s, %s, %s, %s,\n"
 #~ "%s, %s en anderen.\n"
 
+#~ msgid ""
+#~ "\n"
+#~ "Report bugs to <%s>.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Rapporteer gebreken in het programma aan %s;\n"
+#~ "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
+#~ msgstr "%s-beginpagina: <http://www.gnu.org/software/%s/>.\n"
+
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
+#~ msgstr ""
+#~ "Algemene hulp bij het gebruik van GNU-software: <http://www.gnu.org/"
+#~ "gethelp/>.\n"
+
+#~ msgid "invalid %s%s argument `%s'"
+#~ msgstr "ongeldig argument %s%s van `%s'"
+
+#~ msgid "invalid suffix in %s%s argument `%s'"
+#~ msgstr "ongeldig achtervoegsel %s%s in argument `%s'"
+
+#~ msgid "%s%s argument `%s' too large"
+#~ msgstr "%s%s argument `%s' te groot"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "toegangsrechten van %s instellen"
+
 #~ msgid "%s subprocess"
 #~ msgstr "subproces %s"
 
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "subproces %s ontving het fatale signaal %d"
 
-#~ msgid "string comparison failed"
-#~ msgstr "vergelijking van tekenreeksen is mislukt"
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "fouten bij het schrijven naar een afgesloten pipe of socket"
 
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "Zet LC_ALL='C' om het probleem te omzeilen."
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "De te vergelijken tekenreeksen waren %s en %s."
+#~ msgid "block size"
+#~ msgstr "blokgrootte"

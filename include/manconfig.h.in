@@ -66,15 +66,6 @@
 #define DEFAULT_MANROFFSEQ   "t"
 #endif
 
-/* #define:
-	MAN_DB_CREATES	- to allow man to create user databases on the fly
-	MAN_DB_UPDATES	- to allow man to update databases
-	MAN_CATS	- to allow man to create/update cat files */
-
-#undef MAN_DB_CREATES
-#define MAN_DB_UPDATES
-#define MAN_CATS
-
 /* By default, man-db will store a whatis referenced manual page in favour
    of a stray cat page when they both share identical namespace. If you
    would like to see a stray cat eg. kill(1) in favour of a kill(1) whatis
@@ -334,7 +325,8 @@ extern struct compression comp_list[];
 #include <stddef.h>	/* for size_t */
 #include "xalloc.h"
 #include "xstrndup.h"
-extern char *create_tempdir (const char *template);
+extern char *create_tempdir (const char *template)
+	ATTRIBUTE_WARN_UNUSED_RESULT;
 
 extern int debug_level;		/* shows whether -d issued */
 extern void debug (const char *message, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);

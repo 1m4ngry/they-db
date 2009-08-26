@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailutils 0.6.90\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
 "PO-Revision-Date: 2005-05-19 11:54+0300\n"
 "Last-Translator: Sergey Poznyakoff <gray@gnu.org>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
@@ -71,7 +71,7 @@ msgstr ""
 msgid "Report bugs to %s.\n"
 msgstr "Про помилки звітуйте на %s.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "Невідомий тип повідомлення"
 
@@ -179,94 +179,94 @@ msgstr "%s: опція `-W %s' неоднозначна\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: опція `-W %s' не може мати аргументу\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, c-format
 msgid "unable to record current working directory"
 msgstr ""
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr "Успіх"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "Немає попереднього файлу"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "Недійсний заголовок: %s"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "Недійсний заголовок: %s"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 #, fuzzy
 msgid "Invalid back reference"
 msgstr "Недійсне число"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 #, fuzzy
 msgid "Invalid content of \\{\\}"
 msgstr "Невірна опція -- %s"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 #, fuzzy
 msgid "Invalid range end"
 msgstr "Недійсна команда"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 msgid "Memory exhausted"
 msgstr "Пам'ять вичерпано"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "Немає попереднього файлу"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "Немає попереднього файлу"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "Немає попереднього файлу"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "Немає попереднього файлу"

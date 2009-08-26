@@ -2,8 +2,7 @@
 %:
 	dh $@
 
-package = man-db
-dtmp    = debian/$(package)
+dtmp    = debian/man-db
 
 # Cf. #497653
 ifeq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
@@ -24,26 +23,6 @@ override_dh_auto_configure:
 	            --with-compress=compress --with-bzip2=bzip2 \
 		    --with-lzma=lzma \
 		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
-
-override_dh_auto_install:
-	dh_auto_install
-	# Not executable in the tarball, so needs manual installation. This
-	# will no longer be needed as of man-db 2.5.6.
-	install -m755 tools/chconfig		$(dtmp)/usr/share/$(package)
-
-# This will no longer be needed as of man-db 2.5.6.
-override_dh_installdocs:
-	dh_installdocs
-	install -m644 manual/man_db.cat \
-		$(dtmp)/usr/share/doc/man-db/man-db-manual.txt
-	install -m644 manual/man_db.dvi \
-		$(dtmp)/usr/share/doc/man-db/man-db-manual.dvi
-	install -m644 manual/man_db.ps \
-		$(dtmp)/usr/share/doc/man-db/man-db-manual.ps
-
-# This will no longer be needed as of man-db 2.5.6.
-override_dh_installchangelogs:
-	dh_installchangelogs docs/ChangeLog
 
 override_dh_fixperms:
 	dh_fixperms

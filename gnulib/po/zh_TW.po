@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: coreutils 5.3.0\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
 "PO-Revision-Date: 2005-07-02 04:13+0800\n"
 "Last-Translator: Abel Cheung <abelcheung@gmail.com>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -79,7 +79,7 @@ msgstr ""
 "\n"
 "請向 <%s> 回報錯誤。\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "不明的系統錯誤"
 
@@ -182,94 +182,94 @@ msgstr "%s：選項‘-W %s’不明確\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s：選項‘-W %s’不可配合參數使用\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, fuzzy, c-format
 msgid "unable to record current working directory"
 msgstr "無法建立目錄%s"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, fuzzy, c-format
 msgid "failed to return to initial working directory"
 msgstr "無法建立目錄%s"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s：無效的正規表示式：%s"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "無效的字元種類‘%s’"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "無效的字元種類‘%s’"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 #, fuzzy
 msgid "Invalid back reference"
 msgstr "無效的類型‘%s’"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 #, fuzzy
 msgid "Invalid range end"
 msgstr "無效的類型‘%s’"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "記憶體耗盡"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s：無效的正規表示式：%s"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "在正規運算式搜尋時發生錯誤"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s：無效的正規表示式：%s"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "在正規運算式搜尋時發生錯誤"

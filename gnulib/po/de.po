@@ -31,10 +31,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: GNU gnulib-1.1\n"
+"Project-Id-Version: GNU gnulib-1.0.0.1991.dbebf\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2008-07-31 00:31+0100\n"
-"PO-Revision-Date: 2009-03-13 10:26+0100\n"
+"POT-Creation-Date: 2009-08-25 09:45+0100\n"
+"PO-Revision-Date: 2009-04-16 10:26+0100\n"
 "Last-Translator: Michael Piefel <piefel@informatik.hu-berlin.de>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -97,7 +97,7 @@ msgstr "»%s --help« oder »%s --usage« liefert weitere Informationen.\n"
 msgid "Report bugs to %s.\n"
 msgstr "Melden Sie Fehler (auf Englisch, mit LC_ALL=C) an <%s>.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:125
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
 msgid "Unknown system error"
 msgstr "Unbekannter Systemfehler"
 
@@ -199,86 +199,86 @@ msgstr "%s: Option »-W %s« ist mehrdeutig\n"
 msgid "%s: option `-W %s' doesn't allow an argument\n"
 msgstr "%s: Option »-W %s« erlaubt kein Argument\n"
 
-#: gnulib/lib/openat-die.c:33
+#: gnulib/lib/openat-die.c:34
 #, c-format
 msgid "unable to record current working directory"
 msgstr "aktuelles Arbeitsverzeichnisses kann nicht aufgezeichnet werden"
 
-#: gnulib/lib/openat-die.c:46
+#: gnulib/lib/openat-die.c:47
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr ""
 "es konnte nicht ins ursprüngliche Arbeitsverzeichnis zurückgekehrt werden"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:132
 msgid "Success"
 msgstr "Erfolg"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:135
 msgid "No match"
 msgstr "Keine Übereinstimmung"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:138
 msgid "Invalid regular expression"
 msgstr "ungültiger regulärer Ausdruck"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:141
 msgid "Invalid collation character"
 msgstr "Ungültige Zeichenklasse"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:144
 msgid "Invalid character class name"
 msgstr "Ungültiger Zeichenklassenname"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:147
 msgid "Trailing backslash"
 msgstr "abschließender Backslash"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:150
 msgid "Invalid back reference"
 msgstr "Ungültige Rückreferenz"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:153
 msgid "Unmatched [ or [^"
 msgstr "Keine Übereinstimmung für [ oder [^"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:156
 msgid "Unmatched ( or \\("
 msgstr "Keine Übereinstimmung für ( oder \\("
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:159
 msgid "Unmatched \\{"
 msgstr "Keine Übereinstimmung für \\{"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:162
 msgid "Invalid content of \\{\\}"
 msgstr "Ungültiger Inhalt in \\{\\}"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:165
 msgid "Invalid range end"
 msgstr "Ungültiges Bereichsende"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:168
 msgid "Memory exhausted"
 msgstr "Speicher ausgeschöpft"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:171
 msgid "Invalid preceding regular expression"
 msgstr "ungültiger vorhergehender regulärer Ausdruck"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:174
 msgid "Premature end of regular expression"
 msgstr "Vorzeitiges Ende des regulären Ausdrucks"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:177
 msgid "Regular expression too big"
 msgstr "Der reguläre Ausdruck ist zu groß"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:180
 msgid "Unmatched ) or \\)"
 msgstr "Keine Übereinstimmung für ) oder \\)"
 
-#: gnulib/lib/regcomp.c:680
+#: gnulib/lib/regcomp.c:701
 msgid "No previous regular expression"
 msgstr "Kein vorhergehender regulärer Ausdruck"
 
@@ -449,6 +449,22 @@ msgstr "Speicher ausgeschöpft"
 #~ msgid "stack overflow"
 #~ msgstr "Stacküberlauf"
 
+#~ msgid "cannot find a temporary directory, try setting $TMPDIR"
+#~ msgstr ""
+#~ "kann kein temporäres Verzeichnis finden, versuchen Sie, $TMPDIR zu setzen"
+
+#~ msgid "cannot create a temporary directory using template \"%s\""
+#~ msgstr "kann temporäres Verzeichnis mit der Schablone „%s“ nicht anlegen"
+
+#~ msgid "cannot remove temporary file %s"
+#~ msgstr "kann temporäre Datei %s nicht entfernen"
+
+#~ msgid "cannot remove temporary directory %s"
+#~ msgstr "kann temporäres Verzeichnis %s nicht entfernen"
+
+#~ msgid "error closing file"
+#~ msgstr "Fehler beim Schließen der Datei"
+
 #~ msgid "write error"
 #~ msgstr "Schreibfehler"
 
@@ -569,8 +585,8 @@ msgstr "Speicher ausgeschöpft"
 #~ msgid "Unknown error"
 #~ msgstr "Unbekannter Fehler"
 
-#~ msgid "block size"
-#~ msgstr "Blockgröße"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "%s-Unterprozess-E/A-Fehler"
 
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "ungültiges Argument source_version für compile_java_class"
@@ -594,6 +610,9 @@ msgstr "Speicher ausgeschöpft"
 #~ "Java-VM nicht gefunden, versuchen Sie, gij zu installieren oder setzen "
 #~ "Sie $JAVA"
 
+#~ msgid "cannot create pipe"
+#~ msgstr "kann Pipe nicht erzeugen"
+
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "kann Zugriffsrechte von %s nicht ändern"
 
@@ -602,9 +621,6 @@ msgstr "Speicher ausgeschöpft"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "Konnte /dev/zero nicht zum Lesen öffnen"
-
-#~ msgid "cannot create pipe"
-#~ msgstr "kann Pipe nicht erzeugen"
 
 #~ msgid "`"
 #~ msgstr "„"
@@ -642,20 +658,38 @@ msgstr "Speicher ausgeschöpft"
 #~ msgid "invalid spec"
 #~ msgstr "ungültige Spec"
 
+#~ msgid "unable to display error message"
+#~ msgstr "kann Fehlermeldung nicht anzeigen"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "erhalte Zugriffsrechte von %s"
+
+#~ msgid "string comparison failed"
+#~ msgstr "Zeichenkettenvergleich fehlgeschlagen"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "Setzen Sie LC_ALL=C, um das Problem zu umgehen."
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "Die verglichenen Zeichenketten waren %s und %s."
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "kann keine formatierte Ausgabe durchführen"
+
 #~ msgid "(C)"
 #~ msgstr "©"
 
 #~ msgid ""
 #~ "\n"
 #~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-#~ "html>\n"
+#~ "html>.\n"
 #~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
 #~ "\n"
 #~ msgstr ""
 #~ "\n"
 #~ "Lizenz GPLv3+: GNU GPL Version 3 oder höher <http://gnu.org/licenses/gpl."
-#~ "html>\n"
+#~ "html>.\n"
 #~ "Dies ist freie Software: Sie können sie ändern und weitergeben.\n"
 #~ "Es gibt keinerlei Garantien, soweit wie es das Gesetz erlaubt.\n"
 #~ "\n"
@@ -724,17 +758,43 @@ msgstr "Speicher ausgeschöpft"
 #~ "%s, %s, %s, %s,\n"
 #~ "%s, %s und anderen.\n"
 
+#~ msgid ""
+#~ "\n"
+#~ "Report bugs to <%s>.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Melden Sie Fehler (auf Englisch, mit LC_ALL=C) an <%s>.\n"
+#~ "Melden Sie Übersetzungsfehler an <translation-team-de@lists.sourceforge."
+#~ "net>\n"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
+#~ msgstr "Heimatseite von %s: <http://www.gnu.org/software/%s/>.\n"
+
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
+#~ msgstr ""
+#~ "Allgemeine Hilfe zur Benutzung von GNU-Software: <http://www.gnu.org/"
+#~ "gethelp/>.\n"
+
+#~ msgid "invalid %s%s argument `%s'"
+#~ msgstr "ungültiges %s%s-Argument „%s“"
+
+#~ msgid "invalid suffix in %s%s argument `%s'"
+#~ msgstr "ungültiger Suffix in %s%s-Argument „%s“"
+
+#~ msgid "%s%s argument `%s' too large"
+#~ msgstr "%s%s-Argument „%s“ zu groß"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "setze Zugriffsrechte von %s"
+
 #~ msgid "%s subprocess"
 #~ msgstr "%s-Unterprozess"
 
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "%s-Unterprozess bekam tödliches Signal %d"
 
-#~ msgid "string comparison failed"
-#~ msgstr "Zeichenkettenvergleich fehlgeschlagen"
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "Fehler beim Schreiben in geschlossene Pipe oder Socket"
 
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "Setzen Sie LC_ALL=C, um das Problem zu umgehen."
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "Die verglichenen Zeichenketten waren %s und %s."
+#~ msgid "block size"
+#~ msgstr "Blockgröße"

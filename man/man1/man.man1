@@ -41,6 +41,7 @@
 .RB [\| \-\-names\-only \|]
 .RB [\| \-a \|]
 .RB [\| \-u \|]
+.RB [\| \-\-no\-subpages \|]
 .RB [\| \-P
 .IR pager \|]
 .RB [\| \-r
@@ -69,6 +70,17 @@
 .IR options \|]
 .I regexp
 \&.\|.\|.
+.\" The --global-apropos command line
+.br
+.B %man%
+.B \-K
+.RB [\| \-w \||\| \-W \|]
+.RB [\| \-S
+.IR list \|]
+.RB [\| \-i \||\| \-I \|]
+.RI [\| \-\-regex \|]
+.RI [\| section \|]
+.IR term \ .\|.\|.
 .\" The whatis command line
 .br
 .B %man%
@@ -218,6 +230,10 @@ l l.
 \fIargument\fB .\|.\|.@\fIargument\fR is repeatable.
 [\|\fIexpression\fR\|]\fB .\|.\|.@\fRentire \fIexpression\fR\ within [ ] is repeatable.
 .TE
+
+Exact rendering may vary depending on the output device.
+For instance, man will usually not be able to render italics when running in
+a terminal, and will typically use underlined or coloured text instead.
 
 The command or function illustration is a pattern that should match all
 possible invocations.
@@ -548,6 +564,16 @@ See
 .BR %apropos% (1)
 for details.
 .TP
+.if !'po4a'hide' .B \-K, \-\-global\-apropos
+Search for text in all manual pages.
+This is a brute-force search, and is likely to take some time; if you can,
+you should specify a section to reduce the number of pages that need to be
+searched.
+Search terms may be simple strings (the default), or regular expressions if
+the
+.B \-\-regex
+option is used.
+.TP
 .if !'po4a'hide' .B \-l, \-\-local\-file
 Activate `local' mode.
 Format and display local manual files instead of searching through the
@@ -761,6 +787,33 @@ ensure that they are an accurate representation of the filesystem.
 It will only have a useful effect if
 .B %man%
 is installed with the setuid bit set.
+.TP
+.if !'po4a'hide' .B \-\-no\-subpages
+By default,
+.B %man%
+will try to interpret pairs of manual page names given on the command line
+as equivalent to a single manual page name containing a hyphen.
+This supports the common pattern of programs that implement a number of
+subcommands, allowing them to provide manual pages for each that can be
+accessed using similar syntax as would be used to invoke the subcommands
+themselves.
+For example:
+
+.nf
+.if !'po4a'hide' \&  $ man \-aw git diff
+.if !'po4a'hide' \&  /usr/share/man/man1/git\-diff.1.gz
+.fi
+
+To disable this behaviour, use the
+.B \-\-no\-subpages
+option.
+
+.nf
+.if !'po4a'hide' \&  $ man \-aw \-\-no\-subpages git diff
+.if !'po4a'hide' \&  /usr/share/man/man1/git.1.gz
+.if !'po4a'hide' \&  /usr/share/man/man3/Git.3pm.gz
+.if !'po4a'hide' \&  /usr/share/man/man1/diff.1.gz
+.fi
 .SS "Controlling formatted output"
 .TP
 .BI \-P\  pager ,\ \-\-pager= pager
@@ -778,6 +831,12 @@ It is not used in conjunction with
 .B \-f
 or
 .BR \-k .
+
+The value may be a simple command name or a command with arguments, and may
+use shell quoting (backslashes, single quotes, or double quotes).
+It may not use pipes to connect multiple commands; if you need that, use a
+wrapper script, which may take the file to display either as an argument or
+on standard input.
 .TP
 .BI \-r\  prompt ,\ \-\-prompt= prompt
 If a recent version of
@@ -1097,6 +1156,12 @@ display the manual page.
 By default,
 .B %pager%
 is used.
+
+The value may be a simple command name or a command with arguments, and may
+use shell quoting (backslashes, single quotes, or double quotes).
+It may not use pipes to connect multiple commands; if you need that, use a
+wrapper script, which may take the file to display either as an argument or
+on standard input.
 .TP
 .if !'po4a'hide' .B MANLESS
 If
