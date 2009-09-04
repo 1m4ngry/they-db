@@ -1,3 +1,9 @@
+man-db (2.5.6-2) UNRELEASED; urgency=low
+
+  * Don't try to change I/O priority in a vserver (closes: #544999).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 04 Sep 2009 19:04:26 +0100
+
 man-db (2.5.6-1) unstable; urgency=low
 
   * New upstream release:
