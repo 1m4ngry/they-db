@@ -5,8 +5,9 @@
 set -e
 
 iosched_idle=
-# Don't try to change I/O priority in a vserver.
-if ! grep -q 'envID:.*[1-9]' /proc/self/status; then
+# Don't try to change I/O priority in a vserver or OpenVZ.
+if ! grep -q 'envID:.*[1-9]' /proc/self/status && \
+   ([ ! -d /proc/vz ] || [ -d /proc/bc ]); then
     dpkg_version="$(dpkg-query -W -f '${Version}' dpkg)"
     if dpkg --compare-versions "$dpkg_version" ge 1.15.0; then
 	iosched_idle='--iosched idle'
