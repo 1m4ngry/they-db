@@ -4,6 +4,8 @@ man-db (2.5.6-4) UNRELEASED; urgency=low
     - If the locale encoding is ASCII, then use the ascii device even if
       preconv is available; it will do a better job than producing UTF-8
       output and then recoding that to ASCII (closes: #547695).
+    - Include <unistd.h> in src/encodings.c for dup and STDIN_FILENO
+      (closes: #553623).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 10 Nov 2009 11:02:20 +0000
 
