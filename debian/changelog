@@ -1,4 +1,4 @@
-man-db (2.5.6-4) UNRELEASED; urgency=low
+man-db (2.5.6-4) unstable; urgency=low
 
   * Backport from trunk:
     - If the locale encoding is ASCII, then use the ascii device even if
@@ -12,7 +12,7 @@ man-db (2.5.6-4) UNRELEASED; urgency=low
     to disable rebuilding the database when man-db is triggered (closes:
     #554914).
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 10 Nov 2009 11:02:20 +0000
+ -- Colin Watson <cjwatson@debian.org>  Tue, 10 Nov 2009 11:58:25 +0000
 
 man-db (2.5.6-3) unstable; urgency=low
 
