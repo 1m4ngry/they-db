@@ -6,6 +6,8 @@ man-db (2.5.6-4) UNRELEASED; urgency=low
       output and then recoding that to ASCII (closes: #547695).
     - Include <unistd.h> in src/encodings.c for dup and STDIN_FILENO
       (closes: #553623).
+    - When invoking col, ensure that LC_CTYPE is set to an appropriate
+      locale for the selected character set (closes: #555331).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 10 Nov 2009 11:02:20 +0000
 
