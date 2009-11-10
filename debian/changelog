@@ -1,3 +1,12 @@
+man-db (2.5.6-4) UNRELEASED; urgency=low
+
+  * Backport from trunk:
+    - If the locale encoding is ASCII, then use the ascii device even if
+      preconv is available; it will do a better job than producing UTF-8
+      output and then recoding that to ASCII (closes: #547695).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 10 Nov 2009 11:02:20 +0000
+
 man-db (2.5.6-3) unstable; urgency=low
 
   * Don't try to change I/O priority in an OpenVZ container (closes:
