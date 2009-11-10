@@ -1,12 +1,16 @@
 #!/bin/sh -e
 
+. /usr/share/debconf/confmodule
+db_version 2.0
+
 run_mandb () {
+    db_get man-db/auto-update
+    [ "$RET" = true ] || return 0
     if [ -f /CurrentlyBuilding ]; then
-	# Skip building the database when running in a buildd environment,
-	# to avoid wasting time. (At the moment, this check only works for
-	# Ubuntu's buildds. Furthermore, detectable buildds are a
-	# double-edged sword, so maybe this should be replaced with the
-	# ability to preseed something to prevent building the database.)
+	# Skip building the database when running in a buildd environment, to
+	# avoid wasting time. (This is a legacy hack for Ubuntu's buildds,
+	# which has been replaced by the ability to preseed man-db/auto-update;
+	# it will be removed once Ubuntu's buildds support the new mechanism.)
 	echo "... skipping, since this is a buildd" >&2
 	return 0
     fi
@@ -29,8 +33,6 @@ catdir=/var/cache/man
 maybesetuid='man mandb'
 conffile=/etc/manpath.config
 
-. /usr/share/debconf/confmodule
-db_version 2.0
 db_get man-db/install-setuid
 
 # Sorry about this, but #98224 is right - statoverrides don't work as

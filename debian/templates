@@ -23,3 +23,10 @@ _Description: Should man and mandb be installed 'setuid man'?
  .
  Enabling this feature may be a security risk, so it is disabled by default.
  If in doubt, you should leave it disabled.
+
+Template: man-db/auto-update
+Type: boolean
+Default: true
+Description: for internal use; can be preseeded
+ If true, automatically rebuild man-db's database when packages containing
+ manual pages are installed.

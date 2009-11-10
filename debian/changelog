@@ -8,6 +8,9 @@ man-db (2.5.6-4) UNRELEASED; urgency=low
       (closes: #553623).
     - When invoking col, ensure that LC_CTYPE is set to an appropriate
       locale for the selected character set (closes: #555331).
+  * Add man-db/auto-update debconf template, which may be preseeded to false
+    to disable rebuilding the database when man-db is triggered (closes:
+    #554914).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 10 Nov 2009 11:02:20 +0000
 
