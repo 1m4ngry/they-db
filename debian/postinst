@@ -6,14 +6,6 @@ db_version 2.0
 run_mandb () {
     db_get man-db/auto-update
     [ "$RET" = true ] || return 0
-    if [ -f /CurrentlyBuilding ]; then
-	# Skip building the database when running in a buildd environment, to
-	# avoid wasting time. (This is a legacy hack for Ubuntu's buildds,
-	# which has been replaced by the ability to preseed man-db/auto-update;
-	# it will be removed once Ubuntu's buildds support the new mechanism.)
-	echo "... skipping, since this is a buildd" >&2
-	return 0
-    fi
     # start-stop-daemon isn't available when running from debootstrap.
     perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
 	     exec "/usr/bin/mandb", @ARGV' -- "$@" || true
