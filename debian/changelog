@@ -1,4 +1,4 @@
-man-db (2.5.6-5) UNRELEASED; urgency=low
+man-db (2.5.6-5) unstable; urgency=low
 
   * Remove Ubuntu buildd hack now that the Ubuntu buildd chroots preseed
     man-db/auto-update=false (thanks, LaMont Jones).
@@ -8,7 +8,7 @@ man-db (2.5.6-5) UNRELEASED; urgency=low
   * Unless we're cross-compiling, get dh_installman to use the version of
     man we just built.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 17 Nov 2009 18:56:33 -0600
+ -- Colin Watson <cjwatson@debian.org>  Fri, 01 Jan 2010 13:27:06 +0000
 
 man-db (2.5.6-4) unstable; urgency=low
 
