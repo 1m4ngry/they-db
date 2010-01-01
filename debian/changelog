@@ -2,6 +2,9 @@ man-db (2.5.6-5) UNRELEASED; urgency=low
 
   * Remove Ubuntu buildd hack now that the Ubuntu buildd chroots preseed
     man-db/auto-update=false (thanks, LaMont Jones).
+  * Backport from trunk:
+    - Handle iconv errors when attempting to convert the last input encoding
+      to UTF-8 (closes: #562503).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 17 Nov 2009 18:56:33 -0600
 
