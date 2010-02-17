@@ -1,12 +1,14 @@
 .deps
 Makefile
 alloca.h
+arg-nonnull.h
 charset.alias
 configmake.h
 dirent.h
 fcntl.h
 getopt.h
 glob.h
+link-warning.h
 ref-add.sed
 ref-del.sed
 signal.h
@@ -15,5 +17,7 @@ stdlib.h
 string.h
 strings.h
 sys
+time.h
 unistd.h
+wchar.h
 *.a
