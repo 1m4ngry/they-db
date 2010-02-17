@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.5.6], [cjwatson@debian.org])
+AC_INIT([man-db], [2.5.7], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR(tools)
 AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -17,7 +17,7 @@ AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2009-08-26
+date=2010-02-16
 AC_SUBST(date)dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST(roff_version)dnl
@@ -129,6 +129,17 @@ AC_PROG_CC
 gl_EARLY
 AC_PROG_CPP
 CFLAGS="$CFLAGS -Wall"
+case $host_os in
+	ultrix4.3*)
+		dnl When compiled for BSD environment, each running `man'
+		dnl increases the system load as reported by uptime(1) by
+		dnl one.  The reason for this behaviour is currently
+		dnl unknown, but the load increase does *not* reflect actual
+		dnl resource usage.  To avoid it, compile for POSIX
+		dnl environment:
+		CFLAGS="$CFLAGS -YPOSIX"
+		;;
+esac
 if test "$GCC" = yes
 then
 	MAN_GCC_WARNING([]) # -W
@@ -213,6 +224,7 @@ else
 	AC_CHECK_PROGS(troff, troff gtroff)
 	TROFF=troff
 fi
+AC_SUBST([TROFF])
 if test -n "$troff"
 then
 	AC_DEFINE(HAS_TROFF, 1, [Define if you have troff.])
@@ -378,6 +390,18 @@ AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
 AC_FUNC_VFORK
 
+# Check for socketpair(2) as fast replacement for pipe(2).
+AC_ARG_ENABLE(socketpair-pipe,
+[AS_HELP_STRING([--enable-socketpair-pipe], [Use socketpair(2) as fast replacement for pipe(2)])],
+  [ if test "$enableval" = "yes"
+    then
+      MAN_SOCKETPAIR_PIPE
+      if test "$man_cv_socketpair_pipe" = yes; then
+	MAN_SOCKETPAIR_MODE
+      fi
+    fi
+  ])
+
 # Find a suitable database interface header and library.
 #
 # Check for GNU dbm routines.
@@ -467,6 +491,9 @@ MAN_TRANS_SUBST(mandb)
 MAN_TRANS_SUBST(manpath)
 MAN_TRANS_SUBST(whatis)
 MAN_TRANS_SUBST(zsoelim)
+
+# If we're cross-compiling, tests won't work.
+AM_CONDITIONAL([CROSS_COMPILING], [test "x$cross_compiling" = xyes])
 
 AC_CONFIG_FILES(Makefile
 	gnulib/lib/Makefile

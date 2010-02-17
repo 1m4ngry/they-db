@@ -1,3 +1,380 @@
+Tue Feb 16 23:11:58 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.7.
+	* po/man-db.pot, po/*.po: Update.
+
+Tue Feb 16 23:09:11 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (get_catpath): Fix handling of non-translated cat
+	  paths.
+
+Sun Feb 14 00:19:47 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Always save cat pages in UTF-8 (Debian bug #446741).
+
+	* src/encodings.c (struct directory_entry): Remove
+	  standard_output_encoding member.
+	  (directory_table): Likewise.
+	  (get_standard_output_encoding): Remove.
+	* src/encodings.h (get_standard_output_encoding): Remove prototype.
+	* src/man.c (my_locale_charset): New function, with code moved from
+	  make_roff_command.
+	  (make_roff_command): Return pipeline output encoding in a new
+	  output parameter.  Remove enforcement that cat pages could only be
+	  saved for the manual hierarchy's default character set.  Move
+	  post-cat-page pipeline elements to ...
+	  (add_output_iconv, make_display_command): ... here.
+	  (make_display_command): Remove code for handling a named input
+	  file, which has been unused for some time.  New encoding argument.
+	  (open_cat_stream): New encoding argument.  Convert from it to
+	  UTF-8 while saving the cat page.
+	  (format_display_and_save): New encoding argument, passed to
+	  open_cat_stream.
+	  (display_catman): New encoding argument.  Convert from it to UTF-8
+	  while saving the cat page.
+	  (display): Get formatted encoding from make_roff_command and pass
+	  it to display_catman, make_display_command, and
+	  format_display_and_save.  Assume UTF-8 when displaying an existing
+	  cat page.
+	* NEWS: Document this.
+
+Sat Feb 13 14:25:42 GMT 2010  Vincent Lefèvre  <vincent@vinc17.net>
+
+	* lib/decompress.c (decompress_open): Fix sense of directory check
+	  (Debian bug #537434).
+
+Mon Feb  8 07:01:35 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (get_catpath): Handle man -> cat substitution correctly
+	  for translated cat pages.
+
+Mon Feb  8 04:57:09 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display_and_save): Use sigaction, not signal.
+
+Mon Feb  8 04:29:42 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import getopt-gnu module rather than the obsolete getopt.
+
+Mon Feb  1 12:18:36 PST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_wait): Don't bother printing error
+	  messages for SIGINT and SIGQUIT, since these correspond to
+	  explicit user actions (Debian bug #568000).
+
+Sun Jan 31 03:44:59 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (try_iconv): Don't lose iconv errors from converting
+	  to UTF-8 when the target encoding is not UTF-8.
+
+Sun Jan 31 03:33:33 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Automake 1.11.1 and Gnulib 20100109.
+
+Thu Jan 14 11:51:59 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (search): "%s: nothing appropriate." is an error;
+	  write it to stderr, not stdout (Debian bug #565255).
+
+Wed Jan 13 23:42:00 GMT 2010  Werner Fink  <werner@suse.de>
+
+	Add support for using socketpair(2) as a replacement for pipe(2),
+	which is faster on some systems (Savannah patch #6741).
+
+	* configure.ac: Add --enable-socketpair-pipe option.
+	* m4/man-socketpair.m4: New file.
+	* lib/pipeline.c [USE_SOCKETPAIR_PIPE]: Redefine pipe() to a
+	  construction based on socketpair().
+	* NEWS: Document this.
+
+Wed Jan 13 22:04:23 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Autoconf 2.65 and Gnulib 20091120.
+
+Wed Jan 13 18:26:47 GMT 2010  Diego Pettenò  <flameeyes@gentoo.org>
+
+	Add support for heirloom-doctools (Savannah patch #6933).
+
+	* configure.ac: Substitute TROFF.
+	* manual/Makefile.am (.pp.dvi, .pp.ps, .pp.tdvi, .pp.html): Use
+	  $(TROFF) rather than groff or troff.
+	* src/man.c (options, parse_opt): Just ignore the --warnings option
+	  when troff is not groff, rather than compiling it out entirely.
+	  (make_roff_command): Only use gxditview variable when troff is
+	  groff.
+	* NEWS: Document this.
+
+Tue Jan 12 13:33:51 GMT 2010  Samuel Thibault  <sthibault@debian.org>
+
+	* lib/pipeline.c (pipeline_pump): Fix off-by-one error when write
+	  returns EAGAIN (Debian bug #564818).
+
+Fri Jan  1 17:03:18 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* README (Copyright and licensing): Update copyright years.
+
+Fri Jan  1 13:26:21 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (try_iconv): Only handle iconv errors when iconv
+	  returned -1.
+
+Fri Jan  1 11:37:13 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/manconv.c (try_iconv): Handle iconv errors when attempting to
+	  convert the last input encoding to UTF-8 (Debian bug #562503).
+	* src/tests/manconv-3: Add test for this.
+	* src/tests/Makefile.am (TESTS): Add manconv-3.
+
+Tue Dec 15 14:10:19 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c (main): Fix possible crash when MAN_MUST_CREATE is
+	  unset.
+	* NEWS: Document this.
+
+Tue Dec 15 13:47:50 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* lib/debug.c (init_debug): New function: check for MAN_DEBUG=1 in
+	  the environment.
+	* include/manconfig.h.in (init_debug): Add prototype.
+	* src/accessdb.c (main), src/catman.c (main), src/globbing_test.c
+	  (main), src/lexgrog_test.c (main), src/man.c (main),
+	  src/manconv_main.c (main), src/mandb.c (main), src/manpath.c
+	  (main), src/whatis.c (main), src/zsoelim_main.c (main): Call
+	  init_debug.
+	* NEWS: Document this.
+
+Sat Dec 12 00:36:14 GMT 2009  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+
+Tue Dec  1 17:01:19 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (do_extern): Pass section through to external program
+	  (Savannah bug #28145). Fix passing of alternate system name to use
+	  -m rather than -s.
+
+Tue Nov 24 18:27:59 GMT 2009  Robert Luberda  <robert@debian.org>
+
+	* po/pl.po: Update from Translation Project.
+
+Wed Nov 18 14:58:52 GMT 2009  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* man/po4a/po/ru.po: Update from Translation Project.
+
+Wed Nov 18 14:55:31 GMT 2009  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* po/ru.po: Update from Translation Project.
+
+Wed Nov 18 14:52:43 GMT 2009  Erwin Poeze  <erwin.poeze@gmail.com>
+
+	* po/nl.po: Update from Translation Project.
+
+Sun Nov 15 22:49:35 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* README (Non-generic arguments to configure): Use more readable
+	  formatting.
+	* manual/options-only.me, manual/print-options: New file.
+	* manual/intro.me (Arguments to configure): Add hooks for
+	  options-only.me.
+	* manual/Makefile.am (dist_noinst_DATA): Add options-only.me and
+	  print-options.
+
+Sun Nov 15 16:15:56 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Revision control): Savannah has disabled bzr+ssh for
+	  the time being; update push URL.
+
+Sun Nov 15 16:05:26 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.7-pre1.
+	* po/man-db.pot, po/*.po: Update.
+
+Sun Nov 15 14:30:27 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* NEWS: Document previous change.
+
+Sun Nov 15 14:18:35 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (compare_candidates): Prefer getting a page from the
+	  best manual section over getting a page in the correct language; I
+	  have my reservations about this, but it seems to be what people
+	  are requesting (Debian bug #519547).
+
+Sun Nov 15 14:02:11 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	Search man<sec><ext> directories in the GNU layout (Debian bug
+	#519807, Arch Linux bug #13734).
+
+	* src/globbing.c (match_in_directory): Optionally take allocated
+	  count from caller. If it's non-zero, don't clear the glob.
+	  (look_for_file): In the GNU layout, search all subdirectories of
+	  hier that begin with the first character of the section.
+	* NEWS: Document this.
+
+Sun Nov 15 13:32:58 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/globbing.c (match_in_directory): Make this void; checking
+	  whether any glob matches were returned is sufficient. Move
+	  glob-clearing code to ...
+	  (clear_glob): ... here (new function).
+	  (look_for_file): Simplify since we now only need to check
+	  gbuf.gl_pathc == 0, not the return value of match_in_directory as
+	  well. Clear gbuf on entry.
+
+Sun Nov 15 13:18:38 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/tests/lexgrog-1, src/tests/man-1, src/tests/manconv-1,
+	  src/tests/manconv-2, src/tests/mandb-1, src/tests/mandb-2: Use
+	  'diff -u', which produces more helpful output on failures.
+
+Sat Nov 14 20:10:57 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* README (System specific notes): Remove entirely. The notes about
+	  Linux here only pertain to thoroughly obsolete systems.
+
+Sat Nov 14 20:08:40 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Handle Ultrix-4.3a -YPOSIX requirement
+	  automatically.
+	* README (System specific notes): Remove note about Ultrix-4.3a.
+
+Sat Nov 14 19:14:02 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* lib/README: Copyright is not the same as licensing; fix confusion.
+
+Sat Nov 14 18:57:42 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (options): Add --nh and --nj aliases for
+	  --no-hyphenation and --no-justification respectively.
+	* man/man1/man.man1 (Controlling formatted output): Document new
+	  aliases.
+
+Sat Nov 14 18:52:15 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (argstr_get_word): Fix a small memory leak.
+
+Sat Nov 14 18:51:37 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	Do what the user probably means when the full path to an executable
+	is given as an argument (Debian bug #505465).
+
+	* lib/pathsearch.c (directory_on_path): New function.
+	* lib/pathsearch.h (directory_on_path): Add prototype.
+	* src/manp.c (get_manpath_from_path): Make external. Add 'mandatory'
+	  argument to control the addition of MANDATORY_MANPATH entries.
+	  (guess_manpath): Update caller.
+	* src/manp.h (get_manpath_from_path): Add prototype.
+	* src/man.c (main): Move locale manpath expansion to ...
+	  (locale_manpath): ... here (new function).
+	  (local_man_loop): If the argument is an executable, try looking up
+	  the corresponding manual page in the appropriate part of the
+	  manpath, rather than just trying to format the text of the
+	  executable as a manual page.
+	* NEWS: Document this.
+
+Sat Nov 14 10:28:29 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	Add option to disable justification (Debian bug #440047).
+
+	* src/man.c (options, parse_opt): Accept --no-justification. Reset
+	  corresponding variable with -D.
+	  (disable_justification): New function.
+	  (display): Append disable_justification to the decompressor
+	  pipeline if --no-justification is used.
+	* man/man1/man.man1 (SYNOPSIS, Controlling formatted output):
+	  Document --no-justification.
+	* NEWS: Document this.
+
+Sat Nov 14 10:23:28 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* include/manconfig.h.in (ATTRIBUTE_NORETURN): Define to an
+	  attribute marking a function as non-returning if using GCC 2.5 or
+	  newer.
+	* lib/pipeline.c (command_new_sequence, command_sequence_command):
+	  New functions.
+	  (command_dup, command_dump, command_tostring, command_free):
+	  Handle commands of type COMMAND_SEQUENCE.
+	  (pipeline_start): Move command execution to ...
+	  (command_start_child): ... here (new function). Handle commands of
+	  type COMMAND_SEQUENCE.
+	* lib/pipeline.h (enum command_tag): Add COMMAND_SEQUENCE.
+	  (struct command): Add support for commands that consist of a
+	  sequence of commands.
+	  (command_new_sequence, command_sequence_command): Add prototypes.
+	* src/man.c (disable_hyphenation, locale_macros): Drop passthrough
+	  code.
+	  (display): Create a command sequence for hyphenation and
+	  locale-macro decompressor prefixes if necessary.
+
+Mon Nov  9 16:59:47 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Define a CROSS_COMPILING conditional if
+	  cross-compiling.
+	* man/Rules.man, src/tests/Makefile.am: Don't run tests if
+	  cross-compiling.
+	* NEWS: Document this.
+
+Mon Nov  9 16:53:10 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20090915.
+
+Mon Nov  9 16:27:44 GMT 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (find_charset_locale): New function.
+	* src/encodings.h (find_charset_locale): Add prototype.
+	* src/man.c (make_roff_command): When invoking col, ensure that
+	  LC_CTYPE is set to an appropriate locale for the selected
+	  character set (Debian bug #555331).
+	* NEWS: Document this.
+
+Thu Oct  8 23:22:57 BST 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c: Include <unistd.h> for dup and STDIN_FILENO.
+
+Thu Oct  1 01:08:40 BST 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/accessdb.c (parse_opt), src/lexgrog_test.c (parse_opt),
+	  src/whatis.c (parse_opt): Turn off ARGP_HELP_PRE_DOC to avoid
+	  problems with translations of documentation strings beginning with
+	  a vertical tab separator (i.e. no pre-option documentation).
+
+Thu Sep 24 12:32:48 BST 2009  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_pump): When a source pipeline dies, make
+	  sure to drain its output before discarding its output file
+	  descriptor (Debian bug #548153). We still record the death to
+	  avoid duplicate debugging messages.
+	* NEWS: Document this.
+
+Tue Sep 22 00:53:42 BST 2009  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (get_default_device): If the locale encoding is
+	  ASCII, then use the ascii device even if preconv is available; it
+	  will do a better job than producing UTF-8 output and then recoding
+	  that to ASCII (Debian bug #547695).
+
+Sat Sep 19 15:02:20 BST 2009  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Fri Sep 11 01:19:41 BST 2009  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/id.po: Fix syntax error.
+
+Wed Sep  9 14:42:18 BST 2009  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (General options): Refer to the "Warnings" node
+	  in 'info groff' for a list of available warning names (Debian bug
+	  #545805).
+
+Wed Sep  9 14:36:39 BST 2009  Arif E. Nugroho  <arif_endro@yahoo.com>
+
+	* man/po4a/po/id.po: Update from Translation Project.
+
+Tue Sep  8 19:14:23 BST 2009  Arif E. Nugroho  <arif_endro@yahoo.com>
+
+	* po/id.po: Update from Translation Project.
+
 Wed Aug 26 01:12:20 BST 2009  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.5.6.

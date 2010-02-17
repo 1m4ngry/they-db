@@ -199,17 +199,8 @@ static int pattern_compare (const void *a, const void *b)
 	return strncasecmp (key->pattern, memb, key->len);
 }
 
-static int match_in_directory (const char *path, const char *pattern, int opts,
-			       glob_t *pglob)
+static void clear_glob (glob_t *pglob)
 {
-	struct dirent_hashent *cache;
-	size_t allocated = 4;
-	int flags;
-	regex_t preg;
-	struct pattern_bsearch pattern_start;
-	char **bsearched;
-	size_t i;
-
 	/* look_for_file declares this static, so it's zero-initialised.
 	 * globfree() can deal with checking it before freeing.
 	 */
@@ -218,16 +209,38 @@ static int match_in_directory (const char *path, const char *pattern, int opts,
 	pglob->gl_pathc = 0;
 	pglob->gl_pathv = NULL;
 	pglob->gl_offs = 0;
+}
+
+static void match_in_directory (const char *path, const char *pattern, int opts,
+				glob_t *pglob, size_t *allocated)
+{
+	struct dirent_hashent *cache;
+	size_t my_allocated = 0;
+	int flags;
+	regex_t preg;
+	struct pattern_bsearch pattern_start;
+	char **bsearched;
+	size_t i;
+
+	if (!allocated)
+		allocated = &my_allocated;
+	if (!*allocated)
+		clear_glob (pglob);
 
 	cache = update_directory_cache (path);
 	if (!cache) {
 		debug ("directory cache update failed\n");
-		return -1;
+		return;
 	}
 
 	debug ("globbing pattern in %s: %s\n", path, pattern);
 
-	pglob->gl_pathv = XNMALLOC (allocated, char *);
+	if (!*allocated) {
+		*allocated = 4;
+		pglob->gl_pathv = XNMALLOC (*allocated, char *);
+		pglob->gl_pathv[0] = NULL;
+	}
+
 	if (opts & LFF_REGEX)
 		flags = REG_EXTENDED | REG_NOSUB |
 			((opts & LFF_MATCHCASE) ? 0 : REG_ICASE);
@@ -246,8 +259,7 @@ static int match_in_directory (const char *path, const char *pattern, int opts,
 				     &pattern_compare);
 		if (!bsearched) {
 			free (pattern_start.pattern);
-			pglob->gl_pathv[0] = NULL;
-			return 0;
+			return;
 		}
 		while (bsearched > cache->names &&
 		       !strncasecmp (pattern_start.pattern, *(bsearched - 1),
@@ -270,10 +282,10 @@ static int match_in_directory (const char *path, const char *pattern, int opts,
 
 		debug ("matched: %s/%s\n", path, cache->names[i]);
 
-		if (pglob->gl_pathc >= allocated) {
-			allocated *= 2;
+		if (pglob->gl_pathc >= *allocated) {
+			*allocated *= 2;
 			pglob->gl_pathv = xnrealloc (
-				pglob->gl_pathv, allocated, sizeof (char *));
+				pglob->gl_pathv, *allocated, sizeof (char *));
 		}
 		pglob->gl_pathv[pglob->gl_pathc++] =
 			appendstr (NULL, path, "/", cache->names[i], NULL);
@@ -284,14 +296,14 @@ static int match_in_directory (const char *path, const char *pattern, int opts,
 	else
 		free (pattern_start.pattern);
 
-	if (pglob->gl_pathc >= allocated) {
-		allocated *= 2;
+	if (pglob->gl_pathc >= *allocated) {
+		*allocated *= 2;
 		pglob->gl_pathv = xnrealloc (pglob->gl_pathv,
-					     allocated, sizeof (char *));
+					     *allocated, sizeof (char *));
 	}
 	pglob->gl_pathv[pglob->gl_pathc] = NULL;
 
-	return 0;
+	return;
 }
 
 char **look_for_file (const char *hier, const char *sec,
@@ -300,7 +312,6 @@ char **look_for_file (const char *hier, const char *sec,
 	char *pattern, *path = NULL;
 	static glob_t gbuf;
 	static int cleanup_installed = 0;
-	int status = 1;
 	static int layout = -1;
 	char *name;
 
@@ -309,6 +320,8 @@ char **look_for_file (const char *hier, const char *sec,
 		push_cleanup ((cleanup_fun) globfree, &gbuf, 0);
 		cleanup_installed = 1;
 	}
+
+	clear_glob (&gbuf);
 
 	/* This routine only does a minimum amount of matching. It does not
 	   find cat files in the alternate cat directory. */
@@ -325,45 +338,42 @@ char **look_for_file (const char *hier, const char *sec,
 
 	/* allow lookups like "3x foo" to match "../man3/foo.3x" */
 
-	if ((layout & LAYOUT_GNU) && CTYPE (isdigit, *sec) && sec[1] != '\0') {
-		path = appendstr (path, hier, cat ? "/cat" : "/man", "\t",
-				  NULL);
-		*strrchr (path, '\t') = *sec;
-		pattern = make_pattern (name, sec, opts);
+	if (layout & LAYOUT_GNU) {
+		glob_t dirs;
+		size_t i;
+		size_t allocated = 0;
 
-		status = match_in_directory (path, pattern, opts, &gbuf);
+		memset (&dirs, 0, sizeof (dirs));
+		pattern = appendstr (NULL, cat ? "cat" : "man", "\t*", NULL);
+		*strrchr (pattern, '\t') = *sec;
+		match_in_directory (hier, pattern, LFF_MATCHCASE, &dirs, NULL);
 		free (pattern);
-	}
 
-	/* AIX glob.h doesn't define GLOB_NOMATCH and the manpage is vague
-	   regarding return status if there are no matches so check the
-	   path count member also */
-	   
-	if ((layout & LAYOUT_GNU) && (status != 0 || gbuf.gl_pathc == 0)) {
-		if (path)
-			*path = '\0';
-		path = appendstr (path, hier, cat ? "/cat" : "/man", sec,
-				  NULL);
 		pattern = make_pattern (name, sec, opts);
-
-		status = match_in_directory (path, pattern, opts, &gbuf);
+		for (i = 0; i < dirs.gl_pathc; ++i) {
+			if (path)
+				*path = '\0';
+			match_in_directory (dirs.gl_pathv[i], pattern, opts,
+					    &gbuf, &allocated);
+		}
 		free (pattern);
+		globfree (&dirs);
 	}
 
 	/* Try HPUX style compressed man pages */
-	if ((layout & LAYOUT_HPUX) && (status != 0 || gbuf.gl_pathc == 0)) {
+	if ((layout & LAYOUT_HPUX) && gbuf.gl_pathc == 0) {
 		if (path)
 			*path = '\0';
 		path = appendstr (path, hier, cat ? "/cat" : "/man",
 				  sec, ".Z", NULL);
 		pattern = make_pattern (name, sec, opts);
 
-		status = match_in_directory (path, pattern, opts, &gbuf);
+		match_in_directory (path, pattern, opts, &gbuf, NULL);
 		free (pattern);
 	}
 
 	/* Try man pages without the section extension --- IRIX man pages */
-	if ((layout & LAYOUT_IRIX) && (status != 0 || gbuf.gl_pathc == 0)) {
+	if ((layout & LAYOUT_IRIX) && gbuf.gl_pathc == 0) {
 		if (path)
 			*path = '\0';
 		path = appendstr (path, hier, cat ? "/cat" : "/man", sec,
@@ -373,12 +383,12 @@ char **look_for_file (const char *hier, const char *sec,
 		else
 			pattern = appendstr (NULL, name, ".*", NULL);
 
-		status = match_in_directory (path, pattern, opts, &gbuf);
+		match_in_directory (path, pattern, opts, &gbuf, NULL);
 		free (pattern);
 	}
 
 	/* Try Solaris style man page directories */
-	if ((layout & LAYOUT_SOLARIS) && (status != 0 || gbuf.gl_pathc == 0)) {
+	if ((layout & LAYOUT_SOLARIS) && gbuf.gl_pathc == 0) {
 		if (path)
 			*path = '\0';
 		/* TODO: This needs to be man/sec*, not just man/sec. */
@@ -386,12 +396,12 @@ char **look_for_file (const char *hier, const char *sec,
 				  NULL);
 		pattern = make_pattern (name, sec, opts);
 
-		status = match_in_directory (path, pattern, opts, &gbuf);
+		match_in_directory (path, pattern, opts, &gbuf, NULL);
 		free (pattern);
 	}
 
 	/* BSD cat pages take the extension .0 */
-	if ((layout & LAYOUT_BSD) && (status != 0 || gbuf.gl_pathc == 0)) {
+	if ((layout & LAYOUT_BSD) && gbuf.gl_pathc == 0) {
 		if (path)
 			*path = '\0';
 		if (cat) {
@@ -405,14 +415,14 @@ char **look_for_file (const char *hier, const char *sec,
 			path = appendstr (path, hier, "/man", sec, NULL);
 			pattern = make_pattern (name, sec, opts);
 		}
-		status = match_in_directory (path, pattern, opts, &gbuf);
+		match_in_directory (path, pattern, opts, &gbuf, NULL);
 		free (pattern);
 	}
 
 	free (name);
 	free (path);
 
-	if (status != 0 || gbuf.gl_pathc == 0)
+	if (gbuf.gl_pathc == 0)
 		return NULL;
 	else
 		return gbuf.gl_pathv;

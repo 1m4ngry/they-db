@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: textutils 2.0.22\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2009-08-25 09:45+0100\n"
+"POT-Creation-Date: 2010-02-16 22:32+0000\n"
 "PO-Revision-Date: 2002-07-23 03:07+0200\n"
 "Last-Translator: Jacobo Tarrio <jtarrio@trasno.net>\n"
 "Language-Team: Galician <gpul-traduccion@ceu.fi.udc.es>\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1246
+#: gnulib/lib/argp-help.c:1244
 #, fuzzy
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
@@ -48,25 +48,25 @@ msgstr ""
 "Os argumentos obrigatorios nas opcións longas tamén o son nas opcións "
 "curtas.\n"
 
-#: gnulib/lib/argp-help.c:1639
+#: gnulib/lib/argp-help.c:1637
 msgid "Usage:"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1643
+#: gnulib/lib/argp-help.c:1641
 msgid "  or: "
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1655
+#: gnulib/lib/argp-help.c:1653
 #, fuzzy
 msgid " [OPTION...]"
 msgstr "Uso: %s [OPCIÓN] [FICHEIRO]...\n"
 
-#: gnulib/lib/argp-help.c:1682
+#: gnulib/lib/argp-help.c:1680
 #, fuzzy, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Escriba \"%s --help\" para máis información.\n"
 
-#: gnulib/lib/argp-help.c:1710
+#: gnulib/lib/argp-help.c:1708
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
@@ -74,7 +74,7 @@ msgstr ""
 "Informe dos erros no programa a <%s>.\n"
 "Informe dos erros na traducción a <proxecto@trasno.net>.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:127
+#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:153
 msgid "Unknown system error"
 msgstr "Erro do sistema descoñecido"
 
@@ -120,61 +120,56 @@ msgstr "demasiados argumentos"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr ""
 
-#: gnulib/lib/getopt.c:526 gnulib/lib/getopt.c:542
-#, c-format
-msgid "%s: option `%s' is ambiguous\n"
+#: gnulib/lib/getopt.c:529 gnulib/lib/getopt.c:545
+#, fuzzy, c-format
+msgid "%s: option '%s' is ambiguous\n"
 msgstr "%s: a opción \"%s\" é ambigua\n"
 
-#: gnulib/lib/getopt.c:575 gnulib/lib/getopt.c:579
-#, c-format
-msgid "%s: option `--%s' doesn't allow an argument\n"
+#: gnulib/lib/getopt.c:578 gnulib/lib/getopt.c:582
+#, fuzzy, c-format
+msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr "%s: a opción \"--%s\" non permite un argumento\n"
 
-#: gnulib/lib/getopt.c:588 gnulib/lib/getopt.c:593
-#, c-format
-msgid "%s: option `%c%s' doesn't allow an argument\n"
+#: gnulib/lib/getopt.c:591 gnulib/lib/getopt.c:596
+#, fuzzy, c-format
+msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr "%s: a opción \"%c%s\" precisa dun argumento\n"
 
-#: gnulib/lib/getopt.c:636 gnulib/lib/getopt.c:655 gnulib/lib/getopt.c:971
-#: gnulib/lib/getopt.c:990
-#, c-format
-msgid "%s: option `%s' requires an argument\n"
+#: gnulib/lib/getopt.c:639 gnulib/lib/getopt.c:658 gnulib/lib/getopt.c:961
+#: gnulib/lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '%s' requires an argument\n"
 msgstr "%s: a opción \"%s\" precisa dun argumento\n"
 
-#: gnulib/lib/getopt.c:693 gnulib/lib/getopt.c:696
-#, c-format
-msgid "%s: unrecognized option `--%s'\n"
+#: gnulib/lib/getopt.c:696 gnulib/lib/getopt.c:699
+#, fuzzy, c-format
+msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: opción descoñecida \"--%s\"\n"
 
-#: gnulib/lib/getopt.c:704 gnulib/lib/getopt.c:707
-#, c-format
-msgid "%s: unrecognized option `%c%s'\n"
+#: gnulib/lib/getopt.c:707 gnulib/lib/getopt.c:710
+#, fuzzy, c-format
+msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: opción descoñecida \"%c%s\"\n"
 
 #: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
-#, c-format
-msgid "%s: illegal option -- %c\n"
+#, fuzzy, c-format
+msgid "%s: invalid option -- '%c'\n"
 msgstr "%s: opción incorrecta -- %c\n"
 
-#: gnulib/lib/getopt.c:768 gnulib/lib/getopt.c:771
-#, c-format
-msgid "%s: invalid option -- %c\n"
-msgstr "%s: opción incorrecta -- %c\n"
-
-#: gnulib/lib/getopt.c:823 gnulib/lib/getopt.c:839 gnulib/lib/getopt.c:1043
-#: gnulib/lib/getopt.c:1061
-#, c-format
-msgid "%s: option requires an argument -- %c\n"
+#: gnulib/lib/getopt.c:812 gnulib/lib/getopt.c:829 gnulib/lib/getopt.c:1032
+#: gnulib/lib/getopt.c:1050
+#, fuzzy, c-format
+msgid "%s: option requires an argument -- '%c'\n"
 msgstr "%s: a opción precisa dun argumento -- %c\n"
 
-#: gnulib/lib/getopt.c:892 gnulib/lib/getopt.c:908
-#, c-format
-msgid "%s: option `-W %s' is ambiguous\n"
+#: gnulib/lib/getopt.c:882 gnulib/lib/getopt.c:898
+#, fuzzy, c-format
+msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: a opción \"-W %s\" é ambigua\n"
 
-#: gnulib/lib/getopt.c:932 gnulib/lib/getopt.c:950
-#, c-format
-msgid "%s: option `-W %s' doesn't allow an argument\n"
+#: gnulib/lib/getopt.c:922 gnulib/lib/getopt.c:940
+#, fuzzy, c-format
+msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: a opción \"-W %s\" non permite un argumento\n"
 
 #: gnulib/lib/openat-die.c:34
@@ -182,7 +177,7 @@ msgstr "%s: a opción \"-W %s\" non permite un argumento\n"
 msgid "unable to record current working directory"
 msgstr "non se pode crea-lo directorio %s"
 
-#: gnulib/lib/openat-die.c:47
+#: gnulib/lib/openat-die.c:52
 #, fuzzy, c-format
 msgid "failed to return to initial working directory"
 msgstr "non se pode crea-lo directorio %s"
@@ -268,150 +263,150 @@ msgstr ""
 msgid "No previous regular expression"
 msgstr "erro ao buscar por expresións regulares"
 
-#: gnulib/lib/siglist.h:30
+#: gnulib/lib/siglist.h:29
 msgid "Hangup"
 msgstr ""
 
-#: gnulib/lib/siglist.h:33
+#: gnulib/lib/siglist.h:32
 msgid "Interrupt"
 msgstr ""
 
-#: gnulib/lib/siglist.h:36
+#: gnulib/lib/siglist.h:35
 msgid "Quit"
 msgstr ""
 
-#: gnulib/lib/siglist.h:39
+#: gnulib/lib/siglist.h:38
 msgid "Illegal instruction"
 msgstr ""
 
-#: gnulib/lib/siglist.h:42
+#: gnulib/lib/siglist.h:41
 msgid "Trace/breakpoint trap"
 msgstr ""
 
-#: gnulib/lib/siglist.h:45
+#: gnulib/lib/siglist.h:44
 msgid "Aborted"
 msgstr ""
 
-#: gnulib/lib/siglist.h:48
+#: gnulib/lib/siglist.h:47
 msgid "Floating point exception"
 msgstr ""
 
-#: gnulib/lib/siglist.h:51
+#: gnulib/lib/siglist.h:50
 msgid "Killed"
 msgstr ""
 
-#: gnulib/lib/siglist.h:54
+#: gnulib/lib/siglist.h:53
 #, fuzzy
 msgid "Bus error"
 msgstr "erro de escritura"
 
-#: gnulib/lib/siglist.h:57
+#: gnulib/lib/siglist.h:56
 msgid "Segmentation fault"
 msgstr ""
 
-#: gnulib/lib/siglist.h:60
+#: gnulib/lib/siglist.h:59
 msgid "Broken pipe"
 msgstr ""
 
-#: gnulib/lib/siglist.h:63
+#: gnulib/lib/siglist.h:62
 msgid "Alarm clock"
 msgstr ""
 
-#: gnulib/lib/siglist.h:66
+#: gnulib/lib/siglist.h:65
 msgid "Terminated"
 msgstr ""
 
-#: gnulib/lib/siglist.h:69
+#: gnulib/lib/siglist.h:68
 msgid "Urgent I/O condition"
 msgstr ""
 
-#: gnulib/lib/siglist.h:72
+#: gnulib/lib/siglist.h:71
 msgid "Stopped (signal)"
 msgstr ""
 
-#: gnulib/lib/siglist.h:75
+#: gnulib/lib/siglist.h:74
 msgid "Stopped"
 msgstr ""
 
-#: gnulib/lib/siglist.h:78
+#: gnulib/lib/siglist.h:77
 msgid "Continued"
 msgstr ""
 
-#: gnulib/lib/siglist.h:81
+#: gnulib/lib/siglist.h:80
 msgid "Child exited"
 msgstr ""
 
-#: gnulib/lib/siglist.h:84
+#: gnulib/lib/siglist.h:83
 msgid "Stopped (tty input)"
 msgstr ""
 
-#: gnulib/lib/siglist.h:87
+#: gnulib/lib/siglist.h:86
 msgid "Stopped (tty output)"
 msgstr ""
 
-#: gnulib/lib/siglist.h:90
+#: gnulib/lib/siglist.h:89
 msgid "I/O possible"
 msgstr ""
 
-#: gnulib/lib/siglist.h:93
+#: gnulib/lib/siglist.h:92
 msgid "CPU time limit exceeded"
 msgstr ""
 
-#: gnulib/lib/siglist.h:96
+#: gnulib/lib/siglist.h:95
 msgid "File size limit exceeded"
 msgstr ""
 
-#: gnulib/lib/siglist.h:99
+#: gnulib/lib/siglist.h:98
 msgid "Virtual timer expired"
 msgstr ""
 
-#: gnulib/lib/siglist.h:102
+#: gnulib/lib/siglist.h:101
 msgid "Profiling timer expired"
 msgstr ""
 
-#: gnulib/lib/siglist.h:105
+#: gnulib/lib/siglist.h:104
 msgid "Window changed"
 msgstr ""
 
-#: gnulib/lib/siglist.h:108
+#: gnulib/lib/siglist.h:107
 msgid "User defined signal 1"
 msgstr ""
 
-#: gnulib/lib/siglist.h:111
+#: gnulib/lib/siglist.h:110
 msgid "User defined signal 2"
 msgstr ""
 
-#: gnulib/lib/siglist.h:116
+#: gnulib/lib/siglist.h:115
 msgid "EMT trap"
 msgstr ""
 
-#: gnulib/lib/siglist.h:119
+#: gnulib/lib/siglist.h:118
 msgid "Bad system call"
 msgstr ""
 
-#: gnulib/lib/siglist.h:122
+#: gnulib/lib/siglist.h:121
 msgid "Stack fault"
 msgstr ""
 
-#: gnulib/lib/siglist.h:125
+#: gnulib/lib/siglist.h:124
 msgid "Information request"
 msgstr ""
 
-#: gnulib/lib/siglist.h:127
+#: gnulib/lib/siglist.h:126
 #, fuzzy
 msgid "Power failure"
 msgstr "ficheiro estraño"
 
-#: gnulib/lib/siglist.h:130
+#: gnulib/lib/siglist.h:129
 msgid "Resource lost"
 msgstr ""
 
-#: gnulib/lib/strsignal.c:111
+#: gnulib/lib/strsignal.c:110
 #, c-format
 msgid "Real-time signal %d"
 msgstr ""
 
-#: gnulib/lib/strsignal.c:115
+#: gnulib/lib/strsignal.c:114
 #, c-format
 msgid "Unknown signal %d"
 msgstr ""
@@ -518,6 +513,9 @@ msgstr "memoria esgotada"
 #, fuzzy
 #~ msgid "Unknown error"
 #~ msgstr "Erro do sistema descoñecido"
+
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s: opción incorrecta -- %c\n"
 
 #~ msgid "block size"
 #~ msgstr "tamaño de bloque"

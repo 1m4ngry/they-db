@@ -1,3 +1,32 @@
+man-db (2.5.7-1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - Make man(1) refer to the "Warnings" node in 'info groff' for a list of
+      available warning names (closes: #545805).
+    - Don't run tests if cross-compiling.
+    - Add option to disable justification (closes: #440047).
+    - Do what the user probably means when the full path to an executable is
+      given as an argument (closes: #505465).
+    - Search man<sec><ext> directories in the GNU layout (closes: #519807).
+    - Prefer getting a page from the best manual section over getting a page
+      in the correct language; I have my reservations about this, but it
+      seems to be what people are requesting (closes: #519547).
+    - 'man -f' and 'man -k' now pass through any -s option to apropos/whatis
+      respectively.
+    - All programs now support a MAN_DEBUG environment variable which can be
+      used in place of the -d/--debug option. This is useful in some
+      situations where a program is being called deep in a process tree.
+    - Fix off-by-one error when write returns EAGAIN (thanks, Samuel
+      Thibault; closes: #564818).
+    - "%s: nothing appropriate." is an error; write it to stderr, not stdout
+      (closes: #565255).
+    - Don't bother printing error messages for SIGINT and SIGQUIT, since
+      these correspond to explicit user actions (closes: #568000).
+    - Fix sense of directory check while decompressing (closes: #537434).
+    - Always save cat pages in UTF-8 (closes: #446741).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 17 Feb 2010 00:01:46 +0000
+
 man-db (2.5.6-5) unstable; urgency=low
 
   * Remove Ubuntu buildd hack now that the Ubuntu buildd chroots preseed

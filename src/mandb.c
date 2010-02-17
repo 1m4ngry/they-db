@@ -579,6 +579,8 @@ int main (int argc, char *argv[])
 
 	program_name = base_name (argv[0]);
 
+	init_debug ();
+
 	/* initialise the locale */
 	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
 		/* Obviously can't translate this. */
@@ -728,7 +730,7 @@ next_manpath:
 		if (!quiet)
 			fprintf (stderr, _("No databases created."));
 		must_create = getenv ("MAN_MUST_CREATE");
-		if (STREQ (must_create, "1"))
+		if (must_create && STREQ (must_create, "1"))
 			exit (FAIL);
 	}
 	free (program_name);

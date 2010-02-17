@@ -169,6 +169,7 @@ enum opts {
 	OPT_WILDCARD,
 	OPT_NAMES,
 	OPT_NO_HYPHENATION,
+	OPT_NO_JUSTIFICATION,
 	OPT_NO_SUBPAGES,
 	OPT_MAX
 };
@@ -200,7 +201,7 @@ static char *colon_sep_section_list;
 static const char *preprocessors;
 static const char *pager;
 static const char *locale;
-static char *internal_locale;
+static char *internal_locale, *multiple_locale;
 static const char *prompt_string;
 static char *less;
 static const char *std_sections[] = STD_SECTIONS;
@@ -228,6 +229,7 @@ static int names_only;
 static int ult_flags = SO_LINK | SOFT_LINK | HARD_LINK;
 static const char *recode = NULL;
 static int no_hyphenation;
+static int no_justification;
 static int subpages = 1;
 
 static int ascii;		/* insert tr in the output pipe */
@@ -257,15 +259,19 @@ error_t argp_err_exit_status = FAIL;
 
 static const char args_doc[] = N_("[SECTION] PAGE...");
 
+# ifdef TROFF_IS_GROFF
+#  define MAYBE_HIDDEN 0
+# else
+#  define MAYBE_HIDDEN OPTION_HIDDEN
+# endif
+
 /* Please keep these options in the same order as in parse_opt below. */
 static struct argp_option options[] = {
 	{ "config-file",	'C',	N_("FILE"),	0,		N_("use this user configuration file") },
 	{ "debug",		'd',	0,		0,		N_("emit debugging messages") },
 	{ "default",		'D',	0,		0,		N_("reset all options to their default values") },
-#ifdef TROFF_IS_GROFF
-	{ "warnings",  OPT_WARNINGS,    N_("WARNINGS"), OPTION_ARG_OPTIONAL,
+	{ "warnings",  OPT_WARNINGS,    N_("WARNINGS"), MAYBE_HIDDEN | OPTION_ARG_OPTIONAL,
 									N_("enable warnings from groff") },
-#endif /* TROFF_IS_GROFF */
 
 	{ 0,			0,	0,		0,		N_("Main modes of operation:"),					10 },
 	{ "whatis",		'f',	0,		0,		N_("equivalent to whatis") },
@@ -305,6 +311,10 @@ static struct argp_option options[] = {
 	{ "encoding",		'E',	N_("ENCODING"),	0,		N_("use selected output encoding") },
 	{ "no-hyphenation",
 		 OPT_NO_HYPHENATION,	0,		0,		N_("turn off hyphenation") },
+	{ "nh",			0,	0,		OPTION_ALIAS },
+	{ "no-justification",
+	       OPT_NO_JUSTIFICATION,	0,		0,		N_("turn off justification") },
+	{ "nj",			0,	0,		OPTION_ALIAS },
 	{ "preprocessor",	'p',	N_("STRING"),	0,		N_("STRING indicates which preprocessors to run:\n"
 									   "e - [n]eqn, p - pic, t - tbl,\n"
 									   "g - grap, r - refer, v - vgrind") },
@@ -312,11 +322,6 @@ static struct argp_option options[] = {
 	{ "troff",		't',	0,		0,		N_("use %s to format pages"),					32 },
 	{ "troff-device",	'T',	N_("DEVICE"),	OPTION_ARG_OPTIONAL,
 									N_("use %s with selected device") },
-# ifdef TROFF_IS_GROFF
-#  define MAYBE_HIDDEN 0
-# else
-#  define MAYBE_HIDDEN OPTION_HIDDEN
-# endif
 	{ "html",		'H',	N_("BROWSER"),	MAYBE_HIDDEN | OPTION_ARG_OPTIONAL,
 									N_("use %s or BROWSER to display HTML output"),			33 },
 	{ "gxditview",		'X',	N_("RESOLUTION"),
@@ -349,7 +354,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 				print_where = print_where_cat =
 				ascii = match_case =
 				regex_opt = wildcard = names_only =
-				no_hyphenation = 0;
+				no_hyphenation = no_justification = 0;
 #ifdef TROFF_IS_GROFF
 			ditroff = 0;
 			gxditview = NULL;
@@ -362,8 +367,8 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			colon_sep_section_list = manp = NULL;
 			return 0;
 
-#ifdef TROFF_IS_GROFF
 		case OPT_WARNINGS:
+#ifdef TROFF_IS_GROFF
 			{
 				char *s = xstrdup
 					(arg ? arg : default_roff_warnings);
@@ -380,8 +385,8 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 
 				free (s);
 			}
-			return 0;
 #endif /* TROFF_IS_GROFF */
+			return 0;
 
 		case 'f':
 			external = WHATIS;
@@ -471,6 +476,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			return 0;
 		case OPT_NO_HYPHENATION:
 			no_hyphenation = 1;
+			return 0;
+		case OPT_NO_JUSTIFICATION:
+			no_justification = 1;
 			return 0;
 		case 'p':
 			preprocessors = arg;
@@ -694,8 +702,10 @@ static void do_extern (int argc, char *argv[])
 	/* Please keep these in the same order as they are in whatis.c. */
 	if (debug_level)
 		command_arg (cmd, "-d");
+	if (colon_sep_section_list)
+		command_args (cmd, "-s", colon_sep_section_list, NULL);
 	if (alt_system_name)
-		command_args (cmd, "-s", alt_system_name, NULL);
+		command_args (cmd, "-m", alt_system_name, NULL);
 	if (manp)
 		command_args (cmd, "-M", manp, NULL);
 	if (locale)
@@ -829,6 +839,31 @@ static int run_mandb (int create, const char *manpath, const char *filename)
 #endif /* MAN_DB_CREATES || MAN_DB_UPDATES */
 
 
+static char *locale_manpath (char *manpath)
+{
+	char *all_locales;
+	char *new_manpath;
+
+	if (multiple_locale && *multiple_locale) {
+		if (internal_locale && *internal_locale)
+			all_locales = xasprintf ("%s:%s", multiple_locale,
+						 internal_locale);
+		else
+			all_locales = xstrdup (multiple_locale);
+	} else {
+		if (internal_locale && *internal_locale)
+			all_locales = xstrdup (internal_locale);
+		else
+			all_locales = NULL;
+	}
+
+	new_manpath = add_nls_manpaths (manpath, all_locales);
+	free (all_locales);
+
+	return new_manpath;
+}
+
+
 /* man issued with `-l' option */
 static int local_man_loop (const char *argv)
 {
@@ -868,6 +903,48 @@ static int local_man_loop (const char *argv)
 			return NOT_FOUND;
 		}
 
+		if (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
+			/* Perhaps an executable. If its directory is on
+			 * $PATH, then we want to look up the corresponding
+			 * manual page in the appropriate hierarchy rather
+			 * than displaying the executable.
+			 */
+			char *argv_dir = dir_name (argv);
+			int found = 0;
+
+			if (directory_on_path (argv_dir)) {
+				char *argv_base = base_name (argv);
+				char *new_manp;
+				char **old_manpathlist;
+				int i;
+
+				debug ("recalculating manpath for executable "
+				       "in %s\n", argv_dir);
+
+				new_manp = locale_manpath (
+					get_manpath_from_path (argv_dir, 0));
+
+				old_manpathlist = XNMALLOC (MAXDIRS, char *);
+				for (i = 0; i < MAXDIRS; ++i)
+					old_manpathlist[i] = manpathlist[i];
+				create_pathlist (new_manp, manpathlist);
+
+				man (argv_base, &found);
+
+				for (i = 0; i < MAXDIRS; ++i) {
+					free (manpathlist[i]);
+					manpathlist[i] = old_manpathlist[i];
+				}
+				free (old_manpathlist);
+				free (new_manp);
+				free (argv_base);
+			}
+			free (argv_dir);
+
+			if (found)
+				return OK;
+		}
+
 		if (exit_status == OK) {
 			char *argv_base = base_name (argv);
 			char *argv_abs;
@@ -901,9 +978,10 @@ int main (int argc, char *argv[])
 	int argc_env, exit_status = OK;
 	char **argv_env;
 	const char *tmp;
-	char *multiple_locale = NULL;
 
 	program_name = base_name (argv[0]);
+
+	init_debug ();
 
 	umask (022);
 	/* initialise the locale */
@@ -1043,6 +1121,8 @@ int main (int argc, char *argv[])
 	if (first_arg == argc)
 		gripe_no_name (NULL);
 
+	section_list = get_section_list ();
+
 	/* man issued with `-l' option */
 	if (local_man_file) {
 		while (first_arg < argc) {
@@ -1055,27 +1135,9 @@ int main (int argc, char *argv[])
 		exit (exit_status);
 	}
 
-	if (manp == NULL) {
-		char *all_locales;
-
-		if (multiple_locale && *multiple_locale) {
-			if (internal_locale && *internal_locale)
-				all_locales = xasprintf ("%s:%s",
-							 multiple_locale,
-							 internal_locale);
-			else
-				all_locales = xstrdup (multiple_locale);
-		} else {
-			if (internal_locale && *internal_locale)
-				all_locales = xstrdup (internal_locale);
-			else
-				all_locales = NULL;
-		}
-
-		manp = add_nls_manpaths (get_manpath (alt_system_name),
-					 all_locales);
-		free (all_locales);
-	} else
+	if (manp == NULL)
+		manp = locale_manpath (get_manpath (alt_system_name));
+	else
 		free (get_manpath (NULL));
 
 	debug ("manpath search path (with duplicates) = %s\n", manp);
@@ -1084,8 +1146,6 @@ int main (int argc, char *argv[])
 
 	/* finished manpath processing, regain privs */
 	regain_effective_privs ();
-
-	section_list = get_section_list ();
 
 #ifdef MAN_DB_UPDATES
 	/* If `-u', do it now. */
@@ -1328,9 +1388,18 @@ static const char *get_preprocessors (pipeline *decomp, const char *dbfilters)
 	return pp_string;
 }
 
+static const char *my_locale_charset (void)
+{
+	if (want_encoding && !is_roff_device (want_encoding))
+		return want_encoding;
+	else
+		return get_locale_charset ();
+}
+
 /* Return pipeline to format file to stdout. */
 static pipeline *make_roff_command (const char *dir, const char *file,
-				    pipeline *decomp, const char *dbfilters)
+				    pipeline *decomp, const char *dbfilters,
+				    char **result_encoding)
 {
 	const char *pp_string;
 	const char *roff_opt;
@@ -1340,6 +1409,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	char *page_encoding = NULL;
 	const char *output_encoding = NULL;
 	const char *locale_charset = NULL;
+
+	*result_encoding = xstrdup ("UTF-8"); /* optimistic default */
 
 #ifndef ALT_EXT_FORMAT
 	dir = dir; /* not used unless looking for formatters in catdir */
@@ -1393,7 +1464,6 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	if (!fmt_prog) {
 		/* we don't have an external formatter script */
 		const char *source_encoding, *roff_encoding;
-		char *cat_charset = NULL;
 		const char *groff_preconv;
 
 		if (!recode) {
@@ -1418,24 +1488,9 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		if (!troff) {
 #define STRC(s, otherwise) ((s) ? (s) : (otherwise))
 
-			cat_charset = get_standard_output_encoding (lang);
-			if (want_encoding && !is_roff_device (want_encoding))
-				locale_charset = want_encoding;
-			else
-				locale_charset = get_locale_charset ();
-			debug ("cat_charset = %s\n",
-			       STRC (cat_charset, "NULL"));
+			locale_charset = my_locale_charset ();
 			debug ("locale_charset = %s\n",
 			       STRC (locale_charset, "NULL"));
-
-			/* Only save cat pages for this manual hierarchy's
-			 * default character set. If we don't know the cat
-			 * charset, anything goes.
-			 */
-			if (cat_charset &&
-			    (!locale_charset ||
-			     !STREQ (cat_charset, locale_charset)))
-				save_cat = 0;
 
 			/* Pick the default device for this locale if there
 			 * wasn't one selected explicitly.
@@ -1478,6 +1533,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			if (!output_encoding)
 				output_encoding = source_encoding;
 			debug ("output_encoding = %s\n", output_encoding);
+			free (*result_encoding);
+			*result_encoding = xstrdup (output_encoding);
 
 			if (!getenv ("LESSCHARSET")) {
 				const char *less_charset =
@@ -1497,8 +1554,6 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				}
 			}
 		}
-
-		free (cat_charset);
 	}
 
 	if (recode)
@@ -1596,18 +1651,23 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 								  NULL);
 					command_arg (cmd, tmpdev);
 					free (tmpdev);
-				} else if (gxditview) {
+				}
+#ifdef TROFF_IS_GROFF
+				else if (gxditview) {
 					char *tmpdev = appendstr (NULL, "-TX",
 								  gxditview,
 								  NULL);
 					command_arg (cmd, tmpdev);
 					free (tmpdev);
 				}
+#endif /* TROFF_IS_GROFF */
 			}
 
 			if (wants_post) {
+#ifdef TROFF_IS_GROFF
 				if (gxditview)
 					command_arg (cmd, "-X");
+#endif /* TROFF_IS_GROFF */
 
 				if (roff_device && STREQ (roff_device, "ps"))
 					/* Tell grops to guess the page
@@ -1622,48 +1682,13 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				break;
 		} while (*pp_string++);
 
-		if ((!want_encoding || !is_roff_device (want_encoding)) &&
-		    output_encoding && locale_charset &&
-		    !STREQ (output_encoding, locale_charset)) {
-			char *locale_charset_translit =
-				xasprintf ("%s//TRANSLIT", locale_charset);
-			pipeline_command_args (p, "iconv", "-c",
-					       "-f", output_encoding,
-					       "-t", locale_charset_translit,
-					       NULL);
-			free (locale_charset_translit);
-		}
-
 		if (!troff && *COL) {
-			/* get rid of special characters if not writing to a
-			 * terminal
-			 */
 			const char *man_keep_formatting =
 				getenv ("MAN_KEEP_FORMATTING");
-			command *colcmd = NULL;
 			if ((!man_keep_formatting || !*man_keep_formatting) &&
-			    !isatty (STDOUT_FILENO)) {
-				save_cat = 0;
+			    !isatty (STDOUT_FILENO))
+				/* we'll run col later, but prepare for it */
 				setenv ("GROFF_NO_SGR", "1", 1);
-				colcmd = command_new_args (
-					COL, "-b", "-p", "-x", NULL);
-			}
-#ifndef GNU_NROFF
-			/* tbl needs col */
-			else if (using_tbl && !troff && *COL)
-				colcmd = command_new (COL);
-#endif /* GNU_NROFF */
-
-			if (colcmd) {
-				char *col_locale =
-					find_charset_locale (locale_charset);
-				if (col_locale) {
-					command_setenv (colcmd, "LC_CTYPE",
-							col_locale);
-					free (col_locale);
-				}
-				pipeline_command (p, colcmd);
-			}
 		}
 	} else {
 		/* use external formatter script, it takes arguments
@@ -1781,57 +1806,79 @@ static void setenv_less (const char *title)
 	free (less_opts);
 }
 
-/* Return pipeline to display file. NULL means stdin.
+void add_output_iconv (pipeline *p, const char *source, const char *target)
+{
+	debug ("add_output_iconv: source %s, target %s\n", source, target);
+	if (source && target && !STREQ (source, target)) {
+		char *target_translit = xasprintf ("%s//TRANSLIT", target);
+		pipeline_command_args (p, "iconv", "-c",
+				       "-f", source, "-t", target_translit,
+				       NULL);
+		free (target_translit);
+	}
+}
+
+/* Return pipeline to display file provided on stdin.
  *
  * TODO: htmlout case is pretty weird now. I'd like the intelligence to be
  * somewhere other than format_display.
  */
-static pipeline *make_display_command (const char *file, const char *title)
+static pipeline *make_display_command (const char *encoding, const char *title)
 {
-	pipeline *p;
-	command *cmd;
+	pipeline *p = pipeline_new ();
+	const char *locale_charset = NULL;
 
 	setenv_less (title);
 
-	if (file) {
-		if (ascii) {
-			p = pipeline_new ();
-			cmd = command_new_argstr (get_def_user ("cat", CAT));
-			command_arg (cmd, file);
-			pipeline_command (p, cmd);
-			pipeline_command_argstr
-				(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
-			pipeline_command_argstr (p, pager);
-		}
-#ifdef TROFF_IS_GROFF
-		else if (htmlout)
-			/* format_display deals with html_pager */
-			p = NULL;
-#endif
-		else {
-			p = pipeline_new ();
-			cmd = command_new_argstr (pager);
-			command_arg (cmd, file);
-			pipeline_command (p, cmd);
-		}
-	} else {
-		if (ascii) {
-			p = pipeline_new ();
-			pipeline_command_argstr
-				(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
-			pipeline_command_argstr (p, pager);
-		}
-#ifdef TROFF_IS_GROFF
-		else if (htmlout)
-			/* format_display deals with html_pager */
-			p = NULL;
-#endif
-		else {
-			p = pipeline_new ();
-			pipeline_command_argstr (p, pager);
+	locale_charset = my_locale_charset ();
+
+	if (!troff && (!want_encoding || !is_roff_device (want_encoding)))
+		add_output_iconv (p, encoding, locale_charset);
+
+	if (!troff && *COL) {
+		/* get rid of special characters if not writing to a
+		 * terminal
+		 */
+		const char *man_keep_formatting =
+			getenv ("MAN_KEEP_FORMATTING");
+		command *colcmd = NULL;
+		if ((!man_keep_formatting || !*man_keep_formatting) &&
+		    !isatty (STDOUT_FILENO))
+			colcmd = command_new_args (
+				COL, "-b", "-p", "-x", NULL);
+#ifndef GNU_NROFF
+		/* tbl needs col */
+		else if (using_tbl && !troff && *COL)
+			colcmd = command_new (COL);
+#endif /* GNU_NROFF */
+
+		if (colcmd) {
+			char *col_locale =
+				find_charset_locale (locale_charset);
+			if (col_locale) {
+				command_setenv (colcmd, "LC_CTYPE",
+						col_locale);
+				free (col_locale);
+			}
+			pipeline_command (p, colcmd);
 		}
 	}
 
+	if (ascii) {
+		pipeline_command_argstr
+			(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
+		pipeline_command_argstr (p, pager);
+	} else
+#ifdef TROFF_IS_GROFF
+	if (!htmlout)
+		/* format_display deals with html_pager */
+#endif
+		pipeline_command_argstr (p, pager);
+
+	if (!p->ncommands) {
+		pipeline_free (p);
+		p = NULL;
+	}
 	return p;
 }
 
@@ -1959,7 +2006,7 @@ static void maybe_discard_stderr (pipeline *p)
 #ifdef MAN_CATS
 
 /* Return pipeline to write formatted manual page to for saving as cat file. */
-static pipeline *open_cat_stream (const char *cat_file)
+static pipeline *open_cat_stream (const char *cat_file, const char *encoding)
 {
 	pipeline *cat_p;
 #  ifdef COMP_CAT
@@ -1990,19 +2037,13 @@ static pipeline *open_cat_stream (const char *cat_file)
 	if (!debug_level)
 		push_cleanup ((cleanup_fun) unlink, tmp_cat_file, 1);
 
-#  ifdef COMP_CAT
-	/* write to a pipe that compresses into tmp_cat_file */
-
-	/* fork the compressor */
 	cat_p = pipeline_new ();
+	add_output_iconv (cat_p, encoding, "UTF-8");
+#  ifdef COMP_CAT
+	/* fork the compressor */
 	comp_cmd = command_new_argstr (get_def ("compressor", COMPRESSOR));
 	comp_cmd->nice = 10;
 	pipeline_command (cat_p, comp_cmd);
-#  else
-	/* write directly to tmp_cat_file */
-
-	/* fake up a pipeline structure */
-	cat_p = pipeline_new ();
 #  endif
 	cat_p->want_out = tmp_cat_fd; /* pipeline_start will close it */
 
@@ -2039,11 +2080,17 @@ static int close_cat_stream (pipeline *cat_p, const char *cat_file,
 static int format_display_and_save (pipeline *decomp,
 				    pipeline *format_cmd,
 				    pipeline *disp_cmd,
-				    const char *cat_file)
+				    const char *cat_file, const char *encoding)
 {
-	pipeline *sav_p = open_cat_stream (cat_file);
+	pipeline *sav_p = open_cat_stream (cat_file, encoding);
 	int instat;
-	RETSIGTYPE (*old_handler)(int) = signal (SIGPIPE, SIG_IGN);
+	struct sigaction sa, osa_sigpipe;
+
+	memset (&sa, 0, sizeof sa);
+	sa.sa_handler = SIG_IGN;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction (SIGPIPE, &sa, &osa_sigpipe);
 
 	if (global_manpath)
 		drop_effective_privs ();
@@ -2067,7 +2114,7 @@ static int format_display_and_save (pipeline *decomp,
 	if (sav_p)
 		close_cat_stream (sav_p, cat_file, instat);
 	pipeline_wait (disp_cmd);
-	signal (SIGPIPE, old_handler);
+	sigaction (SIGPIPE, &osa_sigpipe, NULL);
 	return instat;
 }
 #endif /* MAN_CATS */
@@ -2196,7 +2243,7 @@ static void format_display (pipeline *decomp,
 /* "Display" a page in catman mode, which amounts to saving it. */
 /* TODO: merge with format_display_and_save? */
 static void display_catman (const char *cat_file, pipeline *decomp,
-			    pipeline *format_cmd)
+			    pipeline *format_cmd, const char *encoding)
 {
 	char *tmpcat = tmp_cat_filename (cat_file);
 	int status;
@@ -2206,6 +2253,7 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 				 get_def ("compressor", COMPRESSOR));
 #endif /* COMP_CAT */
 
+	add_output_iconv (format_cmd, encoding, "UTF-8");
 	maybe_discard_stderr (format_cmd);
 	format_cmd->want_out = tmp_cat_fd;
 
@@ -2231,35 +2279,21 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 	free (tmpcat);
 }
 
-/* TODO: This function would be more efficient if the disabling sequence
- * were simply written in sequence before starting the decompressor.
- * However, that requires a new COMMAND_SEQUENCE type in the pipeline
- * library. If that is ever needed for another reason, then this function
- * should be rewritten using it.
- */
 static void disable_hyphenation (void *data ATTRIBUTE_UNUSED)
 {
 	fputs (".nh\n"
 	       ".de hy\n"
 	       "..\n", stdout);
+}
 
-	for (;;) {
-		char buffer[4096];
-		int r = read (STDIN_FILENO, buffer, 4096);
-		if (r <= 0)
-			break;
-		if (fwrite (buffer, 1, (size_t) r, stdout) < (size_t) r)
-			break;
-	}
+static void disable_justification (void *data ATTRIBUTE_UNUSED)
+{
+	fputs (".na\n"
+	       ".de ad\n"
+	       "..\n", stdout);
 }
 
 #ifdef TROFF_IS_GROFF
-/* TODO: This function would be more efficient if the macro requests were
- * simply written in sequence before starting the decompressor. However,
- * that requires a new COMMAND_SEQUENCE type in the pipeline library. If
- * that is ever needed for another reason, then this function should be
- * rewritten using it.
- */
 static void locale_macros (void *data)
 {
 	printf (
@@ -2275,15 +2309,6 @@ static void locale_macros (void *data)
 		/*   and load the appropriate per-locale macros */
 		".  mso %s.tmac\n"
 		".\\}\n", (const char *) data);
-
-	for (;;) {
-		char buffer[4096];
-		int r = read (STDIN_FILENO, buffer, 4096);
-		if (r <= 0)
-			break;
-		if (fwrite (buffer, 1, (size_t) r, stdout) < (size_t) r)
-			break;
-	}
 }
 #endif /* TROFF_IS_GROFF */
 
@@ -2301,6 +2326,7 @@ static int display (const char *dir, const char *man_file,
 	int found;
 	static int prompt;
 	pipeline *format_cmd;	/* command to format man_file to stdout */
+	char *formatted_encoding = NULL;
 	int display_to_stdout;
 	pipeline *decomp = NULL;
 	int decomp_errno = 0;
@@ -2317,6 +2343,8 @@ static int display (const char *dir, const char *man_file,
 
 	/* define format_cmd */
 	if (man_file) {
+		command *seq = command_new_sequence ("decompressor", NULL);
+
 		if (*man_file)
 			decomp = decompress_open (man_file);
 		else
@@ -2324,9 +2352,16 @@ static int display (const char *dir, const char *man_file,
 
 		if (no_hyphenation) {
 			command *hcmd = command_new_function (
-				"(echo .nh && echo .de hy && echo .. && cat)",
+				"echo .nh && echo .de hy && echo ..",
 				disable_hyphenation, NULL, NULL);
-			pipeline_command (decomp, hcmd);
+			command_sequence_command (seq, hcmd);
+		}
+
+		if (no_justification) {
+			command *jcmd = command_new_function (
+				"echo .na && echo .de ad && echo ..",
+				disable_justification, NULL, NULL);
+			command_sequence_command (seq, jcmd);
 		}
 
 #ifdef TROFF_IS_GROFF
@@ -2343,23 +2378,31 @@ static int display (const char *dir, const char *man_file,
 				command *lcmd;
 
 				unpack_locale_bits (page_lang, &bits);
-				name = xasprintf (
-					"(echo .mso %s.tmac && "
-					"cat)", bits.language);
+				name = xasprintf ("echo .mso %s.tmac",
+						  bits.language);
 				lcmd = command_new_function (
 					name, locale_macros, free, page_lang);
-				pipeline_command (decomp, lcmd);
+				command_sequence_command (seq, lcmd);
 				free (name);
 				free_locale_bits (&bits);
 			}
 		}
 #endif /* TROFF_IS_GROFF */
+
+		if (seq->u.sequence.ncommands) {
+			assert (decomp->ncommands == 1);
+			command_sequence_command (seq, decomp->commands[0]);
+			decomp->commands[0] = seq;
+		} else
+			command_free (seq);
 	}
 
 	if (decomp) {
 		pipeline_start (decomp);
 		format_cmd = make_roff_command (dir, man_file, decomp,
-						dbfilters);
+						dbfilters,
+						&formatted_encoding);
+		debug ("formatted_encoding = %s\n", formatted_encoding);
 	} else {
 		format_cmd = NULL;
 		decomp_errno = errno;
@@ -2424,6 +2467,10 @@ static int display (const char *dir, const char *man_file,
 		 * refuse gracefully if the file isn't writeable.
 		 */
 
+		/* In theory we might be able to get away with saving cats
+		 * for want_encoding, but it does change the roff device so
+		 * perhaps that's best avoided.
+		 */
 		if (want_encoding
 #ifdef TROFF_IS_GROFF
 		    || htmlout
@@ -2513,7 +2560,8 @@ static int display (const char *dir, const char *man_file,
 					       cat_file);
 				else
 					display_catman (cat_file, decomp,
-							format_cmd);
+							format_cmd,
+							formatted_encoding);
 			}
 		} else if (format) {
 			/* no cat or out of date */
@@ -2528,7 +2576,8 @@ static int display (const char *dir, const char *man_file,
 					return 0;
 			}
 
-			disp_cmd = make_display_command (NULL, title);
+			disp_cmd = make_display_command (formatted_encoding,
+							 title);
 
 #ifdef MAN_CATS
 			if (save_cat) {
@@ -2537,7 +2586,8 @@ static int display (const char *dir, const char *man_file,
 				format_display_and_save (decomp,
 							 format_cmd,
 							 disp_cmd,
-							 cat_file);
+							 cat_file,
+							 formatted_encoding);
 			} else 
 #endif /* MAN_CATS */
 				/* don't save cat */
@@ -2564,7 +2614,7 @@ static int display (const char *dir, const char *man_file,
 				pipeline_free (decomp);
 				return 0;
 			}
-			disp_cmd = make_display_command (NULL, title);
+			disp_cmd = make_display_command ("UTF-8", title);
 			format_display (decomp_cat, NULL, disp_cmd, man_file);
 			pipeline_free (disp_cmd);
 			pipeline_free (decomp_cat);
@@ -2744,9 +2794,60 @@ static int compare_candidates (const struct candidate *left,
 			return 1;
 	}
 
-	/* Try comparing based on language. Assuming we've got the right
-	 * name, then it's better to display a page in the user's preferred
-	 * language than a page from a better section.
+	/* Compare pure sections first, then ids, then extensions.
+	 * Rationale: whatis refs get the same section and extension as
+	 * their source, but may be supplanted by a real page with a
+	 * slightly different extension, possibly in another hierarchy (!);
+	 * see Debian bug #204249 for the gory details.
+	 *
+	 * Any extension spelt out in full in section_list effectively
+	 * becomes a pure section; this allows extensions to be selectively
+	 * moved out of order with respect to their parent sections.
+	 */
+	if (strcmp (lsource->ext, rsource->ext)) {
+		/* Find out whether lsource->ext is ahead of rsource->ext in
+		 * section_list.
+		 */
+		const char **sp;
+		for (sp = section_list; *sp; ++sp) {
+			if (!*(*sp + 1)) {
+				/* No extension */
+				if (!sec_left  && **sp == *(lsource->ext))
+					sec_left  = sp - section_list + 1;
+				if (!sec_right && **sp == *(rsource->ext))
+					sec_right = sp - section_list + 1;
+			} else if (STREQ (*sp, lsource->ext)) {
+				sec_left  = sp - section_list + 1;
+			} else if (STREQ (*sp, rsource->ext)) {
+				sec_right = sp - section_list + 1;
+			}
+			/* Keep looking for a more specific match */
+		}
+		if (sec_left != sec_right)
+			return sec_left - sec_right;
+
+		cmp = strcmp (lsource->sec, rsource->sec);
+		if (cmp)
+			return cmp;
+	}
+
+	/* ULT_MAN comes first, etc. Consider SO_MAN equivalent to ULT_MAN. */
+	cmp = compare_ids (lsource->id, rsource->id, 1);
+	if (cmp)
+		return cmp;
+
+	/* The order in section_list has already been compared above. For
+	 * everything not mentioned explicitly there, we just compare
+	 * lexically.
+	 */
+	cmp = strcmp (lsource->ext, rsource->ext);
+	if (cmp)
+		return cmp;
+
+	/* Try comparing based on language. We used to prefer to display a
+	 * page in the user's preferred language than a page from a better
+	 * section, but that attracted objections, so now we prefer to get
+	 * the section right. See Debian bug #519547.
 	 */
 	slash1 = strrchr (left->path, '/');
 	slash2 = strrchr (right->path, '/');
@@ -2819,56 +2920,6 @@ out:
 		if (cmp)
 			return cmp;
 	}
-
-	/* Compare pure sections first, then ids, then extensions.
-	 * Rationale: whatis refs get the same section and extension as
-	 * their source, but may be supplanted by a real page with a
-	 * slightly different extension, possibly in another hierarchy (!);
-	 * see Debian bug #204249 for the gory details.
-	 *
-	 * Any extension spelt out in full in section_list effectively
-	 * becomes a pure section; this allows extensions to be selectively
-	 * moved out of order with respect to their parent sections.
-	 */
-	if (strcmp (lsource->ext, rsource->ext)) {
-		/* Find out whether lsource->ext is ahead of rsource->ext in
-		 * section_list.
-		 */
-		const char **sp;
-		for (sp = section_list; *sp; ++sp) {
-			if (!*(*sp + 1)) {
-				/* No extension */
-				if (!sec_left  && **sp == *(lsource->ext))
-					sec_left  = sp - section_list + 1;
-				if (!sec_right && **sp == *(rsource->ext))
-					sec_right = sp - section_list + 1;
-			} else if (STREQ (*sp, lsource->ext)) {
-				sec_left  = sp - section_list + 1;
-			} else if (STREQ (*sp, rsource->ext)) {
-				sec_right = sp - section_list + 1;
-			}
-			/* Keep looking for a more specific match */
-		}
-		if (sec_left != sec_right)
-			return sec_left - sec_right;
-
-		cmp = strcmp (lsource->sec, rsource->sec);
-		if (cmp)
-			return cmp;
-	}
-
-	/* ULT_MAN comes first, etc. Consider SO_MAN equivalent to ULT_MAN. */
-	cmp = compare_ids (lsource->id, rsource->id, 1);
-	if (cmp)
-		return cmp;
-
-	/* The order in section_list has already been compared above. For
-	 * everything not mentioned explicitly there, we just compare
-	 * lexically.
-	 */
-	cmp = strcmp (lsource->ext, rsource->ext);
-	if (cmp)
-		return cmp;
 
 	/* Explicitly stabilise the sort as a last resort, so that manpath
 	 * ordering (e.g. language-specific hierarchies) works.

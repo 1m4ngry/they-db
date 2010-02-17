@@ -1,3 +1,59 @@
+man-db 2.5.7 (16 February 2010)
+===============================
+
+Major changes since man-db 2.5.6:
+
+	Fixes:
+	------
+
+	o If a subprocess exits before man manages to read all the output
+	  from it, it now drains the output file descriptor rather than
+	  immediately discarding it.
+
+	o If /usr/share/i18n/SUPPORTED is available, man attempts to use it
+	  to ensure that LC_CTYPE is set to an appropriate locale for the
+	  selected character set when invoking col. This fixes 'LANG=C man
+	  -E UTF-8', as used by lintian.
+
+	o Don't run tests if cross-compiling.
+
+	o Fix possible mandb crash when MAN_MUST_CREATE is unset.
+
+	Improvements:
+	-------------
+
+	o man can now tell nroff to disable justification if the
+	  --no-justification option is used.
+
+	o If the full path to an executable is given as an argument, man
+	  will try looking up the corresponding manual page in the
+	  appropriate part of the manpath, rather than just trying to format
+	  the text of the executable as a manual page.
+
+	o In the GNU manual hierarchy layout, search man<sec><ext>
+	  directories as well as just man<sec> (e.g. /usr/share/man/man3p as
+	  well as /usr/share/man/man3).
+
+	o By request, man now prefers getting a page from the best manual
+	  section over getting a page in the correct language.
+
+	o All programs now support a MAN_DEBUG environment variable which
+	  can be used in place of the -d/--debug option. This is useful in
+	  some situations where a program is being called deep in a process
+	  tree.
+
+	o man-db now builds with heirloom-doctools, thanks to Diego Pettenò
+	  of Gentoo.
+
+	o Add support for emulating pipe() with socketpair(), which is
+	  faster on some systems; thanks to Werner Fink of SUSE.
+
+	o Cat pages are now always saved in UTF-8, and converted to the
+	  proper encoding at display time, which means that cat pages can
+	  now be saved regardless of locale. Note that a consequence of this
+	  is that cat pages now include formatting information (e.g.
+	  overstriking) and need to be run through col(1) before display.
+
 man-db 2.5.6 (26 August 2009)
 =============================
 

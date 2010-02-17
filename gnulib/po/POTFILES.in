@@ -1,5 +1,5 @@
 ## DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2009 Free Software Foundation, Inc.
+# Copyright (C) 2002-2010 Free Software Foundation, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -32,6 +32,7 @@ gnulib/lib/asnprintf.c
 gnulib/lib/asprintf.c
 gnulib/lib/at-func.c
 gnulib/lib/atexit.c
+gnulib/lib/basename-lgpl.c
 gnulib/lib/basename.c
 gnulib/lib/bitrotate.h
 gnulib/lib/btowc.c
@@ -45,9 +46,9 @@ gnulib/lib/close-hook.c
 gnulib/lib/close-hook.h
 gnulib/lib/close.c
 gnulib/lib/config.charset
-gnulib/lib/creat-safer.c
 gnulib/lib/dirent.in.h
 gnulib/lib/dirfd.c
+gnulib/lib/dirname-lgpl.c
 gnulib/lib/dirname.c
 gnulib/lib/dirname.h
 gnulib/lib/dup-safer.c
@@ -62,14 +63,12 @@ gnulib/lib/fchmodat.c
 gnulib/lib/fchown-stub.c
 gnulib/lib/fchownat.c
 gnulib/lib/fclose.c
-gnulib/lib/fcntl--.h
-gnulib/lib/fcntl-safer.h
+gnulib/lib/fcntl.c
 gnulib/lib/fcntl.in.h
 gnulib/lib/fd-safer.c
+gnulib/lib/fdopendir.c
 gnulib/lib/file-set.c
 gnulib/lib/file-set.h
-gnulib/lib/filenamecat.c
-gnulib/lib/filenamecat.h
 gnulib/lib/float+.h
 gnulib/lib/float.in.h
 gnulib/lib/fnmatch.c
@@ -82,7 +81,6 @@ gnulib/lib/getopt.c
 gnulib/lib/getopt.in.h
 gnulib/lib/getopt1.c
 gnulib/lib/getopt_int.h
-gnulib/lib/getpagesize.c
 gnulib/lib/gettext.h
 gnulib/lib/gettimeofday.c
 gnulib/lib/glob-libc.h
@@ -118,10 +116,10 @@ gnulib/lib/memcmp.c
 gnulib/lib/mempcpy.c
 gnulib/lib/memrchr.c
 gnulib/lib/minmax.h
+gnulib/lib/mkdir.c
 gnulib/lib/mkdirat.c
 gnulib/lib/mkdtemp.c
 gnulib/lib/mkstemp.c
-gnulib/lib/open-safer.c
 gnulib/lib/open.c
 gnulib/lib/openat-die.c
 gnulib/lib/openat-priv.h
@@ -137,6 +135,7 @@ gnulib/lib/printf-parse.h
 gnulib/lib/rawmemchr.c
 gnulib/lib/rawmemchr.valgrind
 gnulib/lib/readlink.c
+gnulib/lib/realloc.c
 gnulib/lib/ref-add.sin
 gnulib/lib/ref-del.sin
 gnulib/lib/regcomp.c
@@ -146,6 +145,7 @@ gnulib/lib/regex_internal.c
 gnulib/lib/regex_internal.h
 gnulib/lib/regexec.c
 gnulib/lib/rename.c
+gnulib/lib/rmdir.c
 gnulib/lib/same-inode.h
 gnulib/lib/same.c
 gnulib/lib/same.h
@@ -160,8 +160,10 @@ gnulib/lib/sigprocmask.c
 gnulib/lib/size_max.h
 gnulib/lib/sleep.c
 gnulib/lib/snprintf.c
+gnulib/lib/stat.c
 gnulib/lib/stdarg.in.h
 gnulib/lib/stdbool.in.h
+gnulib/lib/stddef.in.h
 gnulib/lib/stdint.in.h
 gnulib/lib/stdio-write.c
 gnulib/lib/stdio.in.h
@@ -170,6 +172,7 @@ gnulib/lib/strcasecmp.c
 gnulib/lib/strchrnul.c
 gnulib/lib/strchrnul.valgrind
 gnulib/lib/strcspn.c
+gnulib/lib/strdup.c
 gnulib/lib/streq.h
 gnulib/lib/strerror.c
 gnulib/lib/string.in.h
@@ -189,9 +192,12 @@ gnulib/lib/sys_time.in.h
 gnulib/lib/sysexits.in.h
 gnulib/lib/tempname.c
 gnulib/lib/tempname.h
+gnulib/lib/time.in.h
 gnulib/lib/unistd--.h
 gnulib/lib/unistd-safer.h
 gnulib/lib/unistd.in.h
+gnulib/lib/unlink.c
+gnulib/lib/unlinkat.c
 gnulib/lib/unsetenv.c
 gnulib/lib/vasnprintf.c
 gnulib/lib/vasnprintf.h

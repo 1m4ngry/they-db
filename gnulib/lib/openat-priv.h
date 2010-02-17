@@ -1,6 +1,6 @@
 /* Internals for openat-like functions.
 
-   Copyright (C) 2005, 2006 Free Software Foundation, Inc.
+   Copyright (C) 2005-2006, 2009-2010 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,38 +17,28 @@
 
 /* written by Jim Meyering */
 
+#ifndef _GL_HEADER_OPENAT_PRIV
+#define _GL_HEADER_OPENAT_PRIV
+
 #include <errno.h>
 #include <stdlib.h>
 
 #define OPENAT_BUFFER_SIZE 512
 char *openat_proc_name (char buf[OPENAT_BUFFER_SIZE], int fd, char const *file);
 
-/* Some systems don't have ENOSYS.  */
-#ifndef ENOSYS
-# ifdef ENOTSUP
-#  define ENOSYS ENOTSUP
-# else
-/* Some systems don't have ENOTSUP either.  */
-#  define ENOSYS EINVAL
-# endif
-#endif
-
-/* Some systems don't have EOPNOTSUPP.  */
-#ifndef EOPNOTSUPP
-# ifdef ENOTSUP
-#  define EOPNOTSUPP ENOTSUP
-# else
-/* Some systems don't have ENOTSUP either.  */
-#  define EOPNOTSUPP EINVAL
-# endif
-#endif
-
 /* Trying to access a BUILD_PROC_NAME file will fail on systems without
    /proc support, and even on systems *with* ProcFS support.  Return
    nonzero if the failure may be legitimate, e.g., because /proc is not
    readable, or the particular .../fd/N directory is not present.  */
-#define EXPECTED_ERRNO(Errno)			\
-  ((Errno) == ENOTDIR || (Errno) == ENOENT	\
-   || (Errno) == EPERM || (Errno) == EACCES	\
-   || (Errno) == ENOSYS /* Solaris 8 */		\
+#define EXPECTED_ERRNO(Errno)                   \
+  ((Errno) == ENOTDIR || (Errno) == ENOENT      \
+   || (Errno) == EPERM || (Errno) == EACCES     \
+   || (Errno) == ENOSYS /* Solaris 8 */         \
    || (Errno) == EOPNOTSUPP /* FreeBSD */)
+
+/* Wrapper function shared among linkat and renameat.  */
+int at_func2 (int fd1, char const *file1,
+              int fd2, char const *file2,
+              int (*func) (char const *file1, char const *file2));
+
+#endif /* _GL_HEADER_OPENAT_PRIV */

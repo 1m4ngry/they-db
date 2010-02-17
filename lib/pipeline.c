@@ -50,6 +50,29 @@
 #include "error.h"
 #include "pipeline.h"
 
+#ifdef USE_SOCKETPAIR_PIPE
+#   include <netdb.h>
+#   include <netinet/in.h>
+#   include <sys/socket.h>
+#   ifdef CORRECT_SOCKETPAIR_MODE
+#	include <sys/stat.h>
+#   endif
+#   ifndef SHUT_RD
+#	define SHUT_RD		0
+#   endif
+#   ifndef SHUT_WR
+#	define SHUT_WR		1
+#   endif
+#   ifdef CORRECT_SOCKETPAIR_MODE
+#	define pipe(p) (((socketpair(AF_UNIX,SOCK_STREAM,0,p) < 0) || \
+                   (shutdown((p)[1],SHUT_RD) < 0) || (fchmod((p)[1],S_IWUSR) < 0) || \
+                   (shutdown((p)[0],SHUT_WR) < 0) || (fchmod((p)[0],S_IRUSR) < 0)) ? -1 : 0)
+#   else
+#	define pipe(p) (((socketpair(AF_UNIX,SOCK_STREAM,0,p) < 0) || \
+                   (shutdown((p)[1],SHUT_RD) < 0) || (shutdown((p)[0],SHUT_WR) < 0)) ? -1 : 0)
+#   endif
+#endif
+
 /* ---------------------------------------------------------------------- */
 
 /* Functions to build individual commands. */
@@ -207,6 +230,7 @@ static char *argstr_get_word (const char **argstr)
 	if (litstart < *argstr) {
 		char *tmp = xstrndup (litstart, *argstr - litstart);
 		out = appendstr (out, tmp, NULL);
+		free (tmp);
 	}
 
 	return out;
@@ -272,6 +296,39 @@ command *command_new_function (const char *name,
 	return cmd;
 }
 
+command *command_new_sequence (const char *name, ...)
+{
+	command *cmd = XMALLOC (command);
+	struct command_sequence *cmds;
+	va_list cmdv;
+	command *child;
+
+	cmd->tag = COMMAND_SEQUENCE;
+	cmd->name = xstrdup (name);
+	cmd->nice = 0;
+	cmd->discard_err = 0;
+
+	cmd->nenv = 0;
+	cmd->env_max = 4;
+	cmd->env = xnmalloc (cmd->env_max, sizeof *cmd->env);
+
+	cmds = &cmd->u.sequence;
+
+	cmds->ncommands = 0;
+	cmds->commands_max = 4;
+	cmds->commands = xnmalloc (cmds->commands_max, sizeof *cmds->commands);
+
+	va_start (cmdv, name);
+	child = va_arg (cmdv, command *);
+	while (child) {
+		command_sequence_command (cmd, child);
+		child = va_arg (cmdv, command *);
+	}
+	va_end (cmdv);
+
+	return cmd;
+}
+
 command *command_dup (command *cmd)
 {
 	command *newcmd = XMALLOC (command);
@@ -317,6 +374,24 @@ command *command_dup (command *cmd)
 			newcmdf->func = cmdf->func;
 			newcmdf->free_func = cmdf->free_func;
 			newcmdf->data = cmdf->data;
+
+			break;
+		}
+
+		case COMMAND_SEQUENCE: {
+			struct command_sequence *cmds = &cmd->u.sequence;
+			struct command_sequence *newcmds = &newcmd->u.sequence;
+
+			newcmds->ncommands = cmds->ncommands;
+			newcmds->commands_max = cmds->commands_max;
+			assert (newcmds->ncommands <= newcmds->commands_max);
+			newcmds->commands = xmalloc
+				(newcmds->commands_max *
+				 sizeof *newcmds->commands);
+
+			for (i = 0; i < cmds->ncommands; ++i)
+				newcmds->commands[i] =
+					command_dup (cmds->commands[i]);
 
 			break;
 		}
@@ -391,6 +466,23 @@ void command_setenv (command *cmd, const char *name, const char *value)
 	++cmd->nenv;
 }
 
+void command_sequence_command (command *cmd, command *child)
+{
+	struct command_sequence *cmds;
+
+	assert (cmd->tag == COMMAND_SEQUENCE);
+	cmds = &cmd->u.sequence;
+
+	if (cmds->ncommands >= cmds->commands_max) {
+		cmds->commands_max *= 2;
+		cmds->commands = xrealloc
+			(cmds->commands,
+			 cmds->commands_max * sizeof *cmds->commands);
+	}
+
+	cmds->commands[cmds->ncommands++] = child;
+}
+
 void command_dump (command *cmd, FILE *stream)
 {
 	int i;
@@ -416,6 +508,20 @@ void command_dump (command *cmd, FILE *stream)
 		case COMMAND_FUNCTION:
 			fputs (cmd->name, stream);
 			break;
+
+		case COMMAND_SEQUENCE: {
+			struct command_sequence *cmds = &cmd->u.sequence;
+
+			putc ('(', stream);
+			for (i = 0; i < cmds->ncommands; ++i) {
+				command_dump (cmds->commands[i], stream);
+				if (i < cmds->ncommands - 1)
+					fputs (" && ", stream);
+			}
+			putc (')', stream);
+
+			break;
+		}
 	}
 }
 
@@ -444,9 +550,159 @@ char *command_tostring (command *cmd)
 		case COMMAND_FUNCTION:
 			out = appendstr (out, cmd->name, NULL);
 			break;
+
+		case COMMAND_SEQUENCE: {
+			struct command_sequence *cmds = &cmd->u.sequence;
+
+			out = appendstr (out, "(", NULL);
+			for (i = 0; i < cmds->ncommands; ++i) {
+				char *subout = command_tostring
+					(cmds->commands[i]);
+				out = appendstr (out, subout, NULL);
+				free (subout);
+				if (i < cmds->ncommands - 1)
+					out = appendstr (out, " && ", NULL);
+			}
+			out = appendstr (out, ")", NULL);
+
+			break;
+		}
 	}
 
 	return out;
+}
+
+/* Children exit with this status if execvp fails. */
+#define EXEC_FAILED_EXIT_STATUS 0xff
+
+/* Start a command. This is called in the forked child process, with file
+ * descriptors already set up.
+ */
+static void command_start_child (command *cmd) ATTRIBUTE_NORETURN;
+static void command_start_child (command *cmd)
+{
+	int i;
+
+	if (cmd->nice)
+		if (nice (cmd->nice) < 0)
+			/* Don't worry too much. */
+			debug ("nice failed: %s", strerror (errno));
+
+	if (cmd->discard_err) {
+		int devnull = open ("/dev/null", O_WRONLY);
+		if (devnull != -1) {
+			dup2 (devnull, 2);
+			close (devnull);
+		}
+	}
+
+	for (i = 0; i < cmd->nenv; ++i)
+		setenv (cmd->env[i].name, cmd->env[i].value, 1);
+
+	switch (cmd->tag) {
+		case COMMAND_PROCESS: {
+			struct command_process *cmdp = &cmd->u.process;
+			execvp (cmd->name, cmdp->argv);
+			break;
+		}
+
+		/* TODO: ideally, could there be a facility
+		 * to execute non-blocking functions without
+		 * needing to fork?
+		 */
+		case COMMAND_FUNCTION: {
+			struct command_function *cmdf = &cmd->u.function;
+			(*cmdf->func) (cmdf->data);
+			/* pacify valgrind et al */
+			if (cmdf->free_func)
+				(*cmdf->free_func) (cmdf->data);
+			exit (0);
+		}
+
+		case COMMAND_SEQUENCE: {
+			struct command_sequence *cmds = &cmd->u.sequence;
+			struct sigaction sa;
+
+			/* pipeline_start will have blocked SIGCHLD. We like
+			 * it that way. Lose the parent's signal handler,
+			 * though.
+			 */
+			memset (&sa, 0, sizeof sa);
+			sa.sa_handler = SIG_DFL;
+			sigemptyset (&sa.sa_mask);
+			sa.sa_flags = 0;
+			if (sigaction (SIGCHLD, &sa, NULL) == -1)
+				error (FATAL, errno,
+				       _("can't install SIGCHLD handler"));
+
+			for (i = 0; i < cmds->ncommands; ++i) {
+				command *child = cmds->commands[i];
+				pid_t pid = fork ();
+				int status;
+
+				if (pid < 0)
+					error (FATAL, errno, _("fork failed"));
+				if (pid == 0)
+					command_start_child (child);
+				debug ("Started \"%s\", pid %d\n",
+				       child->name, pid);
+
+				while (waitpid (pid, &status, 0) < 0) {
+					if (errno == EINTR)
+						continue;
+					error (FATAL, errno,
+					       _("waitpid failed"));
+				}
+
+				debug ("  \"%s\" (%d) -> %d\n",
+				       child->name, pid, status);
+
+				if (WIFSIGNALED (status)) {
+					int sig = WTERMSIG (status);
+#ifdef SIGPIPE
+					if (sig == SIGPIPE)
+						status = 0;
+					else
+#endif /* SIGPIPE */
+					if (WCOREDUMP (status))
+						error (0, 0,
+						       _("%s: %s "
+							 "(core dumped)"),
+						       child->name,
+						       strsignal (sig));
+					else
+						error (0, 0, _("%s: %s"),
+						       child->name,
+						       strsignal (sig));
+				} else if (!WIFEXITED (status))
+					error (0, 0, "unexpected status %d",
+					       status);
+
+				if (child->tag == COMMAND_FUNCTION) {
+					struct command_function *cmdf =
+						&child->u.function;
+					if (cmdf->free_func)
+						(*cmdf->free_func)
+							(cmdf->data);
+				}
+
+				if (WIFSIGNALED (status)) {
+					raise (WTERMSIG (status));
+					exit (1); /* just to make sure */
+				} else if (status && WIFEXITED (status))
+					exit (WEXITSTATUS (status));
+			}
+
+			exit (0);
+		}
+	}
+
+	error (EXEC_FAILED_EXIT_STATUS, errno,
+	       _("can't execute %s"), cmd->name);
+	/* Never called, but gcc doesn't realise that error with non-zero
+	 * status always exits.
+	 */
+	exit (EXEC_FAILED_EXIT_STATUS);
 }
 
 void command_free (command *cmd)
@@ -477,6 +733,16 @@ void command_free (command *cmd)
 
 		case COMMAND_FUNCTION:
 			break;
+
+		case COMMAND_SEQUENCE: {
+			struct command_sequence *cmds = &cmd->u.sequence;
+
+			for (i = 0; i < cmds->ncommands; ++i)
+				command_free (cmds->commands[i]);
+			free (cmds->commands);
+
+			break;
+		}
 	}
 
 	free (cmd);
@@ -754,9 +1020,6 @@ static int n_active_pipelines = 0, max_active_pipelines = 0;
 static int ignored_signals = 0;
 static struct sigaction osa_sigint, osa_sigquit;
 
-/* Children exit with this status if execvp fails. */
-#define EXEC_FAILED_EXIT_STATUS 0xff
-
 void pipeline_start (pipeline *p)
 {
 	int i, j;
@@ -932,57 +1195,14 @@ void pipeline_start (pipeline *p)
 					close (active->outfd);
 			}
 
-			if (p->commands[i]->nice)
-				if (nice (p->commands[i]->nice) < 0)
-					/* Don't worry too much. */
-					debug ("nice failed: %s",
-					       strerror (errno));
-
-			if (p->commands[i]->discard_err) {
-				int devnull = open ("/dev/null", O_WRONLY);
-				if (devnull != -1) {
-					dup2 (devnull, 2);
-					close (devnull);
-				}
-			}
-
-			for (j = 0; j < p->commands[i]->nenv; ++j)
-				setenv (p->commands[i]->env[j].name,
-					p->commands[i]->env[j].value, 1);
-
 			/* Restore signals. */
 			if (p->ignore_signals) {
 				sigaction (SIGINT, &osa_sigint, NULL);
 				sigaction (SIGQUIT, &osa_sigquit, NULL);
 			}
 
-			switch (p->commands[i]->tag) {
-				case COMMAND_PROCESS: {
-					struct command_process *cmdp =
-						&p->commands[i]->u.process;
-					execvp (p->commands[i]->name,
-						cmdp->argv);
-					break;
-				}
-
-				/* TODO: ideally, could there be a facility
-				 * to execute non-blocking functions without
-				 * needing to fork?
-				 */
-				case COMMAND_FUNCTION: {
-					struct command_function *cmdf =
-						&p->commands[i]->u.function;
-					(*cmdf->func) (cmdf->data);
-					/* pacify valgrind et al */
-					if (cmdf->free_func)
-						(*cmdf->free_func)
-							(cmdf->data);
-					exit (0);
-				}
-			}
-
-			error (EXEC_FAILED_EXIT_STATUS, errno,
-			       _("can't execute %s"), p->commands[i]->name);
+			command_start_child (p->commands[i]);
+			/* never returns */
 		}
 
 		/* in the parent */
@@ -1149,7 +1369,7 @@ int pipeline_wait (pipeline *p)
 					 */
 					if (sig == SIGINT || sig == SIGQUIT)
 						raise_signal = sig;
-					if (WCOREDUMP (status))
+					else if (WCOREDUMP (status))
 						error (0, 0,
 						       _("%s: %s "
 							 "(core dumped)"),
@@ -1507,8 +1727,12 @@ void pipeline_pump (pipeline *p, ...)
 			for (;;) {
 				w = write (pieces[i]->infd, block + pos[i],
 					   peek_size - pos[i]);
-				if (w >= 0 || errno == EAGAIN)
+				if (w >= 0)
 					break;
+				if (errno == EAGAIN) {
+					w = 0;
+					break;
+				}
 				if (errno == EINTR)
 					continue;
 				/* It may be useful for other processes to

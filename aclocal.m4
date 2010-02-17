@@ -1,4 +1,4 @@
-# generated automatically by aclocal 1.11 -*- Autoconf -*-
+# generated automatically by aclocal 1.11.1 -*- Autoconf -*-
 
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
 # 2005, 2006, 2007, 2008, 2009  Free Software Foundation, Inc.
@@ -13,8 +13,8 @@
 
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
-m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.64],,
-[m4_warning([this file was generated for autoconf 2.64.
+m4_if(m4_defn([AC_AUTOCONF_VERSION]), [2.65],,
+[m4_warning([this file was generated for autoconf 2.65.
 You have another version of autoconf.  It may work, but is not guaranteed to.
 If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically `autoreconf'.])])
@@ -34,7 +34,7 @@ AC_DEFUN([AM_AUTOMAKE_VERSION],
 [am__api_version='1.11'
 dnl Some users find AM_AUTOMAKE_VERSION and mistake it for a way to
 dnl require some minimum version.  Point them to the right macro.
-m4_if([$1], [1.11], [],
+m4_if([$1], [1.11.1], [],
       [AC_FATAL([Do not call $0, use AM_INIT_AUTOMAKE([$1]).])])dnl
 ])
 
@@ -50,7 +50,7 @@ m4_define([_AM_AUTOCONF_VERSION], [])
 # Call AM_AUTOMAKE_VERSION and AM_AUTOMAKE_VERSION so they can be traced.
 # This function is AC_REQUIREd by AM_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-[AM_AUTOMAKE_VERSION([1.11])dnl
+[AM_AUTOMAKE_VERSION([1.11.1])dnl
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
 _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
@@ -1018,13 +1018,13 @@ m4_include([m4/man-gcc-warning.m4])
 m4_include([m4/man-gnu-nroff.m4])
 m4_include([m4/man-linguas.m4])
 m4_include([m4/man-po4a.m4])
+m4_include([m4/man-socketpair.m4])
 m4_include([m4/man-trans-subst.m4])
 m4_include([gnulib/m4/00gnulib.m4])
 m4_include([gnulib/m4/alloca.m4])
 m4_include([gnulib/m4/argp.m4])
 m4_include([gnulib/m4/atexit.m4])
 m4_include([gnulib/m4/btowc.m4])
-m4_include([gnulib/m4/canonicalize-lgpl.m4])
 m4_include([gnulib/m4/canonicalize.m4])
 m4_include([gnulib/m4/chdir-long.m4])
 m4_include([gnulib/m4/chown.m4])
@@ -1046,9 +1046,10 @@ m4_include([gnulib/m4/exitfail.m4])
 m4_include([gnulib/m4/extensions.m4])
 m4_include([gnulib/m4/fchdir.m4])
 m4_include([gnulib/m4/fclose.m4])
-m4_include([gnulib/m4/fcntl-safer.m4])
+m4_include([gnulib/m4/fcntl-o.m4])
+m4_include([gnulib/m4/fcntl.m4])
 m4_include([gnulib/m4/fcntl_h.m4])
-m4_include([gnulib/m4/filenamecat.m4])
+m4_include([gnulib/m4/fdopendir.m4])
 m4_include([gnulib/m4/float_h.m4])
 m4_include([gnulib/m4/fnmatch.m4])
 m4_include([gnulib/m4/getcwd-abort-bug.m4])
@@ -1056,7 +1057,6 @@ m4_include([gnulib/m4/getcwd-path-max.m4])
 m4_include([gnulib/m4/getcwd.m4])
 m4_include([gnulib/m4/getlogin_r.m4])
 m4_include([gnulib/m4/getopt.m4])
-m4_include([gnulib/m4/getpagesize.m4])
 m4_include([gnulib/m4/gettext.m4])
 m4_include([gnulib/m4/gettimeofday.m4])
 m4_include([gnulib/m4/glibc2.m4])
@@ -1099,6 +1099,7 @@ m4_include([gnulib/m4/memcmp.m4])
 m4_include([gnulib/m4/mempcpy.m4])
 m4_include([gnulib/m4/memrchr.m4])
 m4_include([gnulib/m4/minmax.m4])
+m4_include([gnulib/m4/mkdir.m4])
 m4_include([gnulib/m4/mkdtemp.m4])
 m4_include([gnulib/m4/mkstemp.m4])
 m4_include([gnulib/m4/mmap-anon.m4])
@@ -1115,8 +1116,10 @@ m4_include([gnulib/m4/printf.m4])
 m4_include([gnulib/m4/progtest.m4])
 m4_include([gnulib/m4/rawmemchr.m4])
 m4_include([gnulib/m4/readlink.m4])
+m4_include([gnulib/m4/realloc.m4])
 m4_include([gnulib/m4/regex.m4])
 m4_include([gnulib/m4/rename.m4])
+m4_include([gnulib/m4/rmdir.m4])
 m4_include([gnulib/m4/same.m4])
 m4_include([gnulib/m4/save-cwd.m4])
 m4_include([gnulib/m4/setenv.m4])
@@ -1127,8 +1130,10 @@ m4_include([gnulib/m4/size_max.m4])
 m4_include([gnulib/m4/sleep.m4])
 m4_include([gnulib/m4/snprintf.m4])
 m4_include([gnulib/m4/ssize_t.m4])
+m4_include([gnulib/m4/stat.m4])
 m4_include([gnulib/m4/stdarg.m4])
 m4_include([gnulib/m4/stdbool.m4])
+m4_include([gnulib/m4/stddef_h.m4])
 m4_include([gnulib/m4/stdint.m4])
 m4_include([gnulib/m4/stdint_h.m4])
 m4_include([gnulib/m4/stdio_h.m4])
@@ -1136,6 +1141,7 @@ m4_include([gnulib/m4/stdlib_h.m4])
 m4_include([gnulib/m4/strcase.m4])
 m4_include([gnulib/m4/strchrnul.m4])
 m4_include([gnulib/m4/strcspn.m4])
+m4_include([gnulib/m4/strdup.m4])
 m4_include([gnulib/m4/strerror.m4])
 m4_include([gnulib/m4/string_h.m4])
 m4_include([gnulib/m4/strings_h.m4])
@@ -1150,10 +1156,12 @@ m4_include([gnulib/m4/sys_time_h.m4])
 m4_include([gnulib/m4/sysexits.m4])
 m4_include([gnulib/m4/tempname.m4])
 m4_include([gnulib/m4/threadlib.m4])
+m4_include([gnulib/m4/time_h.m4])
 m4_include([gnulib/m4/tls.m4])
 m4_include([gnulib/m4/uintmax_t.m4])
 m4_include([gnulib/m4/unistd-safer.m4])
 m4_include([gnulib/m4/unistd_h.m4])
+m4_include([gnulib/m4/unlink.m4])
 m4_include([gnulib/m4/vasnprintf.m4])
 m4_include([gnulib/m4/vasprintf.m4])
 m4_include([gnulib/m4/visibility.m4])

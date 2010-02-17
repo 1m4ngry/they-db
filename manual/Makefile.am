@@ -36,7 +36,9 @@ MANUAL_INSTALL = man-db-manual
 
 dist_noinst_DATA = \
 	README \
-	$(ME_FILES)
+	$(ME_FILES) \
+	options-only.me \
+	print-options
 noinst_DATA = \
 	$(MANUAL).cat \
 	$(MANUAL).ps
@@ -59,13 +61,13 @@ $(MANUAL).pp: $(ME_FILES) version
 	$(SOELIM) -I$(srcdir) man_db.me | tbl > $@
 
 .pp.dvi:
-	groff -me -Tdvi $< > $@
+	$(TROFF) -me -Tdvi $< > $@
 
 .pp.ps:
-	groff -me -Tps $< > $@
+	$(TROFF) -me -Tps $< > $@
 
 .pp.tdvi:
-	troff -me -Tdvi $< | grodvi -d > $@
+	$(TROFF) -me -Tdvi $< | grodvi -d > $@
 
 .tdvi.tps:
 	dvips -f -t a4 $< > $@
@@ -74,7 +76,7 @@ $(MANUAL).pp: $(ME_FILES) version
 	nroff -me $< > $@
 
 .pp.html:
-	groff -me -Thtml -P-I$* $< > $@
+	$(TROFF) -me -Thtml -P-I$* $< > $@
 
 # Automake defines these targets already, so we need to use -local.
 dvi-local: $(MANUAL).dvi

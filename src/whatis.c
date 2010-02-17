@@ -187,7 +187,8 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			return 0;
 		case 'h':
 			argp_state_help (state, state->out_stream,
-					 ARGP_HELP_STD_HELP);
+					 ARGP_HELP_STD_HELP &
+					 ~ARGP_HELP_PRE_DOC);
 			break;
 		case ARGP_KEY_ARGS:
 			keywords = state->argv + state->next;
@@ -664,7 +665,7 @@ static int search (char *page)
 	chkr_garbage_detector ();
 
 	if (!found)
-		printf (_("%s: nothing appropriate.\n"), page);
+		fprintf (stderr, _("%s: nothing appropriate.\n"), page);
 
 	free (lowpage);
 
@@ -699,6 +700,8 @@ int main (int argc, char *argv[])
 				optionp->flags |= OPTION_HIDDEN;
 		}
 	}
+
+	init_debug ();
 
 	/* initialise the locale */
 	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
