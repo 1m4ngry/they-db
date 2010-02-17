@@ -24,6 +24,7 @@ man-db (2.5.7-1) UNRELEASED; urgency=low
       these correspond to explicit user actions (closes: #568000).
     - Fix sense of directory check while decompressing (closes: #537434).
     - Always save cat pages in UTF-8 (closes: #446741).
+  * Convert to source format 3.0 (quilt).
 
  -- Colin Watson <cjwatson@debian.org>  Wed, 17 Feb 2010 00:01:46 +0000
 
