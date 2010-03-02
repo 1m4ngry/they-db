@@ -1,6 +1,10 @@
 man-db (2.5.7-2) UNRELEASED; urgency=low
 
   * Add a watch file.
+  * Backport from trunk:
+    - Fix assertion failure on 'man -l' with an uncompressed page and
+      prefixed input (no-hyphenation, no-justification, or a non-English
+      page).
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 20 Feb 2010 03:19:01 +0000
 
