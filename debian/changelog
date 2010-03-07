@@ -1,3 +1,9 @@
+man-db (2.5.7-3) UNRELEASED; urgency=low
+
+  * Remove unused build-dependency on gettext.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Mar 2010 22:14:19 +0000
+
 man-db (2.5.7-2) unstable; urgency=low
 
   * Add a watch file.
