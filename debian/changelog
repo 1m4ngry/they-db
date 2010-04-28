@@ -1,6 +1,7 @@
 man-db (2.5.7-3) UNRELEASED; urgency=low
 
   * Remove unused build-dependency on gettext.
+  * Check for VxID as well as envID in /proc/self/status (closes: #579551).
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 07 Mar 2010 22:14:19 +0000
 
