@@ -3,6 +3,8 @@ Description: Fix catman iconv ordering
  notably in the C locale: while converting the output to UTF-8, iconv was
  run after the compressor rather than before it.  This patch fixes that.
 Origin: upstream, http://bazaar.launchpad.net/~cjwatson/man-db/trunk/revision/1220
+Bug-Debian: http://bugs.debian.org/593350
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/615045
 Forwarded: yes
 Last-Update: 2010-08-17
 
