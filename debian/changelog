@@ -1,4 +1,4 @@
-man-db (2.5.7-4) UNRELEASED; urgency=low
+man-db (2.5.7-4) unstable; urgency=low
 
   * Backport from trunk:
     - Fix a regression introduced in 2.5.7 when running catman in some
@@ -6,7 +6,7 @@ man-db (2.5.7-4) UNRELEASED; urgency=low
       UTF-8, iconv was run after the compressor rather than before it
       (closes: #593350, LP: #615045).
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 17 Aug 2010 14:37:43 +0100
+ -- Colin Watson <cjwatson@debian.org>  Tue, 17 Aug 2010 14:54:04 +0100
 
 man-db (2.5.7-3) unstable; urgency=low
 
