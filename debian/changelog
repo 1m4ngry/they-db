@@ -1,3 +1,10 @@
+man-db (2.5.7-5) UNRELEASED; urgency=low
+
+  * Use CFLAGS and LDFLAGS from hardening-includes, since man and mandb are
+    optionally setuid man.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 07 Sep 2010 10:47:01 +0100
+
 man-db (2.5.7-4) unstable; urgency=low
 
   * Backport from trunk:
