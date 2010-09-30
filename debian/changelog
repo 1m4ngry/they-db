@@ -2,6 +2,8 @@ man-db (2.5.7-5) UNRELEASED; urgency=low
 
   * Use CFLAGS and LDFLAGS from hardening-includes, since man and mandb are
     optionally setuid man.
+  * Update French translation from Translation Project (thanks, David
+    Prévot; closes: #598621).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 07 Sep 2010 10:47:01 +0100
 
