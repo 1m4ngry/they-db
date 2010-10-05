@@ -31,6 +31,17 @@ override_dh_auto_configure:
 		    --with-lzma=lzma \
 		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
 
+# Work around problems with 'po4a --rm-translations' also updating files.
+# This will be unnecessary as of man-db 2.5.8.
+override_dh_auto_clean:
+	set -e; for preserve in man/po4a/po/*.pot man/po4a/po/*.po; do \
+		cp -a "$$preserve" "$$preserve.safe"; \
+	done
+	dh_auto_clean
+	set -e; for preserve in man/po4a/po/*.pot man/po4a/po/*.po; do \
+		mv "$$preserve.safe" "$$preserve"; \
+	done
+
 override_dh_clean:
 	dh_clean -Xxmalloc.c.orig
 
