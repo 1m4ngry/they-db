@@ -5,7 +5,7 @@ man-db (2.5.7-5) UNRELEASED; urgency=low
   * Update French translation from Translation Project (thanks, David
     Prévot; closes: #598621).
   * Make sure that man/po4a/po/* are kept unchanged during a
-    patch/build/clean cycle.  (This will be unnecessary as of man-db 2.5.8.)
+    patch/build/clean cycle.
   * Update French documentation translation from Translation Project
     (thanks, David Prévot; closes: #598066).
 
