@@ -31,6 +31,15 @@ override_dh_auto_configure:
 		    --with-lzma=lzma \
 		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
 
+override_dh_auto_build:
+	dh_auto_build
+	sed -f man/fr/replace.sed -e 's,%program%,manconv,g' \
+		man/fr/man1/manconv.man1 > man/fr/man1/manconv.1
+
+override_dh_auto_install:
+	dh_auto_install
+	install -m 644 man/fr/man1/manconv.1 $(dtmp)/usr/share/man/fr/man1/
+
 # Work around problems with 'po4a --rm-translations' also updating files.
 # This will be unnecessary as of man-db 2.5.8.
 override_dh_auto_clean:
@@ -41,6 +50,7 @@ override_dh_auto_clean:
 	set -e; for preserve in man/po4a/po/*.pot man/po4a/po/*.po; do \
 		mv "$$preserve.safe" "$$preserve"; \
 	done
+	rm -f man/fr/man1/manconv.1
 
 override_dh_clean:
 	dh_clean -Xxmalloc.c.orig
