@@ -38,6 +38,7 @@ override_dh_auto_build:
 		cp -a "$$preserve" "$$preserve.safe"; \
 	done
 	dh_auto_build
+	$(MAKE) -C po fr.gmo
 	sed -f man/fr/replace.sed -e 's,%program%,manconv,g' \
 		man/fr/man1/manconv.man1 > man/fr/man1/manconv.1
 
