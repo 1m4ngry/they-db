@@ -1,10 +1,10 @@
-man-db (2.5.7-6) UNRELEASED; urgency=low
+man-db (2.5.7-6) unstable; urgency=low
 
   * Move po/fr.gmo aside during build so that it gets regenerated based on
     translation-fr.patch, and build-depend directly on gettext for this
     (closes: #598066).
 
- -- Colin Watson <cjwatson@debian.org>  Thu, 14 Oct 2010 16:09:44 +0100
+ -- Colin Watson <cjwatson@debian.org>  Thu, 14 Oct 2010 17:59:18 +0100
 
 man-db (2.5.7-5) unstable; urgency=low
 
