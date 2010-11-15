@@ -1,3 +1,687 @@
+Mon Nov 15 22:34:57 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.8.
+	* man/po4a/po/man-db-manpages.pot, po/man-db.pot, po/*.po: Update.
+
+Mon Nov 15 22:22:47 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man (distclean-hook): Rename to ...
+	  (distclean-local): ... this, and fix syntax so that it actually
+	  works.
+
+Mon Nov 15 21:38:04 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (local_man_loop): Simplify and improve code to make a
+	  temporary copy of manpathlist, in order that it can't free
+	  unallocated memory (may fix Savannah bug #31633).
+
+Mon Nov 15 13:48:26 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/Makefile.am (clean-local): Remove; distclean-hook in
+	  man/Rules.man already takes care of this (thanks, Denis Barbier).
+
+Sun Nov 14 22:12:21 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Prevent repeated rescans when a link is broken.  Thanks to Daniel
+	Isenmann for debugging information.
+
+	* src/check_mandirs.c (test_manfile): Explicitly delete bad links
+	  from the database.
+	  (count_glob_matches, purge_whatis, purge_missing): Extract the
+	  database mtime, and ignore any pages at least as old as that for
+	  the purposes of deciding whether a whatis entry has been replaced
+	  by a real page.
+	* src/tests/mandb-3: New test.
+	* src/tests/Makefile.am (ALL_TESTS): Add mandb-3.
+	* NEWS: Document this.
+
+Wed Nov  3 23:40:25 GMT 2010  Jordi Mallach  <jordi@gnu.org>
+
+	* po/ca.po: Update from Translation Project.
+
+Wed Nov  3 20:27:46 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/catman.c (parse_for_sec): Explicitly pass -S before section
+	  number, to reduce ambiguity.
+	* src/man.c (main): In catman mode, never try to guess whether a
+	  page argument is a section, as it's too easy to get this wrong
+	  (Ubuntu bug #664211).
+
+Fri Oct 29 07:25:44 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.h (pipeline_install_post_fork): Clarify that this is
+	  run in the child process.
+	  (pipeline_wait_all): Clarify that SIGPIPE is considered equivalent
+	  to exiting zero.
+
+Fri Oct 29 06:18:31 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipecmd_new_sequencev): New function.
+	  (pipecmd_new_sequence): Rewrite in terms of pipecmd_new_sequence.
+	  (pipeline_new_command_argv): New function.
+	  (pipeline_new_command_args): Rewrite in terms of
+	  pipeline_new_command_argv.
+	  (pipeline_command_argv): New function.
+	  (pipeline_command_args): Rewrite in terms of
+	  pipeline_command_argv.
+	* lib/pipeline.h (pipecmd_new_sequencev, pipeline_new_command_argv,
+	  pipeline_command_argv): Add prototypes.
+
+Fri Oct 29 05:28:33 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_wait): Rename to ...
+	  (pipeline_wait_all): ... this.  Return 127 rather than 1 if
+	  closing the pipeline output fails.  Return 127 if a command other
+	  than the last one fails.  Return the statuses and the number of
+	  statuses in new output parameters if they are non-NULL.
+	  (pipeline_wait): Add new wrapper function.
+	* lib/pipeline.h (pipeline_wait_all): Add prototype.
+
+Fri Oct 29 03:50:16 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_new): Default ignore_signals to 0.
+	* lib/decompress.c (decompress_open, decompress_fdopen): Remove
+	  redundant calls to pipeline_ignore_signals.
+	* src/man.c (make_browser): Explicitly ignore SIGINT and SIGQUIT
+	  when running the browser.
+	  (make_display_command): Explicitly ignore SIGINT and SIGQUIT when
+	  running the pager.
+
+Fri Oct 29 03:28:57 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c, lib/pipeline.h: Rename command to pipecmd,
+	  command_* to pipecmd_*, and COMMAND_* to PIPECMD_*.  Update all
+	  callers.
+
+Fri Oct 29 03:24:10 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/nl.po: Use I<> rather than U<>.
+
+Tue Oct 26 12:43:45 BST 2010  Erwin Poeze  <erwin.poeze@gmail.com>
+
+	* man/po4a/po/nl.po: Update from Translation Project.
+
+Tue Oct 26 12:40:12 BST 2010  Martin Schauer  <Martin.E.Schauer@gmx.de>
+
+	* po/de.po: Update from Translation Project.
+	* man/THANKS: Update.
+
+Mon Oct 25 17:59:01 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_install_post_fork): New function.
+	  (pipeline_start): Call post-fork handler rather than hardcoding
+	  pop_all_cleanups.
+	* lib/pipeline.h (pipeline_install_post_fork): Add prototype.
+
+	* src/lexgrog_test.c (main), src/man.c (main), src/manconv_main.c
+	  (main), src/mandb.c (main), src/whatis.c (main),
+	  src/zsoelim_main.c (main): Install pop_all_cleanups as a post-fork
+	  handler.
+
+Mon Oct 25 16:18:08 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (command_unsetenv): New function.
+	  (command_dup, command_dump, command_tostring): Check for NULL
+	  cmd->env[i].value.
+	  (command_start_child): If cmd->env[i].value is NULL, call unsetenv
+	  rather than setenv.
+	* lib/pipeline.h (command_unsetenv): Add prototype.
+
+Sun Oct 24 23:37:08 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Allow building with an external libpipeline.
+
+	* configure.ac: Add --with-external-pipeline option.
+	* lib/Makefile.am (libman_la_CPPFLAGS): Add $(libpipeline_CFLAGS).
+	  (libman_la_SOURCES): Include pipeline.c and pipeline.h only
+	  conditionally.
+	  (libman_la_LDFLAGS): Add $(libpipeline_LIBS).
+	* src/Makefile.am (AM_CPPFLAGS): Add $(libpipeline_CFLAGS).
+	* NEWS: Document this.
+
+Sun Oct 24 21:15:07 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (command_start_child): Add trailing newline to
+	  "nice failed" debug message.
+
+Sun Oct 24 21:10:20 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Make command and pipeline opaque types.
+
+	* lib/pipeline.c (command_nice, command_discard_err,
+	  pipeline_get_ncommands, pipeline_get_command,
+	  pipeline_set_command, pipeline_want_in, pipeline_want_out,
+	  pipeline_want_infile, pipeline_want_outfile,
+	  pipeline_ignore_signals): New functions.
+	* lib/pipeline.h (command_nice, command_discard_err,
+	  pipeline_get_ncommands, pipeline_get_command,
+	  pipeline_set_command, pipeline_want_in, pipeline_want_out,
+	  pipeline_want_infile, pipeline_want_outfile,
+	  pipeline_ignore_signals): Add prototypes.
+
+	* lib/pipeline.h (enum command_tag, struct command_env, struct
+	  command, struct pipeline): Move to ...
+	* lib/pipeline.c (enum command_tag, struct command_env, struct
+	  command, struct pipeline): ... here.
+
+	Redirections are now handled slightly differently internally,
+	allowing redirection from/to fd 0.
+
+	* lib/pipeline.c (pipeline_new, pipeline_join): Set redirect_in and
+	  redirect_out.
+	  (pipeline_connect): Use pipeline_want_in and pipeline_want_out.
+	  Check source->redirect_out.
+	  (pipeline_start): Handle new redirection semantics.
+
+	* lib/decompress.c (decompress_open, decompress_fdopen): Use new
+	  accessor functions rather than accessing pipeline fields directly.
+	* src/man.c (make_display_command, discard_stderr, open_cat_stream,
+	  format_display, display_catman, display): Likewise.
+
+Sun Oct 24 21:04:45 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_run): This would be a more convenient
+	  wrapper for the common case if it freed the pipeline as well, so
+	  do that.  (Callers that don't want this should call pipeline_start
+	  and pipeline_wait separately.)
+	* lib/pipeline.h (pipeline_run): Update comment.
+	* lib/security.c (do_system_drop_privs): Consistently free the
+	  supplied pipeline, and document doing so.
+	* src/man.c (format_display): Remove pipeline_free after
+	  do_system_drop_privs.
+	* src/whatis.c (use_grep): Remove pipeline_free after pipeline_run.
+
+Sun Oct 24 21:03:25 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_new_command_args): New function.
+	* lib/pipeline.h (pipeline_new_command_args): Add prototype.
+	* src/man.c (make_browser): Use it.
+
+Sun Oct 24 20:59:27 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (pipeline_run): New function.
+	* lib/pipeline.h (pipeline_run): Add prototype.
+	* lib/security.c (do_system_drop_privs): Use it.
+	* src/man.c (do_extern, run_mandb): Likewise.
+	* src/whatis.c (use_grep): Likewise.
+
+Sun Oct 24 20:56:00 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.h (pipeline_pump): Mention in comment that arguments
+	  must be NULL-terminated.
+
+Sun Oct 24 20:55:10 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.h (pipeline_new_commandv): Fix comment.
+
+Sat Oct 23 20:52:24 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AC_TYPE_SIGNAL): Remove (unused).
+
+Tue Oct 12 11:16:31 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/util.c (init_locale): New function.
+	* include/manconfig.h.in (init_locale): Add prototype.
+	* src/Makefile.am (AM_CPPFLAGS): Move -DLOCALEDIR to ...
+	* lib/Makefile.am (libman_la_CPPFLAGS): ... here.
+
+	* src/accessdb.c (main), src/catman.c (main), src/globbing_test.c
+	  (main), src/lexgrog_test.c (main), src/man.c (main),
+	  src/manconv_main.c (main), src/mandb.c (main), src/manpath.c
+	  (main), src/whatis.c (main), src/zsoelim.c (main): Use
+	  init_locale.
+
+	* lib/util.c (init_locale): Suppress warning message if
+	  DPKG_RUNNING_VERSION is set in the environment.
+	* NEWS: Document this.
+
+Mon Oct 11 09:38:03 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Revision control): Update for restored bzr+ssh
+	  access.
+
+Mon Oct 11 09:36:55 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* .bzrignore: Remove tools/config.rpath.*, which hasn't been needed
+	  here since 2009-04-14.
+
+Tue Oct  5 11:48:57 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/Makefile.am (clean-local): Don't use 'po4a
+	  --rm-translations', since it sometimes updates PO/POT files and
+	  the obvious workaround for that breaks 'make distcheck'.
+	  Reimplement it by hand instead.
+
+Tue Oct  5 10:59:02 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/check-man: Use libtool to run man from the build tree.
+
+Tue Oct  5 10:36:35 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	It turns out that AM_GNU_GETTEXT([use-libtool]) is unsupported.
+	Switch to external libintl instead.
+
+	* configure.ac (AM_GNU_GETTEXT): Set external.
+	  (AC_CONFIG_FILES): Remove intl/Makefile.
+	* Makefile.am (SUBDIRS): Remove intl.
+	  (EXTRA_DIST): Add gnulib/m4/glibc2.m4, gnulib/m4/intdiv0.m4,
+	  gnulib/m4/intl.m4, gnulib/m4/intmax.m4, gnulib/m4/inttypes-pri.m4,
+	  gnulib/m4/lcmessage.m4, gnulib/m4/printf-posix.m4,
+	  gnulib/m4/uintmax_t.m4, and gnulib/m4/visibility.m4.
+	* intl: Remove.
+	* lib/Makefile.am (libman_la_CPPFLAGS): Remove
+	  -I$(top_builddir)/intl.
+	* libdb/Makefile.am (libmandb_la_CPPFLAGS): Likewise.
+	* src/Makefile.am (AM_CPPFLAGS): Likewise.
+	* .bzrignore: Remove intl/Makefile, intl/charset.alias,
+	  intl/libgnuintl.h, intl/libintl.h, intl/ref-add.sed, and
+	  intl/ref-del.sed.
+	* NEWS: Document this.
+
+Tue Oct  5 01:05:24 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AM_GNU_GETTEXT): Set use-libtool.
+
+Tue Oct  5 00:11:23 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/Makefile.am (libman_la_LIBADD): Include @LTLIBINTL@ rather
+	  than @LIBINTL@.
+	* src/Makefile.am (whatis_LDADD): Include $(LTLIBICONV) rather than
+	  $(LIBICONV).
+
+Mon Oct  4 23:56:36 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* po/POTFILES.in: Add lib/security.c.  Remove src/fake_security.c
+	  and src/security.c.
+	* po/man-db.pot, po/*.po: Update.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+
+Sun Oct  3 23:57:45 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (command_argf): New function.
+	* lib/pipeline.h (command_argf): Add prototype.
+	* src/man.c (add_roff_line_length): Use it, reducing need for
+	  temporary local variables.
+	  (make_roff_command): Likewise.
+
+Sun Oct  3 23:30:06 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (setenv_less): Take a command argument.  Set environment
+	  variables only for that command, not globally.
+	  (make_display_command): Call setenv_less on the command
+	  constructed from pager.
+
+Sun Oct  3 22:34:13 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/pipeline.c (reap_children, pipeline_sigchld,
+	  pipeline_install_sigchld): Move above pipeline_start.
+	  (pipeline_install_sigchld): Make static.  Return immediately if
+	  already installed.
+	  (pipeline_start): Call pipeline_install_sigchld.
+	* lib/pipeline.h (pipeline_start): Document that this installs a
+	  SIGCHLD handler.
+	  (pipeline_install_sigchld): Remove prototype.
+	* src/lexgrog_test.c (main), src/man.c (main), src/manconv_main.c
+	  (main), src/mandb.c (main), src/whatis.c (main),
+	  src/zsoelim_main.c (main): Stop calling pipeline_install_sigchld.
+
+Thu Sep 30 16:01:22 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Convert the French manual pages translation to po4a.
+
+	* man/LINGUAS: Remove fr.
+	* man/LINGUAS.po4a: Add fr.
+	* man/fr/man1, man/fr/man5, man/fr/man8: Remove.
+	* man/fr/Makefile.am (PO4A_LINGUA): Set to yes.
+	  (EXTRA_DIST): Add translator.add.
+	  (man1_MANS): Add man1/manconv.1.
+	* man/po4a/Makefile.am (POFILES): Add po/fr.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add fr.
+	* man/THANKS: Add David Prévot.
+	* .bzrignore: Add man/fr/man1, man/fr/man5, and man/fr/man8.
+
+Thu Sep 30 15:44:46 BST 2010  David Prévot  <david@tilapin.org>
+
+	* po/fr.po: Update from Translation Project.
+	* man/po4a/po/fr.po: New from Translation Project.
+	* man/fr/translator.add: New file.
+
+Mon Sep 27 19:06:10 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Move util to libman.
+
+	* src/util.c: Move to ...
+	* lib/util.c: ... here.
+	* lib/Makefile.am (libman_la_SOURCES): Add util.c.
+	* src/Makefile.am (accessdb_SOURCES, catman_SOURCES,
+	  globbing_SOURCES, lexgrog_SOURCES, man_SOURCES, mandb_SOURCES,
+	  manpath_SOURCES, whatis_SOURCES, zsoelim_SOURCES): Remove util.c.
+	* lib/README: Add util.c.
+
+Mon Sep 27 00:50:37 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib/m4/gnulib-cache.m4: Remove obsolete modules atexit, memcmp,
+	  and strcspn.
+
+Mon Sep 27 00:24:50 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Move security to libman.
+
+	* src/security.c: Move to ...
+	* lib/security.c: ... here.
+	* src/security.h: Move to ...
+	* lib/security.h: ... here.
+	* lib/Makefile.am (libman_la_SOURCES): Add security.c and
+	  security.h.
+	* src/Makefile.am (lexgrog_SOURCES): Remove fake_security.c and
+	  security.h.
+	  (man_SOURCES, mandb_SOURCES): Remove security.c and security.h.
+	* lib/README: Add security.*.
+	* src/lexgrog_test.c: Call init_security, so that we can use generic
+	  security functions rather than fake_security.
+	* src/fake_security.c: Remove.
+
+	* lib/security.c (do_system_drop_privs): Unroll calls to do_system
+	  into calls to pipeline_start and pipeline_wait.
+	* src/whatis.c (use_grep): Likewise.
+	* src/util.c (do_system): Remove.
+	* include/manconfig.h.in (do_system): Remove.
+
+	* src/*.c: Update #include grouping for movements to libman.
+
+Sun Sep 26 23:53:08 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Get the tests working again following the switch to libtool.
+
+	* src/tests/Makefile.am (TESTS_ENVIRONMENT): Remove CLEANPATH.
+	* src/tests/man-1, src/tests/mandb-1, src/tests/mandb-2: Set MANPATH
+	  rather than using run_clean_path; running with a stripped-down
+	  PATH is risky in general and breaks libtool in particular.
+	* src/tests/testlib.sh (run_clean_path): Remove.
+
+	* src/tests/Makefile.am (TESTS_ENVIRONMENT): Add top_builddir.
+	* src/tests/testlib.sh (run): New function.
+	* src/tests/lexgrog-1, src/tests/man-1, src/tests/manconv-1,
+	  src/tests/manconv-2, src/tests/manconv-3, src/tests/mandb-1,
+	  src/tests/mandb-2, src/tests/testlib.sh (accessdb_filter): Use run
+	  when running programs from the build tree.
+
+Sun Sep 26 23:25:31 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Move encodings to libman.
+
+	* src/encodings.c: Move to ...
+	* lib/encodings.c: ... here.
+	* src/encodings.h: Move to ...
+	* lib/encodings.h: ... here.
+	* lib/Makefile.am (libman_la_SOURCES): Add encodings.c and
+	  encodings.h.
+	* src/Makefile.am (lexgrog_SOURCES, man_SOURCES, manconv_SOURCES,
+	  mandb_SOURCES, manpath_SOURCES): Remove encodings.c and
+	  encodings.h.
+	* lib/README: Add encodings.*.
+
+Sun Sep 26 23:15:00 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/encodings.c (struct manconv_codes, manconv_stdin,
+	  free_manconv_codes, add_manconv): Move to ...
+	* src/manconv_client.c: ... here (new file).
+	* src/encodings.h (add_manconv): Move to ...
+	* src/manconv_client.h: ... here (new file).
+	* src/lexgrog.l, src/man.c, src/straycats.c: Include
+	  manconv_client.h.
+	* src/Makefile.am (lexgrog_SOURCES, man_SOURCES, mandb_SOURCES): Add
+	  manconv_client.c and manconv_client.h.
+
+	* src/manp.c: Remove unnecessary inclusion of encodings.h.
+
+Sun Sep 26 22:59:54 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/compression.c: Remove unnecessary inclusion of security.h.
+	* src/ult_src.c: Likewise.
+
+Sun Sep 26 22:47:02 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (mkcatdirs): Move to ...
+	* src/check_mandirs.c (mkcatdirs): ... here, as it's only used by
+	  testmandirs.  Removes dependency of manp.c on security.h.
+	* src/manp.h (mkcatdirs): Remove prototype.
+	* src/Makefile.am (catman_SOURCES, manpath_SOURCES, whatis_SOURCES):
+	  Remove fake_security.c.
+
+Sun Sep 26 22:34:17 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/security.c (remove_with_dropped_privs): Remove; no longer
+	  used.
+	* src/fake_security.c (remove_with_dropped_privs): Likewise.
+	* src/security.h (remove_with_dropped_privs): Likewise.
+
+Sun Sep 26 22:23:26 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/Makefile.am (libman_la_LIBADD): Use $(LTLIBOBJS) rather than
+	  $(LIBOBJS).
+
+Sun Sep 26 22:08:39 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Build libman and libmandb as shared libraries, reducing our
+	installed footprint by about 200K.
+
+	* configure.ac: Add LT_INIT.  Move AC_GNU_SOURCE up to above it.
+	  Remove redundant AC_PROG_RANLIB.
+	* gnulib/m4/gnulib-cache.m4: Enable libtool support.
+	* gnulib/m4/libtool.m4, gnulib/m4/ltoptions.m4,
+	  gnulib/m4/ltsugar.m4, gnulib/m4/ltversion.m4,
+	  gnulib/m4/lt~obsolete.m4, tools/ltmain.sh: New files, created by
+	  libtoolize.
+	* autogen.sh: Export LIBTOOLIZE_OPTIONS=--quiet.
+	* lib/Makefile.am: Switch to libtool.  Add ../gnulib/lib/libgnu.la,
+	  $(LIBCOMPRESS), and @LIBINTL@ to LIBADD.  Install the library in
+	  $(pkglibdir), and instruct libtool to set an RPATH on binaries
+	  built against this library.
+	* libdb/Makefile.am: Switch to libtool.  Add ../lib/libman.la to
+	  LIBADD.  Install the library in $(pkglibdir), and instruct libtool
+	  to set an RPATH on binaries built against this library.
+	* src/Makefile.am (LIBMAN): Reduce to libman.
+	  (LIBMANDB): Reduce to libmandb.
+	  (accessdb_LDADD, catman_LDADD, globbing_LDADD, lexgrog_LDADD,
+	  man_LDADD, manconv_LDADD, mandb_LDADD, manpath_LDADD,
+	  whatis_LDADD, zsoelim_LDADD): Remove dependencies of libman and
+	  libmandb.
+	* .bzrignore: Add **/*.la, **/*.lo, **/.libs, and ./libtool.
+	* NEWS: Document this.
+
+	Avoid symbol clashes between libgnu and libman.
+
+	* lib/hashtable.c (null_hash_free, plain_hash_free, hash_create,
+	  hash_lookup_structure, hash_lookup, hash_install, hash_remove,
+	  hash_free): Rename to ...
+	  (null_hashtable_free, plain_hashtable_free, hashtable_create,
+	  hashtable_lookup_structure, hashtable_lookup, hashtable_install,
+	  hashtable_remove, hashtable_free): ... these.  Update all callers
+	  and prototypes.
+	* lib/hashtable.h (hash_free_ptr): Rename to ...
+	  (hashtable_free_ptr): ... this.  Update all users.
+
+Thu Sep 16 13:53:11 BST 2010  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+
+Tue Aug 17 15:31:38 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/Makefile.am (clean-local): Make sure not to change PO or
+	  POT files when removing generated translations.
+
+Tue Aug 17 15:26:12 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Autoconf 2.67.
+
+Tue Aug 17 14:29:53 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (display_catman): Add iconv to format_cmd before adding
+	  a compressor.
+	* NEWS: Document this.
+
+Tue Aug 17 14:22:06 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (add_output_iconv): Make static.
+
+Tue Jul 20 08:18:41 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20100704.
+
+	* configure.ac (AM_GNU_GETTEXT_VERSION): Upgrade to gettext 0.18.1.
+
+Wed May 19 12:38:31 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/descriptions.c (parse_descriptions): Free record.
+	* src/encodings.c (check_preprocessor_encoding): Free directive.
+	  (manconv_stdin): Free p.
+	* src/lexgrog_test.c (main): Free lg.filters and lg.whatis.
+
+Thu May 13 11:45:02 CEST 2010  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Mon May 10 09:42:41 CEST 2010  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* man/po4a/po/ru.po: Update from Translation Project.
+
+Sun May  9 07:37:14 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.5.8-pre1.
+	* release.sh: Remove man/po4a/po/man-db-manpages.pot before running
+	  'make distcheck', to force it to be regenerated with the current
+	  version number.
+	* man/po4a/Makefile.am: Make po/man-db-manpages.pot depend on
+	  update-po, rather than using dist-hook which is too late.
+	* po/man-db.pot, po/*.po: Update.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+
+Sat May  8 15:39:49 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/filenames.c (filename_info): Explicitly fail if the extension
+	  is zero-length.
+
+Sat May  8 15:35:17 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/filenames.c (filename_info): Allow section and extension to
+	  differ as long as the first character is the same.  (This is my
+	  understanding of what the code was originally meant to do, but it
+	  only worked if the section was exactly one character long.)
+
+Tue Apr 27 11:02:48 BST 2010  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20100424.
+
+Fri Apr  2 20:44:11 BST 2010  Ville Skyttä  <ville.skytta@iki.fi>
+
+	* configure.ac: Only test for lzma if xz is missing.  Add xz to list
+	  of compressors checked when deciding whether to define COMP_CAT or
+	  COMP_SRC.
+	* include/comp_src.h.in (comp_list): If xz is available, use it for
+	  .lzma files in preference.
+
+Fri Apr  2 20:26:41 BST 2010  Ville Skyttä  <ville.skytta@iki.fi>
+
+	* include/comp_src.h.in (comp_list): If compress is not available,
+	  use gzip to handle .Z files.
+
+Mon Mar 29 09:36:00 BST 2010  Clytie Siddall  <clytie@riverland.net.au>
+
+	* po/vi.po: Update from Translation Project.
+
+Wed Mar 24 11:04:46 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Fix build regression when GNU_NROFF is undefined (Savannah bug
+	#29318).
+
+	* src/man.c (add_col): New function, split out from
+	  make_display_command.
+	  (make_roff_command): Reinstate tbl/col logic here, as by the time
+	  we get to make_display_command we've forgotten whether tbl was
+	  used.
+	  (make_display_command): Remove tbl/col logic, useless here.  Use
+	  add_col.
+
+Sun Mar 21 21:59:54 GMT 2010  Tanguy Ortolo  <tanguy+debian@ortolo.eu>
+
+	* src/man.c (main): Try underscore-separated subpages as well as
+	  hyphen-separated ones (Debian bug #574641).
+	* man/man1/man.man1 (Finding manual pages): Document this.
+	* NEWS: Document this.
+
+Wed Mar 17 10:26:44 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import localcharset module.
+	* src/encodings.c (struct charset_entry): Rename locale_charset to
+	  charset_from_locale.  Update all users.
+	  (struct less_charset_entry): Likewise.
+	  (get_locale_charset): Use locale_charset function from Gnulib,
+	  rather than dealing with nl_langinfo and the fallback ourselves.
+	  (get_default_device): Rename locale_charset parameter to
+	  charset_from_locale.
+	  (get_less_charset): Likewise.
+	  (get_jless_charset): Likewise.
+	* src/tests/Makefile.am (TESTS_ENVIRONMENT): Add
+	  @LOCALCHARSET_TESTS_ENVIRONMENT@.
+
+Sat Mar 13 22:15:54 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/check-man: Ignore "table wider than line width" warnings for
+	  Dutch too.
+
+Sat Mar 13 21:33:48 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20100308.
+
+Thu Mar 11 01:26:56 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Add AM_MAINTAINER_MODE.  In the modern world,
+	  timestamps are often just too fragile for those make targets to
+	  work well; use ./autogen.sh instead.
+
+Tue Mar  2 19:11:44 GMT 2010  Darren Salt  <linux@youmustbejoking.demon.co.uk>
+
+	Add support for XZ-compressed manual pages (Debian bug #572233).
+
+	* configure.ac: Check for xz.
+	* include/comp_src.h.in (comp_list): Add xz.
+	* include/manconfig.h.in: Define UNXZ.
+	* NEWS: Document this.
+
+Tue Mar  2 10:04:54 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Fix assertion failure on 'man -l' with an uncompressed page and
+	prefixed input (no-hyphenation, no-justification, or a non-English
+	page).
+
+	* lib/pipeline.c (command_new_passthrough): New function.
+	* lib/pipeline.h (command_new_passthrough): Add prototype.
+	* src/man.c (display): Allow zero-command decompression pipelines
+	  with prefix sequences.  In that case, append a passthrough command
+	  to the prefix sequence, and append the prefix sequence to the
+	  decompression pipeline rather than replacing its first command.
+	* NEWS: Document this.
+
+Tue Mar  2 09:31:36 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/nl.po: New from Translation Project (thanks, Erwin
+	  Poeze).
+	* configure.ac (AC_CONFIG_FILES): Add man/nl/Makefile.
+	* man/LINGUAS.po4a: Add nl.
+	* man/Makefile.am (DIST_SUBDIRS): Add nl.
+	* man/nl/Makefile.am, man/nl/translator.add: New files.
+	* man/po4a/Makefile.am (POFILES): Add po/nl.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add nl.
+	* man/THANKS: Credit Erwin Poeze with man/nl as well as nl.po.
+	* .bzrignore: Add man/nl/man1, man/nl/man5, and man/nl/man8.
+
+Thu Feb 18 01:38:04 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (locale_macros): Explicitly set groff's hyphenation
+	  language, to ensure that it only hyphenates languages it knows
+	  about (Debian bug #570247).
+
 Tue Feb 16 23:11:58 GMT 2010  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.5.7.

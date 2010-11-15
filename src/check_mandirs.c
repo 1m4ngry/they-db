@@ -66,6 +66,7 @@
 
 #include "error.h"
 #include "hashtable.h"
+#include "security.h"
 
 #include "mydbm.h"
 #include "db_storage.h"
@@ -75,7 +76,6 @@
 #include "globbing.h"
 #include "manp.h"
 #include "ult_src.h"
-#include "security.h"
 #include "check_mandirs.h"
 
 int opt_test;		/* don't update db */
@@ -185,7 +185,6 @@ void test_manfile (const char *file, const char *path)
 				return;
 			}
 		}
-		free_mandata_struct (exists);
 	}
 
 	/* Check if it happens to be a symlink/hardlink to something already
@@ -203,14 +202,18 @@ void test_manfile (const char *file, const char *path)
 	if (!ult) {
 		/* already warned about this, don't do so again */
 		debug ("test_manfile(): bad link %s\n", file);
+		if (!opt_test && exists) {
+			dbdelete (manpage_base, exists);
+			free_mandata_struct (exists);
+		}
 		free (manpage);
 		return;
 	}
 
 	if (!whatis_hash)
-		whatis_hash = hash_create (&plain_hash_free);
+		whatis_hash = hashtable_create (&plain_hashtable_free);
 
-	if (hash_lookup (whatis_hash, ult, strlen (ult)) == NULL) {
+	if (hashtable_lookup (whatis_hash, ult, strlen (ult)) == NULL) {
 		if (!STRNEQ (ult, file, len))
 			debug ("\ntest_manfile(): link not in cache:\n"
 			       " source = %s\n"
@@ -228,9 +231,16 @@ void test_manfile (const char *file, const char *path)
 			error (0, 0,
 			       _("warning: %s: bad symlink or ROFF `.so' request"),
 			       file);
+		if (!opt_test && exists) {
+			dbdelete (manpage_base, exists);
+			free_mandata_struct (exists);
+		}
 		free (manpage);
 		return;
 	}
+
+	if (exists)
+		free_mandata_struct (exists);
 
 	pages++;			/* pages seen so far */
 
@@ -247,7 +257,8 @@ void test_manfile (const char *file, const char *path)
 	 * clear the hash between calls.
 	 */
 
-	lg.whatis = xstrdup (hash_lookup (whatis_hash, ult, strlen (ult)));
+	lg.whatis = xstrdup (hashtable_lookup (whatis_hash,
+					       ult, strlen (ult)));
 
 	if (!lg.whatis) {	/* cache miss */
 		/* go get the whatis info in its raw state */
@@ -259,8 +270,8 @@ void test_manfile (const char *file, const char *path)
 		free (file_base);
 		regain_effective_privs ();
 
-		hash_install (whatis_hash, ult, strlen (ult),
-			      xstrdup (lg.whatis));
+		hashtable_install (whatis_hash, ult, strlen (ult),
+				   xstrdup (lg.whatis));
 	}
 
 	debug ("\"%s\"\n", lg.whatis);
@@ -327,6 +338,73 @@ static inline void add_dir_entries (const char *path, char *infile)
 		
 	free (manpage);
 	closedir (dir);
+}
+
+#ifdef SECURE_MAN_UID
+extern uid_t ruid;			/* initial real user id */
+#endif /* SECURE_MAN_UID */
+
+/* create the catman hierarchy if it doesn't exist */
+static void mkcatdirs (const char *mandir, const char *catdir)
+{
+	char *manname, *catname;
+#ifdef SECURE_MAN_UID
+	struct passwd *man_owner = get_man_owner ();
+#endif
+
+	if (catdir) {
+		int oldmask = umask (022);
+		/* first the base catdir */
+		if (is_directory (catdir) != 1) {
+			regain_effective_privs ();
+			if (mkdir (catdir, S_ISGID | 0755) < 0) {
+				if (!quiet)
+					error (0, 0,
+					       _("warning: cannot create catdir %s"),
+					       catdir);
+				debug ("warning: cannot create catdir %s\n",
+				       catdir);
+			} else
+				debug ("created base catdir %s\n", catdir);
+#ifdef SECURE_MAN_UID
+			if (ruid == 0)
+				chown (catdir, man_owner->pw_uid, 0);
+#endif /* SECURE_MAN_UID */
+			drop_effective_privs ();
+		}
+		/* then the hierarchy */
+		catname = appendstr (NULL, catdir, "/cat1", NULL);
+		manname = appendstr (NULL, mandir, "/man1", NULL);
+		if (is_directory (catdir) == 1) {
+			int j;
+			regain_effective_privs ();
+			debug ("creating catdir hierarchy %s	", catdir);
+			for (j = 1; j <= 9; j++) {
+				catname[strlen (catname) - 1] = '0' + j;
+				manname[strlen (manname) - 1] = '0' + j;
+				if ((is_directory (manname) == 1)
+				 && (is_directory (catname) != 1)) {
+					if (mkdir (catname,
+						   S_ISGID | 0755) < 0) {
+						if (!quiet)
+							error (0, 0, _("warning: cannot create catdir %s"), catname);
+						debug ("warning: cannot create catdir %s\n", catname);
+					} else
+						debug (" cat%d", j);
+#ifdef SECURE_MAN_UID
+					if (ruid == 0)
+						chown (catname,
+						       man_owner->pw_uid, 0);
+#endif /* SECURE_MAN_UID */
+				}
+			}
+			debug ("\n");
+			drop_effective_privs ();
+		}
+		free (catname);
+		free (manname);
+		umask (oldmask);
+	}
 }
 
 /*
@@ -645,7 +723,7 @@ pointers_next:
  * out that this is better handled in look_for_file() itself.
  */
 static int count_glob_matches (const char *name, const char *ext,
-			       char **source)
+			       char **source, long db_mtime)
 {
 	char **walk;
 	int count = 0;
@@ -660,6 +738,11 @@ static int count_glob_matches (const char *name, const char *ext,
 		if (stat (*walk, &statbuf) == -1) {
 			debug ("count_glob_matches: excluding %s "
 			       "because stat failed\n", *walk);
+			continue;
+		}
+		if (db_mtime != -1 && statbuf.st_mtime <= db_mtime) {
+			debug ("count_glob_matches: excluding %s, "
+			       "no newer than database\n", *walk);
 			continue;
 		}
 
@@ -685,7 +768,7 @@ static int purge_normal (const char *name, struct mandata *info,
 	/* TODO: On some systems, the cat page extension differs from the
 	 * man page extension, so this may be too strict.
 	 */
-	if (count_glob_matches (name, info->ext, found))
+	if (count_glob_matches (name, info->ext, found, -1))
 		return 0;
 
 	if (!opt_test)
@@ -699,12 +782,12 @@ static int purge_normal (const char *name, struct mandata *info,
 
 /* Decide whether to purge a reference to a WHATIS_MAN or WHATIS_CAT page. */
 static int purge_whatis (const char *path, int cat, const char *name,
-			 struct mandata *info, char **found)
+			 struct mandata *info, char **found, long db_mtime)
 {
 	/* TODO: On some systems, the cat page extension differs from the
 	 * man page extension, so this may be too strict.
 	 */
-	if (count_glob_matches (name, info->ext, found)) {
+	if (count_glob_matches (name, info->ext, found, db_mtime)) {
 		/* If the page exists and didn't beforehand, then presumably
 		 * we're about to rescan, which will replace the WHATIS_MAN
 		 * entry with something better. However, there have been
@@ -745,7 +828,8 @@ static int purge_whatis (const char *path, int cat, const char *name,
 					    info->pointer, cat, LFF_MATCHCASE);
 		debug_level = save_debug;
 
-		if (count_glob_matches (info->pointer, info->ext, real_found))
+		if (count_glob_matches (info->pointer, info->ext, real_found,
+					-1))
 			return 0;
 
 		if (!opt_test)
@@ -804,6 +888,7 @@ int purge_missing (const char *manpath, const char *catpath)
 	struct stat st;
 	datum key;
 	int count = 0;
+	long db_mtime = -1;
 
 	if (stat (database, &st) != 0)
 		/* nothing to purge */
@@ -816,6 +901,29 @@ int purge_missing (const char *manpath, const char *catpath)
 	if (!dbf) {
 		gripe_rwopen_failed ();
 		return 0;
+	}
+
+	/* Extract the database mtime. */
+	key = MYDBM_FIRSTKEY (dbf);
+	while (MYDBM_DPTR (key) != NULL) {
+		datum content, nextkey;
+
+		if (STREQ (MYDBM_DPTR (key), KEY)) {
+			content = MYDBM_FETCH (dbf, key);
+			if (MYDBM_DPTR (content)) {
+				errno = 0;
+				db_mtime = strtol (MYDBM_DPTR (content), NULL,
+						   10);
+				if (errno)
+					db_mtime = -1;
+				MYDBM_FREE (MYDBM_DPTR (key));
+				break;
+			}
+		}
+
+		nextkey = MYDBM_NEXTKEY (dbf, key);
+		MYDBM_FREE (MYDBM_DPTR (key));
+		key = nextkey;
 	}
 
 	key = MYDBM_FIRSTKEY (dbf);
@@ -885,10 +993,10 @@ int purge_missing (const char *manpath, const char *catpath)
 			count += purge_normal (nicekey, &entry, found);
 		else if (entry.id == WHATIS_MAN)
 			count += purge_whatis (manpath, 0, nicekey,
-					       &entry, found);
+					       &entry, found, db_mtime);
 		else	/* entry.id == WHATIS_CAT */
 			count += purge_whatis (catpath, 1, nicekey,
-					       &entry, found);
+					       &entry, found, db_mtime);
 
 		free (nicekey);
 

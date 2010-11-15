@@ -1,7 +1,7 @@
-# Mensajes en español para gnulib 1.0.0.1991.dbebf.
-# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+# Mensajes en español para gnulib 2.0.0.3462.e9796.
+# Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
-# Cristian Othón Martínez Vera <cfuga@itam.mx>, 2003, 2004, 2005, 2006, 2007, 2008, 2009.
+# Cristian Othón Martínez Vera <cfuga@itam.mx>, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010.
 #
 # Los mensajes iniciales de esta traducción provienen de la traducción
 # de mailutils.
@@ -11,12 +11,13 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 1.0.0.1991.dbebf\n"
+"Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-02-16 22:32+0000\n"
-"PO-Revision-Date: 2009-04-17 00:33-0500\n"
+"POT-Creation-Date: 2010-11-15 22:30+0000\n"
+"PO-Revision-Date: 2010-02-23 11:21-0600\n"
 "Last-Translator: Cristian Othón Martínez Vera <cfuga@itam.mx>\n"
 "Language-Team: Spanish <es@li.org>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -77,7 +78,7 @@ msgstr "Pruebe `%s --help' ó `%s --usage' para más información.\n"
 msgid "Report bugs to %s.\n"
 msgstr "Reporte bichos a %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:153
+#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Error desconocido de sistema"
 
@@ -122,57 +123,61 @@ msgstr "%s: Demasiados argumentos\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(ERROR DEL PROGRAMA) ¿¡La opción debería reconocerse!?"
 
-#: gnulib/lib/getopt.c:529 gnulib/lib/getopt.c:545
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: la opción `%s' es ambigua\n"
+msgstr "%s: la opción '%s' es ambigua\n"
 
-#: gnulib/lib/getopt.c:578 gnulib/lib/getopt.c:582
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
-msgstr "%s: la opción `--%s' no admite un argumento\n"
+msgstr "%s: la opción '--%s' no admite un argumento\n"
 
-#: gnulib/lib/getopt.c:591 gnulib/lib/getopt.c:596
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
-msgstr "%s: la opción `%c%s' no admite un argumento\n"
+msgstr "%s: la opción '%c%s' no admite un argumento\n"
 
-#: gnulib/lib/getopt.c:639 gnulib/lib/getopt.c:658 gnulib/lib/getopt.c:961
-#: gnulib/lib/getopt.c:980
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
 #, fuzzy, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr "%s: la opción `%s' requiere de un argumento\n"
+msgid "%s: option '--%s' requires an argument\n"
+msgstr "%s: la opción '%s' requiere de un argumento\n"
 
-#: gnulib/lib/getopt.c:696 gnulib/lib/getopt.c:699
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#, c-format
 msgid "%s: unrecognized option '--%s'\n"
-msgstr "%s: opción `--%s' no reconocida\n"
+msgstr "%s: no se reconoce la opción '--%s'\n"
 
-#: gnulib/lib/getopt.c:707 gnulib/lib/getopt.c:710
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#, c-format
 msgid "%s: unrecognized option '%c%s'\n"
-msgstr "%s: opción `%c%s' no reconocida\n"
+msgstr "%s: no se reconoce la opción '%c%s'\n"
 
-#: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#, c-format
 msgid "%s: invalid option -- '%c'\n"
-msgstr "%s: opción inválida -- %c\n"
+msgstr "%s: opción inválida -- '%c'\n"
 
-#: gnulib/lib/getopt.c:812 gnulib/lib/getopt.c:829 gnulib/lib/getopt.c:1032
-#: gnulib/lib/getopt.c:1050
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
+#: gnulib/lib/getopt.c:1053
+#, c-format
 msgid "%s: option requires an argument -- '%c'\n"
-msgstr "%s: la opción requiere de un argumento -- %c\n"
+msgstr "%s: la opción requiere de un argumento -- '%c'\n"
 
-#: gnulib/lib/getopt.c:882 gnulib/lib/getopt.c:898
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
-msgstr "%s: la opción `-W %s' es ambigua\n"
+msgstr "%s: la opción '-W %s' es ambigua\n"
 
-#: gnulib/lib/getopt.c:922 gnulib/lib/getopt.c:940
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
-msgstr "%s: la opción `-W %s' no admite un argumento\n"
+msgstr "%s: la opción '-W %s' no admite un argumento\n"
+
+#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: la opción '%s' requiere de un argumento\n"
 
 #: gnulib/lib/openat-die.c:34
 #, c-format
@@ -258,141 +263,139 @@ msgstr "No hay una expresión regular previa"
 
 #: gnulib/lib/siglist.h:29
 msgid "Hangup"
-msgstr ""
+msgstr "Colgar"
 
 #: gnulib/lib/siglist.h:32
 msgid "Interrupt"
-msgstr ""
+msgstr "Interrumpir"
 
 #: gnulib/lib/siglist.h:35
 msgid "Quit"
-msgstr ""
+msgstr "Salir"
 
 #: gnulib/lib/siglist.h:38
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Instrucción ilegal"
 
 #: gnulib/lib/siglist.h:41
 msgid "Trace/breakpoint trap"
-msgstr ""
+msgstr "Captura de rastreo/punto de quiebre"
 
 #: gnulib/lib/siglist.h:44
 msgid "Aborted"
-msgstr ""
+msgstr "Abortar"
 
 #: gnulib/lib/siglist.h:47
 msgid "Floating point exception"
-msgstr ""
+msgstr "Excepción de coma flotante"
 
 #: gnulib/lib/siglist.h:50
 msgid "Killed"
-msgstr ""
+msgstr "Matar"
 
 #: gnulib/lib/siglist.h:53
-#, fuzzy
 msgid "Bus error"
-msgstr "Error del sistema"
+msgstr "Error de bus"
 
 #: gnulib/lib/siglist.h:56
 msgid "Segmentation fault"
-msgstr ""
+msgstr "Falta de segmentación"
 
 #: gnulib/lib/siglist.h:59
 msgid "Broken pipe"
-msgstr ""
+msgstr "Tubería rota"
 
 #: gnulib/lib/siglist.h:62
 msgid "Alarm clock"
-msgstr ""
+msgstr "Reloj de alarma"
 
 #: gnulib/lib/siglist.h:65
 msgid "Terminated"
-msgstr ""
+msgstr "Terminar"
 
 #: gnulib/lib/siglist.h:68
 msgid "Urgent I/O condition"
-msgstr ""
+msgstr "Condición de E/S urgente"
 
 #: gnulib/lib/siglist.h:71
 msgid "Stopped (signal)"
-msgstr ""
+msgstr "Detener (señal)"
 
 #: gnulib/lib/siglist.h:74
 msgid "Stopped"
-msgstr ""
+msgstr "Detener"
 
 #: gnulib/lib/siglist.h:77
 msgid "Continued"
-msgstr ""
+msgstr "Continuar"
 
 #: gnulib/lib/siglist.h:80
 msgid "Child exited"
-msgstr ""
+msgstr "Salió el hijo"
 
 #: gnulib/lib/siglist.h:83
 msgid "Stopped (tty input)"
-msgstr ""
+msgstr "Detener (entrada de tty)"
 
 #: gnulib/lib/siglist.h:86
 msgid "Stopped (tty output)"
-msgstr ""
+msgstr "Detener (salida de tty)"
 
 #: gnulib/lib/siglist.h:89
 msgid "I/O possible"
-msgstr ""
+msgstr "Posible E/S"
 
 #: gnulib/lib/siglist.h:92
 msgid "CPU time limit exceeded"
-msgstr ""
+msgstr "Excede el límite de tiempo de CPU"
 
 #: gnulib/lib/siglist.h:95
 msgid "File size limit exceeded"
-msgstr ""
+msgstr "Excede el límite de tamaño de fichero"
 
 #: gnulib/lib/siglist.h:98
 msgid "Virtual timer expired"
-msgstr ""
+msgstr "Expira el temporizador virtual"
 
 #: gnulib/lib/siglist.h:101
 msgid "Profiling timer expired"
-msgstr ""
+msgstr "Expira el temporizador de análisis de perfil"
 
 #: gnulib/lib/siglist.h:104
 msgid "Window changed"
-msgstr ""
+msgstr "Cambio de ventana"
 
 #: gnulib/lib/siglist.h:107
 msgid "User defined signal 1"
-msgstr ""
+msgstr "Señal 1 definida por el usuario"
 
 #: gnulib/lib/siglist.h:110
 msgid "User defined signal 2"
-msgstr ""
+msgstr "Señal 2 definida por el usuario"
 
 #: gnulib/lib/siglist.h:115
 msgid "EMT trap"
-msgstr ""
+msgstr "Captura EMT"
 
 #: gnulib/lib/siglist.h:118
 msgid "Bad system call"
-msgstr ""
+msgstr "Llamada al sistema errónea"
 
 #: gnulib/lib/siglist.h:121
 msgid "Stack fault"
-msgstr ""
+msgstr "Falta en la pila"
 
 #: gnulib/lib/siglist.h:124
 msgid "Information request"
-msgstr ""
+msgstr "Petición de información"
 
 #: gnulib/lib/siglist.h:126
-#, fuzzy
 msgid "Power failure"
-msgstr "fichero extraño"
+msgstr "Falla de energía"
 
 #: gnulib/lib/siglist.h:129
 msgid "Resource lost"
-msgstr ""
+msgstr "Recurso perdido"
 
 #: gnulib/lib/strsignal.c:110
 #, c-format
@@ -441,6 +444,9 @@ msgstr "memoria agotada"
 
 #~ msgid "write error"
 #~ msgstr "error de escritura"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "se conservan los permisos de %s"
 
 #~ msgid "error while opening \"%s\" for reading"
 #~ msgstr "error al abrir \"%s\" para lectura"
@@ -505,6 +511,9 @@ msgstr "memoria agotada"
 #~ msgid "typed memory object"
 #~ msgstr "objeto de memoria con tipo"
 
+#~ msgid "weird file"
+#~ msgstr "fichero extraño"
+
 #~ msgid "Address family for hostname not supported"
 #~ msgstr "No se admiten las familias de direcciones para hostname"
 
@@ -535,6 +544,9 @@ msgstr "memoria agotada"
 #~ msgid "ai_socktype not supported"
 #~ msgstr "no se admite ai_socktype"
 
+#~ msgid "System error"
+#~ msgstr "Error del sistema"
+
 #~ msgid "Argument buffer too small"
 #~ msgstr "Almacenamiento temporal de argumentos demasiado pequeño"
 
@@ -559,12 +571,6 @@ msgstr "memoria agotada"
 #~ msgid "Unknown error"
 #~ msgstr "Error desconocido"
 
-#~ msgid "%s: illegal option -- %c\n"
-#~ msgstr "%s: opción ilegal -- %c\n"
-
-#~ msgid "%s subprocess I/O error"
-#~ msgstr "%s: error de E/S del subproceso"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "argumento source_version inválido para compile_java_class"
 
@@ -587,8 +593,8 @@ msgstr "memoria agotada"
 #~ "No se encontró una máquina virtual de Java, pruebe instalando gij o "
 #~ "definiendo $JAVA"
 
-#~ msgid "cannot create pipe"
-#~ msgstr "no se puede una tubería"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "%s: error de E/S del subproceso"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "no se pueden cambiar los permisos de %s"
@@ -598,6 +604,33 @@ msgstr "memoria agotada"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "Falló al abrir /dev/zero para lectura"
+
+#~ msgid "creation of reading thread failed"
+#~ msgstr "falló la creación del hilo de lectura"
+
+#~ msgid "cannot set up nonblocking I/O to %s subprocess"
+#~ msgstr "no se puede establecer E/S sin bloqueo para el subproceso %s"
+
+#~ msgid "communication with %s subprocess failed"
+#~ msgstr "falló la comunicación con el subproceso %s"
+
+#~ msgid "write to %s subprocess failed"
+#~ msgstr "falló la escritura al subproceso %s"
+
+#~ msgid "read from %s subprocess failed"
+#~ msgstr "falló la lectura del subproceso %s"
+
+#~ msgid "subprocess %s terminated with exit code %d"
+#~ msgstr "el subproceso %s terminó con el código de salida %d"
+
+#~ msgid "creation of threads failed"
+#~ msgstr "falló la creación de hilos"
+
+#~ msgid "%s subprocess terminated with exit code %d"
+#~ msgstr "subproceso %s terminado con el código de salida %d"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "no se puede una tubería"
 
 # Vamos a probar con el símbolo de cita tradicional en español,
 # a ver qué tal queda la cosa.
@@ -614,6 +647,12 @@ msgstr "memoria agotada"
 # Y esto es para responder "no" cuando nos pregunte.
 #~ msgid "^[nN]"
 #~ msgstr "^[nN]"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "se cambian los permisos de %s"
+
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "error al escribir a una tubería o socket cerrados"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "la función iconv no es utilizable"
@@ -670,21 +709,11 @@ msgstr "memoria agotada"
 #~ msgid "unable to display error message"
 #~ msgstr "no se puede mostrar el mensaje de error"
 
-#~ msgid "preserving permissions for %s"
-#~ msgstr "se conservan los permisos de %s"
+#~ msgid "Packaged by %s (%s)\n"
+#~ msgstr "Empaquetado por %s (%s)\n"
 
-#~ msgid "string comparison failed"
-#~ msgstr "la comparación de cadenas falló"
-
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr ""
-#~ "Establezca LC_ALL='C' para solucionar este problema de forma temporal."
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "Las cadenas comparadas eran %s y %s."
-
-#~ msgid "cannot perform formatted output"
-#~ msgstr "no se puede mostrar la salida con formato"
+#~ msgid "Packaged by %s\n"
+#~ msgstr "Empaquetado por %s\n"
 
 #~ msgid "(C)"
 #~ msgstr "(C)"
@@ -770,17 +799,64 @@ msgstr "memoria agotada"
 
 #~ msgid ""
 #~ "\n"
-#~ "Report bugs to <%s>.\n"
+#~ "Report bugs to: %s\n"
 #~ msgstr ""
 #~ "\n"
-#~ "Reporte bichos a <%s>.\n"
+#~ "Reporte bichos a: %s.\n"
+#~ "Reporte errores de traducción a: es@li.org\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
-#~ msgstr "Página web de %s: <http://www.gnu.org/software/%s/>.\n"
+#~ msgid "Report %s bugs to: %s\n"
+#~ msgstr "Reporte bichos de %s a: %s\n"
 
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
+#~ msgid "%s home page: <%s>\n"
+#~ msgstr "Página web de %s: <%s>\n"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
+#~ msgstr "Página web de %s: <http://www.gnu.org/software/%s/>\n"
+
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
 #~ msgstr ""
-#~ "Ayuda general para usar software de GNU: <http://www.gnu.org/gethelp/>.\n"
+#~ "Ayuda general para usar software de GNU: <http://www.gnu.org/gethelp/>\n"
+
+#~ msgid "_open_osfhandle failed"
+#~ msgstr "falló _open_osfhandle"
+
+#~ msgid "cannot restore fd %d: dup2 failed"
+#~ msgstr "no se puede restaurar el df %d: falló dup2"
+
+#~ msgid "%s subprocess"
+#~ msgstr "subproceso %s"
+
+#~ msgid "%s subprocess got fatal signal %d"
+#~ msgstr "el subproceso %s recibió la señal fatal %d"
+
+#~ msgid "stdin"
+#~ msgstr "entrada estándard"
+
+#~ msgid "stdout"
+#~ msgstr "salida estándard"
+
+#~ msgid "stderr"
+#~ msgstr "salida de error estándard"
+
+#~ msgid "unknown stream"
+#~ msgstr "flujo desconocido"
+
+#~ msgid "failed to reopen %s with mode %s"
+#~ msgstr "falló al reabrir %s con modo %s"
+
+#~ msgid "string comparison failed"
+#~ msgstr "la comparación de cadenas falló"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr ""
+#~ "Establezca LC_ALL='C' para solucionar este problema de forma temporal."
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "Las cadenas comparadas eran %s y %s."
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "no se puede mostrar la salida con formato"
 
 #~ msgid "invalid %s%s argument `%s'"
 #~ msgstr "argumento `$3%s' inválido para $1%s$2%s"
@@ -791,17 +867,15 @@ msgstr "memoria agotada"
 #~ msgid "%s%s argument `%s' too large"
 #~ msgstr "el argumento `$3%s' es demasiado grande para $1%s$2%s"
 
-#~ msgid "setting permissions for %s"
-#~ msgstr "se cambian los permisos de %s"
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s: opción ilegal -- %c\n"
 
-#~ msgid "%s subprocess"
-#~ msgstr "%s: subproceso"
-
-#~ msgid "%s subprocess got fatal signal %d"
-#~ msgstr "el subproceso %s recibió la señal fatal %d"
-
-#~ msgid "error writing to a closed pipe or socket"
-#~ msgstr "error al escribir a una tubería o socket cerrados"
+#~ msgid ""
+#~ "\n"
+#~ "Report bugs to <%s>.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Reporte bichos a <%s>.\n"
 
 #~ msgid "block size"
 #~ msgstr "tamaño del bloque"

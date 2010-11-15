@@ -1,3 +1,50 @@
+man-db 2.5.8 (15 November 2010)
+===============================
+
+Major changes since man-db 2.5.7:
+
+	Fixes:
+	------
+
+	o Fix assertion failure on 'man -l' with an uncompressed page and
+	  any of --no-hyphenation, --no-justification, or a non-English
+	  page.
+
+	o 2.5.7 introduced a regression when running catman in some locales,
+	  most notably in the C locale: while converting the output to
+	  UTF-8, iconv was run after the compressor rather than before it.
+	  This release fixes that.
+
+	Improvements:
+	-------------
+
+	o Add support for XZ-compressed manual pages, thanks to Darren Salt.
+
+	o Try underscore-separated subpages as well as hyphen-separated
+	  ones, thanks to Tanguy Ortolo.
+
+	o Build libman and libmandb as shared libraries, reducing installed
+	  footprint by about 200K (at least on GNU/Linux).
+
+	o libintl is no longer shipped with man-db.  If your system does not
+	  already have GNU libintl installed and you want man-db's messages
+	  to be translated, then please install GNU libintl separately
+	  (http://www.gnu.org/software/gettext/).
+
+	o Warnings about unrecognised locales are now suppressed if the
+	  DPKG_RUNNING_VERSION environment variable is set (i.e. man-db is
+	  running within a Debian package's maintainer script), since the
+	  system locales are often out of sync with the C library in that
+	  context.  Thanks to the Debian Perl maintainers for the idea.
+
+	o Allow building with an external libpipeline
+	  (http://libpipeline.nongnu.org/), which has been split out from
+	  man-db.  This is a transitional measure: a future version of
+	  man-db will stop shipping its own copy of libpipeline.
+
+	o mandb should no longer repeatedly rescan manual page hierarchies
+	  when a whatis entry turns into a broken link.
+
 man-db 2.5.7 (16 February 2010)
 ===============================
 

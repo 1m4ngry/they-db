@@ -18,12 +18,14 @@
 ## along with man-db; if not, write to the Free Software Foundation,
 ## Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-TESTS_ENVIRONMENT = PATH=..:$$PATH CLEANPATH=.. DBTYPE=$(DBTYPE) $(SHELL)
+TESTS_ENVIRONMENT = PATH=..:$$PATH DBTYPE=$(DBTYPE) \
+		    top_builddir=$(top_builddir) \
+		    @LOCALCHARSET_TESTS_ENVIRONMENT@ $(SHELL)
 ALL_TESTS = \
 	lexgrog-1 \
 	man-1 \
 	manconv-1 manconv-2 manconv-3 \
-	mandb-1 mandb-2
+	mandb-1 mandb-2 mandb-3
 if !CROSS_COMPILING
 TESTS = $(ALL_TESTS)
 endif

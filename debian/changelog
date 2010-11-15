@@ -1,3 +1,26 @@
+man-db (2.5.8-1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - Explicitly set groff's hyphenation language, to ensure that it only
+      hyphenates languages it knows about (closes: #570247).
+    - Add support for XZ-compressed manual pages, thanks to Darren Salt
+      (closes: #572233).
+    - Try underscore-separated subpages as well as hyphen-separated ones,
+      thanks to Tanguy Ortolo (closes: #574641).
+    - Build libman and libmandb as shared libraries, considerably reducing
+      executable size.
+    - Warnings about unrecognised locales are now suppressed if the
+      DPKG_RUNNING_VERSION environment variable is set (i.e. man-db is
+      running within a Debian package's maintainer script), since the system
+      locales are often out of sync with the C library in that context.
+      Thanks to the Debian Perl maintainers for the idea.
+    - In catman mode, never try to guess whether a page argument is a
+      section, as it's too easy to get this wrong (LP: #664211).
+    - mandb should no longer repeatedly rescan manual page hierarchies when
+      a whatis entry turns into a broken link.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 15 Nov 2010 23:53:39 +0000
+
 man-db (2.5.7-6) unstable; urgency=low
 
   * Move po/fr.gmo aside during build so that it gets regenerated based on

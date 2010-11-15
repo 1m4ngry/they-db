@@ -19,7 +19,12 @@ fi
 [ -x "$top_builddir/src/man" ] || exit 77
 
 code=0
-errors="$(LC_ALL=C MANWIDTH=80 MAN_KEEP_FORMATTING=1 "$top_builddir/src/man" --warnings -E UTF-8 -l "$1" 2>&1 >/dev/null)" || code=$?
+errors="$(LC_ALL=C MANWIDTH=80 MAN_KEEP_FORMATTING=1 "$top_builddir/libtool" \
+		--mode=execute \
+		-dlopen "$top_builddir/lib/.libs/libman.la" \
+		-dlopen "$top_builddir/libdb/.libs/libmandb.la" \
+		"$top_builddir/src/man" --warnings -E UTF-8 -l "$1" \
+		2>&1 >/dev/null)" || code=$?
 
 # Ignore wrapping failures for CJK manual pages; this should go away once
 # groff supports these natively.
@@ -31,7 +36,7 @@ errors="$(echo "$errors" | $EGREP -v "(cannot adjust line|can't break line)")" |
 # Ignore tbl warnings from groff >= 1.20 for now. These parts of our manual
 # pages should probably be rewritten without tbl.
 case $LINGUA in
-	de|id|it|pl|ru)
+	de|id|it|nl|pl|ru)
 		errors="$(echo "$errors" | $EGREP -v 'table wider than line width')" || true
 		;;
 esac

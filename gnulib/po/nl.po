@@ -1,22 +1,26 @@
 # Dutch translations for gnulib.
-# Copyright (C) 2009 Free Software Foundation, Inc.
+# Copyright (C) 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 #
 # Erick Branderhorst <branderh@debian.org>, 1996.
 # Ivo Timmermans <ivo@o2w.nl>, 2000.
 # Freek de Kruijf <f.de.kruijf@hetnet.nl>, 2004, 2005.
-# Benno Schulenberg <benno@vertaalt.nl>, 2007, 2008.
+# Erwin Poeze <erwin.poeze@gmail.com>, 2009, 2010.
+# Benno Schulenberg <benno@vertaalt.nl>, 2007, 2008, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib-1.0.0.1991.dbebf\n"
+"Project-Id-Version: gnulib-2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-02-16 22:32+0000\n"
-"PO-Revision-Date: 2009-05-10 16:23+0100\n"
-"Last-Translator: Erwin Poeze <erwin.poeze@gmail.com>\n"
+"POT-Creation-Date: 2010-11-15 22:30+0000\n"
+"PO-Revision-Date: 2010-04-04 12:18+0200\n"
+"Last-Translator: Benno Schulenberg <benno@vertaalt.nl>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: gnulib/lib/argp-help.c:147
 #, c-format
@@ -75,7 +79,7 @@ msgstr ""
 "Rapporteer gebreken in het programma aan %s;\n"
 "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:153
+#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Onbekende systeemfout"
 
@@ -120,57 +124,61 @@ msgstr "%s: Te veel argumenten\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "**Interne programmafout**: optie had herkend moeten worden!?"
 
-#: gnulib/lib/getopt.c:529 gnulib/lib/getopt.c:545
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#, c-format
 msgid "%s: option '%s' is ambiguous\n"
 msgstr "%s: optie '%s' is niet eenduidig\n"
 
-#: gnulib/lib/getopt.c:578 gnulib/lib/getopt.c:582
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr "%s: optie '--%s' staat geen argument toe\n"
 
-#: gnulib/lib/getopt.c:591 gnulib/lib/getopt.c:596
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr "%s: optie '%c%s' staat geen argument toe\n"
 
-#: gnulib/lib/getopt.c:639 gnulib/lib/getopt.c:658 gnulib/lib/getopt.c:961
-#: gnulib/lib/getopt.c:980
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
 #, fuzzy, c-format
-msgid "%s: option '%s' requires an argument\n"
+msgid "%s: option '--%s' requires an argument\n"
 msgstr "%s: optie '%s' vereist een argument\n"
 
-#: gnulib/lib/getopt.c:696 gnulib/lib/getopt.c:699
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#, c-format
 msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: onbekende optie '--%s'\n"
 
-#: gnulib/lib/getopt.c:707 gnulib/lib/getopt.c:710
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#, c-format
 msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: onbekende optie '%c%s'\n"
 
-#: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#, c-format
 msgid "%s: invalid option -- '%c'\n"
-msgstr "%s: ongeldige optie -- %c\n"
+msgstr "%s: ongeldige optie -- '%c'\n"
 
-#: gnulib/lib/getopt.c:812 gnulib/lib/getopt.c:829 gnulib/lib/getopt.c:1032
-#: gnulib/lib/getopt.c:1050
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
+#: gnulib/lib/getopt.c:1053
+#, c-format
 msgid "%s: option requires an argument -- '%c'\n"
-msgstr "%s: optie vereist een argument -- %c\n"
+msgstr "%s: optie vereist een argument -- '%c'\n"
 
-#: gnulib/lib/getopt.c:882 gnulib/lib/getopt.c:898
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: optie '-W %s' is niet eenduidig\n"
 
-#: gnulib/lib/getopt.c:922 gnulib/lib/getopt.c:940
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: optie '-W %s' staat geen argument toe\n"
+
+#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: optie '%s' vereist een argument\n"
 
 #: gnulib/lib/openat-die.c:34
 #, c-format
@@ -254,148 +262,148 @@ msgstr "Ongepaarde ) of \\)"
 msgid "No previous regular expression"
 msgstr "Geen eerdere reguliere expressie"
 
+# Vroeger ging dit over het afsluiten van een modemverbinding,
+# tegenwoordig over het afsluiten van een pseudoterminal.
 #: gnulib/lib/siglist.h:29
 msgid "Hangup"
-msgstr ""
+msgstr "Opgehangen"
 
 #: gnulib/lib/siglist.h:32
 msgid "Interrupt"
-msgstr ""
+msgstr "Onderbroken"
 
 #: gnulib/lib/siglist.h:35
 msgid "Quit"
-msgstr ""
+msgstr "Afgesloten"
 
 #: gnulib/lib/siglist.h:38
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Ongeldige instructie"
 
 #: gnulib/lib/siglist.h:41
 msgid "Trace/breakpoint trap"
-msgstr ""
+msgstr "Traceer/breekpunt-instructie"
 
 #: gnulib/lib/siglist.h:44
 msgid "Aborted"
-msgstr ""
+msgstr "Afgebroken"
 
 #: gnulib/lib/siglist.h:47
 msgid "Floating point exception"
-msgstr ""
+msgstr "Drijvendekomma-berekeningsfout"
 
 #: gnulib/lib/siglist.h:50
 msgid "Killed"
-msgstr ""
+msgstr "Geëlimineerd"
 
 #: gnulib/lib/siglist.h:53
-#, fuzzy
 msgid "Bus error"
-msgstr "Systeemfout"
+msgstr "Busfout"
 
 #: gnulib/lib/siglist.h:56
 msgid "Segmentation fault"
-msgstr ""
+msgstr "Segmentatiefout"
 
 #: gnulib/lib/siglist.h:59
 msgid "Broken pipe"
-msgstr ""
+msgstr "Gebroken pijp"
 
 #: gnulib/lib/siglist.h:62
 msgid "Alarm clock"
-msgstr ""
+msgstr "Wekker"
 
 #: gnulib/lib/siglist.h:65
 msgid "Terminated"
-msgstr ""
+msgstr "Beëindigd"
 
 #: gnulib/lib/siglist.h:68
 msgid "Urgent I/O condition"
-msgstr ""
+msgstr "Urgente in-/uitvoertoestand"
 
 #: gnulib/lib/siglist.h:71
 msgid "Stopped (signal)"
-msgstr ""
+msgstr "Gepauzeerd (signaal)"
 
 #: gnulib/lib/siglist.h:74
 msgid "Stopped"
-msgstr ""
+msgstr "Gepauzeerd"
 
 #: gnulib/lib/siglist.h:77
 msgid "Continued"
-msgstr ""
+msgstr "Doorgegaan"
 
 #: gnulib/lib/siglist.h:80
 msgid "Child exited"
-msgstr ""
+msgstr "Dochter is afgesloten"
 
 #: gnulib/lib/siglist.h:83
 msgid "Stopped (tty input)"
-msgstr ""
+msgstr "Gepauzeerd (terminalinvoer)"
 
 #: gnulib/lib/siglist.h:86
 msgid "Stopped (tty output)"
-msgstr ""
+msgstr "Gepauzeerd (terminaluitvoer)"
 
 #: gnulib/lib/siglist.h:89
 msgid "I/O possible"
-msgstr ""
+msgstr "In-/uitvoer is mogelijk"
 
 #: gnulib/lib/siglist.h:92
 msgid "CPU time limit exceeded"
-msgstr ""
+msgstr "Limiet op processortijd is overschreden"
 
 #: gnulib/lib/siglist.h:95
 msgid "File size limit exceeded"
-msgstr ""
+msgstr "Limiet op bestandsgrootte is overschreden"
 
 #: gnulib/lib/siglist.h:98
 msgid "Virtual timer expired"
-msgstr ""
+msgstr "Virtuele tijdopnemer is verlopen"
 
 #: gnulib/lib/siglist.h:101
 msgid "Profiling timer expired"
-msgstr ""
+msgstr "Tijdopnemer voor analyse is verlopen"
 
 #: gnulib/lib/siglist.h:104
 msgid "Window changed"
-msgstr ""
+msgstr "Venster is veranderd"
 
 #: gnulib/lib/siglist.h:107
 msgid "User defined signal 1"
-msgstr ""
+msgstr "Gebruikergedefinieerd signaal 1"
 
 #: gnulib/lib/siglist.h:110
 msgid "User defined signal 2"
-msgstr ""
+msgstr "Gebruikergedefinieerd signaal 2"
 
 #: gnulib/lib/siglist.h:115
 msgid "EMT trap"
-msgstr ""
+msgstr "EMT-instructie"
 
 #: gnulib/lib/siglist.h:118
 msgid "Bad system call"
-msgstr ""
+msgstr "Onjuiste systeemaanroep"
 
 #: gnulib/lib/siglist.h:121
 msgid "Stack fault"
-msgstr ""
+msgstr "Stack-fout"
 
 #: gnulib/lib/siglist.h:124
 msgid "Information request"
-msgstr ""
+msgstr "Verzoek om informatie"
 
 #: gnulib/lib/siglist.h:126
-#, fuzzy
 msgid "Power failure"
-msgstr "merkwaardig bestand"
+msgstr "Stroomstoring"
 
 #: gnulib/lib/siglist.h:129
 msgid "Resource lost"
-msgstr ""
+msgstr "Hulpbron verloren"
 
 #: gnulib/lib/strsignal.c:110
 #, c-format
 msgid "Real-time signal %d"
-msgstr "Direct signaal %d"
+msgstr "Realtime-signaal %d"
 
 #: gnulib/lib/strsignal.c:114
 #, c-format
@@ -422,22 +430,25 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgstr "stack-overloop"
 
 #~ msgid "cannot find a temporary directory, try setting $TMPDIR"
-#~ msgstr "Kan geen tijdelijke map vinden, probeer $TMPDIR in te stellen"
+#~ msgstr "kan geen tijdelijke map vinden; zet $TMPDIR"
 
 #~ msgid "cannot create a temporary directory using template \"%s\""
-#~ msgstr "kan tijdelijke map niet aanmaken met sjabloon \"%s\""
+#~ msgstr "kan met sjabloon '%s' geen tijdelijke map aanmaken"
 
 #~ msgid "cannot remove temporary file %s"
-#~ msgstr "kan tijdelijk bestand %s niet verwijderen"
+#~ msgstr "kan tijdelijk bestand '%s' niet verwijderen"
 
 #~ msgid "cannot remove temporary directory %s"
-#~ msgstr "kan tijdelijke map %s niet verwijderen"
+#~ msgstr "kan tijdelijke map '%s' niet verwijderen"
 
 #~ msgid "error closing file"
-#~ msgstr "fout bij afsluiten van bestand"
+#~ msgstr "fout bij sluiten van bestand"
 
 #~ msgid "write error"
 #~ msgstr "schrijffout"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "toegangsrechten van '%s' worden behouden"
 
 #~ msgid "error while opening \"%s\" for reading"
 #~ msgstr "fout bij openen van '%s' voor lezen"
@@ -467,7 +478,7 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgstr "subproces %s is mislukt"
 
 #~ msgid "regular empty file"
-#~ msgstr "normaal, leeg bestand"
+#~ msgstr "leeg normaal bestand"
 
 #~ msgid "regular file"
 #~ msgstr "normaal bestand"
@@ -502,17 +513,20 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "typed memory object"
 #~ msgstr "zelfstandig geheugenobject"
 
+#~ msgid "weird file"
+#~ msgstr "merkwaardig bestand"
+
 #~ msgid "Address family for hostname not supported"
 #~ msgstr "Adresfamilie voor hostnaam wordt niet ondersteund"
 
 #~ msgid "Temporary failure in name resolution"
-#~ msgstr "Tijdelijke storing in naamsherleiding"
+#~ msgstr "Tijdelijk probleem in naamsherleiding"
 
 #~ msgid "Bad value for ai_flags"
 #~ msgstr "Ongeldige waarde voor 'ai_flags'"
 
 #~ msgid "Non-recoverable failure in name resolution"
-#~ msgstr "Onherstelbare mislukking in naamsherleiding"
+#~ msgstr "Onherstelbaar probleem in naamsherleiding"
 
 #~ msgid "ai_family not supported"
 #~ msgstr "'ai_family' wordt niet ondersteund"
@@ -531,6 +545,9 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "ai_socktype not supported"
 #~ msgstr "'ai_socktype' wordt niet ondersteund"
+
+#~ msgid "System error"
+#~ msgstr "Systeemfout"
 
 #~ msgid "Argument buffer too small"
 #~ msgstr "Argumentenbuffer is te klein"
@@ -556,12 +573,6 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "Unknown error"
 #~ msgstr "Onbekende fout"
 
-#~ msgid "%s: illegal option -- %c\n"
-#~ msgstr "%s: ongeldige optie -- %c\n"
-
-#~ msgid "%s subprocess I/O error"
-#~ msgstr "in- of uitoverfout subproces %s"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "ongeldige waarde voor 'source_version' in compile_java_class()"
 
@@ -581,8 +592,8 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgstr ""
 #~ "Virtuele Java-machine is niet gevonden; installeer 'gcj' of zet $JAVA"
 
-#~ msgid "cannot create pipe"
-#~ msgstr "kan geen pijp aanmaken"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "In-/uitvoerfout in subproces %s"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "kan de toegangsrechten van %s niet veranderen"
@@ -592,6 +603,33 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "Openen van /dev/zero voor lezen is mislukt"
+
+#~ msgid "creation of reading thread failed"
+#~ msgstr "Het aanmaken van een lees-thread is mislukt"
+
+#~ msgid "cannot set up nonblocking I/O to %s subprocess"
+#~ msgstr "kan geen niet-blokkerende in-/uitvoer instellen naar subproces %s"
+
+#~ msgid "communication with %s subprocess failed"
+#~ msgstr "communicatie met subproces %s is mislukt"
+
+#~ msgid "write to %s subprocess failed"
+#~ msgstr "schrijven naar subproces %s is mislukt"
+
+#~ msgid "read from %s subprocess failed"
+#~ msgstr "lezen uit subproces %s is mislukt"
+
+#~ msgid "subprocess %s terminated with exit code %d"
+#~ msgstr "subproces %s is geëindigd met afsluitwaarde %d"
+
+#~ msgid "creation of threads failed"
+#~ msgstr "aanmaken van threads is mislukt"
+
+#~ msgid "%s subprocess terminated with exit code %d"
+#~ msgstr "subproces %s is geëindigd met afsluitwaarde %d"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "kan geen pijp aanmaken"
 
 #~ msgid "`"
 #~ msgstr "‘"
@@ -604,6 +642,12 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "^[nN]"
 #~ msgstr "^[nN]"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "toegangsrechten van %s worden ingesteld"
+
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "fouten bij het schrijven naar een afgesloten 'pipe' of 'socket'"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "de functie iconv() is onbruikbaar"
@@ -630,22 +674,13 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgstr "ongeldige aanduiding"
 
 #~ msgid "unable to display error message"
-#~ msgstr "foutmeldingen tonen is mislukt"
+#~ msgstr "kan foutmelding niet tonen"
 
-#~ msgid "preserving permissions for %s"
-#~ msgstr "toegangsrechten van %s worden behouden"
+#~ msgid "Packaged by %s (%s)\n"
+#~ msgstr "In pakketvorm gebracht door %s (%s)\n"
 
-#~ msgid "string comparison failed"
-#~ msgstr "vergelijking van tekenreeksen is mislukt"
-
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "Zet LC_ALL='C' om het probleem te omzeilen."
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "De te vergelijken tekenreeksen waren %s en %s."
-
-#~ msgid "cannot perform formatted output"
-#~ msgstr "opgemaakte uitvoer aanmaken is mislukt"
+#~ msgid "Packaged by %s\n"
+#~ msgstr "In pakketvorm gebracht door %s\n"
 
 #~ msgid "(C)"
 #~ msgstr "©"
@@ -659,11 +694,12 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ "\n"
 #~ msgstr ""
 #~ "\n"
-#~ "Licentie GPLv3+: GNU GPL versie 3 of nieuwer <http://gnu.org/licenses/gpl."
-#~ "html>.\n"
 #~ "Dit is vrije software: u mag het vrijelijk wijzigen en verder "
 #~ "verspreiden.\n"
-#~ "Er is GEEN GARANTIE, voor zover de wet dit toestaat.\n"
+#~ "De precieze licentie is GPL-3+: GNU General Public License versie 3 of "
+#~ "later.\n"
+#~ "Zie http://gnu.org/licenses/gpl.html voor de volledige (Engelse) tekst.\n"
+#~ "Deze software kent GEEN GARANTIE, voor zover de wet dit toestaat.\n"
 #~ "\n"
 
 #~ msgid "Written by %s.\n"
@@ -732,31 +768,33 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid ""
 #~ "\n"
-#~ "Report bugs to <%s>.\n"
+#~ "Report bugs to: %s\n"
 #~ msgstr ""
 #~ "\n"
-#~ "Rapporteer gebreken in het programma aan %s;\n"
+#~ "Rapporteer gebreken in het programma aan <%s>;\n"
 #~ "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
-#~ msgstr "%s-beginpagina: <http://www.gnu.org/software/%s/>.\n"
-
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
+#~ msgid "Report %s bugs to: %s\n"
 #~ msgstr ""
-#~ "Algemene hulp bij het gebruik van GNU-software: <http://www.gnu.org/"
-#~ "gethelp/>.\n"
+#~ "Rapporteer gebreken in het programma '%s' aan <%s>;\n"
+#~ "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
 
-#~ msgid "invalid %s%s argument `%s'"
-#~ msgstr "ongeldig argument %s%s van `%s'"
+#~ msgid "%s home page: <%s>\n"
+#~ msgstr "Webpagina van %s: <%s>\n"
 
-#~ msgid "invalid suffix in %s%s argument `%s'"
-#~ msgstr "ongeldig achtervoegsel %s%s in argument `%s'"
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
+#~ msgstr "Webpagina van %s: <http://www.gnu.org/software/%s/>\n"
 
-#~ msgid "%s%s argument `%s' too large"
-#~ msgstr "%s%s argument `%s' te groot"
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
+#~ msgstr ""
+#~ "Algemene hulp bij gebruik van GNU-software: <http://www.gnu.org/gethelp/"
+#~ ">\n"
 
-#~ msgid "setting permissions for %s"
-#~ msgstr "toegangsrechten van %s instellen"
+#~ msgid "_open_osfhandle failed"
+#~ msgstr "_open_osfhandle() is mislukt"
+
+#~ msgid "cannot restore fd %d: dup2 failed"
+#~ msgstr "kan bestandsdescriptor %d niet herstellen: dup2() is mislukt"
 
 #~ msgid "%s subprocess"
 #~ msgstr "subproces %s"
@@ -764,8 +802,38 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "subproces %s ontving het fatale signaal %d"
 
-#~ msgid "error writing to a closed pipe or socket"
-#~ msgstr "fouten bij het schrijven naar een afgesloten pipe of socket"
+#~ msgid "stdin"
+#~ msgstr "standaardinvoer"
 
-#~ msgid "block size"
-#~ msgstr "blokgrootte"
+#~ msgid "stdout"
+#~ msgstr "standaarduitvoer"
+
+#~ msgid "stderr"
+#~ msgstr "standaardfoutuitvoer"
+
+#~ msgid "unknown stream"
+#~ msgstr "onbekende stroom"
+
+#~ msgid "failed to reopen %s with mode %s"
+#~ msgstr "opnieuw openen van '%s' met modus %s is mislukt"
+
+#~ msgid "string comparison failed"
+#~ msgstr "vergelijking van tekenreeksen is mislukt"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "Zet LC_ALL='C' om het probleem te omzeilen."
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "De te vergelijken tekenreeksen waren %s en %s."
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "kan geen opgemaakte uitvoer aanmaken"
+
+#~ msgid "invalid %s%s argument `%s'"
+#~ msgstr "ongeldig argument '%3$s' van %1$s%2$s"
+
+#~ msgid "invalid suffix in %s%s argument `%s'"
+#~ msgstr "ongeldig achtervoegsel in argument '%3$s' van %1$s%2$s"
+
+#~ msgid "%s%s argument `%s' too large"
+#~ msgstr "argument '%3$s' van %1$s%2$s is te groot"

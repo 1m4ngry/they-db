@@ -32,19 +32,11 @@ override_dh_auto_configure:
 		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
 
 override_dh_auto_build:
-	[ ! -e po/fr.gmo ] || mv po/fr.gmo po/fr.gmo.safe
 	set -e; for preserve in man/po4a/po/*.pot man/po4a/po/*.po; do \
 		[ ! -e "$$preserve.safe" ] || continue; \
 		cp -a "$$preserve" "$$preserve.safe"; \
 	done
 	dh_auto_build
-	$(MAKE) -C po fr.gmo
-	sed -f man/fr/replace.sed -e 's,%program%,manconv,g' \
-		man/fr/man1/manconv.man1 > man/fr/man1/manconv.1
-
-override_dh_auto_install:
-	dh_auto_install
-	install -m 644 man/fr/man1/manconv.1 $(dtmp)/usr/share/man/fr/man1/
 
 override_dh_auto_clean:
 	dh_auto_clean
@@ -52,15 +44,15 @@ override_dh_auto_clean:
 		[ -e "$$preserve.safe" ] || continue; \
 		mv "$$preserve.safe" "$$preserve"; \
 	done
-	[ ! -e po/fr.gmo.safe ] || mv po/fr.gmo.safe po/fr.gmo
-	rm -f man/fr/man1/manconv.1
 
 override_dh_clean:
 	dh_clean -Xxmalloc.c.orig
 
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 override_dh_installman:
-	PATH="$(CURDIR)/$(dtmp)/usr/bin:$$PATH" dh_installman
+	PATH="$(CURDIR)/$(dtmp)/usr/bin:$$PATH" \
+	LD_LIBRARY_PATH="$(CURDIR)/$(dtmp)/usr/lib/man-db:$$LD_LIBRARY_PATH" \
+		dh_installman
 endif
 
 override_dh_fixperms:

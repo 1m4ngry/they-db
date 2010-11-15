@@ -19,22 +19,25 @@
 ## along with man-db; if not, write to the Free Software Foundation,
 ## Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-noinst_LIBRARIES = libman.a
+pkglib_LTLIBRARIES = libman.la
 dist_noinst_DATA = README
 
-libman_a_CPPFLAGS = \
+libman_la_CPPFLAGS = \
 	-I$(top_builddir)/include \
-	-I$(top_builddir)/intl \
 	-I$(top_srcdir)/gnulib/lib \
-	-I$(top_builddir)/gnulib/lib
+	-I$(top_builddir)/gnulib/lib \
+	-DLOCALEDIR=\"$(localedir)\" \
+	$(libpipeline_CFLAGS)
 
-libman_a_SOURCES = \
+libman_la_SOURCES = \
 	appendstr.c \
 	cleanup.c \
 	cleanup.h \
 	debug.c \
 	decompress.c \
 	decompress.h \
+	encodings.c \
+	encodings.h \
 	hashtable.c \
 	hashtable.h \
 	linelength.c \
@@ -43,16 +46,28 @@ libman_a_SOURCES = \
 	lower.h \
 	pathsearch.c \
 	pathsearch.h \
-	pipeline.c \
-	pipeline.h \
+	security.c \
+	security.h \
 	tempfile.c \
+	util.c \
 	wordfnmatch.c \
 	wordfnmatch.h \
 	xregcomp.c \
 	xregcomp.h
 
+if INTERNAL_PIPELINE
+libman_la_SOURCES += \
+	pipeline.c \
+	pipeline.h
+endif
+
 ## Headers that are used conditionally. Automake can't detect these itself.
-libman_a_SOURCES += \
+libman_la_SOURCES += \
 	flock.h
 
-libman_a_LIBADD = $(LIBOBJS)
+libman_la_LIBADD = ../gnulib/lib/libgnu.la $(LTLIBOBJS) \
+	$(LIBCOMPRESS) @LTLIBINTL@
+
+libman_la_LDFLAGS = \
+	-avoid-version -release $(VERSION) -rpath $(pkglibdir) \
+	$(libpipeline_LIBS)

@@ -22,7 +22,7 @@
  * Thu Dec  8 00:03:12 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
  */
 
-/* MAX_ARGS must be >= 6, 4 for options, 1 for page and 1 for NULL */
+/* MAX_ARGS must be >= 7, 5 for options, 1 for page and 1 for NULL */
 #define MAX_ARGS	1024	/* *argv[MAX_ARG] */
 
 #ifdef HAVE_CONFIG_H
@@ -67,7 +67,6 @@
 #include "dirname.h"
 
 #include "gettext.h"
-#include <locale.h>
 #define _(String) gettext (String)
 #define N_(String) gettext_noop (String)
 
@@ -295,6 +294,7 @@ static int parse_for_sec (const char *manpath, const char *section)
 
 	args[arg_no++] = xstrdup ("-caM");	/* options */
 	args[arg_no++] = xstrdup (manpath);	/* particular manpath */
+	args[arg_no++] = xstrdup ("-S");
 	args[arg_no++] = xstrdup (section);	/* particular section */
 
 	first_arg = arg_no;		/* first pagename argument */
@@ -413,19 +413,9 @@ int main (int argc, char *argv[])
 
 	init_debug ();
 
-	/* initialise the locale */
-	locale = xstrdup (setlocale (LC_ALL, ""));
-	if (!locale) {
-		/* Obviously can't translate this. */
-		if (!getenv ("MAN_NO_LOCALE_WARNING"))
-			error (0, 0, "can't set the locale; make sure $LC_* "
-				     "and $LANG are correct");
+	locale = xstrdup (init_locale (LC_ALL, ""));
+	if (!locale)
 		locale = xstrdup ("C");
-	}
-	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
-	textdomain (PACKAGE);
 
 	if (argp_parse (&argp, argc, argv, 0, 0, 0))
 		exit (FAIL);

@@ -68,7 +68,7 @@ static void decompress_zlib (void *data ATTRIBUTE_UNUSED)
 
 pipeline *decompress_open (const char *filename)
 {
-	command *cmd;
+	pipecmd *cmd;
 	pipeline *p;
 	struct stat st;
 #ifdef HAVE_LIBZ
@@ -85,7 +85,7 @@ pipeline *decompress_open (const char *filename)
 	if (filename_len > 3 && STREQ (filename + filename_len - 3, ".gz")) {
 		/* informational only; no shell quoting concerns */
 		char *name = appendstr (NULL, "zcat < ", filename, NULL);
-		cmd = command_new_function (name, &decompress_zlib, NULL,
+		cmd = pipecmd_new_function (name, &decompress_zlib, NULL,
 					    NULL);
 		free (name);
 		p = pipeline_new_commands (cmd, NULL);
@@ -101,8 +101,8 @@ pipeline *decompress_open (const char *filename)
 			if (!STREQ (comp->ext, ext))
 				continue;
 
-			cmd = command_new_argstr (comp->prog);
-			command_arg (cmd, filename);
+			cmd = pipecmd_new_argstr (comp->prog);
+			pipecmd_arg (cmd, filename);
 			p = pipeline_new_commands (cmd, NULL);
 			goto got_pipeline;
 		}
@@ -112,8 +112,8 @@ pipeline *decompress_open (const char *filename)
 	/* HP-UX */
 	ext = strstr (filename, ".Z/");
 	if (ext) {
-		cmd = command_new_argstr (GUNZIP " -S \"\"");
-		command_arg (cmd, filename);
+		cmd = pipecmd_new_argstr (GUNZIP " -S \"\"");
+		pipecmd_arg (cmd, filename);
 		p = pipeline_new_commands (cmd, NULL);
 		goto got_pipeline;
 	}
@@ -122,9 +122,8 @@ pipeline *decompress_open (const char *filename)
 	p = pipeline_new ();
 
 got_pipeline:
-	p->want_infile = filename;
-	p->want_out = -1;
-	p->ignore_signals = 0;
+	pipeline_want_infile (p, filename);
+	pipeline_want_out (p, -1);
 	return p;
 }
 
@@ -132,18 +131,17 @@ pipeline *decompress_fdopen (int fd)
 {
 	pipeline *p;
 #ifdef HAVE_LIBZ
-	command *cmd;
+	pipecmd *cmd;
 #endif /* HAVE_LIBZ */
 
 #ifdef HAVE_LIBZ
-	cmd = command_new_function ("zcat", &decompress_zlib, NULL, NULL);
+	cmd = pipecmd_new_function ("zcat", &decompress_zlib, NULL, NULL);
 	p = pipeline_new_commands (cmd, NULL);
 #else /* HAVE_LIBZ */
 	p = pipeline_new ();
 #endif /* HAVE_LIBZ */
 
-	p->want_in = fd;
-	p->want_out = -1;
-	p->ignore_signals = 0;
+	pipeline_want_in (p, fd);
+	pipeline_want_out (p, -1);
 	return p;
 }

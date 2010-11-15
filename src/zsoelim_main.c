@@ -32,12 +32,12 @@
 #include "dirname.h"
 
 #include "gettext.h"
-#include <locale.h>
 #define _(String) gettext (String)
 #define N_(String) gettext_noop (String)
 
 #include "manconfig.h"
 
+#include "cleanup.h"
 #include "error.h"
 #include "pipeline.h"
 #include "decompress.h"
@@ -98,20 +98,11 @@ int main (int argc, char *argv[])
 	program_name = base_name (argv[0]);
 
 	init_debug ();
-
-	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
-		/* Obviously can't translate this. */
-		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
-			     "are correct");
-	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
-	textdomain (PACKAGE);
+	pipeline_install_post_fork (pop_all_cleanups);
+	init_locale (LC_ALL, "");
 
 	if (argp_parse (&argp, argc, argv, 0, 0, 0))
 		exit (FAIL);
-
-	pipeline_install_sigchld ();
 
 	/* parse files in command line order */
 	for (i = 0; i < num_files; ++i) {

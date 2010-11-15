@@ -2,12 +2,15 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.5.7], [cjwatson@debian.org])
+AC_INIT([man-db], [2.5.8], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR(tools)
 AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
+AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR(src/man.c)
+AC_GNU_SOURCE
+LT_INIT([disable-static])
 
 if test ! -f "$srcdir/gnulib/po/Makefile.in.in"; then
 	AC_MSG_ERROR([you must run ./autogen.sh before ./configure when building from revision control])
@@ -17,7 +20,7 @@ AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2010-02-16
+date=2010-11-15
 AC_SUBST(date)dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST(roff_version)dnl
@@ -114,6 +117,9 @@ AC_ARG_ENABLE(cats,
 		AC_DEFINE([MAN_CATS], [1], [Allow man to create/update cat files.])
 	 fi],
 	[AC_DEFINE([MAN_CATS], [1], [Allow man to create/update cat files.])])
+AC_ARG_WITH(external-pipeline,
+[AS_HELP_STRING([--with-external-pipeline], [use external pipeline library])],
+	[man_pipeline="$withval"], [man_pipeline=no])
 
 # Finish the argument parsing.
 AC_SUBST(man_owner)dnl
@@ -124,7 +130,6 @@ AC_SUBST(config_file_dirname)dnl
 AC_SUBST(sections)dnl
 
 # Check $PATH for the following programs and append suitable options.
-AC_GNU_SOURCE
 AC_PROG_CC
 gl_EARLY
 AC_PROG_CPP
@@ -152,7 +157,6 @@ then
 	MAN_GCC_WARNING([no-missing-field-initializers])
 fi
 AC_PROG_INSTALL
-AC_PROG_RANLIB
 AC_PROG_LN_S
 AC_CHECK_PROGS(cat, cat)
 MAN_CHECK_PROGS([browser], [BROWSER], [use BROWSER as default web browser], [www-browser lynx])
@@ -321,12 +325,19 @@ if test -n "$bzip2"
 then
 	bunzip2="$bzip2 -dc"
 fi
+MAN_CHECK_PROGS([xz], [XZ], [use XZ as Lempel-Ziv-Markov chain-Algorithm compression utility], [xz])
+if test -n "$xz"
+then
+	unxz="$xz -dc"
+else
+dnl lzma not used/needed if we have xz
 MAN_CHECK_PROGS([lzma], [LZMA], [use LZMA as Lempel-Ziv-Markov chain-Algorithm compression utility], [lzma])
 if test -n "$lzma"
 then
 	unlzma="$lzma -dc"
 fi
-if test -n "$gzip" || test -n "$compress" || test -n "$bzip2" || test -n "$lzma"
+fi
+if test -n "$gzip" || test -n "$compress" || test -n "$bzip2" || test -n "$xz" || test -n "$lzma"
 then
 	AC_DEFINE(COMP_CAT, 1, [Define if you have compressors and want to support compressed cat files.])
 	AC_DEFINE(COMP_SRC, 1, [Define if you have compressors and want to support compressed manual source.])
@@ -337,6 +348,7 @@ AC_SUBST(gunzip)
 AC_SUBST(uncompress)
 AC_SUBST(bunzip2)
 AC_SUBST(unlzma)
+AC_SUBST(unxz)
 MAN_COMPRESS_LIB([z], [gzopen])
 dnl To add more decompressors just follow the scheme above.
 
@@ -372,8 +384,8 @@ AC_HEADER_DIRENT
 AC_CHECK_HEADERS(fcntl.h sys/file.h)
 
 # Internationalization support.
-AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION([0.17])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.18.1])
 AC_SUBST(LINGUAS)
 AM_ICONV
 MAN_PO4A
@@ -387,7 +399,6 @@ AC_TYPE_UID_T
 AC_TYPE_SIZE_T
 
 # Checks for functions.
-AC_TYPE_SIGNAL
 AC_FUNC_VFORK
 
 # Check for socketpair(2) as fast replacement for pipe(2).
@@ -401,6 +412,12 @@ AC_ARG_ENABLE(socketpair-pipe,
       fi
     fi
   ])
+
+# Check for external pipeline library.
+AM_CONDITIONAL([INTERNAL_PIPELINE], [test "x$man_pipeline" = xno])
+if test "x$man_pipeline" != xno; then
+	PKG_CHECK_MODULES([libpipeline], [libpipeline])
+fi
 
 # Find a suitable database interface header and library.
 #
@@ -511,6 +528,7 @@ AC_CONFIG_FILES(Makefile
 	man/id/Makefile
 	man/it/Makefile
 	man/ja/Makefile
+	man/nl/Makefile
 	man/pl/Makefile
 	man/ru/Makefile
 	manual/Makefile
@@ -519,6 +537,5 @@ AC_CONFIG_FILES(Makefile
 	tools/Makefile
 	include/comp_src.h
 	include/manconfig.h
-	intl/Makefile
 	po/Makefile.in)
 AC_OUTPUT

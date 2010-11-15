@@ -59,6 +59,7 @@
 
 #include "manconfig.h"
 
+#include "cleanup.h"
 #include "error.h"
 #include "pipeline.h"
 #include "linelength.h"
@@ -66,11 +67,11 @@
 #include "lower.h"
 #include "wordfnmatch.h"
 #include "xregcomp.h"
+#include "encodings.h"
 
 #include "mydbm.h"
 #include "db_storage.h"
 
-#include "encodings.h"
 #include "manp.h"
 
 static char *manpathlist[MAXDIRS];
@@ -250,7 +251,7 @@ static inline int use_grep (char *page, char *manpath)
 
 	if (access (whatis_file, R_OK) == 0) {
 		pipeline *grep_pl = pipeline_new ();
-		command *grep_cmd;
+		pipecmd *grep_cmd;
 		const char *flags;
 		char *anchored_page = NULL;
 
@@ -269,15 +270,14 @@ static inline int use_grep (char *page, char *manpath)
 			anchored_page = appendstr (NULL, "^", page, NULL);
 		}
 
-		grep_cmd = command_new_argstr (get_def_user ("grep", GREP));
-		command_argstr (grep_cmd, flags);
-		command_args (grep_cmd, anchored_page, whatis_file, NULL);
+		grep_cmd = pipecmd_new_argstr (get_def_user ("grep", GREP));
+		pipecmd_argstr (grep_cmd, flags);
+		pipecmd_args (grep_cmd, anchored_page, whatis_file, NULL);
 		pipeline_command (grep_pl, grep_cmd);
 
-		status = (do_system (grep_pl) == 0);
+		status = (pipeline_run (grep_pl) == 0);
 
 		free (anchored_page);
-		pipeline_free (grep_pl);
 	} else {
 		debug ("warning: can't read the fallback whatis text database "
 		       "%s/whatis\n", manpath);
@@ -367,9 +367,9 @@ static void display (struct mandata *info, char *page)
 		page_name = page;
 
 	key = xasprintf ("%s (%s)", page_name, newinfo->ext);
-	if (hash_lookup_structure (display_seen, key, strlen (key)))
+	if (hashtable_lookup_structure (display_seen, key, strlen (key)))
 		goto out;
-	hash_install (display_seen, key, strlen (key), NULL);
+	hashtable_install (display_seen, key, strlen (key), NULL);
 
 	line_len = get_line_length ();
 
@@ -564,8 +564,8 @@ static int do_apropos (char *page, char *lowpage)
 				seen_key = xstrdup (MYDBM_DPTR (key));
 			seen_key = appendstr (seen_key, " (", info.ext, ")",
 					      NULL);
-			seen_count = hash_lookup (apropos_seen, seen_key,
-						  strlen (seen_key));
+			seen_count = hashtable_lookup (apropos_seen, seen_key,
+						       strlen (seen_key));
 			if (seen_count && !require_all)
 				goto nextpage_tab;
 			got_match = parse_name (lowpage, MYDBM_DPTR (key));
@@ -579,9 +579,10 @@ static int do_apropos (char *page, char *lowpage)
 					seen_count = xmalloc
 						(sizeof *seen_count);
 					*seen_count = 0;
-					hash_install (apropos_seen, seen_key,
-						      strlen (seen_key),
-						      seen_count);
+					hashtable_install (apropos_seen,
+							   seen_key,
+							   strlen (seen_key),
+							   seen_count);
 				}
 				++(*seen_count);
 				if (!require_all ||
@@ -702,16 +703,8 @@ int main (int argc, char *argv[])
 	}
 
 	init_debug ();
-
-	/* initialise the locale */
-	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
-		/* Obviously can't translate this. */
-		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
-			     "are correct");
-	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
-	textdomain (PACKAGE);
+	pipeline_install_post_fork (pop_all_cleanups);
+	init_locale (LC_ALL, "");
 
 	internal_locale = setlocale (LC_MESSAGES, NULL);
 	/* Use LANGUAGE only when LC_MESSAGES locale category is
@@ -742,8 +735,6 @@ int main (int argc, char *argv[])
 		}
 	}
 
-	pipeline_install_sigchld ();
-
 	/* sort out the internal manpath */
 	if (manp == NULL) {
 		char *all_locales;
@@ -770,8 +761,8 @@ int main (int argc, char *argv[])
 
 	create_pathlist (manp, manpathlist);
 
-	apropos_seen = hash_create (&plain_hash_free);
-	display_seen = hash_create (&null_hash_free);
+	apropos_seen = hashtable_create (&plain_hashtable_free);
+	display_seen = hashtable_create (&null_hashtable_free);
 
 #ifdef HAVE_ICONV
 	locale_charset = appendstr (NULL, get_locale_charset (), "//IGNORE",
@@ -794,8 +785,8 @@ int main (int argc, char *argv[])
 	if (conv_to_locale != (iconv_t) -1)
 		iconv_close (conv_to_locale);
 #endif /* HAVE_ICONV */
-	hash_free (display_seen);
-	hash_free (apropos_seen);
+	hashtable_free (display_seen);
+	hashtable_free (apropos_seen);
 	free_pathlist (manpathlist);
 	free (manp);
 	free (internal_locale);

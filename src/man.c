@@ -43,6 +43,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <assert.h>
 #include <errno.h>
 #include <termios.h>
@@ -90,6 +91,8 @@ static char *cwd;
 #include "linelength.h"
 #include "decompress.h"
 #include "xregcomp.h"
+#include "security.h"
+#include "encodings.h"
 
 #include "mydbm.h"
 #include "db_storage.h"
@@ -99,10 +102,9 @@ static char *cwd;
 #include "globbing.h"
 #include "ult_src.h"
 #include "manp.h"
-#include "security.h"
-#include "encodings.h"
 #include "convert_name.h"
 #include "zsoelim.h"
+#include "manconv_client.h"
 #include "man.h"
 
 #ifdef SECURE_MAN_UID
@@ -638,7 +640,7 @@ static int get_roff_line_length (void)
 		return 0;
 }
 
-static void add_roff_line_length (command *cmd, int *save_cat_p)
+static void add_roff_line_length (pipecmd *cmd, int *save_cat_p)
 {
 	int length;
 
@@ -660,11 +662,9 @@ static void add_roff_line_length (command *cmd, int *save_cat_p)
 
 	length = get_roff_line_length ();
 	if (length) {
-		char optionll[32], optionlt[32];
 		debug ("Using %d-character lines\n", length);
-		sprintf (optionll, "-rLL=%dn", length);
-		sprintf (optionlt, "-rLT=%dn", length);
-		command_args (cmd, optionll, optionlt, NULL);
+		pipecmd_argf (cmd, "-rLL=%dn", length);
+		pipecmd_argf (cmd, "-rLT=%dn", length);
 	}
 }
 
@@ -696,29 +696,28 @@ static inline void gripe_no_man (const char *name, const char *sec)
 static void do_extern (int argc, char *argv[])
 {
 	pipeline *p;
-	command *cmd;
+	pipecmd *cmd;
 
-	cmd = command_new (external);
+	cmd = pipecmd_new (external);
 	/* Please keep these in the same order as they are in whatis.c. */
 	if (debug_level)
-		command_arg (cmd, "-d");
+		pipecmd_arg (cmd, "-d");
 	if (colon_sep_section_list)
-		command_args (cmd, "-s", colon_sep_section_list, NULL);
+		pipecmd_args (cmd, "-s", colon_sep_section_list, NULL);
 	if (alt_system_name)
-		command_args (cmd, "-m", alt_system_name, NULL);
+		pipecmd_args (cmd, "-m", alt_system_name, NULL);
 	if (manp)
-		command_args (cmd, "-M", manp, NULL);
+		pipecmd_args (cmd, "-M", manp, NULL);
 	if (locale)
-		command_args (cmd, "-L", locale, NULL);
+		pipecmd_args (cmd, "-L", locale, NULL);
 	if (user_config_file)
-		command_args (cmd, "-C", user_config_file, NULL);
+		pipecmd_args (cmd, "-C", user_config_file, NULL);
 	while (first_arg < argc)
-		command_arg (cmd, argv[first_arg++]);
+		pipecmd_arg (cmd, argv[first_arg++]);
 	p = pipeline_new_commands (cmd, NULL);
 
 	/* privs are already dropped */
-	pipeline_start (p);
-	exit (pipeline_wait (p));
+	exit (pipeline_run (p));
 }
 
 /* lookup $MANOPT and if available, put in *argv[] format for argp */
@@ -805,26 +804,26 @@ static inline const char *escape_less (const char *string)
 static int run_mandb (int create, const char *manpath, const char *filename)
 {
 	pipeline *mandb_pl = pipeline_new ();
-	command *mandb_cmd = command_new ("mandb");
+	pipecmd *mandb_cmd = pipecmd_new ("mandb");
 
 	if (debug_level)
-		command_arg (mandb_cmd, "-d");
+		pipecmd_arg (mandb_cmd, "-d");
 	else
-		command_arg (mandb_cmd, "-q");
+		pipecmd_arg (mandb_cmd, "-q");
 
 	if (user_config_file)
-		command_args (mandb_cmd, "-C", user_config_file, NULL);
+		pipecmd_args (mandb_cmd, "-C", user_config_file, NULL);
 
 	if (filename)
-		command_args (mandb_cmd, "-f", filename, NULL);
+		pipecmd_args (mandb_cmd, "-f", filename, NULL);
 	else if (create) {
-		command_arg (mandb_cmd, "-c");
-		command_setenv (mandb_cmd, "MAN_MUST_CREATE", "1");
+		pipecmd_arg (mandb_cmd, "-c");
+		pipecmd_setenv (mandb_cmd, "MAN_MUST_CREATE", "1");
 	} else
-		command_arg (mandb_cmd, "-p");
+		pipecmd_arg (mandb_cmd, "-p");
 
 	if (manpath)
-		command_arg (mandb_cmd, manpath);
+		pipecmd_arg (mandb_cmd, manpath);
 
 	pipeline_command (mandb_pl, mandb_cmd);
 
@@ -833,8 +832,7 @@ static int run_mandb (int create, const char *manpath, const char *filename)
 		pipeline_dump (mandb_pl, stderr);
 	}
 
-	pipeline_start (mandb_pl);
-	return pipeline_wait (mandb_pl);
+	return pipeline_run (mandb_pl);
 }
 #endif /* MAN_DB_CREATES || MAN_DB_UPDATES */
 
@@ -915,8 +913,7 @@ static int local_man_loop (const char *argv)
 			if (directory_on_path (argv_dir)) {
 				char *argv_base = base_name (argv);
 				char *new_manp;
-				char **old_manpathlist;
-				int i;
+				char **old_manpathlist, **mp;
 
 				debug ("recalculating manpath for executable "
 				       "in %s\n", argv_dir);
@@ -925,16 +922,16 @@ static int local_man_loop (const char *argv)
 					get_manpath_from_path (argv_dir, 0));
 
 				old_manpathlist = XNMALLOC (MAXDIRS, char *);
-				for (i = 0; i < MAXDIRS; ++i)
-					old_manpathlist[i] = manpathlist[i];
+				memcpy (old_manpathlist, manpathlist,
+					MAXDIRS * sizeof (*manpathlist));
 				create_pathlist (new_manp, manpathlist);
 
 				man (argv_base, &found);
 
-				for (i = 0; i < MAXDIRS; ++i) {
-					free (manpathlist[i]);
-					manpathlist[i] = old_manpathlist[i];
-				}
+				for (mp = manpathlist; *mp; ++mp)
+					free (*mp);
+				memcpy (manpathlist, old_manpathlist,
+					MAXDIRS * sizeof (*manpathlist));
 				free (old_manpathlist);
 				free (new_manp);
 				free (argv_base);
@@ -982,17 +979,10 @@ int main (int argc, char *argv[])
 	program_name = base_name (argv[0]);
 
 	init_debug ();
+	pipeline_install_post_fork (pop_all_cleanups);
 
 	umask (022);
-	/* initialise the locale */
-	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
-		/* Obviously can't translate this. */
-		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
-			     "are correct");
-	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
-	textdomain (PACKAGE);
+	init_locale (LC_ALL, "");
 
 	internal_locale = setlocale (LC_MESSAGES, NULL);
 	/* Use LANGUAGE only when LC_MESSAGES locale category is
@@ -1052,8 +1042,6 @@ int main (int argc, char *argv[])
 	/* record who we are and drop effective privs for later use */
 	init_security ();
 #endif /* SECURE_MAN_UID */
-
-	pipeline_install_sigchld ();
 
 	read_config_file (local_man_file || user_config_file);
 
@@ -1168,11 +1156,13 @@ int main (int argc, char *argv[])
      		 * See if this argument is a valid section name.  If not,
       		 * is_section returns NULL.
       		 */
-		tmp = is_section (nextarg);
-		if (tmp) {
-			section = tmp;
-			debug ("\nsection: %s\n", section);
-			maybe_section = 1;
+		if (!catman) {
+			tmp = is_section (nextarg);
+			if (tmp) {
+				section = tmp;
+				debug ("\nsection: %s\n", section);
+				maybe_section = 1;
+			}
 		}
 
 		if (maybe_section) {
@@ -1203,12 +1193,22 @@ int main (int argc, char *argv[])
 					++first_arg;
 				}
 			}
+			if (!found_subpage && subpages && first_arg < argc) {
+				char *subname = xasprintf (
+					"%s_%s", nextarg, argv[first_arg]);
+				status = man (subname, &found);
+				free (subname);
+				if (status == OK) {
+					found_subpage = 1;
+					++first_arg;
+				}
+			}
 			if (!found_subpage)
 				status = man (nextarg, &found);
 		}
 
 		/* clean out the cache of database lookups for each man page */
-		hash_free (db_hash);
+		hashtable_free (db_hash);
 		db_hash = NULL;
 
 		if (section && maybe_section) {
@@ -1233,7 +1233,7 @@ int main (int argc, char *argv[])
 				}
 				if (!found_subpage)
 					status = man (tmp, &found);
-				hash_free (db_hash);
+				hashtable_free (db_hash);
 				db_hash = NULL;
 				/* ... but don't gripe about it if it doesn't
 				 * work!
@@ -1279,7 +1279,7 @@ int main (int argc, char *argv[])
 
 		chkr_garbage_detector ();
 	}
-	hash_free (db_hash);
+	hashtable_free (db_hash);
 	db_hash = NULL;
 
 	drop_effective_privs ();
@@ -1396,6 +1396,26 @@ static const char *my_locale_charset (void)
 		return get_locale_charset ();
 }
 
+static void add_col (pipeline *p, const char *locale_charset, ...)
+{
+	pipecmd *cmd;
+	va_list argv;
+	char *col_locale;
+
+	cmd = pipecmd_new (COL);
+	va_start (argv, locale_charset);
+	pipecmd_argv (cmd, argv);
+	va_end (argv);
+
+	col_locale = find_charset_locale (locale_charset);
+	if (col_locale) {
+		pipecmd_setenv (cmd, "LC_CTYPE", col_locale);
+		free (col_locale);
+	}
+
+	pipeline_command (p, cmd);
+}
+
 /* Return pipeline to format file to stdout. */
 static pipeline *make_roff_command (const char *dir, const char *file,
 				    pipeline *decomp, const char *dbfilters,
@@ -1405,7 +1425,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	const char *roff_opt;
 	char *fmt_prog;
 	pipeline *p = pipeline_new ();
-	command *cmd;
+	pipecmd *cmd;
 	char *page_encoding = NULL;
 	const char *output_encoding = NULL;
 	const char *locale_charset = NULL;
@@ -1467,7 +1487,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		const char *groff_preconv;
 
 		if (!recode) {
-			cmd = command_new_function (SOELIM, &zsoelim_stdin,
+			cmd = pipecmd_new_function (SOELIM, &zsoelim_stdin,
 						    NULL, NULL);
 			pipeline_command (p, cmd);
 		}
@@ -1574,32 +1594,32 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			switch (*pp_string) {
 			case 'e':
 				if (troff)
-					cmd = command_new_argstr
+					cmd = pipecmd_new_argstr
 						(get_def ("eqn", EQN));
 				else
-					cmd = command_new_argstr
+					cmd = pipecmd_new_argstr
 						(get_def ("neqn", NEQN));
 				wants_dev = 1;
 				break;
 			case 'g':
-				cmd = command_new_argstr
+				cmd = pipecmd_new_argstr
 					(get_def ("grap", GRAP));
 				break;
 			case 'p':
-				cmd = command_new_argstr
+				cmd = pipecmd_new_argstr
 					(get_def ("pic", PIC));
 				break;
 			case 't':
-				cmd = command_new_argstr
+				cmd = pipecmd_new_argstr
 					(get_def ("tbl", TBL));
 				using_tbl = 1;
 				break;
 			case 'v':
-				cmd = command_new_argstr
+				cmd = pipecmd_new_argstr
 					(get_def ("vgrind", VGRIND));
 				break;
 			case 'r':
-				cmd = command_new_argstr
+				cmd = pipecmd_new_argstr
 					(get_def ("refer", REFER));
 				break;
 			case ' ':
@@ -1607,29 +1627,25 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			case 0:
 				/* done with preprocessors, now add roff */
 				if (troff) {
-					cmd = command_new_argstr
+					cmd = pipecmd_new_argstr
 						(get_def ("troff", TROFF));
 					save_cat = 0;
 				} else
-					cmd = command_new_argstr
+					cmd = pipecmd_new_argstr
 						(get_def ("nroff", NROFF));
 
 #ifdef TROFF_IS_GROFF
 				if (troff && ditroff)
-					command_arg (cmd, "-Z");
+					pipecmd_arg (cmd, "-Z");
 				else if (!troff)
 					add_roff_line_length (cmd, &save_cat);
 
 				for (cur = roff_warnings; cur;
-				     cur = cur->next) {
-					char *arg = xasprintf
-						("-w%s", cur->name);
-					command_arg (cmd, arg);
-					free (arg);
-				}
+				     cur = cur->next)
+					pipecmd_argf (cmd, "-w%s", cur->name);
 #endif /* TROFF_IS_GROFF */
 
-				command_argstr (cmd, roff_opt);
+				pipecmd_argstr (cmd, roff_opt);
 
 				wants_dev = 1;
 				wants_post = 1;
@@ -1645,35 +1661,26 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			}
 
 			if (wants_dev) {
-				if (roff_device) {
-					char *tmpdev = appendstr (NULL, "-T",
-								  roff_device,
-								  NULL);
-					command_arg (cmd, tmpdev);
-					free (tmpdev);
-				}
+				if (roff_device)
+					pipecmd_argf (cmd,
+						      "-T%s", roff_device);
 #ifdef TROFF_IS_GROFF
-				else if (gxditview) {
-					char *tmpdev = appendstr (NULL, "-TX",
-								  gxditview,
-								  NULL);
-					command_arg (cmd, tmpdev);
-					free (tmpdev);
-				}
+				else if (gxditview)
+					pipecmd_argf (cmd, "-TX%s", gxditview);
 #endif /* TROFF_IS_GROFF */
 			}
 
 			if (wants_post) {
 #ifdef TROFF_IS_GROFF
 				if (gxditview)
-					command_arg (cmd, "-X");
+					pipecmd_arg (cmd, "-X");
 #endif /* TROFF_IS_GROFF */
 
 				if (roff_device && STREQ (roff_device, "ps"))
 					/* Tell grops to guess the page
 					 * size.
 					 */
-					command_arg (cmd, "-P-g");
+					pipecmd_arg (cmd, "-P-g");
 			}
 
 			pipeline_command (p, cmd);
@@ -1689,14 +1696,19 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			    !isatty (STDOUT_FILENO))
 				/* we'll run col later, but prepare for it */
 				setenv ("GROFF_NO_SGR", "1", 1);
+#ifndef GNU_NROFF
+			/* tbl needs col */
+			else if (using_tbl && !troff && *COL)
+				add_col (p, locale_charset, NULL);
+#endif /* GNU_NROFF */
 		}
 	} else {
 		/* use external formatter script, it takes arguments
 		   input file, preprocessor string, and (optional)
 		   output device */
-		cmd = command_new_args (fmt_prog, file, pp_string, NULL);
+		cmd = pipecmd_new_args (fmt_prog, file, pp_string, NULL);
 		if (roff_device)
-			command_arg (cmd, roff_device);
+			pipecmd_arg (cmd, roff_device);
 		pipeline_command (p, cmd);
 	}
 
@@ -1761,21 +1773,21 @@ static pipeline *make_browser (const char *pattern, const char *file)
 		free (esc_file);
 	}
 
-	p = pipeline_new ();
-	pipeline_command_args (p, "/bin/sh", "-c", browser, NULL);
+	p = pipeline_new_command_args ("/bin/sh", "-c", browser, NULL);
+	pipeline_ignore_signals (p, 1);
 	free (browser);
 
 	return p;
 }
 
-static void setenv_less (const char *title)
+static void setenv_less (pipecmd *cmd, const char *title)
 {
 	const char *esc_title;
 	char *less_opts, *man_pn;
 	const char *force = getenv ("MANLESS");
 
 	if (force) {
-		setenv ("LESS", force, 1);
+		pipecmd_setenv (cmd, "LESS", force);
 		return;
 	}
 
@@ -1797,16 +1809,16 @@ static void setenv_less (const char *title)
 	}
 
 	debug ("Setting LESS to %s\n", less_opts);
-	/* If there isn't enough space in the environment, ignore it. */
-	setenv ("LESS", less_opts, 1);
+	pipecmd_setenv (cmd, "LESS", less_opts);
 
 	debug ("Setting MAN_PN to %s\n", esc_title);
-	setenv ("MAN_PN", esc_title, 1);
+	pipecmd_setenv (cmd, "MAN_PN", esc_title);
 
 	free (less_opts);
 }
 
-void add_output_iconv (pipeline *p, const char *source, const char *target)
+static void add_output_iconv (pipeline *p,
+			      const char *source, const char *target)
 {
 	debug ("add_output_iconv: source %s, target %s\n", source, target);
 	if (source && target && !STREQ (source, target)) {
@@ -1827,8 +1839,7 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 {
 	pipeline *p = pipeline_new ();
 	const char *locale_charset = NULL;
-
-	setenv_less (title);
+	pipecmd *pager_cmd = NULL;
 
 	locale_charset = my_locale_charset ();
 
@@ -1841,41 +1852,29 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 		 */
 		const char *man_keep_formatting =
 			getenv ("MAN_KEEP_FORMATTING");
-		command *colcmd = NULL;
 		if ((!man_keep_formatting || !*man_keep_formatting) &&
 		    !isatty (STDOUT_FILENO))
-			colcmd = command_new_args (
-				COL, "-b", "-p", "-x", NULL);
-#ifndef GNU_NROFF
-		/* tbl needs col */
-		else if (using_tbl && !troff && *COL)
-			colcmd = command_new (COL);
-#endif /* GNU_NROFF */
-
-		if (colcmd) {
-			char *col_locale =
-				find_charset_locale (locale_charset);
-			if (col_locale) {
-				command_setenv (colcmd, "LC_CTYPE",
-						col_locale);
-				free (col_locale);
-			}
-			pipeline_command (p, colcmd);
-		}
+			add_col (p, locale_charset, "-b", "-p", "-x", NULL);
 	}
 
 	if (ascii) {
 		pipeline_command_argstr
 			(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
-		pipeline_command_argstr (p, pager);
+		pager_cmd = pipecmd_new_argstr (pager);
 	} else
 #ifdef TROFF_IS_GROFF
 	if (!htmlout)
 		/* format_display deals with html_pager */
 #endif
-		pipeline_command_argstr (p, pager);
+		pager_cmd = pipecmd_new_argstr (pager);
 
-	if (!p->ncommands) {
+	if (pager_cmd) {
+		setenv_less (pager_cmd, title);
+		pipeline_command (p, pager_cmd);
+	}
+	pipeline_ignore_signals (p, 1);
+
+	if (!pipeline_get_ncommands (p)) {
 		pipeline_free (p);
 		p = NULL;
 	}
@@ -1992,8 +1991,8 @@ static void discard_stderr (pipeline *p)
 {
 	int i;
 
-	for (i = 0; i < p->ncommands; ++i)
-		p->commands[i]->discard_err = 1;
+	for (i = 0; i < pipeline_get_ncommands (p); ++i)
+		pipecmd_discard_err (pipeline_get_command (p, i), 1);
 }
 
 static void maybe_discard_stderr (pipeline *p)
@@ -2010,7 +2009,7 @@ static pipeline *open_cat_stream (const char *cat_file, const char *encoding)
 {
 	pipeline *cat_p;
 #  ifdef COMP_CAT
-	command *comp_cmd;
+	pipecmd *comp_cmd;
 #  endif
 
 	created_tmp_cat = 0;
@@ -2041,11 +2040,12 @@ static pipeline *open_cat_stream (const char *cat_file, const char *encoding)
 	add_output_iconv (cat_p, encoding, "UTF-8");
 #  ifdef COMP_CAT
 	/* fork the compressor */
-	comp_cmd = command_new_argstr (get_def ("compressor", COMPRESSOR));
-	comp_cmd->nice = 10;
+	comp_cmd = pipecmd_new_argstr (get_def ("compressor", COMPRESSOR));
+	pipecmd_nice (comp_cmd, 10);
 	pipeline_command (cat_p, comp_cmd);
 #  endif
-	cat_p->want_out = tmp_cat_fd; /* pipeline_start will close it */
+	/* pipeline_start will close tmp_cat_fd */
+	pipeline_want_out (cat_p, tmp_cat_fd);
 
 	return cat_p;
 }
@@ -2139,6 +2139,7 @@ static void format_display (pipeline *decomp,
 #ifdef TROFF_IS_GROFF
 	if (format_cmd && htmlout) {
 		char *man_base, *man_ext;
+		int htmlfd;
 
 		old_cwd = xgetcwd ();
 		if (!old_cwd) {
@@ -2159,12 +2160,11 @@ static void format_display (pipeline *decomp,
 		htmlfile = xstrdup (htmldir);
 		htmlfile = appendstr (htmlfile, "/", man_base, ".html", NULL);
 		free (man_base);
-		format_cmd->want_out = open (htmlfile,
-					     O_CREAT | O_EXCL | O_WRONLY,
-					     0644);
-		if (format_cmd->want_out == -1)
+		htmlfd = open (htmlfile, O_CREAT | O_EXCL | O_WRONLY, 0644);
+		if (htmlfd == -1)
 			error (FATAL, errno, _("can't open temporary file %s"),
 			       htmlfile);
+		pipeline_want_out (format_cmd, htmlfd);
 		pipeline_connect (decomp, format_cmd, NULL);
 		pipeline_pump (decomp, format_cmd, NULL);
 		pipeline_wait (decomp);
@@ -2212,7 +2212,6 @@ static void format_display (pipeline *decomp,
 			debug ("Trying browser: %s\n", candidate);
 			browser = make_browser (candidate, htmlfile);
 			status = do_system_drop_privs (browser);
-			pipeline_free (browser);
 			if (!status)
 				break;
 		}
@@ -2256,7 +2255,7 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 #endif /* COMP_CAT */
 
 	maybe_discard_stderr (format_cmd);
-	format_cmd->want_out = tmp_cat_fd;
+	pipeline_want_out (format_cmd, tmp_cat_fd);
 
 	push_cleanup ((cleanup_fun) unlink, tmpcat, 1);
 
@@ -2297,6 +2296,12 @@ static void disable_justification (void *data ATTRIBUTE_UNUSED)
 #ifdef TROFF_IS_GROFF
 static void locale_macros (void *data)
 {
+	const char *macro_lang = data;
+	const char *hyphen_lang = STREQ (lang, "en") ? "us" : macro_lang;
+
+	debug ("Macro language %s; hyphenation language %s\n",
+	       macro_lang, hyphen_lang);
+
 	printf (
 		/* If we're using groff >= 1.20.2 (for the 'file' warning
 		 * category):
@@ -2309,7 +2314,11 @@ static void locale_macros (void *data)
 		" (\\n[.warn] / 1048576 %% 2 * 1048576))\n"
 		/*   and load the appropriate per-locale macros */
 		".  mso %s.tmac\n"
-		".\\}\n", (const char *) data);
+		".\\}\n"
+		/* set the hyphenation language anyway, to make sure groff
+		 * only hyphenates languages it knows about
+		 */
+		".hla %s\n", macro_lang, hyphen_lang);
 }
 #endif /* TROFF_IS_GROFF */
 
@@ -2344,7 +2353,8 @@ static int display (const char *dir, const char *man_file,
 
 	/* define format_cmd */
 	if (man_file) {
-		command *seq = command_new_sequence ("decompressor", NULL);
+		pipecmd *seq = pipecmd_new_sequence ("decompressor", NULL);
+		int seq_ncmds = 0;
 
 		if (*man_file)
 			decomp = decompress_open (man_file);
@@ -2352,17 +2362,19 @@ static int display (const char *dir, const char *man_file,
 			decomp = decompress_fdopen (dup (STDIN_FILENO));
 
 		if (no_hyphenation) {
-			command *hcmd = command_new_function (
+			pipecmd *hcmd = pipecmd_new_function (
 				"echo .nh && echo .de hy && echo ..",
 				disable_hyphenation, NULL, NULL);
-			command_sequence_command (seq, hcmd);
+			pipecmd_sequence_command (seq, hcmd);
+			++seq_ncmds;
 		}
 
 		if (no_justification) {
-			command *jcmd = command_new_function (
+			pipecmd *jcmd = pipecmd_new_function (
 				"echo .na && echo .de ad && echo ..",
 				disable_justification, NULL, NULL);
-			command_sequence_command (seq, jcmd);
+			pipecmd_sequence_command (seq, jcmd);
+			++seq_ncmds;
 		}
 
 #ifdef TROFF_IS_GROFF
@@ -2376,33 +2388,35 @@ static int display (const char *dir, const char *man_file,
 			    !STREQ (page_lang, "C")) {
 				struct locale_bits bits;
 				char *name;
-				command *lcmd;
+				pipecmd *lcmd;
 
 				unpack_locale_bits (page_lang, &bits);
 				name = xasprintf ("echo .mso %s.tmac",
 						  bits.language);
-				lcmd = command_new_function (
+				lcmd = pipecmd_new_function (
 					name, locale_macros, free, page_lang);
-				command_sequence_command (seq, lcmd);
+				pipecmd_sequence_command (seq, lcmd);
+				++seq_ncmds;
 				free (name);
 				free_locale_bits (&bits);
 			}
 		}
 #endif /* TROFF_IS_GROFF */
 
-		if (seq->u.sequence.ncommands) {
-			assert (decomp->ncommands <= 1);
-			if (decomp->ncommands) {
-				command_sequence_command
-					(seq, decomp->commands[0]);
-				decomp->commands[0] = seq;
+		if (seq_ncmds) {
+			assert (pipeline_get_ncommands (decomp) <= 1);
+			if (pipeline_get_ncommands (decomp)) {
+				pipecmd_sequence_command
+					(seq,
+					 pipeline_get_command (decomp, 0));
+				pipeline_set_command (decomp, 0, seq);
 			} else {
-				command_sequence_command
-					(seq, command_new_passthrough ());
+				pipecmd_sequence_command
+					(seq, pipecmd_new_passthrough ());
 				pipeline_command (decomp, seq);
 			}
 		} else
-			command_free (seq);
+			pipecmd_free (seq);
 	}
 
 	if (decomp) {
@@ -3361,7 +3375,7 @@ static int display_database_check (struct candidate *candp)
 	return exists;
 }
 
-static void db_hash_free (void *defn)
+static void db_hashtable_free (void *defn)
 {
 	free_mandata_struct (defn);
 }
@@ -3439,10 +3453,10 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 		database = mkdbname (manpath);
 
 	if (!db_hash)
-		db_hash = hash_create (&db_hash_free);
+		db_hash = hashtable_create (&db_hashtable_free);
 
 	/* Have we looked here already? */
-	data = hash_lookup (db_hash, manpath, strlen (manpath));
+	data = hashtable_lookup (db_hash, manpath, strlen (manpath));
 
 	if (!data) {
 		dbf = MYDBM_RDOPEN (database);
@@ -3462,8 +3476,8 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 			else
 				data = dblookup_all (name, section,
 						     match_case);
-			hash_install (db_hash, manpath, strlen (manpath),
-				      data);
+			hashtable_install (db_hash, manpath, strlen (manpath),
+					   data);
 			MYDBM_CLOSE (dbf);
 #ifdef MAN_DB_CREATES
 		} else if (!global_manpath) {
@@ -3473,9 +3487,9 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 				data = infoalloc ();
 				data->next = NULL;
 				data->addr = NULL;
-				hash_install (db_hash,
-					      manpath, strlen (manpath),
-					      data);
+				hashtable_install (db_hash,
+						   manpath, strlen (manpath),
+						   data);
 				return TRY_DATABASE_OPEN_FAILED;
 			}
 			return TRY_DATABASE_CREATED;
@@ -3485,8 +3499,8 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 			data = infoalloc ();
 			data->next = (struct mandata *) NULL;
 			data->addr = NULL;
-			hash_install (db_hash, manpath, strlen (manpath),
-				      data);
+			hashtable_install (db_hash, manpath, strlen (manpath),
+					   data);
 			return TRY_DATABASE_OPEN_FAILED;
 		}
 	}
@@ -3511,7 +3525,7 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 				found_stale = 1;
 
 	if (found_stale) {
-		hash_remove (db_hash, manpath, strlen (manpath));
+		hashtable_remove (db_hash, manpath, strlen (manpath));
 		return TRY_DATABASE_UPDATED;
 	}
 #endif /* MAN_DB_UPDATES */

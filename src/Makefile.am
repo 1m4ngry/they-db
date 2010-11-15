@@ -37,70 +37,60 @@ noinst_DATA = man_db.conf
 
 AM_CPPFLAGS = \
 	-I$(top_builddir)/include \
-	-I$(top_builddir)/intl \
 	-I$(top_builddir)/gnulib/lib \
 	-I$(top_srcdir)/gnulib/lib \
 	-I$(top_srcdir)/lib \
 	-I$(top_srcdir)/libdb \
 	-DCONFIG_FILE=\"$(config_file)\" \
-	-DLOCALEDIR=\"$(localedir)\" \
 	-DAPROPOS=\"$(bindir)/$(TRANS_APROPOS)\" \
 	-DAPROPOS_NAME=\"$(TRANS_APROPOS)\" \
 	-DMAN=\"$(bindir)/$(TRANS_MAN)\" \
 	-DMANCONV=\"$(pkglibexecdir)/$(TRANS_MANCONV)\" \
 	-DMANDB=\"$(bindir)/$(TRANS_MANDB)\" \
 	-DSOELIM=\"$(bindir)/$(TRANS_ZSOELIM)\" \
-	-DWHATIS=\"$(bindir)/$(TRANS_WHATIS)\"
+	-DWHATIS=\"$(bindir)/$(TRANS_WHATIS)\" \
+	$(libpipeline_CFLAGS)
 
-LIBMAN = $(top_builddir)/lib/libman.a $(top_builddir)/gnulib/lib/libgnu.a
-LIBMANDB = $(top_builddir)/libdb/libmandb.a $(DBLIBS)
+LIBMAN = $(top_builddir)/lib/libman.la
+LIBMANDB = $(top_builddir)/libdb/libmandb.la
 
-accessdb_LDADD = $(LIBMANDB) $(LIBMAN) @LIBINTL@
-catman_LDADD = $(LIBMANDB) $(LIBMAN) @LIBINTL@
-globbing_LDADD = $(LIBMAN) @LIBINTL@
-lexgrog_LDADD = $(LIBMAN) $(LIBCOMPRESS) @LIBINTL@
-man_LDADD = $(LIBMANDB) $(LIBMAN) $(LIBCOMPRESS) @LIBINTL@
-manconv_LDADD = $(LIBMAN) $(LIBCOMPRESS) @LIBINTL@
-mandb_LDADD = $(LIBMANDB) $(LIBMAN) $(LIBCOMPRESS) @LIBINTL@
-manpath_LDADD = $(LIBMAN) @LIBINTL@
-whatis_LDADD = $(LIBMANDB) $(LIBMAN) $(LIBICONV) $(LIBCOMPRESS) @LIBINTL@
-zsoelim_LDADD = $(LIBMAN) $(LIBCOMPRESS) @LIBINTL@
+accessdb_LDADD = $(LIBMANDB)
+catman_LDADD = $(LIBMANDB)
+globbing_LDADD = $(LIBMAN)
+lexgrog_LDADD = $(LIBMAN)
+man_LDADD = $(LIBMANDB)
+manconv_LDADD = $(LIBMAN)
+mandb_LDADD = $(LIBMANDB)
+manpath_LDADD = $(LIBMAN)
+whatis_LDADD = $(LIBMANDB) $(LTLIBICONV)
+zsoelim_LDADD = $(LIBMAN)
 
 accessdb_SOURCES = \
-	accessdb.c \
-	util.c
+	accessdb.c
 catman_SOURCES = \
 	catman.c \
-	fake_security.c \
 	manp.c \
-	manp.h \
-	util.c
+	manp.h
 globbing_SOURCES = \
 	globbing.c \
 	globbing.h \
-	globbing_test.c \
-	util.c
+	globbing_test.c
 lexgrog_SOURCES = \
 	compression.c \
 	descriptions.c \
 	descriptions.h \
-	encodings.c \
-	encodings.h \
-	fake_security.c \
 	lexgrog.l \
 	lexgrog_test.c \
 	manconv.c \
 	manconv.h \
-	security.h \
+	manconv_client.c \
+	manconv_client.h \
 	ult_src.c \
-	ult_src.h \
-	util.c
+	ult_src.h
 man_SOURCES = \
 	compression.c \
 	convert_name.c \
 	convert_name.h \
-	encodings.c \
-	encodings.h \
 	filenames.c \
 	filenames.h \
 	globbing.c \
@@ -109,17 +99,15 @@ man_SOURCES = \
 	man.h \
 	manconv.c \
 	manconv.h \
+	manconv_client.c \
+	manconv_client.h \
 	manp.c \
 	manp.h \
-	security.c \
-	security.h \
 	ult_src.c \
 	ult_src.h \
-	util.c \
 	zsoelim.h \
 	zsoelim.l
 manconv_SOURCES = \
-	encodings.c \
 	manconv.c \
 	manconv.h \
 	manconv_main.c
@@ -130,8 +118,6 @@ mandb_SOURCES = \
 	descriptions.c \
 	descriptions.h \
 	descriptions_store.c \
-	encodings.c \
-	encodings.h \
 	filenames.c \
 	filenames.h \
 	globbing.c \
@@ -139,35 +125,27 @@ mandb_SOURCES = \
 	lexgrog.l \
 	manconv.c \
 	manconv.h \
+	manconv_client.c \
+	manconv_client.h \
 	mandb.c \
 	manp.c \
 	manp.h \
-	security.c \
-	security.h \
 	straycats.c \
 	ult_src.c \
-	ult_src.h \
-	util.c
+	ult_src.h
 manpath_SOURCES = \
-	fake_security.c \
 	manp.c \
 	manp.h \
-	manpath.c \
-	util.c
+	manpath.c
 whatis_SOURCES = \
-	encodings.c \
-	encodings.h \
-	fake_security.c \
 	manconv.c \
 	manconv.h \
 	manp.c \
 	manp.h \
-	util.c \
 	whatis.c
 zsoelim_SOURCES = \
 	globbing.c \
 	globbing.h \
-	util.c \
 	zsoelim.h \
 	zsoelim.l \
 	zsoelim_main.c

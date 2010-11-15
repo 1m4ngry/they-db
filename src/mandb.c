@@ -48,7 +48,6 @@
 #include "xgetcwd.h"
 
 #include "gettext.h"
-#include <locale.h>
 #define _(String) gettext (String)
 #define N_(String) gettext_noop (String)
 
@@ -57,13 +56,13 @@
 #include "error.h"
 #include "cleanup.h"
 #include "pipeline.h"
+#include "security.h"
 
 #include "mydbm.h"
 
 #include "check_mandirs.h"
 #include "filenames.h"
 #include "manp.h"
-#include "security.h"
 
 char *program_name;
 int quiet = 1;
@@ -580,16 +579,8 @@ int main (int argc, char *argv[])
 	program_name = base_name (argv[0]);
 
 	init_debug ();
-
-	/* initialise the locale */
-	if (!setlocale (LC_ALL, "") && !getenv ("MAN_NO_LOCALE_WARNING"))
-		/* Obviously can't translate this. */
-		error (0, 0, "can't set the locale; make sure $LC_* and $LANG "
-			     "are correct");
-	setenv ("MAN_NO_LOCALE_WARNING", "1", 1);
-	bindtextdomain (PACKAGE, LOCALEDIR);
-	bindtextdomain (PACKAGE "-gnulib", LOCALEDIR);
-	textdomain (PACKAGE);
+	pipeline_install_post_fork (pop_all_cleanups);
+	init_locale (LC_ALL, "");
 
 	if (argp_parse (&argp, argc, argv, 0, 0, 0))
 		exit (FAIL);
@@ -601,8 +592,6 @@ int main (int argc, char *argv[])
 		cwd[0] = '\0';
 	}
 #endif /* __profile__ */
-
-	pipeline_install_sigchld ();
 
 #ifdef SECURE_MAN_UID
 	/* record who we are and drop effective privs for later use */

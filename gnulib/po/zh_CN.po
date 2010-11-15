@@ -1,19 +1,20 @@
 # simplified Chinese translation of gnulib.
-# Copyright (C) 1998, 2002 Free Software Foundation, Inc.
+# Copyright (C) 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 # Yip Chi Lap <clyip@cs.hku.hk>, 1998.
 # Abel Cheung <maddog@linux.org.hk>, 2002.
 # Anthony Fok <anthony@thizlinux.com>, 2002.
 # Funda Wang <fundawang@linux.net.cn>, 2004, 2005.
-# Ji ZhengYu <zhengyuji@gmail.com>, 2009.
+# Ji ZhengYu <zhengyuji@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 1.0.0.1991.dbebf\n"
+"Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-02-16 22:32+0000\n"
-"PO-Revision-Date: 2009-05-01 14:10中国标准时间\n"
+"POT-Creation-Date: 2010-11-15 22:30+0000\n"
+"PO-Revision-Date: 2010-02-26 09:54+0800\n"
 "Last-Translator: Ji ZhengYu <zhengyuji@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -74,7 +75,7 @@ msgstr "请尝试执行“%s --help”或“%s --usage”来获取更多信息�
 msgid "Report bugs to %s.\n"
 msgstr "请向 %s 报告错误。\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:153
+#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "未知的系统错误"
 
@@ -119,57 +120,61 @@ msgstr "%s：参数太多\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "（程序错误）未知的选项！？"
 
-#: gnulib/lib/getopt.c:529 gnulib/lib/getopt.c:545
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s：选项“%s”不明确\n"
+msgstr "%s: 选项\"%s\"歧义\n"
 
-#: gnulib/lib/getopt.c:578 gnulib/lib/getopt.c:582
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
-msgstr "%s：选项“--%s”不允许参数\n"
+msgstr "%s: 选项\"--%s\"不要参数\n"
 
-#: gnulib/lib/getopt.c:591 gnulib/lib/getopt.c:596
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
-msgstr "%s：选项“%c%s”不允许参数\n"
+msgstr "%s: 选项\"%c%s\"不要参数\n"
 
-#: gnulib/lib/getopt.c:639 gnulib/lib/getopt.c:658 gnulib/lib/getopt.c:961
-#: gnulib/lib/getopt.c:980
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
 #, fuzzy, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr "%s：选项“%s”需要参数\n"
+msgid "%s: option '--%s' requires an argument\n"
+msgstr "%s: 选项\"%s\"必须带参数\n"
 
-#: gnulib/lib/getopt.c:696 gnulib/lib/getopt.c:699
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#, c-format
 msgid "%s: unrecognized option '--%s'\n"
-msgstr "%s：无法识别的选项“--%s”\n"
+msgstr "%s: 无法识别的选项\"--%s\"\n"
 
-#: gnulib/lib/getopt.c:707 gnulib/lib/getopt.c:710
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#, c-format
 msgid "%s: unrecognized option '%c%s'\n"
-msgstr "%s：无法识别的选项“%c%s”\n"
+msgstr "%s: 无法识别的选项\"%c%s\"\n"
 
-#: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#, c-format
 msgid "%s: invalid option -- '%c'\n"
-msgstr "%s：无效选项 -- %c\n"
+msgstr "%s: 无效选项 -- \"%c\"\n"
 
-#: gnulib/lib/getopt.c:812 gnulib/lib/getopt.c:829 gnulib/lib/getopt.c:1032
-#: gnulib/lib/getopt.c:1050
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
+#: gnulib/lib/getopt.c:1053
+#, c-format
 msgid "%s: option requires an argument -- '%c'\n"
-msgstr "%s：选项需要参数 -- %c\n"
+msgstr "%s: 选项需要参数 -- \"%c\"\n"
 
-#: gnulib/lib/getopt.c:882 gnulib/lib/getopt.c:898
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
-msgstr "%s：选项“-W %s”不明确\n"
+msgstr "%s: 选项\"-W %s\"有歧义\n"
 
-#: gnulib/lib/getopt.c:922 gnulib/lib/getopt.c:940
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
-msgstr "%s：选项“-W %s”不允许参数\n"
+msgstr "%s: 选项\"-W %s\"不要带参数\n"
+
+#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: 选项\"%s\"必须带参数\n"
 
 #: gnulib/lib/openat-die.c:34
 #, c-format
@@ -256,141 +261,140 @@ msgstr "没有前次正则表达式"
 
 #: gnulib/lib/siglist.h:29
 msgid "Hangup"
-msgstr ""
+msgstr "挂起"
 
 #: gnulib/lib/siglist.h:32
 msgid "Interrupt"
-msgstr ""
+msgstr "中断"
 
 #: gnulib/lib/siglist.h:35
 msgid "Quit"
-msgstr ""
+msgstr "退出"
 
 #: gnulib/lib/siglist.h:38
 msgid "Illegal instruction"
-msgstr ""
+msgstr "非法指令"
 
 #: gnulib/lib/siglist.h:41
 msgid "Trace/breakpoint trap"
-msgstr ""
+msgstr "跟踪(断点)"
 
 #: gnulib/lib/siglist.h:44
 msgid "Aborted"
-msgstr ""
+msgstr "取消"
 
 #: gnulib/lib/siglist.h:47
 msgid "Floating point exception"
-msgstr ""
+msgstr "浮点溢出"
 
 #: gnulib/lib/siglist.h:50
 msgid "Killed"
-msgstr ""
+msgstr "强行终止"
 
 #: gnulib/lib/siglist.h:53
-#, fuzzy
 msgid "Bus error"
-msgstr "系统错误"
+msgstr "总线错误"
 
 #: gnulib/lib/siglist.h:56
 msgid "Segmentation fault"
-msgstr ""
+msgstr "段错误"
 
 #: gnulib/lib/siglist.h:59
 msgid "Broken pipe"
-msgstr ""
+msgstr "管道断开"
 
 #: gnulib/lib/siglist.h:62
 msgid "Alarm clock"
-msgstr ""
+msgstr "时钟警报"
 
 #: gnulib/lib/siglist.h:65
 msgid "Terminated"
-msgstr ""
+msgstr "被终止"
 
 #: gnulib/lib/siglist.h:68
 msgid "Urgent I/O condition"
-msgstr ""
+msgstr "I/O 条件不足"
 
 #: gnulib/lib/siglist.h:71
 msgid "Stopped (signal)"
-msgstr ""
+msgstr "被停止(通过信号)"
 
 #: gnulib/lib/siglist.h:74
 msgid "Stopped"
-msgstr ""
+msgstr "被停止"
 
 #: gnulib/lib/siglist.h:77
 msgid "Continued"
-msgstr ""
+msgstr "继续"
 
 #: gnulib/lib/siglist.h:80
 msgid "Child exited"
-msgstr ""
+msgstr "子进程退出"
 
 #: gnulib/lib/siglist.h:83
 msgid "Stopped (tty input)"
-msgstr ""
+msgstr "被停止(tty 输入)"
 
 #: gnulib/lib/siglist.h:86
 msgid "Stopped (tty output)"
-msgstr ""
+msgstr "被停止(tty 输出)"
 
 #: gnulib/lib/siglist.h:89
 msgid "I/O possible"
-msgstr ""
+msgstr "I/O 可能"
 
 #: gnulib/lib/siglist.h:92
 msgid "CPU time limit exceeded"
-msgstr ""
+msgstr "超出CPU 时间限制"
 
 #: gnulib/lib/siglist.h:95
 msgid "File size limit exceeded"
-msgstr ""
+msgstr "超出文件大小限制"
 
 #: gnulib/lib/siglist.h:98
 msgid "Virtual timer expired"
-msgstr ""
+msgstr "虚拟计时器过期"
 
 #: gnulib/lib/siglist.h:101
+#, fuzzy
 msgid "Profiling timer expired"
-msgstr ""
+msgstr "数据计时器过期"
 
 #: gnulib/lib/siglist.h:104
 msgid "Window changed"
-msgstr ""
+msgstr "窗口改变"
 
 #: gnulib/lib/siglist.h:107
 msgid "User defined signal 1"
-msgstr ""
+msgstr "用户自定义信号 1"
 
 #: gnulib/lib/siglist.h:110
 msgid "User defined signal 2"
-msgstr ""
+msgstr "用户自定义信号 2"
 
 #: gnulib/lib/siglist.h:115
 msgid "EMT trap"
-msgstr ""
+msgstr "仿真程序陷阱"
 
 #: gnulib/lib/siglist.h:118
 msgid "Bad system call"
-msgstr ""
+msgstr "错误的系统调用"
 
 #: gnulib/lib/siglist.h:121
 msgid "Stack fault"
-msgstr ""
+msgstr "堆栈错误"
 
 #: gnulib/lib/siglist.h:124
 msgid "Information request"
-msgstr ""
+msgstr "信息请求"
 
 #: gnulib/lib/siglist.h:126
-#, fuzzy
 msgid "Power failure"
-msgstr "古怪文件"
+msgstr "电力问题"
 
 #: gnulib/lib/siglist.h:129
 msgid "Resource lost"
-msgstr ""
+msgstr "资源丢失"
 
 #: gnulib/lib/strsignal.c:110
 #, c-format
@@ -438,6 +442,9 @@ msgstr "内存用尽"
 
 #~ msgid "write error"
 #~ msgstr "写入错误"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "保留 %s 的权限"
 
 #~ msgid "error while opening \"%s\" for reading"
 #~ msgstr "打开“%s”读取数据时发生错误"
@@ -502,6 +509,9 @@ msgstr "内存用尽"
 #~ msgid "typed memory object"
 #~ msgstr "标准内存对象"
 
+#~ msgid "weird file"
+#~ msgstr "古怪文件"
+
 #~ msgid "Address family for hostname not supported"
 #~ msgstr "不支持主机名的地址族"
 
@@ -532,6 +542,9 @@ msgstr "内存用尽"
 #~ msgid "ai_socktype not supported"
 #~ msgstr "不支持 ai_socktype"
 
+#~ msgid "System error"
+#~ msgstr "系统错误"
+
 #~ msgid "Argument buffer too small"
 #~ msgstr "参数缓冲区太小"
 
@@ -556,12 +569,6 @@ msgstr "内存用尽"
 #~ msgid "Unknown error"
 #~ msgstr "未知错误"
 
-#~ msgid "%s: illegal option -- %c\n"
-#~ msgstr "%s：非法选项 -- %c\n"
-
-#~ msgid "%s subprocess I/O error"
-#~ msgstr "%s 子进程输入/输出错误"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "compile_java_class 的 source_version 参数无效"
 
@@ -580,8 +587,8 @@ msgstr "内存用尽"
 #~ msgid "Java virtual machine not found, try installing gij or set $JAVA"
 #~ msgstr "未找到 Java 虚拟机，尝试安装 gij 或是设置 $JAVA"
 
-#~ msgid "cannot create pipe"
-#~ msgstr "无法创建管道"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "%s 子进程输入/输出错误"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "无法更改 %s 的权限"
@@ -591,6 +598,33 @@ msgstr "内存用尽"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "无法以读方式打开 /dev/zero"
+
+#~ msgid "creation of reading thread failed"
+#~ msgstr "读线程创建错误"
+
+#~ msgid "cannot set up nonblocking I/O to %s subprocess"
+#~ msgstr "无法为 %s 子进程设置非阻塞性 I/O"
+
+#~ msgid "communication with %s subprocess failed"
+#~ msgstr "与 %s 子进程通讯错误"
+
+#~ msgid "write to %s subprocess failed"
+#~ msgstr "写入 %s 子进程错误"
+
+#~ msgid "read from %s subprocess failed"
+#~ msgstr "读取 %s 子进程错误"
+
+#~ msgid "subprocess %s terminated with exit code %d"
+#~ msgstr "子进程 %s 由退出码 %d 终止"
+
+#~ msgid "creation of threads failed"
+#~ msgstr "线程创建失败"
+
+#~ msgid "%s subprocess terminated with exit code %d"
+#~ msgstr "子进程 %s 由退出码 %d 终止"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "无法创建管道"
 
 #~ msgid "`"
 #~ msgstr "“"
@@ -603,6 +637,12 @@ msgstr "内存用尽"
 
 #~ msgid "^[nN]"
 #~ msgstr "^[nN]"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "设置 %s 的权限"
+
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "写入一个已关闭的管道或套接字时发生错误"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "iconv 函数无法使用"
@@ -631,20 +671,11 @@ msgstr "内存用尽"
 #~ msgid "unable to display error message"
 #~ msgstr "无法显示错误信息"
 
-#~ msgid "preserving permissions for %s"
-#~ msgstr "保留 %s 的权限"
+#~ msgid "Packaged by %s (%s)\n"
+#~ msgstr "由 %s (%s) 打包\n"
 
-#~ msgid "string comparison failed"
-#~ msgstr "字符串比较出现错误"
-
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "请设定 LC_ALL='C' 避免问题出现。"
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "要比较的字符串为 %s 和 %s。"
-
-#~ msgid "cannot perform formatted output"
-#~ msgstr "无法执行格式化输出"
+#~ msgid "Packaged by %s\n"
+#~ msgstr "由 %s 打包\n"
 
 #~ msgid "(C)"
 #~ msgstr "(C)"
@@ -730,16 +761,61 @@ msgstr "内存用尽"
 
 #~ msgid ""
 #~ "\n"
-#~ "Report bugs to <%s>.\n"
+#~ "Report bugs to: %s\n"
 #~ msgstr ""
 #~ "\n"
-#~ "请向 <%s> 报告错误。\n"
+#~ "请向 %s 报告错误。向 <i18n-zh@googlegroups.com> 报告翻译错误。\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
-#~ msgstr "%s 主页: <http://www.gnu.org/software/%s/>。\n"
+#~ msgid "Report %s bugs to: %s\n"
+#~ msgstr "将 %s 错误报告给: %s\n"
 
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
-#~ msgstr "GNU 软件的通用帮助: <http://www.gnu.org/gethelp/>。\n"
+#~ msgid "%s home page: <%s>\n"
+#~ msgstr "%s 主页: <%s>\n"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
+#~ msgstr "%s 主页: <http://www.gnu.org/software/%s/>\n"
+
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
+#~ msgstr "GNU 软件的通用帮助: <http://www.gnu.org/gethelp/>\n"
+
+#~ msgid "_open_osfhandle failed"
+#~ msgstr "_open_osfhandle 失败"
+
+#~ msgid "cannot restore fd %d: dup2 failed"
+#~ msgstr "无法恢复文件描述符 %d: dup2 失败"
+
+#~ msgid "%s subprocess"
+#~ msgstr "%s 子进程"
+
+#~ msgid "%s subprocess got fatal signal %d"
+#~ msgstr "%s 子进程获得终结信号 %d"
+
+#~ msgid "stdin"
+#~ msgstr "标准输入"
+
+#~ msgid "stdout"
+#~ msgstr "标准输出"
+
+#~ msgid "stderr"
+#~ msgstr "标准错误输出"
+
+#~ msgid "unknown stream"
+#~ msgstr "未知的流"
+
+#~ msgid "failed to reopen %s with mode %s"
+#~ msgstr "无法以 %2$s 模式重新打开 %1$s"
+
+#~ msgid "string comparison failed"
+#~ msgstr "字符串比较出现错误"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "请设定 LC_ALL='C' 避免问题出现。"
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "要比较的字符串为 %s 和 %s。"
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "无法执行格式化输出"
 
 #~ msgid "invalid %s%s argument `%s'"
 #~ msgstr "%s%s 参数‘%s’无效"
@@ -750,17 +826,15 @@ msgstr "内存用尽"
 #~ msgid "%s%s argument `%s' too large"
 #~ msgstr "%s%s 参数‘%s’太长"
 
-#~ msgid "setting permissions for %s"
-#~ msgstr "设置 %s 的权限"
+#~ msgid "%s: illegal option -- %c\n"
+#~ msgstr "%s：非法选项 -- %c\n"
 
-#~ msgid "%s subprocess"
-#~ msgstr "%s 子进程"
-
-#~ msgid "%s subprocess got fatal signal %d"
-#~ msgstr "%s 子进程获得终结信号 %d"
-
-#~ msgid "error writing to a closed pipe or socket"
-#~ msgstr "写入一个已关闭的管道或套接字时发生错误"
+#~ msgid ""
+#~ "\n"
+#~ "Report bugs to <%s>.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "请向 <%s> 报告错误。\n"
 
 #~ msgid "block size"
 #~ msgstr "块大小"

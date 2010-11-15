@@ -6,10 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sh-utils 1.12i\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-02-16 22:32+0000\n"
+"POT-Creation-Date: 2010-11-15 22:30+0000\n"
 "PO-Revision-Date: 1996-11-08 20:03+0100\n"
 "Last-Translator: António João Serras Rendas <arendas@mail.telepac.pt>\n"
 "Language-Team: Português <pt@li.org>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8-bit\n"
@@ -68,7 +69,7 @@ msgstr "Tente `%s --help' para mais informação.\n"
 msgid "Report bugs to %s.\n"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:153
+#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
 #, fuzzy
 msgid "Unknown system error"
 msgstr "operador binário desconhecido"
@@ -115,57 +116,61 @@ msgstr "demasiados argumentos\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr ""
 
-#: gnulib/lib/getopt.c:529 gnulib/lib/getopt.c:545
+#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
 #, c-format
 msgid "%s: option '%s' is ambiguous\n"
 msgstr ""
 
-#: gnulib/lib/getopt.c:578 gnulib/lib/getopt.c:582
+#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
 #, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr ""
 
-#: gnulib/lib/getopt.c:591 gnulib/lib/getopt.c:596
+#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
 #, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr ""
 
-#: gnulib/lib/getopt.c:639 gnulib/lib/getopt.c:658 gnulib/lib/getopt.c:961
-#: gnulib/lib/getopt.c:980
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
 #, fuzzy, c-format
-msgid "%s: option '%s' requires an argument\n"
+msgid "%s: option '--%s' requires an argument\n"
 msgstr "demasiados argumentos\n"
 
-#: gnulib/lib/getopt.c:696 gnulib/lib/getopt.c:699
+#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
 #, fuzzy, c-format
 msgid "%s: unrecognized option '--%s'\n"
 msgstr "opção inválida `%s'"
 
-#: gnulib/lib/getopt.c:707 gnulib/lib/getopt.c:710
+#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
 #, fuzzy, c-format
 msgid "%s: unrecognized option '%c%s'\n"
 msgstr "opção inválida `%s'"
 
-#: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
+#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
 #, fuzzy, c-format
 msgid "%s: invalid option -- '%c'\n"
 msgstr "opção inválida `%s'"
 
-#: gnulib/lib/getopt.c:812 gnulib/lib/getopt.c:829 gnulib/lib/getopt.c:1032
-#: gnulib/lib/getopt.c:1050
+#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
+#: gnulib/lib/getopt.c:1053
 #, fuzzy, c-format
 msgid "%s: option requires an argument -- '%c'\n"
 msgstr "demasiados argumentos\n"
 
-#: gnulib/lib/getopt.c:882 gnulib/lib/getopt.c:898
+#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
 #, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
 msgstr ""
 
-#: gnulib/lib/getopt.c:922 gnulib/lib/getopt.c:940
+#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
 #, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr ""
+
+#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "demasiados argumentos\n"
 
 #: gnulib/lib/openat-die.c:34
 #, fuzzy, c-format
@@ -388,9 +393,8 @@ msgid "Information request"
 msgstr ""
 
 #: gnulib/lib/siglist.h:126
-#, fuzzy
 msgid "Power failure"
-msgstr "`%s' não é um ficheiro normal"
+msgstr ""
 
 #: gnulib/lib/siglist.h:129
 msgid "Resource lost"
@@ -477,6 +481,10 @@ msgstr "memória virtual esgotada"
 #, fuzzy
 #~ msgid "symbolic link"
 #~ msgstr "não consigo ler ligação (link) simbólica `%s'"
+
+#, fuzzy
+#~ msgid "weird file"
+#~ msgstr "`%s' não é um ficheiro normal"
 
 #, fuzzy
 #~ msgid "Address family for hostname not supported"

@@ -1,4 +1,4 @@
-# translation of gnulib-1.0.0.1991.dbebf.ru.po to Russian
+# translation of gnulib-2.0.0.3462.e9796.ru.po to Russian
 # Copyright (C) 2005, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 #
@@ -6,17 +6,18 @@
 # Yuri Kozlov <yuray@komyakino.ru>, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 1.0.0.1991.dbebf\n"
+"Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-02-16 22:32+0000\n"
-"PO-Revision-Date: 2010-01-08 17:36+0300\n"
+"POT-Creation-Date: 2010-11-15 22:30+0000\n"
+"PO-Revision-Date: 2010-02-23 16:59+0300\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <gnu@mx.ru>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: gnulib/lib/argp-help.c:147
@@ -75,7 +76,7 @@ msgstr ""
 msgid "Report bugs to %s.\n"
 msgstr "Об ошибках сообщай по адресу %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:153
+#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Неизвестная системная ошибка"
 
@@ -120,57 +121,61 @@ msgstr "%s: слишком много аргументов\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(ОШИБКА ПРОГРАММЫ) Параметр должен был быть распознан!?"
 
-#: gnulib/lib/getopt.c:529 gnulib/lib/getopt.c:545
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#, c-format
 msgid "%s: option '%s' is ambiguous\n"
 msgstr "%s: двусмысленный параметр %s\n"
 
-#: gnulib/lib/getopt.c:578 gnulib/lib/getopt.c:582
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
-msgstr "%s: для параметра --%s не требуется аргумент\n"
+msgstr "%s: для параметра --%s аргумент не разрешён\n"
 
-#: gnulib/lib/getopt.c:591 gnulib/lib/getopt.c:596
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
-msgstr "%s: для параметра %c%s не требуется аргументов\n"
+msgstr "%s: для параметра %c%s аргумент не разрешён\n"
 
-#: gnulib/lib/getopt.c:639 gnulib/lib/getopt.c:658 gnulib/lib/getopt.c:961
-#: gnulib/lib/getopt.c:980
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
 #, fuzzy, c-format
-msgid "%s: option '%s' requires an argument\n"
+msgid "%s: option '--%s' requires an argument\n"
 msgstr "%s: для параметра %s требуется аргумент\n"
 
-#: gnulib/lib/getopt.c:696 gnulib/lib/getopt.c:699
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#, c-format
 msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: нераспознанный параметр --%s\n"
 
-#: gnulib/lib/getopt.c:707 gnulib/lib/getopt.c:710
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#, c-format
 msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: нераспознанный параметр %c%s\n"
 
-#: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#, c-format
 msgid "%s: invalid option -- '%c'\n"
-msgstr "%s: неправильный параметр: %c\n"
+msgstr "%s: неправильный параметр -- %c\n"
 
-#: gnulib/lib/getopt.c:812 gnulib/lib/getopt.c:829 gnulib/lib/getopt.c:1032
-#: gnulib/lib/getopt.c:1050
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
+#: gnulib/lib/getopt.c:1053
+#, c-format
 msgid "%s: option requires an argument -- '%c'\n"
-msgstr "%s: для параметра требуется аргумент: %c\n"
+msgstr "%s: для параметра требуется аргумент -- %c\n"
 
-#: gnulib/lib/getopt.c:882 gnulib/lib/getopt.c:898
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: двусмысленный параметр -W %s\n"
 
-#: gnulib/lib/getopt.c:922 gnulib/lib/getopt.c:940
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
-msgstr "%s: для параметра -W %s не требуется аргумент\n"
+msgstr "%s: для параметра -W %s аргумент не разрешён\n"
+
+#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: для параметра %s требуется аргумент\n"
 
 #: gnulib/lib/openat-die.c:34
 #, c-format
@@ -256,141 +261,139 @@ msgstr "Отсутствует предыдущее регулярное выр�
 
 #: gnulib/lib/siglist.h:29
 msgid "Hangup"
-msgstr ""
+msgstr "Обрыв терминальной линии"
 
 #: gnulib/lib/siglist.h:32
 msgid "Interrupt"
-msgstr ""
+msgstr "Прерывание"
 
 #: gnulib/lib/siglist.h:35
 msgid "Quit"
-msgstr ""
+msgstr "Аварийное прерывание"
 
 #: gnulib/lib/siglist.h:38
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Недопустимая инструкция"
 
 #: gnulib/lib/siglist.h:41
 msgid "Trace/breakpoint trap"
-msgstr ""
+msgstr "Прерывание на контрольной точке"
 
 #: gnulib/lib/siglist.h:44
 msgid "Aborted"
-msgstr ""
+msgstr "Прервано"
 
 #: gnulib/lib/siglist.h:47
 msgid "Floating point exception"
-msgstr ""
+msgstr "Ошибка операции с плавающей точкой"
 
 #: gnulib/lib/siglist.h:50
 msgid "Killed"
-msgstr ""
+msgstr "Уничтожение"
 
 #: gnulib/lib/siglist.h:53
-#, fuzzy
 msgid "Bus error"
-msgstr "Системная ошибка"
+msgstr "Ошибка шины"
 
 #: gnulib/lib/siglist.h:56
 msgid "Segmentation fault"
-msgstr ""
+msgstr "Нарушение сегментирования"
 
 #: gnulib/lib/siglist.h:59
 msgid "Broken pipe"
-msgstr ""
+msgstr "Обрыв канала"
 
 #: gnulib/lib/siglist.h:62
 msgid "Alarm clock"
-msgstr ""
+msgstr "Сигнал по таймеру"
 
 #: gnulib/lib/siglist.h:65
 msgid "Terminated"
-msgstr ""
+msgstr "Завершение"
 
 #: gnulib/lib/siglist.h:68
 msgid "Urgent I/O condition"
-msgstr ""
+msgstr "Срочная операция ввода-вывода"
 
 #: gnulib/lib/siglist.h:71
 msgid "Stopped (signal)"
-msgstr ""
+msgstr "Останов (сигнал)"
 
 #: gnulib/lib/siglist.h:74
 msgid "Stopped"
-msgstr ""
+msgstr "Останов"
 
 #: gnulib/lib/siglist.h:77
 msgid "Continued"
-msgstr ""
+msgstr "Возобновление"
 
 #: gnulib/lib/siglist.h:80
 msgid "Child exited"
-msgstr ""
+msgstr "Потомок завершил работу"
 
 #: gnulib/lib/siglist.h:83
 msgid "Stopped (tty input)"
-msgstr ""
+msgstr "Останов (ввод с терминала)"
 
 #: gnulib/lib/siglist.h:86
 msgid "Stopped (tty output)"
-msgstr ""
+msgstr "Останов (вывод с терминала)"
 
 #: gnulib/lib/siglist.h:89
 msgid "I/O possible"
-msgstr ""
+msgstr "Возможен ввод-вывод"
 
 #: gnulib/lib/siglist.h:92
 msgid "CPU time limit exceeded"
-msgstr ""
+msgstr "Превышен предел по процессорному времени"
 
 #: gnulib/lib/siglist.h:95
 msgid "File size limit exceeded"
-msgstr ""
+msgstr "Превышен предел размера файла"
 
 #: gnulib/lib/siglist.h:98
 msgid "Virtual timer expired"
-msgstr ""
+msgstr "Виртуальное время истекло"
 
 #: gnulib/lib/siglist.h:101
 msgid "Profiling timer expired"
-msgstr ""
+msgstr "Время профилирования истекло"
 
 #: gnulib/lib/siglist.h:104
 msgid "Window changed"
-msgstr ""
+msgstr "Окно изменено"
 
 #: gnulib/lib/siglist.h:107
 msgid "User defined signal 1"
-msgstr ""
+msgstr "Определяемый пользователем сигнал 1"
 
 #: gnulib/lib/siglist.h:110
 msgid "User defined signal 2"
-msgstr ""
+msgstr "Определяемый пользователем сигнал 2"
 
 #: gnulib/lib/siglist.h:115
 msgid "EMT trap"
-msgstr ""
+msgstr "Ловушка EMT"
 
 #: gnulib/lib/siglist.h:118
 msgid "Bad system call"
-msgstr ""
+msgstr "Неправильный системный вызов"
 
 #: gnulib/lib/siglist.h:121
 msgid "Stack fault"
-msgstr ""
+msgstr "Ошибка работы со стеком"
 
 #: gnulib/lib/siglist.h:124
 msgid "Information request"
-msgstr ""
+msgstr "Запрос информации"
 
 #: gnulib/lib/siglist.h:126
-#, fuzzy
 msgid "Power failure"
-msgstr "странный файл"
+msgstr "Отказ питания"
 
 #: gnulib/lib/siglist.h:129
 msgid "Resource lost"
-msgstr ""
+msgstr "Ресурс потерян"
 
 #: gnulib/lib/strsignal.c:110
 #, c-format
@@ -438,6 +441,9 @@ msgstr "закончилась память"
 
 #~ msgid "write error"
 #~ msgstr "ошибка записи"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "сохраняются права доступа для %s"
 
 #~ msgid "error while opening \"%s\" for reading"
 #~ msgstr "ошибка при открытии %s для чтения"
@@ -502,6 +508,9 @@ msgstr "закончилась память"
 #~ msgid "typed memory object"
 #~ msgstr "объект типизированной памяти"
 
+#~ msgid "weird file"
+#~ msgstr "странный файл"
+
 #~ msgid "Address family for hostname not supported"
 #~ msgstr "Адресное семейство не поддерживается для имени хоста"
 
@@ -532,6 +541,9 @@ msgstr "закончилась память"
 #~ msgid "ai_socktype not supported"
 #~ msgstr "ai_socktype не поддерживается"
 
+#~ msgid "System error"
+#~ msgstr "Системная ошибка"
+
 #~ msgid "Argument buffer too small"
 #~ msgstr "Слишком маленький буфер, указанный в аргументе"
 
@@ -556,12 +568,6 @@ msgstr "закончилась память"
 #~ msgid "Unknown error"
 #~ msgstr "Неизвестная ошибка"
 
-#~ msgid "%s: illegal option -- %c\n"
-#~ msgstr "%s: недопустимый параметр: %c\n"
-
-#~ msgid "%s subprocess I/O error"
-#~ msgstr "ошибка вв/вывода подпроцесса %s"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "неверный аргумент source_version для compile_java_class"
 
@@ -583,8 +589,8 @@ msgstr "закончилась память"
 #~ "Не найдена виртуальная машина Java, попробуйте установить gcj или задать "
 #~ "$JAVA"
 
-#~ msgid "cannot create pipe"
-#~ msgstr "не удалось создать канал"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "ошибка вв/вывода подпроцесса %s"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "невозможно изменить права доступа %s"
@@ -594,6 +600,33 @@ msgstr "закончилась память"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "Не удалось открыть /dev/zero на чтение"
+
+#~ msgid "creation of reading thread failed"
+#~ msgstr "не удалось создать нить для чтения"
+
+#~ msgid "cannot set up nonblocking I/O to %s subprocess"
+#~ msgstr "не удалось настроить неблокированный ввод-вывод в подпроцессе %s"
+
+#~ msgid "communication with %s subprocess failed"
+#~ msgstr "не удалось связаться с подпроцессом %s"
+
+#~ msgid "write to %s subprocess failed"
+#~ msgstr "не удалось записать в подпроцесс %s"
+
+#~ msgid "read from %s subprocess failed"
+#~ msgstr "не удалось прочитать из подпроцесса %s"
+
+#~ msgid "subprocess %s terminated with exit code %d"
+#~ msgstr "подпроцесс %s завершился с кодом выхода %d"
+
+#~ msgid "creation of threads failed"
+#~ msgstr "не удалось создать нити"
+
+#~ msgid "%s subprocess terminated with exit code %d"
+#~ msgstr "подпроцесс %s завершился с кодом выхода %d"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "не удалось создать канал"
 
 #~ msgid "`"
 #~ msgstr "«"
@@ -606,6 +639,12 @@ msgstr "закончилась память"
 
 #~ msgid "^[nN]"
 #~ msgstr "^[НнNn]"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "задание прав доступа для %s"
+
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "ошибка записи в закрытый канал или сокет"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "функция iconv неприменима"
@@ -634,20 +673,11 @@ msgstr "закончилась память"
 #~ msgid "unable to display error message"
 #~ msgstr "невозможно показать сообщение об ошибке"
 
-#~ msgid "preserving permissions for %s"
-#~ msgstr "сохраняются права доступа для %s"
+#~ msgid "Packaged by %s (%s)\n"
+#~ msgstr "Упакован %s (%s)\n"
 
-#~ msgid "string comparison failed"
-#~ msgstr "сравнение строк завершилось неудачно"
-
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "Чтобы обойти эту проблему, установите LC_ALL='C'."
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "Сравнивались строки %s %s."
-
-#~ msgid "cannot perform formatted output"
-#~ msgstr "невозможно выполнить форматированный вывод"
+#~ msgid "Packaged by %s\n"
+#~ msgstr "Упакован %s\n"
 
 #~ msgid "(C)"
 #~ msgstr "©"
@@ -733,16 +763,61 @@ msgstr "закончилась память"
 
 #~ msgid ""
 #~ "\n"
-#~ "Report bugs to <%s>.\n"
+#~ "Report bugs to: %s\n"
 #~ msgstr ""
 #~ "\n"
-#~ "Об ошибках сообщайте по адресу <%s>.\n"
+#~ "Об ошибках сообщайте по адресу: %s\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
-#~ msgstr "Домашняя страница %s: <http://www.gnu.org/software/%s/>.\n"
+#~ msgid "Report %s bugs to: %s\n"
+#~ msgstr "Об ошибках в %s сообщайте по адресу: %s\n"
 
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
-#~ msgstr "Справка по работе с ПО GNU: <http://www.gnu.org/gethelp/>.\n"
+#~ msgid "%s home page: <%s>\n"
+#~ msgstr "Домашняя страница %s: <%s>\n"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
+#~ msgstr "Домашняя страница %s: <http://www.gnu.org/software/%s/>\n"
+
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
+#~ msgstr "Справка по работе с ПО GNU: <http://www.gnu.org/gethelp/>\n"
+
+#~ msgid "_open_osfhandle failed"
+#~ msgstr "_open_osfhandle завершилась неудачно"
+
+#~ msgid "cannot restore fd %d: dup2 failed"
+#~ msgstr "не удалось восстановить fd %d: dup2 завершилась неудачно"
+
+#~ msgid "%s subprocess"
+#~ msgstr "подпроцесс %s"
+
+#~ msgid "%s subprocess got fatal signal %d"
+#~ msgstr "подпроцесс %s получил сигнал завершения %d"
+
+#~ msgid "stdin"
+#~ msgstr "stdin"
+
+#~ msgid "stdout"
+#~ msgstr "stdout"
+
+#~ msgid "stderr"
+#~ msgstr "stderr"
+
+#~ msgid "unknown stream"
+#~ msgstr "неизвестный поток"
+
+#~ msgid "failed to reopen %s with mode %s"
+#~ msgstr "не удалось повторно открыть %s в режиме %s"
+
+#~ msgid "string comparison failed"
+#~ msgstr "сравнение строк завершилось неудачно"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "Чтобы обойти эту проблему, установите LC_ALL='C'."
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "Сравнивались строки %s %s."
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "невозможно выполнить форматированный вывод"
 
 #~ msgid "invalid %s%s argument `%s'"
 #~ msgstr "неверный аргумент %s%s для %s"
@@ -752,15 +827,3 @@ msgstr "закончилась память"
 
 #~ msgid "%s%s argument `%s' too large"
 #~ msgstr "значение %s%s аргумента %s слишком велико"
-
-#~ msgid "setting permissions for %s"
-#~ msgstr "задание прав доступа для %s"
-
-#~ msgid "%s subprocess"
-#~ msgstr "подпроцесс %s"
-
-#~ msgid "%s subprocess got fatal signal %d"
-#~ msgstr "подпроцесс %s получил сигнал завершения %d"
-
-#~ msgid "error writing to a closed pipe or socket"
-#~ msgstr "ошибка записи в закрытый канал или сокет"

@@ -1,23 +1,24 @@
-# translation of man-db-manpages-2.5.7-pre1.ru.po to Russian
+# translation of man-db-manpages-2.5.8-pre1.ru.po to Russian
 # Russian translation for man pages from man-db
-# Copyright (C) 2008, 2009 Free Software Foundation, Inc.
+# Copyright (C) 2008, 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the man-db package.
 #
-# Yuri Kozlov <yuray@komyakino.ru>, 2008, 2009.
+# Yuri Kozlov <yuray@komyakino.ru>, 2008, 2009, 2010.
 # Yuri Kozlov <kozlov.y@gmail.com>, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: man-db-manpages 2.5.7-pre1\n"
-"POT-Creation-Date: 2009-11-14 08:05+0000\n"
-"PO-Revision-Date: 2009-11-16 20:10+0300\n"
+"Project-Id-Version: man-db-manpages 2.5.8-pre1\n"
+"POT-Creation-Date: 2010-05-09 07:39+0200\n"
+"PO-Revision-Date: 2010-05-10 10:32+0400\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <gnu@mx.ru>\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #. type: TH
 #: ../../man/man1/apropos.man1:12
@@ -146,8 +147,8 @@ msgid ""
 "Depending on your installation, this may be run by a periodic cron job, or "
 "may need to be run manually after new manual pages have been installed."
 msgstr ""
-"Используемая B<%apropos%> поисковая база данных обновляется программой B<%"
-"mandb%>. В зависимости от установки, она может запускаться как периодически "
+"Используемая B<%apropos%> поисковая база данных обновляется программой B<"
+"%mandb%>. В зависимости от установки, она может запускаться как периодически "
 "выполняемое задание cron или вручную, после установки новых справочных "
 "страниц."
 
@@ -362,7 +363,7 @@ msgstr ""
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:184 ../../man/man1/lexgrog.man1:86
-#: ../../man/man1/man.man1:1114 ../../man/man1/manconv.man1:69
+#: ../../man/man1/man.man1:1115 ../../man/man1/manconv.man1:69
 #: ../../man/man1/manpath.man1:92 ../../man/man1/whatis.man1:188
 #: ../../man/man1/zsoelim.man1:67 ../../man/man8/accessdb.man8:47
 #: ../../man/man8/catman.man8:71
@@ -371,7 +372,7 @@ msgstr "Показать справочное сообщение и законч
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:187 ../../man/man1/lexgrog.man1:89
-#: ../../man/man1/man.man1:1117 ../../man/man1/manconv.man1:72
+#: ../../man/man1/man.man1:1118 ../../man/man1/manconv.man1:72
 #: ../../man/man1/manpath.man1:95 ../../man/man1/whatis.man1:191
 #: ../../man/man1/zsoelim.man1:70 ../../man/man8/accessdb.man8:50
 #: ../../man/man8/catman.man8:74
@@ -380,7 +381,7 @@ msgstr "Показать информацию о версии."
 
 #. type: SH
 #: ../../man/man1/apropos.man1:187 ../../man/man1/lexgrog.man1:89
-#: ../../man/man1/man.man1:1117 ../../man/man1/whatis.man1:191
+#: ../../man/man1/man.man1:1118 ../../man/man1/whatis.man1:191
 #: ../../man/man8/mandb.man8:136
 #, no-wrap
 msgid "EXIT STATUS"
@@ -388,13 +389,13 @@ msgstr "КОД ВЫХОДА"
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:191 ../../man/man1/lexgrog.man1:93
-#: ../../man/man1/man.man1:1121 ../../man/man1/whatis.man1:195
+#: ../../man/man1/man.man1:1122 ../../man/man1/whatis.man1:195
 #: ../../man/man8/mandb.man8:140
 msgid "Successful program execution."
 msgstr "Успешное выполнение программы."
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:194 ../../man/man1/man.man1:1124
+#: ../../man/man1/apropos.man1:194 ../../man/man1/man.man1:1125
 #: ../../man/man1/whatis.man1:198
 msgid "Usage, syntax or configuration file error."
 msgstr ""
@@ -402,7 +403,7 @@ msgstr ""
 "проблемы в файле настройки."
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:197 ../../man/man1/man.man1:1127
+#: ../../man/man1/apropos.man1:197 ../../man/man1/man.man1:1128
 #: ../../man/man1/whatis.man1:201 ../../man/man8/mandb.man8:146
 msgid "Operational error."
 msgstr "Ошибка при работе."
@@ -413,7 +414,7 @@ msgid "Nothing was found that matched the criteria specified."
 msgstr "По запросу ничего не найдено."
 
 #. type: SH
-#: ../../man/man1/apropos.man1:200 ../../man/man1/man.man1:1133
+#: ../../man/man1/apropos.man1:200 ../../man/man1/man.man1:1134
 #: ../../man/man1/manpath.man1:95 ../../man/man1/whatis.man1:204
 #: ../../man/man8/catman.man8:74
 #, no-wrap
@@ -421,7 +422,7 @@ msgid "ENVIRONMENT"
 msgstr "ОКРУЖЕНИЕ"
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:209 ../../man/man1/man.man1:1226
+#: ../../man/man1/apropos.man1:209 ../../man/man1/man.man1:1227
 #: ../../man/man1/manpath.man1:121 ../../man/man1/whatis.man1:213
 msgid ""
 "If $B<SYSTEM> is set, it will have the same effect as if it had been "
@@ -459,8 +460,8 @@ msgstr ""
 #. type: Plain text
 #: ../../man/man1/apropos.man1:236
 msgid ""
-"If $B<POSIXLY_CORRECT> is set, even to a null value, the default B<%apropos%"
-"> search will be as an extended regex (B<-r>).  Nowadays, this is the "
+"If $B<POSIXLY_CORRECT> is set, even to a null value, the default B<%apropos"
+"%> search will be as an extended regex (B<-r>).  Nowadays, this is the "
 "default behaviour anyway."
 msgstr ""
 "Если установлена переменная окружения $B<POSIXLY_CORRECT>, даже имеющая "
@@ -469,7 +470,7 @@ msgstr ""
 "поведением по умолчанию."
 
 #. type: SH
-#: ../../man/man1/apropos.man1:236 ../../man/man1/man.man1:1291
+#: ../../man/man1/apropos.man1:236 ../../man/man1/man.man1:1292
 #: ../../man/man1/manpath.man1:121 ../../man/man1/whatis.man1:231
 #: ../../man/man8/catman.man8:87 ../../man/man8/mandb.man8:183
 #, no-wrap
@@ -477,14 +478,14 @@ msgid "FILES"
 msgstr "ФАЙЛЫ"
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:242 ../../man/man1/man.man1:1303
+#: ../../man/man1/apropos.man1:242 ../../man/man1/man.man1:1304
 #: ../../man/man1/whatis.man1:237 ../../man/man8/catman.man8:96
 #: ../../man/man8/mandb.man8:199
 msgid "A traditional global I<index> database cache."
 msgstr "Традиционный кэш глобальной базы данных I<index>."
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:248 ../../man/man1/man.man1:1309
+#: ../../man/man1/apropos.man1:248 ../../man/man1/man.man1:1310
 #: ../../man/man1/whatis.man1:243 ../../man/man8/mandb.man8:192
 msgid "An FHS compliant global I<index> database cache."
 msgstr "Соответствующий FHS глобальный кэш базы данных I<index>."
@@ -496,7 +497,7 @@ msgstr "Традиционная текстовая база данных B<what
 
 #. type: SH
 #: ../../man/man1/apropos.man1:253 ../../man/man1/lexgrog.man1:191
-#: ../../man/man1/man.man1:1309 ../../man/man1/manconv.man1:72
+#: ../../man/man1/man.man1:1310 ../../man/man1/manconv.man1:72
 #: ../../man/man1/manpath.man1:125 ../../man/man1/whatis.man1:248
 #: ../../man/man1/zsoelim.man1:70 ../../man/man8/catman.man8:102
 #: ../../man/man8/mandb.man8:205
@@ -702,12 +703,12 @@ msgstr ""
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:142
 msgid ""
-"Some manual pagers require the \\(oq\\e-\\(cq to be exactly as shown; B<%"
-"mandb%> is more tolerant, but for compatibility with other systems it is "
+"Some manual pagers require the \\(oq\\e-\\(cq to be exactly as shown; B<"
+"%mandb%> is more tolerant, but for compatibility with other systems it is "
 "nevertheless a good idea to retain the backslash."
 msgstr ""
-"Некоторые справочные пейджеры требуют \\(oq\\e-\\(cq точно как показано; B<%"
-"mandb%> более терпим, но для совместимости с другими системами всё же лучше "
+"Некоторые справочные пейджеры требуют \\(oq\\e-\\(cq точно как показано; B<"
+"%mandb%> более терпим, но для совместимости с другими системами всё же лучше "
 "оставлять символ обратной косой черты."
 
 #. type: Plain text
@@ -845,8 +846,8 @@ msgid ""
 "\\|] [\\|B<-7>\\|] [\\|B<-E> I<encoding>\\|] [\\|B<--no-hyphenation>\\|] [\\|"
 "B<--no-justification>\\|] [\\|B<-p> I<string>\\|] [\\|B<-t>\\|] [\\|B<-T>\\|"
 "[\\|I<device>\\|]\\|] [\\|B<-H>\\|[\\|I<browser>\\|]\\|] [\\|B<-X>\\|[\\|"
-"I<dpi>\\|]\\|] [\\|B<-Z>\\|] [\\|[\\|I<section>\\|] I<page>\\ .\\|.\\|.\\|]"
-"\\ .\\|.\\|."
+"I<dpi>\\|]\\|] [\\|B<-Z>\\|] [\\|[\\|I<section>\\|] I<page>\\ .\\|.\\|."
+"\\|]\\ .\\|.\\|."
 msgstr ""
 "B<%man%> [\\|B<-C> I<файл>\\|] [\\|B<-d>\\|] [\\|B<-D>\\|] [\\|B<--warnings>"
 "\\|[\\|=I<предупреждения>\\|]\\|] [\\|B<-R> I<кодировка>\\|] [\\|B<-L> "
@@ -934,8 +935,8 @@ msgstr "B<%man%> [\\|B<-hV>\\|]"
 #. type: Plain text
 #: ../../man/man1/man.man1:174
 msgid ""
-"B<%man%> is the system's manual pager. Each I<page> argument given to B<%man%"
-"> is normally the name of a program, utility or function.  The I<manual "
+"B<%man%> is the system's manual pager. Each I<page> argument given to B<%man"
+"%> is normally the name of a program, utility or function.  The I<manual "
 "page> associated with each of these arguments is then found and displayed. A "
 "I<section>, if provided, will direct B<%man%> to look only in that "
 "I<section> of the manual.  The default action is to search in all of the "
@@ -1204,8 +1205,8 @@ msgstr "B<%man%\\ -k>I<\\ printf>"
 #: ../../man/man1/man.man1:299
 msgid ""
 "Search the short descriptions and manual page names for the keyword "
-"I<printf> as regular expression.  Print out any matches.  Equivalent to B<%"
-"apropos%\\ -r>I<\\ printf>B<.>"
+"I<printf> as regular expression.  Print out any matches.  Equivalent to B<"
+"%apropos%\\ -r>I<\\ printf>B<.>"
 msgstr ""
 "Искать в кратких описаниях и именах справочных страниц ключевое слово "
 "I<printf>, рассматриваемое как регулярное выражение. Показать любые "
@@ -1305,8 +1306,8 @@ msgstr ""
 "Если B<%man%> не может найти B<%mandb%> для первоначального создания базы "
 "данных B<index> под определённую иерархию справочных страниц, то она "
 "попытается выполнить поиск запрашиваемых справочных страниц, хотя для этого "
-"потребуются универсальные имена файлов для поиска внутри иерархии. Если B<%"
-"whatis%> или B<%apropos%> не удастся найти B<index>, то они попробуют "
+"потребуются универсальные имена файлов для поиска внутри иерархии. Если B<"
+"%whatis%> или B<%apropos%> не удастся найти B<index>, то они попробуют "
 "извлечь информацию из традиционной текстовой базы данных I<whatis>."
 
 #. type: Plain text
@@ -1412,8 +1413,8 @@ msgid ""
 "However, the cache consistency check can be slow on systems with many manual "
 "pages installed, so it is not performed by default, and system "
 "administrators may wish to run B<%mandb%> every week or so to keep the "
-"database caches fresh.  To forestall problems caused by outdated caches, B<%"
-"man%> will fall back to file globbing if a cache lookup fails, just as it "
+"database caches fresh.  To forestall problems caused by outdated caches, B<"
+"%man%> will fall back to file globbing if a cache lookup fails, just as it "
 "would if no cache was present."
 msgstr ""
 "B<%man%> ищет требуемые справочные страницы в кэшах базы данных I<index>. "
@@ -1423,8 +1424,8 @@ msgstr ""
 "запускать B<%mandb%> после первоначального создания кэша, пока кэш не "
 "повредится. Однако проверка целостности кэша может работать медленно на "
 "машинах с большим количеством установленных справочных страниц, поэтому она "
-"не выполняется по умолчанию, и системным администраторам лучше запускать B<%"
-"mandb%> раз в неделю, чтобы поддерживать кэши базы данных в актуальном "
+"не выполняется по умолчанию, и системным администраторам лучше запускать B<"
+"%mandb%> раз в неделю, чтобы поддерживать кэши базы данных в актуальном "
 "состоянии. Чтобы предотвратить проблемы из-за устаревших кэшей, B<%man%> "
 "выполняет поиск файлов по имени, если в кэше ничего не нашлось ( как если бы "
 "кэша не было)."
@@ -1591,8 +1592,8 @@ msgid ""
 "keywords and display any matches.  See B<%apropos%>(1)  for details."
 msgstr ""
 "Эквивалентно работе B<%apropos%>. Ищет в кратких описаниях справочных "
-"страниц ключевые слова и показывает любые совпадения. Подробней смотрите B<%"
-"apropos%>(1)."
+"страниц ключевые слова и показывает любые совпадения. Подробней смотрите B<"
+"%apropos%>(1)."
 
 #. type: Plain text
 #: ../../man/man1/man.man1:580
@@ -1657,8 +1658,8 @@ msgstr ""
 #. type: Plain text
 #: ../../man/man1/man.man1:610
 msgid ""
-"This option is not for general use and should only be used by the B<%catman%"
-"> program."
+"This option is not for general use and should only be used by the B<%catman"
+"%> program."
 msgstr ""
 "Этот параметр не для обычного использования, и должен использоваться только "
 "программой B<%catman%>."
@@ -1876,41 +1877,41 @@ msgstr ""
 "включённым setuid битом."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:805
+#: ../../man/man1/man.man1:806
 msgid ""
 "By default, B<%man%> will try to interpret pairs of manual page names given "
 "on the command line as equivalent to a single manual page name containing a "
-"hyphen.  This supports the common pattern of programs that implement a "
-"number of subcommands, allowing them to provide manual pages for each that "
-"can be accessed using similar syntax as would be used to invoke the "
-"subcommands themselves.  For example:"
+"hyphen or an underscore.  This supports the common pattern of programs that "
+"implement a number of subcommands, allowing them to provide manual pages for "
+"each that can be accessed using similar syntax as would be used to invoke "
+"the subcommands themselves.  For example:"
 msgstr ""
 "По умолчанию, B<%man%> пытается интерпретировать пары имён справочных "
 "страниц, указанных в командной строке, как единое имя справочной страницы, "
-"содержащее символ переноса. Это поддерживает общую систему программ, которые "
-"имеют несколько подкоманд, позволяя для каждой из них предоставлять "
-"справочные страницы используя синтаксис, похожий на вызов самих подкоманд. "
-"Например:"
+"содержащее символ переноса или подчёркивания. Это поддерживает общую систему "
+"программ, которые имеют несколько подкоманд, позволяя для каждой из них "
+"предоставлять справочные страницы используя синтаксис, похожий на вызов "
+"самих подкоманд. Например:"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:814
+#: ../../man/man1/man.man1:815
 msgid "To disable this behaviour, use the B<--no-subpages> option."
 msgstr "Чтобы выключить такое поведение, укажите параметр B<--no-subpages>."
 
 #. type: SS
-#: ../../man/man1/man.man1:821
+#: ../../man/man1/man.man1:822
 #, no-wrap
 msgid "Controlling formatted output"
 msgstr "Контролирование форматированного вывода"
 
 #. type: TP
-#: ../../man/man1/man.man1:822
+#: ../../man/man1/man.man1:823
 #, no-wrap
 msgid "B<-P\\ >I<pager>B<,\\ --pager=>I<pager>"
 msgstr "B<-P\\ >I<пейджер>B<,\\ --pager=>I<пейджер>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:838
+#: ../../man/man1/man.man1:839
 msgid ""
 "Specify which output pager to use.  By default, B<%man%> uses B<%pager%>.  "
 "This option overrides the $B<MANPAGER> environment variable, which in turn "
@@ -1923,7 +1924,7 @@ msgstr ""
 "$B<PAGER>. Не используется вместе с B<-f> или B<-k>."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:844 ../../man/man1/man.man1:1183
+#: ../../man/man1/man.man1:845 ../../man/man1/man.man1:1184
 msgid ""
 "The value may be a simple command name or a command with arguments, and may "
 "use shell quoting (backslashes, single quotes, or double quotes).  It may "
@@ -1938,13 +1939,13 @@ msgstr ""
 "в виде параметра или со стандартного ввода."
 
 #. type: TP
-#: ../../man/man1/man.man1:844
+#: ../../man/man1/man.man1:845
 #, no-wrap
 msgid "B<-r\\ >I<prompt>B<,\\ --prompt=>I<prompt>"
 msgstr "B<-r\\ >I<приглашение>B<,\\ --prompt=>I<приглашение>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:852
+#: ../../man/man1/man.man1:853
 msgid ""
 "If a recent version of B<less> is used as the pager, B<%man%> will attempt "
 "to set its prompt and some sensible options.  The default prompt looks like"
@@ -1954,7 +1955,7 @@ msgstr ""
 "параметры. По умолчанию приглашение выглядит как"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:856
+#: ../../man/man1/man.man1:857
 msgid "B<\\ Manual page>I<\\ name>B<(>I<sec>B<)>B<\\ line>I<\\ x>"
 msgstr "B<\\ Manual page>I<\\ имя>B<(>I<раздел>B<)>B<\\ line>I<\\ x>"
 
@@ -1963,7 +1964,7 @@ msgstr "B<\\ Manual page>I<\\ имя>B<(>I<раздел>B<)>B<\\ line>I<\\ x>"
 #. The actual default will depend on your chosen
 #. .BR locale .
 #. type: Plain text
-#: ../../man/man1/man.man1:871
+#: ../../man/man1/man.man1:872
 msgid ""
 "where I<name> denotes the manual page name, I<sec> denotes the section it "
 "was found under and I<x> the current line number.  This is achieved by using "
@@ -1978,7 +1979,7 @@ msgstr ""
 #. .B less
 #. rejects the default options or if you prefer a different prompt.
 #. type: Plain text
-#: ../../man/man1/man.man1:884
+#: ../../man/man1/man.man1:885
 msgid ""
 "Supplying B<-r> with a string will override this default.  The string may "
 "contain the text B<$MAN_PN> which will be expanded to the name of the "
@@ -1992,17 +1993,17 @@ msgstr ""
 "умолчанию, могла бы выглядеть как"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:886
+#: ../../man/man1/man.man1:887
 msgid "B<\\e\\ Manual\\e\\ page\\e\\ \\e$MAN_PN\\e\\ ?ltline\\e\\ %lt?L/%L.:>"
 msgstr "B<\\e\\ Manual\\e\\ page\\e\\ \\e$MAN_PN\\e\\ ?ltline\\e\\ %lt?L/%L.:>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:888
+#: ../../man/man1/man.man1:889
 msgid "B<byte\\e\\ %bB?s/%s..?\\e\\ (END):?pB\\e\\ %pB\\e\\e%..>"
 msgstr "B<byte\\e\\ %bB?s/%s..?\\e\\ (END):?pB\\e\\ %pB\\e\\e%..>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:903
+#: ../../man/man1/man.man1:904
 msgid ""
 "It is broken into two lines here for the sake of readability only.  For its "
 "meaning see the B<less>(1)  manual page.  The prompt string is first "
@@ -2020,7 +2021,7 @@ msgstr ""
 "параметры less. По умолчанию, B<%man%> указывает параметры B<-ix8>."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:909
+#: ../../man/man1/man.man1:910
 msgid ""
 "If you want to override B<%man%>'s prompt string processing completely, use "
 "the $B<MANLESS> environment variable described below."
@@ -2029,7 +2030,7 @@ msgstr ""
 "используйте переменную окружения $B<MANLESS>, описанную ниже."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:935
+#: ../../man/man1/man.man1:936
 msgid ""
 "When viewing a pure I<ascii>(7)  manual page on a 7 bit terminal or terminal "
 "emulator, some characters may not display correctly when using the I<latin1>"
@@ -2049,43 +2050,43 @@ msgstr ""
 "правильно только при использовании B<GNU> B<nroff> устройства I<latin1>(7)."
 
 #. type: tbl table
-#: ../../man/man1/man.man1:943
+#: ../../man/man1/man.man1:944
 #, no-wrap
 msgid "Description@Octal@latin1@ascii\n"
 msgstr "Описание@Восьмеричный код@latin1@ascii\n"
 
 #. type: tbl table
-#: ../../man/man1/man.man1:944 ../../man/man8/mandb.man8:60
+#: ../../man/man1/man.man1:945 ../../man/man8/mandb.man8:60
 #, no-wrap
 msgid "_\n"
 msgstr "_\n"
 
 #. type: tbl table
-#: ../../man/man1/man.man1:945
+#: ../../man/man1/man.man1:946
 #, no-wrap
 msgid "continuation hyphen@255@\\*[softhyphen]@-\n"
 msgstr "continuation hyphen@255@\\*[softhyphen]@-\n"
 
 #. type: tbl table
-#: ../../man/man1/man.man1:946
+#: ../../man/man1/man.man1:947
 #, no-wrap
 msgid "bullet (middle dot)@267@\\(bu@o\n"
 msgstr "bullet (middle dot)@267@\\(bu@o\n"
 
 #. type: tbl table
-#: ../../man/man1/man.man1:947
+#: ../../man/man1/man.man1:948
 #, no-wrap
 msgid "acute accent@264@\\(aa@'\n"
 msgstr "acute accent@264@\\(aa@'\n"
 
 #. type: tbl table
-#: ../../man/man1/man.man1:948
+#: ../../man/man1/man.man1:949
 #, no-wrap
 msgid "multiplication sign@327@\\(mu@x\n"
 msgstr "multiplication sign@327@\\(mu@x\n"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:969
+#: ../../man/man1/man.man1:970
 msgid ""
 "If the I<latin1> column displays correctly, your terminal may be set up for "
 "I<latin1> characters and this option is not necessary.  If the I<latin1> and "
@@ -2103,7 +2104,7 @@ msgstr ""
 "помощью этого параметра."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:980
+#: ../../man/man1/man.man1:981
 msgid ""
 "This option is ignored when using options B<-t>, B<-H>, B<-T>, or B<-Z> and "
 "may be useless for B<nroff> other than B<GNU's>."
@@ -2112,13 +2113,13 @@ msgstr ""
 "или B<-Z>, и может быть бесполезен для B<nroff>, если он не от B<GNU>."
 
 #. type: TP
-#: ../../man/man1/man.man1:980
+#: ../../man/man1/man.man1:981
 #, no-wrap
 msgid "B<-E\\ >I<encoding>,\\ B<--encoding>=I<encoding>"
 msgstr "B<-E\\ >I<кодировка>,\\ B<--encoding>=I<кодировка>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:991
+#: ../../man/man1/man.man1:992
 msgid ""
 "Generate output for a character encoding other than the default.  For "
 "backward compatibility, I<encoding> may be an B<nroff> device such as "
@@ -2131,7 +2132,7 @@ msgstr ""
 "B<ascii>, B<latin1> или B<utf8>."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1000
+#: ../../man/man1/man.man1:1001
 msgid ""
 "Normally, B<nroff> will automatically hyphenate text at line breaks even in "
 "words that do not contain hyphens, if it is necessary to do so to lay out "
@@ -2146,7 +2147,7 @@ msgstr ""
 "символы переноса."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1009
+#: ../../man/man1/man.man1:1010
 msgid ""
 "If you are writing a manual page and simply want to prevent B<nroff> from "
 "hyphenating a word at an inappropriate point, do not use this option, but "
@@ -2161,7 +2162,7 @@ msgstr ""
 "слова, что не даст его разорвать совсем."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1016
+#: ../../man/man1/man.man1:1017
 msgid ""
 "Normally, B<nroff> will automatically justify text to both margins.  This "
 "option disables full justification, leaving justified only to the left "
@@ -2172,7 +2173,7 @@ msgstr ""
 "краю, получается так называемый текст \"без выключки по правому краю\"."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1023
+#: ../../man/man1/man.man1:1024
 msgid ""
 "If you are writing a manual page and simply want to prevent B<nroff> from "
 "justifying certain paragraphs, do not use this option, but consult the "
@@ -2187,13 +2188,13 @@ msgstr ""
 "и заполнения."
 
 #. type: TP
-#: ../../man/man1/man.man1:1023
+#: ../../man/man1/man.man1:1024
 #, no-wrap
 msgid "B<-p\\ >I<string>B<,\\ --preprocessor=>I<string>"
 msgstr "B<-p\\ >I<строка>B<,\\ --preprocessor=>I<строка>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1042
+#: ../../man/man1/man.man1:1043
 msgid ""
 "Specify the sequence of preprocessors to run before B<nroff> or B<troff>/"
 "B<groff>.  Not all installations will have a full set of preprocessors.  "
@@ -2211,7 +2212,7 @@ msgstr ""
 "быстрого препроцессора."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1052
+#: ../../man/man1/man.man1:1053
 msgid ""
 "Use I<%troff%> to format the manual page to stdout.  This option is not "
 "required in conjunction with B<-H>, B<-T>, or B<-Z>."
@@ -2221,13 +2222,13 @@ msgstr ""
 "или B<-Z>."
 
 #. type: TP
-#: ../../man/man1/man.man1:1052
+#: ../../man/man1/man.man1:1053
 #, no-wrap
 msgid "B<-T>[I<device>], B<--troff-device>[=I<device>]"
 msgstr "B<-T>[I<устройство>], B<--troff-device>[=I<устройство>]"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1064
+#: ../../man/man1/man.man1:1065
 msgid ""
 "This option is used to change B<groff> (or possibly B<troff's>)  output to "
 "be suitable for a device other than the default.  It implies B<-t>.  "
@@ -2240,13 +2241,13 @@ msgstr ""
 "включают B<dvi>, B<latin1>, B<ps>, B<utf8>, B<X75> и B<X100>."
 
 #. type: TP
-#: ../../man/man1/man.man1:1064
+#: ../../man/man1/man.man1:1065
 #, no-wrap
 msgid "B<-H>[I<browser>], B<--html>[=I<browser>]"
 msgstr "B<-H>[I<браузер>], B<--html>[=I<браузер>]"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1080
+#: ../../man/man1/man.man1:1081
 msgid ""
 "This option will cause B<groff> to produce HTML output, and will display "
 "that output in a web browser.  The choice of browser is determined by the "
@@ -2263,13 +2264,13 @@ msgstr ""
 "B<troff>."
 
 #. type: TP
-#: ../../man/man1/man.man1:1080
+#: ../../man/man1/man.man1:1081
 #, no-wrap
 msgid "B<-X>[I<dpi>], B<--gxditview>[=I<dpi>]"
 msgstr "B<-X>[I<dpi>], B<--gxditview>[=I<dpi>]"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1094
+#: ../../man/man1/man.man1:1095
 msgid ""
 "This option displays the output of B<groff> in a graphical window using the "
 "B<gxditview> program.  The I<dpi> (dots per inch) may be 75, 75-12, 100, or "
@@ -2278,13 +2279,13 @@ msgid ""
 "respectively."
 msgstr ""
 "С этим параметром вывод B<groff> осуществляет в графическое окно с помощью "
-"программы B<gxditview>. Значениями I<dpi> (точек на дюйм) могут быть 75, 75-"
-"12, 100 или 100-12; по умолчанию 75; в вариантах с -12 в конце используется "
-"базовый шрифт в 12 точек. Этот параметр подразумевает B<-T> со значениями "
-"устройств X75, X75-12, X100 и X100-12 соответственно."
+"программы B<gxditview>. Значениями I<dpi> (точек на дюйм) могут быть 75, "
+"75-12, 100 или 100-12; по умолчанию 75; в вариантах с -12 в конце "
+"используется базовый шрифт в 12 точек. Этот параметр подразумевает B<-T> со "
+"значениями устройств X75, X75-12, X100 и X100-12 соответственно."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1110
+#: ../../man/man1/man.man1:1111
 msgid ""
 "B<groff> will run B<troff> and then use an appropriate post-processor to "
 "produce output suitable for the chosen device.  If I<%troff%> is B<groff>, "
@@ -2297,18 +2298,18 @@ msgstr ""
 "использование постпроцессора отменяется. Подразумевает B<-t>."
 
 #. type: SS
-#: ../../man/man1/man.man1:1110
+#: ../../man/man1/man.man1:1111
 #, no-wrap
 msgid "Getting help"
 msgstr "Выдача справки"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1130
+#: ../../man/man1/man.man1:1131
 msgid "A child process returned a non-zero exit status."
 msgstr "Дочерний процесс завершился с ненулевым кодом выхода."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1133
+#: ../../man/man1/man.man1:1134
 msgid ""
 "At least one of the pages/files/keywords didn't exist or wasn't matched."
 msgstr ""
@@ -2316,7 +2317,7 @@ msgstr ""
 "неё при поиске ничего не найдено."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1140
+#: ../../man/man1/man.man1:1141
 msgid ""
 "If $B<MANPATH> is set, its value is used as the path to search for manual "
 "pages."
@@ -2325,7 +2326,7 @@ msgstr ""
 "используется в качестве пути поиска справочных страниц."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1151
+#: ../../man/man1/man.man1:1152
 msgid ""
 "The contents of $B<MANROFFOPT> are added to the command line every time "
 "B<man> invokes the formatter (B<nroff>, B<troff>, or B<groff>)."
@@ -2335,7 +2336,7 @@ msgstr ""
 "B<troff> или B<groff>)."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1158
+#: ../../man/man1/man.man1:1159
 msgid ""
 "If $B<MANROFFSEQ> is set, its value is used to determine the set of "
 "preprocessors to pass each manual page through.  The default preprocessor "
@@ -2346,7 +2347,7 @@ msgstr ""
 "справочной страницы. Список препроцессоров по умолчанию зависит от системы."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1164 ../../man/man8/catman.man8:81
+#: ../../man/man1/man.man1:1165 ../../man/man8/catman.man8:81
 msgid ""
 "If $B<MANSECT> is set, its value is a colon-delimited list of sections and "
 "it is used to determine which manual sections to search and in what order."
@@ -2357,7 +2358,7 @@ msgstr ""
 "порядке."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1177
+#: ../../man/man1/man.man1:1178
 msgid ""
 "If $B<MANPAGER> or $B<PAGER> is set ($B<MANPAGER> is used in preference), "
 "its value is used as the name of the program used to display the manual "
@@ -2368,7 +2369,7 @@ msgstr ""
 "отображения справочной страницы. По умолчанию, используется B<%pager%>."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1202
+#: ../../man/man1/man.man1:1203
 msgid ""
 "If $B<MANLESS> is set, B<%man%> will not perform any of its usual processing "
 "to set up a prompt string for the B<less> pager.  Instead, the value of "
@@ -2384,13 +2385,13 @@ msgstr ""
 "равной \\(oqB<-Psmy\\ prompt\\ string>\\(cq."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1218
+#: ../../man/man1/man.man1:1219
 msgid ""
 "If $B<BROWSER> is set, its value is a colon-delimited list of commands, each "
 "of which in turn is used to try to start a web browser for B<man> B<--"
 "html>.  In each command, I<%s> is replaced by a filename containing the HTML "
-"output from B<groff>, I<%%> is replaced by a single percent sign (%), and I<%"
-"c> is replaced by a colon (:)."
+"output from B<groff>, I<%%> is replaced by a single percent sign (%), and I<"
+"%c> is replaced by a colon (:)."
 msgstr ""
 "Если установлена переменная окружения $B<BROWSER>, то её значение "
 "представляет собой список команд, разделяемых двоеточием; каждая из них "
@@ -2400,7 +2401,7 @@ msgstr ""
 "двоеточием (:)."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1241
+#: ../../man/man1/man.man1:1242
 msgid ""
 "If $B<MANOPT> is set, it will be parsed prior to B<%man%'s> command line and "
 "is expected to be in a similar format.  As all of the other B<%man%> "
@@ -2417,7 +2418,7 @@ msgstr ""
 "которые должны быть частью значения параметра, нужно экранировать."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1255
+#: ../../man/man1/man.man1:1256
 msgid ""
 "If $B<MANWIDTH> is set, its value is used as the line length for which "
 "manual pages should be formatted.  If it is not set, manual pages will be "
@@ -2437,7 +2438,7 @@ msgstr ""
 "промежутке между 66 и 80 символами."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1266
+#: ../../man/man1/man.man1:1267
 msgid ""
 "Normally, when output is not being directed to a terminal (such as to a file "
 "or a pipe), formatting characters are discarded to make it easier to read "
@@ -2450,11 +2451,11 @@ msgstr ""
 "символы форматирования отбрасываются для облегчения чтения результата не "
 "имея специальных инструментов. Однако, если переменная окружения "
 "$B<MAN_KEEP_FORMATTING> установлена в непустое значение, то символы "
-"форматирования остаются. Это может быть полезно для оболочек вокруг B<%man%"
-">, которые распознают символы форматирования."
+"форматирования остаются. Это может быть полезно для оболочек вокруг B<%man"
+"%>, которые распознают символы форматирования."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1279
+#: ../../man/man1/man.man1:1280
 msgid ""
 "Normally, when output is being directed to a terminal (usually to a pager), "
 "any error output from the command used to produce formatted versions of "
@@ -2476,11 +2477,11 @@ msgstr ""
 "как обычно."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1291
+#: ../../man/man1/man.man1:1292
 msgid ""
 "Depending on system and implementation, either or both of $B<LANG> and "
-"$B<LC_MESSAGES> will be interrogated for the current message locale.  B<%man%"
-"> will display its messages in that locale (if available).  See B<setlocale>"
+"$B<LC_MESSAGES> will be interrogated for the current message locale.  B<%man"
+"%> will display its messages in that locale (if available).  See B<setlocale>"
 "(3)  for precise details."
 msgstr ""
 "В зависимости от системы и реализации, одна или обе переменные $B<LANG> и "
@@ -2489,44 +2490,44 @@ msgstr ""
 "есть). Подробней смотрите в B<setlocale>(3)."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1295 ../../man/man1/manpath.man1:125
+#: ../../man/man1/man.man1:1296 ../../man/man1/manpath.man1:125
 #: ../../man/man8/catman.man8:91 ../../man/man8/mandb.man8:187
 msgid "man-db configuration file."
 msgstr "Файл настройки man-db."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1298
+#: ../../man/man1/man.man1:1299
 msgid "A global manual page hierarchy."
 msgstr "Глобальная иерархия справочных страниц."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1327
+#: ../../man/man1/man.man1:1328
 msgid ""
 "B<%mandb%>(8), B<%manpath%>(1), B<manpath>(5), B<%apropos%>(1), B<%whatis%>"
-"(1), B<%catman%>(8), B<less>(1), B<nroff>(1), B<troff>(1), B<groff>(1), B<%"
-"zsoelim%>(1), B<setlocale>(3), B<man>(7), B<ascii>(7), B<latin1>(7), the man-"
-"db package manual, B<FSSTND>."
+"(1), B<%catman%>(8), B<less>(1), B<nroff>(1), B<troff>(1), B<groff>(1), B<"
+"%zsoelim%>(1), B<setlocale>(3), B<man>(7), B<ascii>(7), B<latin1>(7), the "
+"man-db package manual, B<FSSTND>."
 msgstr ""
 "B<%mandb%>(8), B<%manpath%>(1), B<manpath>(5), B<%apropos%>(1), B<%whatis%>"
-"(1), B<%catman%>(8), B<less>(1), B<nroff>(1), B<troff>(1), B<groff>(1), B<%"
-"zsoelim%>(1), B<setlocale>(3), B<man>(7), B<ascii>(7), B<latin1>(7), "
+"(1), B<%catman%>(8), B<less>(1), B<nroff>(1), B<troff>(1), B<groff>(1), B<"
+"%zsoelim%>(1), B<setlocale>(3), B<man>(7), B<ascii>(7), B<latin1>(7), "
 "справочные страницы по пакету man-db, B<FSSTND>."
 
 #. type: SH
-#: ../../man/man1/man.man1:1327
+#: ../../man/man1/man.man1:1328
 #, no-wrap
 msgid "HISTORY"
 msgstr "ИСТОРИЯ"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1329
+#: ../../man/man1/man.man1:1330
 msgid "1990, 1991 - Originally written by John W. Eaton (jwe@che.utexas.edu)."
 msgstr ""
 "1990, 1991: изначально написана Джоном В. Итоном (John W. Eaton, jwe@che."
 "utexas.edu)."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1332
+#: ../../man/man1/man.man1:1333
 msgid ""
 "Dec 23 1992: Rik Faith (faith@cs.unc.edu) applied bug fixes supplied by "
 "Willem Kasdorp (wkasdo@nikhefk.nikef.nl)."
@@ -2535,7 +2536,7 @@ msgstr ""
 "найденные Виллемом Касдорпом (Willem Kasdorp, wkasdo@nikhefk.nikef.nl)."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1336
+#: ../../man/man1/man.man1:1337
 msgid ""
 "30th April 1994 - 23rd February 2000: Wilf. (G.Wilford@ee.surrey.ac.uk)  has "
 "been developing and maintaining this package with the help of a few "
@@ -2545,7 +2546,7 @@ msgstr ""
 "разрабатывал и сопровождал этот пакет с помощью некоторых других людей."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1340
+#: ../../man/man1/man.man1:1341
 msgid ""
 "30th October 1996 - 30th March 2001: Fabrizio Polacco E<lt>fpolacco@debian."
 "orgE<gt> maintained and enhanced this package for the Debian project, with "
@@ -2556,7 +2557,7 @@ msgstr ""
 "Debian с помощью всего сообщества."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1342
+#: ../../man/man1/man.man1:1343
 msgid ""
 "31st March 2001 - present day: Colin Watson E<lt>cjwatson@debian.orgE<gt> is "
 "now developing and maintaining man-db."
@@ -2665,8 +2666,8 @@ msgid ""
 "B<%manpath%> [\\|B<-qgdchV>\\|] [\\|B<-m> I<system>\\|[\\|,.\\|.\\|.\\|]\\|] "
 "[\\|B<-C> I<file>\\|]"
 msgstr ""
-"B<%manpath%> [\\|B<-qgdchV>\\|] [\\|B<-m> I<система>\\|[\\|,.\\|.\\|.\\|]"
-"\\|] [\\|B<-C> I<файл>\\|]"
+"B<%manpath%> [\\|B<-qgdchV>\\|] [\\|B<-m> I<система>\\|[\\|,.\\|.\\|."
+"\\|]\\|] [\\|B<-C> I<файл>\\|]"
 
 #. type: Plain text
 #: ../../man/man1/manpath.man1:32
@@ -2785,9 +2786,9 @@ msgid ""
 msgstr ""
 "B<%whatis%> [\\|B<-dlhvV>\\|] [\\|B<-r>\\||\\|B<-w>\\|] [\\|B<-s> I<раздел>"
 "\\|] [\\|B<-m> I<система>\\|[\\|,.\\|.\\|.\\|]\\|] [\\|B<-M> I<путь>\\|] [\\|"
-"B<-L> I<локаль>\\|] [\\|B<-C> I<файл>\\|] I<название> \\&.\\|.\\|. B<%whatis%"
-"> [\\|B<-dlhvV>\\|] [\\|B<-r>\\||\\|B<-w>\\|] [\\|B<-s> I<раздел>\\|] [\\|B<-"
-"m> I<система>\\|[\\|,.\\|.\\|.\\|]\\|] [\\|B<-M> I<путь>\\|] [\\|B<-L> "
+"B<-L> I<локаль>\\|] [\\|B<-C> I<файл>\\|] I<название> \\&.\\|.\\|. B<%whatis"
+"%> [\\|B<-dlhvV>\\|] [\\|B<-r>\\||\\|B<-w>\\|] [\\|B<-s> I<раздел>\\|] [\\|"
+"B<-m> I<система>\\|[\\|,.\\|.\\|.\\|]\\|] [\\|B<-M> I<путь>\\|] [\\|B<-L> "
 "I<локаль>\\|] [\\|B<-C> I<файл>\\|] I<название> \\&.\\|.\\|."
 
 #. type: Plain text
@@ -2817,8 +2818,8 @@ msgstr ""
 #. type: Plain text
 #: ../../man/man1/whatis.man1:61
 msgid ""
-"B<index> databases are used during the search, and are updated by the B<%"
-"mandb%> program.  Depending on your installation, this may be run by a "
+"B<index> databases are used during the search, and are updated by the B<"
+"%mandb%> program.  Depending on your installation, this may be run by a "
 "periodic cron job, or may need to be run manually after new manual pages "
 "have been installed.  To produce an old style text B<whatis> database from "
 "the relative B<index> database, issue the command:"
@@ -2998,8 +2999,8 @@ msgid ""
 "If the environment variable $B<MANPATH> is already set, the information "
 "contained within %manpath_config_file% will not override it."
 msgstr ""
-"Если установлена переменная окружения $B<MANPATH>, то информация из %"
-"manpath_config_file% использоваться не будет."
+"Если установлена переменная окружения $B<MANPATH>, то информация из "
+"%manpath_config_file% использоваться не будет."
 
 #. type: SH
 #: ../../man/man5/manpath.man5:26
@@ -3398,9 +3399,9 @@ msgstr ""
 "которые должны быть отформатированы заранее. Иерархиями по умолчанию "
 "считаются системные иерархии, указанные в файле настроек man-db, а разделы "
 "по умолчанию берутся из значения переменной окружения $B<MANSECT> (список "
-"значений через двоеточие) или из значения, заданного при компиляции B<%man%"
-">, если переменная окружения $B<MANSECT> не установлена. При указании B<%"
-"catman%> списка имён разделов через пробельный символ, он заменит оба эти "
+"значений через двоеточие) или из значения, заданного при компиляции B<%man"
+"%>, если переменная окружения $B<MANSECT> не установлена. При указании B<"
+"%catman%> списка имён разделов через пробельный символ, он заменит оба эти "
 "значения по умолчанию."
 
 #. type: Plain text
@@ -3552,8 +3553,8 @@ msgid ""
 msgstr ""
 "Типы баз данных, которые поддерживают асинхронные обновления, предоставляют "
 "лучшее отношение скорости к возможности повреждения в случае неожиданного "
-"прерывания работы. Если это происходит, может потребоваться перезапустить B<%"
-"mandb%> с параметром B<-c>, чтобы пересоздать базы данных с нуля."
+"прерывания работы. Если это происходит, может потребоваться перезапустить B<"
+"%mandb%> с параметром B<-c>, чтобы пересоздать базы данных с нуля."
 
 #. type: Plain text
 #: ../../man/man8/mandb.man8:82

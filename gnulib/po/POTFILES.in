@@ -31,7 +31,6 @@ gnulib/lib/argp.h
 gnulib/lib/asnprintf.c
 gnulib/lib/asprintf.c
 gnulib/lib/at-func.c
-gnulib/lib/atexit.c
 gnulib/lib/basename-lgpl.c
 gnulib/lib/basename.c
 gnulib/lib/bitrotate.h
@@ -42,6 +41,8 @@ gnulib/lib/canonicalize.h
 gnulib/lib/chdir-long.c
 gnulib/lib/chdir-long.h
 gnulib/lib/chown.c
+gnulib/lib/cloexec.c
+gnulib/lib/cloexec.h
 gnulib/lib/close-hook.c
 gnulib/lib/close-hook.h
 gnulib/lib/close.c
@@ -76,6 +77,7 @@ gnulib/lib/fnmatch.in.h
 gnulib/lib/fnmatch_loop.c
 gnulib/lib/fstatat.c
 gnulib/lib/getcwd.c
+gnulib/lib/getdtablesize.c
 gnulib/lib/getlogin_r.c
 gnulib/lib/getopt.c
 gnulib/lib/getopt.in.h
@@ -98,6 +100,7 @@ gnulib/lib/hash-triple.h
 gnulib/lib/hash.c
 gnulib/lib/hash.h
 gnulib/lib/intprops.h
+gnulib/lib/langinfo.in.h
 gnulib/lib/lchown.c
 gnulib/lib/localcharset.c
 gnulib/lib/localcharset.h
@@ -112,7 +115,6 @@ gnulib/lib/mbsrtowcs-state.c
 gnulib/lib/mbsrtowcs.c
 gnulib/lib/memchr.c
 gnulib/lib/memchr.valgrind
-gnulib/lib/memcmp.c
 gnulib/lib/mempcpy.c
 gnulib/lib/memrchr.c
 gnulib/lib/minmax.h
@@ -120,6 +122,7 @@ gnulib/lib/mkdir.c
 gnulib/lib/mkdirat.c
 gnulib/lib/mkdtemp.c
 gnulib/lib/mkstemp.c
+gnulib/lib/nl_langinfo.c
 gnulib/lib/open.c
 gnulib/lib/openat-die.c
 gnulib/lib/openat-priv.h
@@ -171,7 +174,6 @@ gnulib/lib/stdlib.in.h
 gnulib/lib/strcasecmp.c
 gnulib/lib/strchrnul.c
 gnulib/lib/strchrnul.valgrind
-gnulib/lib/strcspn.c
 gnulib/lib/strdup.c
 gnulib/lib/streq.h
 gnulib/lib/strerror.c

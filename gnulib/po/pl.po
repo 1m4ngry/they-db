@@ -1,5 +1,5 @@
 # Polish messages for gnulib
-# Copyright (C) 2005, 2007, 2009 Free Software Foundation, Inc.
+# Copyright (C) 2005, 2007, 2009, 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 #
 # Jakub Bogusz <qboosh@pld-linux.org>, 2007-2010.
@@ -9,12 +9,13 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 1.0.0.1991.dbebf\n"
+"Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-02-16 22:32+0000\n"
-"PO-Revision-Date: 2010-02-12 17:01+0100\n"
+"POT-Creation-Date: 2010-11-15 22:30+0000\n"
+"PO-Revision-Date: 2010-02-26 18:02+0100\n"
 "Last-Translator: Jakub Bogusz <qboosh@pld-linux.org>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -77,7 +78,7 @@ msgstr ""
 msgid "Report bugs to %s.\n"
 msgstr "Prosimy zg³aszaæ b³êdy na adres %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:153
+#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Nieznany b³±d systemowy"
 
@@ -122,57 +123,61 @@ msgstr "%s: Za du¿o argumentów\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(B£¡D PROGRAMU) Opcja powinna zostaæ rozpoznana!?"
 
-#: gnulib/lib/getopt.c:529 gnulib/lib/getopt.c:545
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#, c-format
 msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: opcja `%s' jest niejednoznaczna\n"
+msgstr "%s: opcja '%s' jest niejednoznaczna\n"
 
-#: gnulib/lib/getopt.c:578 gnulib/lib/getopt.c:582
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
-msgstr "%s: opcja `--%s' nie mo¿e mieæ argumentów\n"
+msgstr "%s: opcja '--%s' nie mo¿e mieæ argumentów\n"
 
-#: gnulib/lib/getopt.c:591 gnulib/lib/getopt.c:596
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
-msgstr "%s: opcja `%c%s' nie mo¿e mieæ argumentów\n"
+msgstr "%s: opcja '%c%s' nie mo¿e mieæ argumentów\n"
 
-#: gnulib/lib/getopt.c:639 gnulib/lib/getopt.c:658 gnulib/lib/getopt.c:961
-#: gnulib/lib/getopt.c:980
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
 #, fuzzy, c-format
-msgid "%s: option '%s' requires an argument\n"
-msgstr "%s: opcja `%s' musi mieæ argument\n"
+msgid "%s: option '--%s' requires an argument\n"
+msgstr "%s: opcja '%s' musi mieæ argument\n"
 
-#: gnulib/lib/getopt.c:696 gnulib/lib/getopt.c:699
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#, c-format
 msgid "%s: unrecognized option '--%s'\n"
-msgstr "%s: nieznana opcja `--%s'\n"
+msgstr "%s: nieznana opcja '--%s'\n"
 
-#: gnulib/lib/getopt.c:707 gnulib/lib/getopt.c:710
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#, c-format
 msgid "%s: unrecognized option '%c%s'\n"
-msgstr "%s: nieznana opcja `%c%s'\n"
+msgstr "%s: nieznana opcja '%c%s'\n"
 
-#: gnulib/lib/getopt.c:759 gnulib/lib/getopt.c:762
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#, c-format
 msgid "%s: invalid option -- '%c'\n"
-msgstr "%s: b³êdna opcja -- %c\n"
+msgstr "%s: b³êdna opcja -- '%c'\n"
 
-#: gnulib/lib/getopt.c:812 gnulib/lib/getopt.c:829 gnulib/lib/getopt.c:1032
-#: gnulib/lib/getopt.c:1050
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
+#: gnulib/lib/getopt.c:1053
+#, c-format
 msgid "%s: option requires an argument -- '%c'\n"
-msgstr "%s: opcja musi mieæ argument -- %c\n"
+msgstr "%s: opcja musi mieæ argument -- '%c'\n"
 
-#: gnulib/lib/getopt.c:882 gnulib/lib/getopt.c:898
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
-msgstr "%s: opcja `-W %s' jest niejednoznaczna\n"
+msgstr "%s: opcja '-W %s' jest niejednoznaczna\n"
 
-#: gnulib/lib/getopt.c:922 gnulib/lib/getopt.c:940
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
-msgstr "%s: opcja `-W %s' nie mo¿e mieæ argumentów\n"
+msgstr "%s: opcja '-W %s' nie mo¿e mieæ argumentów\n"
+
+#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
+#, fuzzy, c-format
+msgid "%s: option '-W %s' requires an argument\n"
+msgstr "%s: opcja '%s' musi mieæ argument\n"
 
 #: gnulib/lib/openat-die.c:34
 #, c-format
@@ -258,141 +263,139 @@ msgstr "Brak poprzedniego wyra¿enia regularnego"
 
 #: gnulib/lib/siglist.h:29
 msgid "Hangup"
-msgstr ""
+msgstr "Roz³±czenie"
 
 #: gnulib/lib/siglist.h:32
 msgid "Interrupt"
-msgstr ""
+msgstr "Przerwanie"
 
 #: gnulib/lib/siglist.h:35
 msgid "Quit"
-msgstr ""
+msgstr "Wyj¶cie"
 
 #: gnulib/lib/siglist.h:38
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Niedozwolona instrukcja"
 
 #: gnulib/lib/siglist.h:41
 msgid "Trace/breakpoint trap"
-msgstr ""
+msgstr "Pu³apka debuggera/breakpoint"
 
 #: gnulib/lib/siglist.h:44
 msgid "Aborted"
-msgstr ""
+msgstr "Przerwano"
 
 #: gnulib/lib/siglist.h:47
 msgid "Floating point exception"
-msgstr ""
+msgstr "B³±d w obliczeniach zmiennoprzecinkowych"
 
 #: gnulib/lib/siglist.h:50
 msgid "Killed"
-msgstr ""
+msgstr "Unicestwiono"
 
 #: gnulib/lib/siglist.h:53
-#, fuzzy
 msgid "Bus error"
-msgstr "B³±d systemowy"
+msgstr "B³±d szyny"
 
 #: gnulib/lib/siglist.h:56
 msgid "Segmentation fault"
-msgstr ""
+msgstr "Naruszenie ochrony pamiêci"
 
 #: gnulib/lib/siglist.h:59
 msgid "Broken pipe"
-msgstr ""
+msgstr "Przerwany potok"
 
 #: gnulib/lib/siglist.h:62
 msgid "Alarm clock"
-msgstr ""
+msgstr "Budzik"
 
 #: gnulib/lib/siglist.h:65
 msgid "Terminated"
-msgstr ""
+msgstr "Zakoñczono"
 
 #: gnulib/lib/siglist.h:68
 msgid "Urgent I/O condition"
-msgstr ""
+msgstr "Nag³y stan we/wy"
 
 #: gnulib/lib/siglist.h:71
 msgid "Stopped (signal)"
-msgstr ""
+msgstr "Zatrzymano (sygna³)"
 
 #: gnulib/lib/siglist.h:74
 msgid "Stopped"
-msgstr ""
+msgstr "Zatrzymano"
 
 #: gnulib/lib/siglist.h:77
 msgid "Continued"
-msgstr ""
+msgstr "Kontynuacja"
 
 #: gnulib/lib/siglist.h:80
 msgid "Child exited"
-msgstr ""
+msgstr "Zakoñczenie procesu potomnego"
 
 #: gnulib/lib/siglist.h:83
 msgid "Stopped (tty input)"
-msgstr ""
+msgstr "Zatrzymano (wej¶cie z tty)"
 
 #: gnulib/lib/siglist.h:86
 msgid "Stopped (tty output)"
-msgstr ""
+msgstr "Zatrzymano (wyj¶cie na tty)"
 
 #: gnulib/lib/siglist.h:89
 msgid "I/O possible"
-msgstr ""
+msgstr "Mo¿liwa operacja we/wy"
 
 #: gnulib/lib/siglist.h:92
 msgid "CPU time limit exceeded"
-msgstr ""
+msgstr "Przekroczony limit czasu procesora"
 
 #: gnulib/lib/siglist.h:95
 msgid "File size limit exceeded"
-msgstr ""
+msgstr "Przekroczony limit rozmiaru pliku"
 
 #: gnulib/lib/siglist.h:98
 msgid "Virtual timer expired"
-msgstr ""
+msgstr "Up³yn±³ czas stopera wirtualnego"
 
 #: gnulib/lib/siglist.h:101
 msgid "Profiling timer expired"
-msgstr ""
+msgstr "Up³yn±³ czas stopera profiluj±cego"
 
 #: gnulib/lib/siglist.h:104
 msgid "Window changed"
-msgstr ""
+msgstr "Okno zmienione"
 
 #: gnulib/lib/siglist.h:107
 msgid "User defined signal 1"
-msgstr ""
+msgstr "Sygna³ u¿ytkownika 1"
 
 #: gnulib/lib/siglist.h:110
 msgid "User defined signal 2"
-msgstr ""
+msgstr "Sygna³ u¿ytkownika 2"
 
 #: gnulib/lib/siglist.h:115
 msgid "EMT trap"
-msgstr ""
+msgstr "Pu³apka EMT"
 
 #: gnulib/lib/siglist.h:118
 msgid "Bad system call"
-msgstr ""
+msgstr "B³êdne wywo³anie systemowe"
 
 #: gnulib/lib/siglist.h:121
 msgid "Stack fault"
-msgstr ""
+msgstr "B³±d stosu"
 
 #: gnulib/lib/siglist.h:124
 msgid "Information request"
-msgstr ""
+msgstr "¯±danie informacji"
 
 #: gnulib/lib/siglist.h:126
-#, fuzzy
 msgid "Power failure"
-msgstr "dziwny plik"
+msgstr "Awaria zasilania"
 
 #: gnulib/lib/siglist.h:129
 msgid "Resource lost"
-msgstr ""
+msgstr "Utrata zasobów"
 
 #: gnulib/lib/strsignal.c:110
 #, c-format
@@ -441,6 +444,9 @@ msgstr "pamiêæ wyczerpana"
 
 #~ msgid "write error"
 #~ msgstr "b³±d zapisu"
+
+#~ msgid "preserving permissions for %s"
+#~ msgstr "zachowywanie uprawnieñ do %s"
 
 #~ msgid "error while opening \"%s\" for reading"
 #~ msgstr "b³±d podczas otwierania \"%s\" do odczytu"
@@ -506,6 +512,9 @@ msgstr "pamiêæ wyczerpana"
 #~ msgid "typed memory object"
 #~ msgstr "obiekt z typem w pamiêci"
 
+#~ msgid "weird file"
+#~ msgstr "dziwny plik"
+
 #~ msgid "Address family for hostname not supported"
 #~ msgstr "Rodzina adresów dla podanej nazwy hosta nie jest obs³ugiwana"
 
@@ -536,6 +545,9 @@ msgstr "pamiêæ wyczerpana"
 #~ msgid "ai_socktype not supported"
 #~ msgstr "ai_socktype zawiera nie obs³ugiwany typ gniazda"
 
+#~ msgid "System error"
+#~ msgstr "B³±d systemowy"
+
 #~ msgid "Argument buffer too small"
 #~ msgstr "Bufor argumentu zbyt ma³y"
 
@@ -560,12 +572,6 @@ msgstr "pamiêæ wyczerpana"
 #~ msgid "Unknown error"
 #~ msgstr "Nieznany b³±d"
 
-#~ msgid "%s: illegal option -- %c\n"
-#~ msgstr "%s: niew³a¶ciwa opcja -- %c\n"
-
-#~ msgid "%s subprocess I/O error"
-#~ msgstr "b³±d we/wy podprocesu %s"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "b³êdny argument source_version dla compile_java_class"
 
@@ -588,8 +594,8 @@ msgstr "pamiêæ wyczerpana"
 #~ "Nie znaleziono maszyny wirtualnej Javy, proszê spróbowaæ zainstalowaæ gij "
 #~ "lub ustawiæ $JAVA"
 
-#~ msgid "cannot create pipe"
-#~ msgstr "nie mo¿na utworzyæ potoku"
+#~ msgid "%s subprocess I/O error"
+#~ msgstr "b³±d we/wy podprocesu %s"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "nie mo¿na zmieniæ uprawnieñ do %s"
@@ -599,6 +605,33 @@ msgstr "pamiêæ wyczerpana"
 
 #~ msgid "Failed to open /dev/zero for read"
 #~ msgstr "Nie uda³o siê otworzyæ /dev/zero do odczytu"
+
+#~ msgid "creation of reading thread failed"
+#~ msgstr "tworzenie w±tku czytaj±cego nie powiod³o sie"
+
+#~ msgid "cannot set up nonblocking I/O to %s subprocess"
+#~ msgstr "nie mo¿na ustawiæ nieblokuj±cego we/wy dla podprocesu %s"
+
+#~ msgid "communication with %s subprocess failed"
+#~ msgstr "komunikacja z podprocesem %s nie powiod³a siê"
+
+#~ msgid "write to %s subprocess failed"
+#~ msgstr "zapis do podprocesu %s nie powiód³ siê"
+
+#~ msgid "read from %s subprocess failed"
+#~ msgstr "odczyt z podprocesu %s nie powiód³ siê"
+
+#~ msgid "subprocess %s terminated with exit code %d"
+#~ msgstr "podproces %s zakoñczy³ siê z kodem wyj¶cia %d"
+
+#~ msgid "creation of threads failed"
+#~ msgstr "tworzenie w±tków nie powiod³o siê"
+
+#~ msgid "%s subprocess terminated with exit code %d"
+#~ msgstr "podproces %s zakoñczy³ siê kodem wyj¶cia %d"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "nie mo¿na utworzyæ potoku"
 
 #~ msgid "`"
 #~ msgstr "`"
@@ -611,6 +644,12 @@ msgstr "pamiêæ wyczerpana"
 
 #~ msgid "^[nN]"
 #~ msgstr "^[nN]"
+
+#~ msgid "setting permissions for %s"
+#~ msgstr "ustawianie uprawnieñ %s"
+
+#~ msgid "error writing to a closed pipe or socket"
+#~ msgstr "b³±d zapisu do zamkniêtego potoku lub gniazda"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "nie mo¿na u¿yæ funkcji iconv"
@@ -639,20 +678,11 @@ msgstr "pamiêæ wyczerpana"
 #~ msgid "unable to display error message"
 #~ msgstr "nie mo¿na wy¶wietliæ komunikatu b³êdu"
 
-#~ msgid "preserving permissions for %s"
-#~ msgstr "zachowywanie uprawnieñ do %s"
+#~ msgid "Packaged by %s (%s)\n"
+#~ msgstr "Pakietuj±cy: %s (%s)\n"
 
-#~ msgid "string comparison failed"
-#~ msgstr "nie uda³o siê porównanie ³añcuchów znaków"
-
-#~ msgid "Set LC_ALL='C' to work around the problem."
-#~ msgstr "Ustaw LC_ALL='C' ¿eby obej¶æ problem"
-
-#~ msgid "The strings compared were %s and %s."
-#~ msgstr "Porównywane ³añcuchy znaków do %s i %s."
-
-#~ msgid "cannot perform formatted output"
-#~ msgstr "nie mo¿na sformatowaæ wyj¶cia"
+#~ msgid "Packaged by %s\n"
+#~ msgstr "Pakietuj±cy: %s\n"
 
 #~ msgid "(C)"
 #~ msgstr "(C)"
@@ -738,20 +768,65 @@ msgstr "pamiêæ wyczerpana"
 
 #~ msgid ""
 #~ "\n"
-#~ "Report bugs to <%s>.\n"
+#~ "Report bugs to: %s\n"
 #~ msgstr ""
 #~ "\n"
 #~ "Prosimy zg³aszaæ b³êdy na adres <%s>.\n"
-#~ "B³êdy w t³umaczeniu prosimy zg³aszaæ na adres: <translation-team-pl@lists."
+#~ "B³êdy w t³umaczeniu prosimy zg³aszaæ na adres <translation-team-pl@lists."
 #~ "sourceforge.net>.\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>.\n"
-#~ msgstr "Strona domowa %s: <http://www.gnu.org/software/%s/>.\n"
+#~ msgid "Report %s bugs to: %s\n"
+#~ msgstr "B³êdy pakietuj±cego (%s) prosimy zg³aszaæ na adres <%s>.\n"
 
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>.\n"
+#~ msgid "%s home page: <%s>\n"
+#~ msgstr "Strona domowa pakietu %s: <%s>\n"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
+#~ msgstr "Strona domowa pakietu %s: <http://www.gnu.org/software/%s/>.\n"
+
+#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
 #~ msgstr ""
 #~ "Ogólna pomoc przy u¿ywaniu oprogramowania GNU: <http://www.gnu.org/"
 #~ "gethelp/>.\n"
+
+#~ msgid "_open_osfhandle failed"
+#~ msgstr "_open_osfhandle nie powiod³o siê"
+
+#~ msgid "cannot restore fd %d: dup2 failed"
+#~ msgstr "nie mo¿na odtworzyæ fd %d: dup2 nie powiod³o siê"
+
+#~ msgid "%s subprocess"
+#~ msgstr "podproces %s"
+
+#~ msgid "%s subprocess got fatal signal %d"
+#~ msgstr "podproces %s dosta³ krytyczny sygna³ %d"
+
+#~ msgid "stdin"
+#~ msgstr "standardowego wej¶cia"
+
+#~ msgid "stdout"
+#~ msgstr "standardowego wyj¶cia"
+
+#~ msgid "stderr"
+#~ msgstr "standardowego wyj¶cia diagnostycznego"
+
+#~ msgid "unknown stream"
+#~ msgstr "nieznanego strumienia"
+
+#~ msgid "failed to reopen %s with mode %s"
+#~ msgstr "nie uda³o siê ponownie otworzyæ %s w trybie %s"
+
+#~ msgid "string comparison failed"
+#~ msgstr "nie uda³o siê porównanie ³añcuchów znaków"
+
+#~ msgid "Set LC_ALL='C' to work around the problem."
+#~ msgstr "Ustaw LC_ALL='C' ¿eby obej¶æ problem"
+
+#~ msgid "The strings compared were %s and %s."
+#~ msgstr "Porównywane ³añcuchy znaków do %s i %s."
+
+#~ msgid "cannot perform formatted output"
+#~ msgstr "nie mo¿na sformatowaæ wyj¶cia"
 
 #~ msgid "invalid %s%s argument `%s'"
 #~ msgstr "b³êdny argument %s%s opcji `%s'"
@@ -761,15 +836,3 @@ msgstr "pamiêæ wyczerpana"
 
 #~ msgid "%s%s argument `%s' too large"
 #~ msgstr "argument %s%s `%s' zbyt du¿y"
-
-#~ msgid "setting permissions for %s"
-#~ msgstr "ustawianie uprawnieñ %s"
-
-#~ msgid "%s subprocess"
-#~ msgstr "podproces %s"
-
-#~ msgid "%s subprocess got fatal signal %d"
-#~ msgstr "podproces %s dosta³ krytyczny sygna³ %d"
-
-#~ msgid "error writing to a closed pipe or socket"
-#~ msgstr "b³±d zapisu do zamkniêtego potoku lub gniazda"
