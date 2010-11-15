@@ -18,6 +18,8 @@ man-db (2.5.8-1) UNRELEASED; urgency=low
       section, as it's too easy to get this wrong (LP: #664211).
     - mandb should no longer repeatedly rescan manual page hierarchies when
       a whatis entry turns into a broken link.
+  * Use a separate build directory, eliminating the requirement to preserve
+    some files by hand.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 15 Nov 2010 23:53:39 +0000
 
