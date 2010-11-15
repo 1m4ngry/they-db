@@ -20,6 +20,7 @@ man-db (2.5.8-1) UNRELEASED; urgency=low
       a whatis entry turns into a broken link.
   * Use a separate build directory, eliminating the requirement to preserve
     some files by hand.
+  * Build with external libpipeline.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 15 Nov 2010 23:53:39 +0000
 

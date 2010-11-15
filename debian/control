@@ -3,7 +3,7 @@ Section: doc
 Priority: important
 Maintainer: Colin Watson <cjwatson@debian.org>
 Standards-Version: 3.8.2
-Build-Depends: debhelper (>= 7.2.3), flex, groff, libgdbm-dev, po4a, zlib1g-dev, hardening-includes, gettext
+Build-Depends: debhelper (>= 7.2.3), flex, groff, libgdbm-dev, po4a, zlib1g-dev, libpipeline-dev, hardening-includes, gettext
 Homepage: http://man-db.nongnu.org/
 
 Package: man-db

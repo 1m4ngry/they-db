@@ -29,7 +29,8 @@ override_dh_auto_configure:
 	            --with-col=col --with-vgrind=vgrind --with-grap=grap \
 	            --with-compress=compress --with-bzip2=bzip2 \
 		    --with-lzma=lzma \
-		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
+		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7' \
+		    --with-external-pipeline
 
 override_dh_clean:
 	dh_clean -Xxmalloc.c.orig
