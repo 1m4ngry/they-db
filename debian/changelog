@@ -1,8 +1,8 @@
-man-db (2.5.8-2) UNRELEASED; urgency=low
+man-db (2.5.8-2) experimental; urgency=low
 
   * Build-depend on pkg-config.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 16 Nov 2010 13:53:45 +0000
+ -- Colin Watson <cjwatson@debian.org>  Tue, 16 Nov 2010 13:55:02 +0000
 
 man-db (2.5.8-1) experimental; urgency=low
 
