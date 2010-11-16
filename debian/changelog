@@ -1,4 +1,4 @@
-man-db (2.5.8-1) UNRELEASED; urgency=low
+man-db (2.5.8-1) experimental; urgency=low
 
   * New upstream release:
     - Explicitly set groff's hyphenation language, to ensure that it only
@@ -22,7 +22,7 @@ man-db (2.5.8-1) UNRELEASED; urgency=low
     some files by hand.
   * Build with external libpipeline.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 15 Nov 2010 23:53:39 +0000
+ -- Colin Watson <cjwatson@debian.org>  Tue, 16 Nov 2010 00:03:58 +0000
 
 man-db (2.5.7-6) unstable; urgency=low
 
