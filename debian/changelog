@@ -1,10 +1,10 @@
-man-db (2.5.9-1) UNRELEASED; urgency=low
+man-db (2.5.9-1) experimental; urgency=low
 
   * New upstream release:
     - Fix test failures on some systems.  A change made in 2.5.8 was overly
       sensitive to directory ordering.
 
- -- Colin Watson <cjwatson@debian.org>  Wed, 17 Nov 2010 12:00:02 +0000
+ -- Colin Watson <cjwatson@debian.org>  Wed, 17 Nov 2010 12:00:41 +0000
 
 man-db (2.5.8-2) experimental; urgency=low
 
