@@ -1,3 +1,9 @@
+man-db (2.5.9-2) UNRELEASED; urgency=low
+
+  * Fix build with 'ld --no-copy-dt-needed-entries'.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 18 Nov 2010 13:57:57 +0000
+
 man-db (2.5.9-1) experimental; urgency=low
 
   * New upstream release:
