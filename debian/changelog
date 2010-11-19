@@ -1,3 +1,10 @@
+man-db (2.5.9-3) UNRELEASED; urgency=low
+
+  * Use 'dh $@ --options' rather than 'dh --options $@', for
+    forward-compatibility with debhelper v8.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 19 Nov 2010 16:35:12 +0000
+
 man-db (2.5.9-2) experimental; urgency=low
 
   * Fix build with 'ld --no-copy-dt-needed-entries'.
