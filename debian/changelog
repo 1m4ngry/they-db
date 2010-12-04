@@ -1,3 +1,14 @@
+man-db (2.5.7-7) UNRELEASED; urgency=low
+
+  * Backport from 2.5.8:
+    - Warnings about unrecognised locales are now suppressed if the
+      DPKG_RUNNING_VERSION environment variable is set (i.e. man-db is
+      running within a Debian package's maintainer script), since the system
+      locales are often out of sync with the C library in that context.
+      Thanks to the Debian Perl maintainers for the idea (closes: #605790).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 04 Dec 2010 13:37:44 +0000
+
 man-db (2.5.7-6) unstable; urgency=low
 
   * Move po/fr.gmo aside during build so that it gets regenerated based on

@@ -417,7 +417,8 @@ int main (int argc, char *argv[])
 	locale = xstrdup (setlocale (LC_ALL, ""));
 	if (!locale) {
 		/* Obviously can't translate this. */
-		if (!getenv ("MAN_NO_LOCALE_WARNING"))
+		if (!getenv ("MAN_NO_LOCALE_WARNING") &&
+		    !getenv ("DPKG_RUNNING_VERSION"))
 			error (0, 0, "can't set the locale; make sure $LC_* "
 				     "and $LANG are correct");
 		locale = xstrdup ("C");
