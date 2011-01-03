@@ -918,8 +918,13 @@ static int local_man_loop (const char *argv)
 				debug ("recalculating manpath for executable "
 				       "in %s\n", argv_dir);
 
-				new_manp = locale_manpath (
-					get_manpath_from_path (argv_dir, 0));
+				new_manp = get_manpath_from_path (argv_dir, 0);
+				if (!new_manp || !*new_manp) {
+					debug ("no useful manpath for "
+					       "executable\n");
+					goto executable_out;
+				}
+				new_manp = locale_manpath (new_manp);
 
 				old_manpathlist = XNMALLOC (MAXDIRS, char *);
 				memcpy (old_manpathlist, manpathlist,
@@ -933,6 +938,7 @@ static int local_man_loop (const char *argv)
 				memcpy (manpathlist, old_manpathlist,
 					MAXDIRS * sizeof (*manpathlist));
 				free (old_manpathlist);
+executable_out:
 				free (new_manp);
 				free (argv_base);
 			}

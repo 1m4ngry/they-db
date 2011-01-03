@@ -971,7 +971,12 @@ char *get_manpath_from_path (const char *path, int mandatory)
 		lp++;
 	}
 
-	assert (len);
+	if (!len)
+		/* No path elements in configuration file or with
+		 * appropriate subdirectories.
+		 */
+		return xstrdup ("");
+
 	manpathlist = xmalloc (len);
 	*manpathlist = '\0';
 
