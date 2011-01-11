@@ -1,3 +1,10 @@
+man-db (2.5.9-4) UNRELEASED; urgency=low
+
+  * Add debconf translations:
+    - Slovak (thanks, Slavko; closes: #609347).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 11 Jan 2011 17:32:22 +0000
+
 man-db (2.5.9-3) experimental; urgency=low
 
   * Use 'dh $@ --options' rather than 'dh --options $@', for
