@@ -37,7 +37,7 @@ errors="$(echo "$errors" | $EGREP -v "(cannot adjust line|can't break line)")" |
 # pages should probably be rewritten without tbl.
 case $LINGUA in
 	de|id|it|nl|pl|ru)
-		errors="$(echo "$errors" | $EGREP -v 'table wider than line width')" || true
+		errors="$(echo "$errors" | $EGREP -v '^warning:.*around line [0-9]*:$|table wider than line width')" || true
 		;;
 esac
 
