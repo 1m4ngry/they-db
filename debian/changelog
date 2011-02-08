@@ -3,6 +3,7 @@ man-db (2.5.9-4) UNRELEASED; urgency=low
   * Add debconf translations:
     - Slovak (thanks, Slavko; closes: #609347).
   * Fix test failure with groff 1.21.
+  * Upload to unstable.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 11 Jan 2011 17:32:22 +0000
 
