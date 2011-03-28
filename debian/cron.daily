@@ -25,7 +25,7 @@ fi
 if [ -d /var/cache/man ]; then
   cd /
   if ! dpkg-statoverride --list /var/cache/man >/dev/null 2>&1; then
-    chown -R man /var/cache/man || true		# just in case
+    find /var/cache/man ! -user man -print0 | xargs -r0 chown man || true
   fi
   start-stop-daemon --start --pidfile /dev/null --startas /bin/sh \
 	--oknodo --chuid man $iosched_idle -- -c \

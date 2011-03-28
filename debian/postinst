@@ -74,7 +74,7 @@ fi
 if [ -d $catdir ]; then
     # Catdirs sometimes used to be created with the wrong permissions.
     if dpkg --compare-versions "$2" lt 2.3.20-4; then
-	chown -R man /var/cache/man || true
+	find /var/cache/man ! -user man -print0 | xargs -r0 chown man || true
     fi
 else
     # Old packages removed catpages on upgrade. The preinst hack should have
