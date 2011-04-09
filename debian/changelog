@@ -1,4 +1,4 @@
-man-db (2.6.0-1) UNRELEASED; urgency=low
+man-db (2.6.0-1) unstable; urgency=low
 
   * New upstream release:
     - Search the full manpath when expanding .so directives in manual pages.
@@ -36,7 +36,7 @@ man-db (2.6.0-1) UNRELEASED; urgency=low
   * Avoid unnecessary metadata writes to /var/cache/man when doing recursive
     chown (thanks, Iustin Pop; closes: #619726).
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 28 Mar 2011 12:50:10 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sat, 09 Apr 2011 17:59:40 +0100
 
 man-db (2.5.9-4) unstable; urgency=low
 
