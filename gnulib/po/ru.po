@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-02-23 16:59+0300\n"
 "Last-Translator: Yuri Kozlov <yuray@komyakino.ru>\n"
 "Language-Team: Russian <gnu@mx.ru>\n"
@@ -45,7 +45,7 @@ msgstr "%.*s: неизвестный параметр ARGP_HELP_FMT"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Мусор в ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -53,30 +53,30 @@ msgstr ""
 "Обязательные или необязательные аргументы к длинным именам параметров "
 "остаются таковыми и к соответствующим коротким параметрам."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Использование:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "  или: "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [ПАРАМЕТР...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr ""
 "Попробуй `%s --help' или `%s --usage' для получения подробной информации.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Об ошибках сообщай по адресу %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Неизвестная системная ошибка"
 
@@ -177,233 +177,87 @@ msgstr "%s: для параметра -W %s аргумент не разрешё
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: для параметра %s требуется аргумент\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "не удалось запомнить текущий рабочий каталог"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "не удалось вернуться в первоначальный рабочий каталог"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Успешно"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Нет совпадений"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Неверное регулярное выражение"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Неверный символ сравнения"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Неверное имя класса символов"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Конечная обратная косая черта"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Неверная обратная ссылка"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Непарная [ или [^"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Непарная ( или \\("
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Непарная \\{"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Недопустимое содержимое в \\{\\}"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Неверный конец диапазона"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Закончилась память"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Недопустимое предшествующее регулярное выражение"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Преждевременное завершение регулярного выражения"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Слишком большое регулярное выражение"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Непарная ) или \\)"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "Отсутствует предыдущее регулярное выражение"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Обрыв терминальной линии"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Прерывание"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Аварийное прерывание"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Недопустимая инструкция"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Прерывание на контрольной точке"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Прервано"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Ошибка операции с плавающей точкой"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Уничтожение"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Ошибка шины"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Нарушение сегментирования"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Обрыв канала"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Сигнал по таймеру"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Завершение"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Срочная операция ввода-вывода"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Останов (сигнал)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Останов"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Возобновление"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Потомок завершил работу"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Останов (ввод с терминала)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Останов (вывод с терминала)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "Возможен ввод-вывод"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "Превышен предел по процессорному времени"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Превышен предел размера файла"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Виртуальное время истекло"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "Время профилирования истекло"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Окно изменено"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Определяемый пользователем сигнал 1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Определяемый пользователем сигнал 2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "Ловушка EMT"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Неправильный системный вызов"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Ошибка работы со стеком"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Запрос информации"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Отказ питания"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Ресурс потерян"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Сигнал реального времени %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Неизвестный сигнал %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -643,8 +497,116 @@ msgstr "закончилась память"
 #~ msgid "setting permissions for %s"
 #~ msgstr "задание прав доступа для %s"
 
+#~ msgid "Hangup"
+#~ msgstr "Обрыв терминальной линии"
+
+#~ msgid "Interrupt"
+#~ msgstr "Прерывание"
+
+#~ msgid "Quit"
+#~ msgstr "Аварийное прерывание"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Недопустимая инструкция"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Прерывание на контрольной точке"
+
+#~ msgid "Aborted"
+#~ msgstr "Прервано"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Ошибка операции с плавающей точкой"
+
+#~ msgid "Killed"
+#~ msgstr "Уничтожение"
+
+#~ msgid "Bus error"
+#~ msgstr "Ошибка шины"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Нарушение сегментирования"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Обрыв канала"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Сигнал по таймеру"
+
+#~ msgid "Terminated"
+#~ msgstr "Завершение"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Срочная операция ввода-вывода"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Останов (сигнал)"
+
+#~ msgid "Stopped"
+#~ msgstr "Останов"
+
+#~ msgid "Continued"
+#~ msgstr "Возобновление"
+
+#~ msgid "Child exited"
+#~ msgstr "Потомок завершил работу"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Останов (ввод с терминала)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Останов (вывод с терминала)"
+
+#~ msgid "I/O possible"
+#~ msgstr "Возможен ввод-вывод"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "Превышен предел по процессорному времени"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Превышен предел размера файла"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Виртуальное время истекло"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "Время профилирования истекло"
+
+#~ msgid "Window changed"
+#~ msgstr "Окно изменено"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Определяемый пользователем сигнал 1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Определяемый пользователем сигнал 2"
+
+#~ msgid "EMT trap"
+#~ msgstr "Ловушка EMT"
+
+#~ msgid "Bad system call"
+#~ msgstr "Неправильный системный вызов"
+
+#~ msgid "Stack fault"
+#~ msgstr "Ошибка работы со стеком"
+
+#~ msgid "Information request"
+#~ msgstr "Запрос информации"
+
+#~ msgid "Power failure"
+#~ msgstr "Отказ питания"
+
+#~ msgid "Resource lost"
+#~ msgstr "Ресурс потерян"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "ошибка записи в закрытый канал или сокет"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Сигнал реального времени %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Неизвестный сигнал %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "функция iconv неприменима"

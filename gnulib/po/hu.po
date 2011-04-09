@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-02-23 19:52+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -44,7 +44,7 @@ msgstr "%.*s: Ismeretlen ARGP_HELP_FMT paraméter"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Szemét az ARGP_HELP_FMT-ben: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -52,30 +52,30 @@ msgstr ""
 "Ha egy hosszú kapcsolóhoz kötelező vagy opcionális argumentumot megadni, "
 "akkor ez a megfelelő rövid kapcsolónál is kötelező vagy opcionális."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Használat:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "  vagy: "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [KAPCSOLÓ…]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr ""
 "További információkért lásd a(z) „%s --help” vagy „%s --usage” kimenetét.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "A hibák itt jelenthetők: %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Ismeretlen rendszerhiba"
 
@@ -176,233 +176,87 @@ msgstr "%s: a „-W %s” kapcsoló nem enged meg argumentumot\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: a(z) „%s” kapcsolóhoz argumentum szükséges\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "az aktuális munkakönyvtár feljegyzése meghiúsult"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "a visszatérés meghiúsult a kiinduló munkakönyvtárba"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Sikerült"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Nincs találat"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Érvénytelen szabályos kifejezés"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Érvénytelen leválogatási karakter"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Érvénytelen karakterosztálynév"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Záró visszaper"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Érvénytelen visszahivatkozás"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Pár nélküli [ vagy [^"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Pár nélküli ( vagy \\("
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Pár nélküli \\{"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "A \\{\\} tartalma érvénytelen"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Érvénytelen tartományvég"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Elfogyott a memória"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Érvénytelen megelőző szabályos kifejezés"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "A szabályos kifejezés túl korán véget ért"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "A szabályos kifejezés túl nagy"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Pár nélküli ) vagy \\)"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "Nincs megelőző szabályos kifejezés"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Felfüggesztés"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Megszakítás"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Kilépés"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Illegális utasítás"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Nyomkövetési/töréspont csapda"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Megszakítva"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Lebegőpontos kivétel"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Kilőve"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Buszhiba"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Szegmentálási hiba"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Megszakadt csővezeték"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Ébresztőóra"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Befejeződött"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Sürgős I/O feltétel"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Leállítva (szignál)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Leállítva"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Folytatva"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Gyerekfolyamat kilépett"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Leállítva (tty bemenet)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Leállítva (tty kimenet)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "I/O lehetséges"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "CPU-időkorlát túllépve"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Fájlméret korlátja túllépve"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Virtuális időzítés lejárt"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "A profilozási időzítő lejárt"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Ablakméret változott"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Felhasználói szignál 1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Felhasználói szignál 2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "EMT csapda"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Hibás rendszerhívás"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Veremhiba"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Információkérés"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Tápfeszültség-kimaradás"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Erőforrás elveszítve"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Valós idejű szignál %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Ismeretlen szignál %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -598,6 +452,114 @@ msgstr "elfogyott a memória"
 
 #~ msgid "setting permissions for %s"
 #~ msgstr "%s jogosultságainak beállítása"
+
+#~ msgid "Hangup"
+#~ msgstr "Felfüggesztés"
+
+#~ msgid "Interrupt"
+#~ msgstr "Megszakítás"
+
+#~ msgid "Quit"
+#~ msgstr "Kilépés"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Illegális utasítás"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Nyomkövetési/töréspont csapda"
+
+#~ msgid "Aborted"
+#~ msgstr "Megszakítva"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Lebegőpontos kivétel"
+
+#~ msgid "Killed"
+#~ msgstr "Kilőve"
+
+#~ msgid "Bus error"
+#~ msgstr "Buszhiba"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Szegmentálási hiba"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Megszakadt csővezeték"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Ébresztőóra"
+
+#~ msgid "Terminated"
+#~ msgstr "Befejeződött"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Sürgős I/O feltétel"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Leállítva (szignál)"
+
+#~ msgid "Stopped"
+#~ msgstr "Leállítva"
+
+#~ msgid "Continued"
+#~ msgstr "Folytatva"
+
+#~ msgid "Child exited"
+#~ msgstr "Gyerekfolyamat kilépett"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Leállítva (tty bemenet)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Leállítva (tty kimenet)"
+
+#~ msgid "I/O possible"
+#~ msgstr "I/O lehetséges"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "CPU-időkorlát túllépve"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Fájlméret korlátja túllépve"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Virtuális időzítés lejárt"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "A profilozási időzítő lejárt"
+
+#~ msgid "Window changed"
+#~ msgstr "Ablakméret változott"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Felhasználói szignál 1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Felhasználói szignál 2"
+
+#~ msgid "EMT trap"
+#~ msgstr "EMT csapda"
+
+#~ msgid "Bad system call"
+#~ msgstr "Hibás rendszerhívás"
+
+#~ msgid "Stack fault"
+#~ msgstr "Veremhiba"
+
+#~ msgid "Information request"
+#~ msgstr "Információkérés"
+
+#~ msgid "Power failure"
+#~ msgstr "Tápfeszültség-kimaradás"
+
+#~ msgid "Resource lost"
+#~ msgstr "Erőforrás elveszítve"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Valós idejű szignál %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Ismeretlen szignál %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "az iconv függvény nem használható"

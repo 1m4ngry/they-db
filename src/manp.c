@@ -3,7 +3,8 @@
  *
  * Copyright (C) 1990, 1991 John W. Eaton.
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011
+ *               Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -69,6 +70,10 @@
 #include "error.h"
 #include "cleanup.h"
 
+#ifdef SECURE_MAN_UID
+# include "security.h"
+#endif
+
 #include "manp.h"
 
 struct list {
@@ -80,6 +85,7 @@ struct list {
 
 static struct list *namestore, *tailstore;
 
+#define SECTION_USER	-6
 #define SECTION		-5
 #define DEFINE_USER	-4
 #define DEFINE		-3
@@ -138,14 +144,23 @@ static struct list *iterate_over_list (struct list *prev, char *key, int flag)
 	return NULL;
 }
 
+#ifdef SECURE_MAN_UID
 /* Must not return DEFINEs set in ~/.manpath. This is used to fetch
  * definitions used in raised-privilege code; if in doubt, be conservative!
+ *
+ * If not setuid, this is identical to get_def_user.
  */
 const char *get_def (const char *thing, const char *def)
 {
-	const char *config_def = get_from_list (thing, DEFINE);
+	const char *config_def;
+
+	if (!running_setuid ())
+		return get_def_user (thing, def);
+
+	config_def = get_from_list (thing, DEFINE);
 	return config_def ? config_def : def;
 }
+#endif
 
 const char *get_def_user (const char *thing, const char *def)
 {
@@ -164,14 +179,14 @@ static void print_list (void)
 		       list->key, list->cont, list->flag);
 }
 
-static void add_sections (char *sections)
+static void add_sections (char *sections, int user)
 {
 	char *section_list = xstrdup (sections);
 	char *sect;
 
 	for (sect = strtok (section_list, " "); sect;
 	     sect = strtok (NULL, " ")) {
-		add_to_list (sect, "", SECTION);
+		add_to_list (sect, "", user ? SECTION_USER : SECTION);
 		debug ("Added section `%s'.\n", sect);
 	}
 	free (section_list);
@@ -180,16 +195,26 @@ static void add_sections (char *sections)
 const char **get_sections (void)
 {
 	struct list *list;
-	int length = 0;
+	int length_user = 0, length = 0;
 	const char **sections, **sectionp;
+	int flag;
 
-	for (list = namestore; list; list = list->next)
-		if (list->flag == SECTION)
+	for (list = namestore; list; list = list->next) {
+		if (list->flag == SECTION_USER)
+			length_user++;
+		else if (list->flag == SECTION)
 			length++;
-	sections = xnmalloc (length + 1, sizeof *sections);
+	}
+	if (length_user) {
+		sections = xnmalloc (length_user + 1, sizeof *sections);
+		flag = SECTION_USER;
+	} else {
+		sections = xnmalloc (length + 1, sizeof *sections);
+		flag = SECTION;
+	}
 	sectionp = sections;
 	for (list = namestore; list; list = list->next)
-		if (list->flag == SECTION)
+		if (list->flag == flag)
 			*sectionp++ = list->key;
 	*sectionp = NULL;
 	return sections;
@@ -769,10 +794,10 @@ static void add_to_dirlist (FILE *config, int user)
 				      key, cont)) > 0)
 			add_def (key, cont, c, user);
 		else if (sscanf (bp, "SECTION %511[^\n]", cont) == 1)
-			add_sections (cont);
+			add_sections (cont, user);
 		else if (sscanf (bp, "SECTIONS %511[^\n]", cont) == 1)
 			/* Since I keep getting it wrong ... */
-			add_sections (cont);
+			add_sections (cont, user);
 		else if (sscanf (bp, "MINCATWIDTH %d", &val) == 1)
 			min_cat_width = val;
 		else if (sscanf (bp, "MAXCATWIDTH %d", &val) == 1)
@@ -812,11 +837,11 @@ void read_config_file (int optional)
 
 	push_cleanup (free_config_file, NULL, 0);
 
-	home = xstrdup (getenv ("HOME"));
+	home = getenv ("HOME");
 	if (home) {
 		char *dotmanpath;
 		if (!user_config_file)
-			dotmanpath = appendstr (home, "/.manpath", NULL);
+			dotmanpath = appendstr (NULL, home, "/.manpath", NULL);
 		else
 			dotmanpath = xstrdup (user_config_file);
 		config = fopen (dotmanpath, "r");
@@ -1043,7 +1068,7 @@ static inline char *has_mandir (const char *path)
 	   
 	char *subdir = strrchr (path, '/');
 	if (subdir) {
-		newpath = xasprintf ("%.*s/man", subdir - path, path);
+		newpath = xasprintf ("%.*s/man", (int) (subdir - path), path);
 		if (is_directory (newpath) == 1)
 			return newpath;
 		free (newpath);
@@ -1055,7 +1080,8 @@ static inline char *has_mandir (const char *path)
 	free (newpath);
 
 	if (subdir) {
-		newpath = xasprintf ("%.*s/share/man", subdir - path, path);
+		newpath = xasprintf ("%.*s/share/man",
+				     (int) (subdir - path), path);
 		if (is_directory (newpath) == 1)
 			return newpath;
 		free (newpath);
@@ -1143,8 +1169,8 @@ void create_pathlist (const char *manp, char **mp)
 		     ++dupcheck) {
 			if (!STREQ (*mp, *dupcheck))
 				continue;
-			debug ("Removing duplicate manpath entry %s (%d) -> "
-			       "%s (%d)\n",
+			debug ("Removing duplicate manpath entry %s (%td) -> "
+			       "%s (%td)\n",
 			       oldmp, mp - mphead,
 			       *dupcheck, dupcheck - mphead);
 			free (*mp);

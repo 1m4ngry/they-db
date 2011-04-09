@@ -775,7 +775,8 @@ char *yytext;
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
  * Copyright (C) 1997 Fabrizio Polacco.
- * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011
+ *               Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -825,6 +826,7 @@ char *yytext;
 #define LINE	so_line[so_stack_ptr]
 #define PIPE	so_pipe[so_stack_ptr]
 
+#include "dirname.h"
 #include "xgetcwd.h"
 
 #include "gettext.h"
@@ -838,8 +840,7 @@ char *yytext;
 #include "decompress.h"
 
 #include "globbing.h"
-
-int zsoelim_open_file (const char *filename);
+#include "zsoelim.h"
 
 #ifdef ACCEPT_QUOTES
 #  define ZAP_QUOTES	zap_quotes ()
@@ -854,6 +855,13 @@ static int so_line[MAX_SO_DEPTH];
 static pipeline *so_pipe[MAX_SO_DEPTH];
 static int so_stack_ptr;
 static int no_newline;
+static char * const *so_manpathlist;
+static const char *so_parent_path;
+
+struct zsoelim_stdin_data {
+	char *path;
+	char * const *manpathlist;
+};
 
 /* The flex documentation says that yyin is only used by YY_INPUT, so we
  * should safely be able to abuse it as a handy way to keep track of the
@@ -874,7 +882,7 @@ static int no_newline;
 
 
 
-#line 878 "zsoelim.c"
+#line 886 "zsoelim.c"
 
 #define INITIAL 0
 #define so 1
@@ -1067,10 +1075,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 116 "zsoelim.l"
+#line 124 "zsoelim.l"
 
 
-#line 1074 "zsoelim.c"
+#line 1082 "zsoelim.c"
 
 	if ( !(yy_init) )
 		{
@@ -1144,7 +1152,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 118 "zsoelim.l"
+#line 126 "zsoelim.l"
 {	
 			no_newline = 1;
 			ECHO;
@@ -1153,7 +1161,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 124 "zsoelim.l"
+#line 132 "zsoelim.l"
 {	
 			no_newline = 1;
 			BEGIN (so);	/* Now we're in the .so environment */
@@ -1161,7 +1169,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 129 "zsoelim.l"
+#line 137 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;		/* Now we're in the .lf environment */
@@ -1169,26 +1177,26 @@ YY_RULE_SETUP
 		}
 	YY_BREAK
 case 4:
-#line 136 "zsoelim.l"
+#line 144 "zsoelim.l"
 case 5:
 /* rule 5 can match eol */
-#line 137 "zsoelim.l"
+#line 145 "zsoelim.l"
 case 6:
 /* rule 6 can match eol */
-#line 138 "zsoelim.l"
+#line 146 "zsoelim.l"
 case 7:
 /* rule 7 can match eol */
-#line 139 "zsoelim.l"
+#line 147 "zsoelim.l"
 case 8:
 /* rule 8 can match eol */
-#line 140 "zsoelim.l"
+#line 148 "zsoelim.l"
 case 9:
 /* rule 9 can match eol */
-#line 141 "zsoelim.l"
+#line 149 "zsoelim.l"
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 141 "zsoelim.l"
+#line 149 "zsoelim.l"
 {
 				no_newline = 1;
 				ECHO;
@@ -1197,7 +1205,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 146 "zsoelim.l"
+#line 154 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1206,7 +1214,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 153 "zsoelim.l"
+#line 161 "zsoelim.l"
 { 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
@@ -1220,7 +1228,8 @@ YY_RULE_SETUP
 
 			no_newline = 0;
 
-			if (zsoelim_open_file (yytext)) {
+			if (zsoelim_open_file (yytext, so_manpathlist,
+					       so_parent_path)) {
 				--so_stack_ptr;
 #ifndef __alpha
 				error (OK, 0, 
@@ -1241,7 +1250,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 184 "zsoelim.l"
+#line 193 "zsoelim.l"
 {
 			no_newline = 0;
 			BEGIN (INITIAL);
@@ -1250,7 +1259,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 189 "zsoelim.l"
+#line 198 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1264,7 +1273,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 200 "zsoelim.l"
+#line 209 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1273,7 +1282,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 206 "zsoelim.l"
+#line 215 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1282,7 +1291,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 211 "zsoelim.l"
+#line 220 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1291,7 +1300,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 218 "zsoelim.l"
+#line 227 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1302,7 +1311,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 226 "zsoelim.l"
+#line 235 "zsoelim.l"
 {	/* file names including whitespace ?? */
 			no_newline = 1;
 			ECHO;
@@ -1316,7 +1325,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 237 "zsoelim.l"
+#line 246 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1324,7 +1333,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 242 "zsoelim.l"
+#line 251 "zsoelim.l"
 {
 			no_newline = 1;
 			error (OK, 0,
@@ -1338,7 +1347,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 252 "zsoelim.l"
+#line 261 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1356,13 +1365,14 @@ case YY_STATE_EOF(de):
 case YY_STATE_EOF(end_request):
 case YY_STATE_EOF(lfnumber):
 case YY_STATE_EOF(lfname):
-#line 263 "zsoelim.l"
+#line 272 "zsoelim.l"
 {
 		pipeline_wait (PIPE);
 		pipeline_free (PIPE);
 		PIPE = NULL;
 		free (NAME);
 		NAME = NULL;
+		so_manpathlist = NULL;
 
 		if (no_newline)
 			putchar ('\n');
@@ -1380,10 +1390,10 @@ case YY_STATE_EOF(lfname):
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 283 "zsoelim.l"
+#line 293 "zsoelim.l"
 ECHO;
 	YY_BREAK
-#line 1387 "zsoelim.c"
+#line 1397 "zsoelim.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2331,7 +2341,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 283 "zsoelim.l"
+#line 293 "zsoelim.l"
 
 
 
@@ -2352,7 +2362,7 @@ static void zap_quotes (void)
 #endif
 
 /* initialise the stack and call the parser */
-void zsoelim_parse_file (void)
+void zsoelim_parse_file (char * const *manpathlist, const char *parent_path)
 {
 #ifdef PP_COOKIE
 	const char *line;
@@ -2360,6 +2370,8 @@ void zsoelim_parse_file (void)
 	int linenum = 1;
 
 	so_stack_ptr = 0;
+	so_manpathlist = manpathlist;
+	so_parent_path = parent_path;
 
 #ifdef PP_COOKIE
 	/* Skip over the first line if it's something that manconv might
@@ -2379,77 +2391,166 @@ void zsoelim_parse_file (void)
 	yylex ();
 }
 
+pipeline *try_compressed (char **filename)
+{
+	struct compression *comp;
+	size_t len = strlen (*filename);
+	pipeline *decomp;
+
+	/* Try the uncompressed name first. */
+	(*filename)[len - 1] = '\0';
+	debug ("trying %s\n", *filename);
+	decomp = decompress_open (*filename);
+	if (decomp)
+		return decomp;
+	(*filename)[len - 1] = '.';
+
+	for (comp = comp_list; comp->ext; ++comp) {
+		*filename = appendstr (*filename, comp->ext, NULL);
+		debug ("trying %s\n", *filename);
+		decomp = decompress_open (*filename);
+		if (decomp)
+			return decomp;
+		(*filename)[len] = '\0';
+	}
+
+	return NULL;
+}
+
 /* This routine is used to open the specified file or uncompress a compressed
    version and open that instead */
-int zsoelim_open_file (const char *filename)
+int zsoelim_open_file (const char *filename, char * const *manpathlist,
+		       const char *parent_path)
 {
 	pipeline *decomp;
+	char * const *mp;
+
+	if (parent_path)
+		debug ("opening %s (parent path: %s)\n",
+		       filename, parent_path);
+	else
+		debug ("opening %s\n", filename);
 
 	if (strcmp (filename, "-") == 0) {
 		decomp = decompress_fdopen (dup (STDIN_FILENO));
 		NAME = xstrdup (filename);
 	} else {
-		decomp = decompress_open (filename);
+		char *compfile;
 
-		if (decomp)
-			NAME = xstrdup (filename);
-		else {
-			struct compression *comp;
-			char *compfile = appendstr (NULL, filename, ".", NULL);
-			size_t len = strlen (compfile);
+		/* If there is no parent path, try opening directly first. */
+		if (!parent_path) {
+			compfile = appendstr (NULL, filename, ".", NULL);
 
-			for (comp = comp_list; comp->ext; ++comp) {
-				compfile = appendstr (compfile, comp->ext,
-						      NULL);
-				decomp = decompress_open (compfile);
-				if (decomp) {
-					NAME = compfile;
-					break;
-				}
-				compfile[len] = '\0';
-			}
-
-			if (!decomp)
+			decomp = try_compressed (&compfile);
+			if (decomp) {
+				NAME = compfile;
+				goto out;
+			} else
 				free (compfile);
 		}
 
-		/* This is insufficient, but we don't know the full search
-		 * path here so it's the best we can do for the time being;
-		 * with any luck it should cover most of the cases people
-		 * migrating from man to man-db need. See Debian bug
-		 * #503472.
-		 */
-		if (!decomp && !strchr (filename, '/') &&
-		    strchr (filename, '.')) {
-			char *pwd = xgetcwd ();
-			const char *dot = strchr (filename, '.');
-			char *name = xstrndup (filename, dot - filename);
-			const char *dot2 = dot ? strchr (dot + 1, '.') : NULL;
-			char *sec = dot2 ?
-				xstrndup (dot + 1, dot2 - (dot + 1)) :
-				xstrdup (dot + 1);
-			char **names = look_for_file (pwd, sec, name, 0,
-						      LFF_MATCHCASE);
+		if (manpathlist && strchr (filename, '/')) {
+			/* File name with a directory part.  Try looking it
+			 * up within each manpath entry.
+			 */
+			if (parent_path) {
+				compfile = appendstr (NULL, parent_path, "/",
+						      filename, ".", NULL);
+
+				decomp = try_compressed (&compfile);
+				if (decomp) {
+					NAME = compfile;
+					goto out;
+				}
+
+				free (compfile);
+			}
+
+			for (mp = manpathlist; *mp; ++mp) {
+				if (parent_path && STREQ (*mp, parent_path))
+					continue;
+
+				compfile = appendstr (NULL, *mp, "/",
+						      filename, ".", NULL);
+
+				decomp = try_compressed (&compfile);
+				if (decomp) {
+					NAME = compfile;
+					goto out;
+				}
+
+				free (compfile);
+			}
+		} else if (manpathlist) {
+			/* File name with no directory part.  Try searching
+			 * the manpath.
+			 */
+			char *name, *sec, *dot;
+			char **names;
 			char **np;
 
-			for (np = names; np && *np; ++np) {
-				decomp = decompress_open (*np);
-				if (decomp) {
-					NAME = xstrdup (*np);
-					break;
+			name = xstrdup (filename);
+			dot = strchr (name, '.');
+			if (!dot) {
+				free (name);
+				goto out;
+			}
+			*dot++ = '\0';
+			sec = dot;
+			dot = strchr (dot, '.');
+			if (dot)
+				*dot = '\0';
+
+			if (parent_path) {
+				names = look_for_file (parent_path, sec, name,
+						       0, LFF_MATCHCASE);
+				for (np = names; np && *np; ++np) {
+					decomp = decompress_open (*np);
+					if (decomp) {
+						NAME = xstrdup (*np);
+						goto out;
+					}
 				}
 			}
 
-			free (sec);
+			for (mp = manpathlist; *mp; ++mp) {
+				if (parent_path && STREQ (*mp, parent_path))
+					continue;
+
+				names = look_for_file (*mp, sec, name,
+						       0, LFF_MATCHCASE);
+				for (np = names; np && *np; ++np) {
+					decomp = decompress_open (*np);
+					if (decomp) {
+						NAME = xstrdup (*np);
+						goto out;
+					}
+				}
+			}
+
 			free (name);
-			free (pwd);
 		}
 
+		/* If there is a parent path, try opening directly last. */
+		if (parent_path) {
+			compfile = appendstr (NULL, filename, ".", NULL);
+
+			decomp = try_compressed (&compfile);
+			if (decomp) {
+				NAME = compfile;
+				goto out;
+			} else
+				free (compfile);
+		}
+
+out:
 		if (!decomp) {
 			error (0, errno, _("can't open %s"), filename);
 			return 1;
 		}
 	}
+
+	debug ("opened %s\n", NAME);
 
 	pipeline_start (decomp);
 	PIPE = decomp;
@@ -2459,9 +2560,30 @@ int zsoelim_open_file (const char *filename)
 	return 0;
 }
 
-void zsoelim_stdin (void *data ATTRIBUTE_UNUSED)
+void zsoelim_stdin (void *data)
 {
-	zsoelim_open_file ("-");
-	zsoelim_parse_file ();
+	struct zsoelim_stdin_data *zsoelim_data = data;
+
+	zsoelim_open_file ("-", NULL, zsoelim_data->path);
+	zsoelim_parse_file (zsoelim_data->manpathlist, zsoelim_data->path);
+}
+
+struct zsoelim_stdin_data *zsoelim_stdin_data_new (const char *path,
+						   char * const *manpathlist)
+{
+	struct zsoelim_stdin_data *data = XMALLOC (struct zsoelim_stdin_data);
+
+	data->path = path ? xstrdup (path) : NULL;
+	data->manpathlist = manpathlist;
+
+	return data;
+}
+
+void zsoelim_stdin_data_free (void *data)
+{
+	struct zsoelim_stdin_data *zsoelim_data = data;
+
+	free (zsoelim_data->path);
+	free (zsoelim_data);
 }
 

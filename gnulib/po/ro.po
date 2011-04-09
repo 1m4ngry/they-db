@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailutils 0.4\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2003-12-10 08:55+0200\n"
 "Last-Translator: Eugen Hoanca <eugenh@urban-grafx.ro>\n"
 "Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
@@ -41,7 +41,7 @@ msgstr "%.*s: Parametru ARGP_HELP_FMT necunoscut"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Gunoi(garbage) în ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -50,29 +50,29 @@ msgstr ""
 "asemenea obligatorii sau opþionale pentru toate opþiunile scurte "
 "corespunzãtoare."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Folosire:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "  sau: "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [OPÞIUNE...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Încercaþi `%s --help' sau `%s --usage' pentru mai multe informaþii.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Raportaþi bug-urile la %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 #, fuzzy
 msgid "Unknown system error"
 msgstr "tip de mesaj necunoscut"
@@ -180,241 +180,94 @@ msgstr "%s: opþiune `-W %s' nu permite argumente\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: opþiunea `%s' necesitã un argument\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr ""
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Succes"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "Nu existã fiºier anterior"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 #, fuzzy
 msgid "Invalid back reference"
 msgstr "Numãr invalid"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 #, fuzzy
 msgid "Invalid range end"
 msgstr "Tip de datã invalid"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Memorie plinã"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "Nu existã fiºier anterior"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "Nu existã fiºier anterior"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "Nu existã fiºier anterior"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "Nu existã fiºier anterior"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr ""
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr ""
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr ""
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr ""
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr ""
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr ""
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr ""
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr ""
-
-#: gnulib/lib/siglist.h:53
-#, fuzzy
-msgid "Bus error"
-msgstr "eroare regex"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr ""
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr ""
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr ""
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr ""
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr ""
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr ""
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr ""
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr ""
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr ""
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr ""
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr ""
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr ""
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr ""
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr ""
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr ""
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr ""
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr ""
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr ""
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr ""
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr ""
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr ""
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr ""
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr ""
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr ""
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr ""
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr ""
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr ""
 
 #: gnulib/lib/xalloc-die.c:34
 #, fuzzy
@@ -468,6 +321,10 @@ msgstr "Memorie plinã"
 #, fuzzy
 #~ msgid "Memory allocation failure"
 #~ msgstr "Operaþiune eºuatã"
+
+#, fuzzy
+#~ msgid "System error"
+#~ msgstr "eroare regex"
 
 #, fuzzy
 #~ msgid "Unknown error"

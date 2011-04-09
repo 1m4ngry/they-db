@@ -3,8 +3,8 @@
  *
  * Copyright (C) 1990, 1991 John W. Eaton.
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
- * Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+ *               2011 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -131,7 +131,7 @@ extern uid_t euid;
 #  define STDERR_FILENO 2
 #endif
 
-const char *lang;
+char *lang;
 
 /* external formatter programs, one for use without -t, and one with -t */
 #define NFMT_PROG "./mandb_nfmt"
@@ -640,9 +640,19 @@ static int get_roff_line_length (void)
 		return 0;
 }
 
-static void add_roff_line_length (pipecmd *cmd, int *save_cat_p)
+#ifdef HEIRLOOM_NROFF
+static void heirloom_line_length (void *data)
+{
+	printf (".ll %sn\n", (const char *) data);
+	/* TODO: This fails to do anything useful.  Why? */
+	printf (".lt %sn\n", (const char *) data);
+}
+#endif /* HEIRLOOM_NROFF */
+
+static pipecmd *add_roff_line_length (pipecmd *cmd, int *save_cat_p)
 {
 	int length;
+	pipecmd *ret = NULL;
 
 	if (!catman) {
 		int line_length = get_line_length ();
@@ -662,10 +672,29 @@ static void add_roff_line_length (pipecmd *cmd, int *save_cat_p)
 
 	length = get_roff_line_length ();
 	if (length) {
+#ifdef HEIRLOOM_NROFF
+		char *name;
+		char *lldata;
+		pipecmd *llcmd;
+#endif /* HEIRLOOM_NROFF */
+
 		debug ("Using %d-character lines\n", length);
+#if defined(TROFF_IS_GROFF)
 		pipecmd_argf (cmd, "-rLL=%dn", length);
 		pipecmd_argf (cmd, "-rLT=%dn", length);
+#elif defined(HEIRLOOM_NROFF)
+		name = xasprintf ("echo .ll %dn && echo .lt %dn",
+				  length, length);
+		lldata = xasprintf ("%d", length);
+		llcmd = pipecmd_new_function (name, heirloom_line_length, free,
+					      lldata);
+		ret = pipecmd_new_sequence ("line-length", llcmd,
+					    pipecmd_new_passthrough (), NULL);
+		free (name);
+#endif /* HEIRLOOM_NROFF */
 	}
+
+	return ret;
 }
 
 static inline void gripe_no_man (const char *name, const char *sec)
@@ -673,8 +702,14 @@ static inline void gripe_no_man (const char *name, const char *sec)
 	/* On AIX and IRIX, fall back to the vendor supplied browser. */
 #if defined _AIX || defined __sgi
 	if (!troff) {
-		unsetenv ("MANPATH");
-		execv ("/usr/bin/man", global_argv);
+		pipecmd *vendor_man;
+		int i;
+
+		vendor_man = pipecmd_new ("/usr/bin/man");
+		for (i = 1; i < argc; ++i)
+			pipecmd_arg (vendor_man, global_argv[i]);
+		pipecmd_unsetenv (vendor_man, "MANPATH");
+		pipecmd_exec (vendor_man);
 	}
 #endif
 
@@ -968,6 +1003,8 @@ executable_out:
 					error (0, errno, "%s", argv);
 				exit_status = NOT_FOUND;
 			}
+			free (lang);
+			lang = NULL;
 			free (argv_base);
 		}
 	}
@@ -1064,8 +1101,10 @@ int main (int argc, char *argv[])
 	   issued as an argument or in $MANOPT */
 	if (locale) {
 		free (internal_locale);
-		internal_locale = xstrdup (setlocale (LC_ALL, locale));
-		if (internal_locale == NULL)
+		internal_locale = setlocale (LC_ALL, locale);
+		if (internal_locale)
+			internal_locale = xstrdup (internal_locale);
+		else
 			internal_locale = xstrdup (locale);
 
 		debug ("main(): locale = %s, internal_locale = %s\n",
@@ -1099,7 +1138,8 @@ int main (int argc, char *argv[])
 		prompt_string = _(
 				" Manual page " MAN_PN
 				" ?ltline %lt?L/%L.:byte %bB?s/%s..?e (END):"
-				"?pB %pB\\%..");
+				"?pB %pB\\%.. "
+				"(press h for help or q to quit)");
 #endif
 
 	/* Restore and save $LESS in $MAN_ORIG_LESS so that recursive uses
@@ -1117,6 +1157,15 @@ int main (int argc, char *argv[])
 
 	section_list = get_section_list ();
 
+	if (manp == NULL)
+		manp = locale_manpath (get_manpath (alt_system_name));
+	else
+		free (get_manpath (NULL));
+
+	debug ("manpath search path (with duplicates) = %s\n", manp);
+
+	create_pathlist (manp, manpathlist);
+
 	/* man issued with `-l' option */
 	if (local_man_file) {
 		while (first_arg < argc) {
@@ -1128,15 +1177,6 @@ int main (int argc, char *argv[])
 		free (program_name);
 		exit (exit_status);
 	}
-
-	if (manp == NULL)
-		manp = locale_manpath (get_manpath (alt_system_name));
-	else
-		free (get_manpath (NULL));
-
-	debug ("manpath search path (with duplicates) = %s\n", manp);
-
-	create_pathlist (manp, manpathlist);
 
 	/* finished manpath processing, regain privs */
 	regain_effective_privs ();
@@ -1406,14 +1446,15 @@ static void add_col (pipeline *p, const char *locale_charset, ...)
 {
 	pipecmd *cmd;
 	va_list argv;
-	char *col_locale;
+	char *col_locale = NULL;
 
 	cmd = pipecmd_new (COL);
 	va_start (argv, locale_charset);
 	pipecmd_argv (cmd, argv);
 	va_end (argv);
 
-	col_locale = find_charset_locale (locale_charset);
+	if (locale_charset)
+		col_locale = find_charset_locale (locale_charset);
 	if (col_locale) {
 		pipecmd_setenv (cmd, "LC_CTYPE", col_locale);
 		free (col_locale);
@@ -1437,10 +1478,6 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	const char *locale_charset = NULL;
 
 	*result_encoding = xstrdup ("UTF-8"); /* optimistic default */
-
-#ifndef ALT_EXT_FORMAT
-	dir = dir; /* not used unless looking for formatters in catdir */
-#endif
 
 	pp_string = get_preprocessors (decomp, dbfilters);
 
@@ -1493,8 +1530,13 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		const char *groff_preconv;
 
 		if (!recode) {
+			struct zsoelim_stdin_data *zsoelim_data;
+
+			zsoelim_data = zsoelim_stdin_data_new (dir,
+							       manpathlist);
 			cmd = pipecmd_new_function (SOELIM, &zsoelim_stdin,
-						    NULL, NULL);
+						    zsoelim_stdin_data_free,
+						    zsoelim_data);
 			pipeline_command (p, cmd);
 		}
 
@@ -1525,6 +1567,22 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				roff_device =
 					get_default_device (locale_charset,
 							    source_encoding);
+#ifdef HEIRLOOM_NROFF
+				/* In Heirloom, if LC_CTYPE is a UTF-8
+				 * locale, then -Tlocale will be equivalent
+				 * to -Tutf8 except that it will do a
+				 * slightly better job of rendering some
+				 * special characters.
+				 */
+				if (STREQ (roff_device, "utf8")) {
+					const char *real_locale_charset =
+						get_locale_charset ();
+					if (real_locale_charset &&
+					    STREQ (real_locale_charset,
+						   "UTF-8"))
+						roff_device = "locale";
+				}
+#endif /* HEIRLOOM_NROFF */
 				debug ("roff_device (locale) = %s\n",
 				       STRC (roff_device, "NULL"));
 			}
@@ -1643,13 +1701,27 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 #ifdef TROFF_IS_GROFF
 				if (troff && ditroff)
 					pipecmd_arg (cmd, "-Z");
-				else if (!troff)
-					add_roff_line_length (cmd, &save_cat);
+#endif /* TROFF_IS_GROFF */
 
+#if defined(TROFF_IS_GROFF) || defined(HEIRLOOM_NROFF)
+				if (!troff) {
+					pipecmd *seq = add_roff_line_length
+						(cmd, &save_cat);
+					if (seq)
+						pipeline_command (p, seq);
+				}
+#endif /* TROFF_IS_GROFF || HEIRLOOM_NROFF */
+
+#ifdef TROFF_IS_GROFF
 				for (cur = roff_warnings; cur;
 				     cur = cur->next)
 					pipecmd_argf (cmd, "-w%s", cur->name);
 #endif /* TROFF_IS_GROFF */
+
+#ifdef HEIRLOOM_NROFF
+				if (running_setuid ())
+					pipecmd_unsetenv (cmd, "TROFFMACS");
+#endif /* HEIRLOOM_NROFF */
 
 				pipecmd_argstr (cmd, roff_opt);
 
@@ -1722,6 +1794,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	return p;
 }
 
+#ifdef TROFF_IS_GROFF
 /* Return pipeline to run a browser on a given file, observing
  * http://www.tuxedo.org/~esr/BROWSER/.
  *
@@ -1785,6 +1858,7 @@ static pipeline *make_browser (const char *pattern, const char *file)
 
 	return p;
 }
+#endif /* TROFF_IS_GROFF */
 
 static void setenv_less (pipecmd *cmd, const char *title)
 {
@@ -1863,16 +1937,18 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 			add_col (p, locale_charset, "-b", "-p", "-x", NULL);
 	}
 
-	if (ascii) {
-		pipeline_command_argstr
-			(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
-		pager_cmd = pipecmd_new_argstr (pager);
-	} else
+	if (isatty (STDOUT_FILENO)) {
+		if (ascii) {
+			pipeline_command_argstr
+				(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
+			pager_cmd = pipecmd_new_argstr (pager);
+		} else
 #ifdef TROFF_IS_GROFF
-	if (!htmlout)
-		/* format_display deals with html_pager */
+		if (!htmlout)
+			/* format_display deals with html_pager */
 #endif
-		pager_cmd = pipecmd_new_argstr (pager);
+			pager_cmd = pipecmd_new_argstr (pager);
+	}
 
 	if (pager_cmd) {
 		setenv_less (pager_cmd, title);
@@ -1880,10 +1956,9 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 	}
 	pipeline_ignore_signals (p, 1);
 
-	if (!pipeline_get_ncommands (p)) {
-		pipeline_free (p);
-		p = NULL;
-	}
+	if (!pipeline_get_ncommands (p))
+		/* Always return at least a dummy pipeline. */
+		pipeline_command (p, pipecmd_new_passthrough ());
 	return p;
 }
 
@@ -2090,13 +2165,6 @@ static int format_display_and_save (pipeline *decomp,
 {
 	pipeline *sav_p = open_cat_stream (cat_file, encoding);
 	int instat;
-	struct sigaction sa, osa_sigpipe;
-
-	memset (&sa, 0, sizeof sa);
-	sa.sa_handler = SIG_IGN;
-	sigemptyset (&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction (SIGPIPE, &sa, &osa_sigpipe);
 
 	if (global_manpath)
 		drop_effective_privs ();
@@ -2120,7 +2188,6 @@ static int format_display_and_save (pipeline *decomp,
 	if (sav_p)
 		close_cat_stream (sav_p, cat_file, instat);
 	pipeline_wait (disp_cmd);
-	sigaction (SIGPIPE, &osa_sigpipe, NULL);
 	return instat;
 }
 #endif /* MAN_CATS */
@@ -2134,8 +2201,10 @@ static void format_display (pipeline *decomp,
 			    const char *man_file)
 {
 	int status;
+#ifdef TROFF_IS_GROFF
 	char *old_cwd = NULL;
 	char *htmldir = NULL, *htmlfile = NULL;
+#endif /* TROFF_IS_GROFF */
 
 	if (format_cmd)
 		maybe_discard_stderr (format_cmd);
@@ -2202,7 +2271,7 @@ static void format_display (pipeline *decomp,
 				       old_cwd);
 				chdir ("/");
 			}
-			if (remove_directory (htmldir) == -1)
+			if (remove_directory (htmldir, 0) == -1)
 				error (0, errno,
 				       _("can't remove directory %s"),
 				       htmldir);
@@ -2231,7 +2300,7 @@ static void format_display (pipeline *decomp,
 			       old_cwd);
 			chdir ("/");
 		}
-		if (remove_directory (htmldir) == -1)
+		if (remove_directory (htmldir, 0) == -1)
 			error (0, errno, _("can't remove directory %s"),
 			       htmldir);
 		free (htmlfile);
@@ -2833,10 +2902,24 @@ static int compare_candidates (const struct candidate *left,
 	 * moved out of order with respect to their parent sections.
 	 */
 	if (strcmp (lsource->ext, rsource->ext)) {
+		const char **sp;
+
+		/* If the user asked for an explicit section, sort exact
+		 * matches first.
+		 */
+		if (section) {
+			if (STREQ (lsource->ext, section)) {
+				if (!STREQ (rsource->ext, section))
+					return -1;
+			} else {
+				if (STREQ (rsource->ext, section))
+					return 1;
+			}
+		}
+
 		/* Find out whether lsource->ext is ahead of rsource->ext in
 		 * section_list.
 		 */
-		const char **sp;
 		for (sp = section_list; *sp; ++sp) {
 			if (!*(*sp + 1)) {
 				/* No extension */
@@ -2998,7 +3081,7 @@ static int add_candidate (struct candidate **head, char from_db, char cat,
 
 		filename = make_filename (path, name, source, cat ? "cat" : "man");
 		ult = ult_src (filename, path, NULL,
-			       get_ult_flags (from_db, source->id));
+			       get_ult_flags (from_db, source->id), NULL);
 		free (filename);
 	}
 
@@ -3015,7 +3098,7 @@ static int add_candidate (struct candidate **head, char from_db, char cat,
 	candp->from_db = from_db;
 	candp->cat = cat;
 	candp->path = path;
-	candp->ult = xstrdup (ult);
+	candp->ult = ult ? xstrdup (ult) : NULL;
 	candp->source = source;
 	candp->add_index = add_index++;
 	candp->next = NULL;
@@ -3177,7 +3260,7 @@ static int try_section (const char *path, const char *sec, const char *name,
 		 * must be either ULT_MAN or SO_MAN. ult_src() can tell us
 		 * which.
 		 */
-		ult = ult_src (*np, path, NULL, ult_flags);
+		ult = ult_src (*np, path, NULL, ult_flags, NULL);
 		if (!ult) {
 			/* already warned */
 			debug ("try_section(): bad link %s\n", *np);
@@ -3215,7 +3298,8 @@ static int display_filesystem (struct candidate *candp)
 		char *cat_file;
 		int found;
 
-		man_file = ult_src (filename, candp->path, NULL, ult_flags);
+		man_file = ult_src (filename, candp->path, NULL, ult_flags,
+				    NULL);
 		if (man_file == NULL) {
 			free (title);
 			return 0;
@@ -3228,6 +3312,8 @@ static int display_filesystem (struct candidate *candp)
 		found = display (candp->path, man_file, cat_file, title, NULL);
 		if (cat_file)
 			free (cat_file);
+		free (lang);
+		lang = NULL;
 		free (title);
 
 		return found;
@@ -3290,7 +3376,7 @@ static int display_database (struct candidate *candp)
 			char *cat_file;
 
 			man_file = ult_src (file, candp->path, NULL,
-					    get_ult_flags (1, in->id));
+					    get_ult_flags (1, in->id), NULL);
 			if (man_file == NULL) {
 				free (title);
 				return found; /* zero */
@@ -3304,6 +3390,8 @@ static int display_database (struct candidate *candp)
 					  title, in->filter);
 			if (cat_file)
 				free (cat_file);
+			free (lang);
+			lang = NULL;
 		} /* else {drop through to the bottom and return 0 anyway} */
 	} else 
 
@@ -3723,12 +3811,15 @@ static int do_global_apropos_section (const char *path, const char *sec,
 
 		title = appendstr (NULL, strchr (info_buffer, '\0') + 1,
 				   "(", info->ext, ")", NULL);
-		man_file = ult_src (*np, path, NULL, ult_flags);
+		man_file = ult_src (*np, path, NULL, ult_flags, NULL);
 		if (!man_file)
 			goto next;
+		lang = lang_dir (man_file);
 		cat_file = find_cat_file (path, *np, man_file);
 		if (display (path, man_file, cat_file, title, NULL))
 			found = 1;
+		free (lang);
+		lang = NULL;
 
 next:
 		free (cat_file);

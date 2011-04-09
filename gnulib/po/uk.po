@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-02-23 20:02+0200\n"
 "Last-Translator: Sergey Poznyakoff <gray@gnu.org>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
@@ -43,37 +43,37 @@ msgstr "%.*s: Невідомий параметр ARGP_HELP_FMT"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Хибні дані в ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
 msgstr ""
 "Аргументи, обов'язкові для довгих ключів, є обов'язковими й для коротких."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Використання:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr " чи: "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [ОПЦІЯ...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr ""
 "Спробуйте `%s --help' або `%s --usage' для отримання докладнішого опису.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Про помилки звітуйте на <%s>.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Невідома системна помилка"
 
@@ -174,233 +174,87 @@ msgstr "%s: опція '-W %s' не може мати аргументу\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: опція '%s' вимагає аргументу\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "не вдається змінити поточний каталог"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "не вдається зберегти поточний каталог"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Успіх"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Брак збігів"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Недійсний регулярний вираз"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Недійсний об'єднувальний символ"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Недійсна назва класу символів"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Зворотна похила наприкінці виразу"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Недійсне зворотнє посилання"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Незакрита [ або [^"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Незакрита ( або \\("
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Незакрита \\{"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Недійсний вміст \\{\\}"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Недійсний кінець діапазону"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Пам'ять вичерпана"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Попередній регулярний вираз не є дійсним"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Передчасне закінчення регулярного виразу"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "За великий регулярний вираз"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Неузгоджена ) або \\)"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "Брак попереднього регулярного виразу"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Відбій"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Переривання"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Закінчення"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Недійсна інструкція"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Перехоплення трасування/контрольної точки"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Аварійне завершення"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Виняток операції з рухомою крапкою"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Знищення"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Помилка шини"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Помилка сегментації"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Розімкнений конвеєр"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Алярм"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Закінчено"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Екстрена ситуація вводу-виводу"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Припинення (сигнал)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Припинення"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Продовження"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Нащадок завершився"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Припинення (ввід з консолі)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Припинення (вивід на консоль)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "Можливий ввід-вивід"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "Перевищення ліміту часу ЦП"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Перевищення ліміту розміру файлів"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Віртуальний таймер закінчився"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "Таймер профілювання закінчився"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Вікно змінилося"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Визначений користувачем сигнал 1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Визначений користувачем сигнал 2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "Пастка EMT"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Недійсний системний виклик"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Збій стосу"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Запит інформації"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Аварія живлення"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Втрата засобу"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Сигнал реального часу %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Невідомий сигнал %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -642,8 +496,116 @@ msgstr "пам'ять вичерпана"
 #~ msgid "setting permissions for %s"
 #~ msgstr "встановлення прав доступу до %s"
 
+#~ msgid "Hangup"
+#~ msgstr "Відбій"
+
+#~ msgid "Interrupt"
+#~ msgstr "Переривання"
+
+#~ msgid "Quit"
+#~ msgstr "Закінчення"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Недійсна інструкція"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Перехоплення трасування/контрольної точки"
+
+#~ msgid "Aborted"
+#~ msgstr "Аварійне завершення"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Виняток операції з рухомою крапкою"
+
+#~ msgid "Killed"
+#~ msgstr "Знищення"
+
+#~ msgid "Bus error"
+#~ msgstr "Помилка шини"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Помилка сегментації"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Розімкнений конвеєр"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Алярм"
+
+#~ msgid "Terminated"
+#~ msgstr "Закінчено"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Екстрена ситуація вводу-виводу"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Припинення (сигнал)"
+
+#~ msgid "Stopped"
+#~ msgstr "Припинення"
+
+#~ msgid "Continued"
+#~ msgstr "Продовження"
+
+#~ msgid "Child exited"
+#~ msgstr "Нащадок завершився"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Припинення (ввід з консолі)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Припинення (вивід на консоль)"
+
+#~ msgid "I/O possible"
+#~ msgstr "Можливий ввід-вивід"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "Перевищення ліміту часу ЦП"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Перевищення ліміту розміру файлів"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Віртуальний таймер закінчився"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "Таймер профілювання закінчився"
+
+#~ msgid "Window changed"
+#~ msgstr "Вікно змінилося"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Визначений користувачем сигнал 1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Визначений користувачем сигнал 2"
+
+#~ msgid "EMT trap"
+#~ msgstr "Пастка EMT"
+
+#~ msgid "Bad system call"
+#~ msgstr "Недійсний системний виклик"
+
+#~ msgid "Stack fault"
+#~ msgstr "Збій стосу"
+
+#~ msgid "Information request"
+#~ msgstr "Запит інформації"
+
+#~ msgid "Power failure"
+#~ msgstr "Аварія живлення"
+
+#~ msgid "Resource lost"
+#~ msgstr "Втрата засобу"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "помилка запису у закритий конвеєр або гніздо"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Сигнал реального часу %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Невідомий сигнал %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "функція iconv непридатна до вжитку"

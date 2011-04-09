@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib-2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-04-04 12:18+0200\n"
 "Last-Translator: Benno Schulenberg <benno@vertaalt.nl>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
@@ -47,7 +47,7 @@ msgstr "%.*s: Onbekende parameter in ARGP_HELP_FMT"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Rommel in ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -55,31 +55,31 @@ msgstr ""
 "Een argument dat verplicht of optioneel is voor een lange optie, is dat\n"
 "ook voor de overeenkomstige korte optie."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Gebruik: "
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "     of: "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [OPTIE...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Typ '%s --help' of '%s --usage' voor meer informatie.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "Rapporteer gebreken in het programma aan %s;\n"
 "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Onbekende systeemfout"
 
@@ -180,235 +180,87 @@ msgstr "%s: optie '-W %s' staat geen argument toe\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: optie '%s' vereist een argument\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "kan de huidige werkmap niet vastleggen"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "kan niet terugkeren naar de initiële werkmap"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Gelukt"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Geen overeenkomsten"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Ongeldige reguliere expressie"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Ongeldig samengesteld teken"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Ongeldige tekenklassenaam"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Backslash aan het eind"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Ongeldige terugverwijzing"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Ongepaarde [ of [^"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Ongepaarde ( of \\("
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Ongepaarde \\{"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Ongeldige inhoud van \\{\\}"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Ongeldig bereikeinde"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Onvoldoende geheugen beschikbaar"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Ongeldige voorafgaande reguliere expressie"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Voortijdig einde van reguliere expressie"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Reguliere expressie is te groot"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Ongepaarde ) of \\)"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "Geen eerdere reguliere expressie"
-
-# Vroeger ging dit over het afsluiten van een modemverbinding,
-# tegenwoordig over het afsluiten van een pseudoterminal.
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Opgehangen"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Onderbroken"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Afgesloten"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Ongeldige instructie"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Traceer/breekpunt-instructie"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Afgebroken"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Drijvendekomma-berekeningsfout"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Geëlimineerd"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Busfout"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Segmentatiefout"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Gebroken pijp"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Wekker"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Beëindigd"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Urgente in-/uitvoertoestand"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Gepauzeerd (signaal)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Gepauzeerd"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Doorgegaan"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Dochter is afgesloten"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Gepauzeerd (terminalinvoer)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Gepauzeerd (terminaluitvoer)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "In-/uitvoer is mogelijk"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "Limiet op processortijd is overschreden"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Limiet op bestandsgrootte is overschreden"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Virtuele tijdopnemer is verlopen"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "Tijdopnemer voor analyse is verlopen"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Venster is veranderd"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Gebruikergedefinieerd signaal 1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Gebruikergedefinieerd signaal 2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "EMT-instructie"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Onjuiste systeemaanroep"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Stack-fout"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Verzoek om informatie"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Stroomstoring"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Hulpbron verloren"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Realtime-signaal %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Onbekend signaal %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -646,8 +498,118 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "setting permissions for %s"
 #~ msgstr "toegangsrechten van %s worden ingesteld"
 
+# Vroeger ging dit over het afsluiten van een modemverbinding,
+# tegenwoordig over het afsluiten van een pseudoterminal.
+#~ msgid "Hangup"
+#~ msgstr "Opgehangen"
+
+#~ msgid "Interrupt"
+#~ msgstr "Onderbroken"
+
+#~ msgid "Quit"
+#~ msgstr "Afgesloten"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Ongeldige instructie"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Traceer/breekpunt-instructie"
+
+#~ msgid "Aborted"
+#~ msgstr "Afgebroken"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Drijvendekomma-berekeningsfout"
+
+#~ msgid "Killed"
+#~ msgstr "Geëlimineerd"
+
+#~ msgid "Bus error"
+#~ msgstr "Busfout"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Segmentatiefout"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Gebroken pijp"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Wekker"
+
+#~ msgid "Terminated"
+#~ msgstr "Beëindigd"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Urgente in-/uitvoertoestand"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Gepauzeerd (signaal)"
+
+#~ msgid "Stopped"
+#~ msgstr "Gepauzeerd"
+
+#~ msgid "Continued"
+#~ msgstr "Doorgegaan"
+
+#~ msgid "Child exited"
+#~ msgstr "Dochter is afgesloten"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Gepauzeerd (terminalinvoer)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Gepauzeerd (terminaluitvoer)"
+
+#~ msgid "I/O possible"
+#~ msgstr "In-/uitvoer is mogelijk"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "Limiet op processortijd is overschreden"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Limiet op bestandsgrootte is overschreden"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Virtuele tijdopnemer is verlopen"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "Tijdopnemer voor analyse is verlopen"
+
+#~ msgid "Window changed"
+#~ msgstr "Venster is veranderd"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Gebruikergedefinieerd signaal 1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Gebruikergedefinieerd signaal 2"
+
+#~ msgid "EMT trap"
+#~ msgstr "EMT-instructie"
+
+#~ msgid "Bad system call"
+#~ msgstr "Onjuiste systeemaanroep"
+
+#~ msgid "Stack fault"
+#~ msgstr "Stack-fout"
+
+#~ msgid "Information request"
+#~ msgstr "Verzoek om informatie"
+
+#~ msgid "Power failure"
+#~ msgstr "Stroomstoring"
+
+#~ msgid "Resource lost"
+#~ msgstr "Hulpbron verloren"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "fouten bij het schrijven naar een afgesloten 'pipe' of 'socket'"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Realtime-signaal %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Onbekend signaal %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "de functie iconv() is onbruikbaar"

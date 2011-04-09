@@ -26,8 +26,6 @@ dist_noinst_DATA = NEWS README include/README
 EXTRA_DIST = \
 	.bzrignore \
 	autogen.sh \
-	gnulib/lib/xmalloc.c.orig \
-	gnulib/lib/xmalloc.patch \
 	gnulib/m4/gnulib-cache.m4 \
 	gnulib/m4/gnulib-tool.m4 \
 	release.sh
@@ -43,7 +41,6 @@ EXTRA_DIST += \
 	gnulib/m4/inttypes-pri.m4 \
 	gnulib/m4/lcmessage.m4 \
 	gnulib/m4/printf-posix.m4 \
-	gnulib/m4/sockpfaf.m4 \
 	gnulib/m4/uintmax_t.m4 \
 	gnulib/m4/visibility.m4
 

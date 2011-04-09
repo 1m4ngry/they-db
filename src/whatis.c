@@ -2,7 +2,8 @@
  * whatis.c: search the index or whatis database(s) for words.
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011
+ *               Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -100,7 +101,7 @@ static int require_all;
 
 static int long_output;
 
-static const char *section;
+static char **sections;
 
 static char *manp = NULL;
 static const char *alt_systems = "";
@@ -124,7 +125,8 @@ static struct argp_option options[] = {
 	{ "wildcard",		'w',	0,		0,	N_("the keyword(s) contain wildcards") },
 	{ "and",		'a',	0,		0,	N_("require all keywords to match"),			20 }, /* apropos only */
 	{ "long",		'l',	0,		0,	N_("do not trim output to terminal width"),		30 },
-	{ "section",		's',	N_("SECTION"),	0,	N_("search only this section"),				40 },
+	{ "sections",		's',	N_("LIST"),	0,	N_("search only these sections (colon-separated)"),	40 },
+	{ "section",		0,	0,		OPTION_ALIAS },
 	{ "systems",		'm',	N_("SYSTEM"),	0,	N_("use manual pages from other systems") },
 	{ "manpath",		'M',	N_("PATH"),	0,	N_("set search path for manual pages to PATH") },
 	{ "locale",		'L',	N_("LOCALE"),	0,	N_("define the locale for this search") },
@@ -134,6 +136,29 @@ static struct argp_option options[] = {
 	{ 0, 'h', 0, OPTION_HIDDEN, 0 }, /* compatibility for --help */
 	{ 0 }
 };
+
+static char **split_sections (const char *sections_str)
+{
+	int i = 0;
+	char *str = xstrdup (sections_str);
+	const char *section;
+	char **out = NULL;
+
+	/* Although this is documented as colon-separated, at least Solaris
+	 * man's -s option takes a comma-separated list, so we accept that
+	 * too for compatibility.
+	 */
+	for (section = strtok (str, ":,"); section;
+	     section = strtok (NULL, ":,")) {
+		out = xnrealloc (out, i + 2, sizeof *out);
+		out[i++] = xstrdup (section);
+	}
+	if (i)
+		out[i] = NULL;
+
+	free (str);
+	return out;
+}
 
 static error_t parse_opt (int key, char *arg, struct argp_state *state)
 {
@@ -168,7 +193,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			long_output = 1;
 			return 0;
 		case 's':
-			section = arg;
+			sections = split_sections (arg);
 			return 0;
 		case 'm':
 			alt_systems = arg;
@@ -183,8 +208,12 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			user_config_file = arg;
 			return 0;
 		case 'f':
+			/* helpful override if program name detection fails */
+			am_apropos = 0;
+			return 0;
 		case 'k':
-			/* ignore, may be passed by man */
+			/* helpful override if program name detection fails */
+			am_apropos = 1;
 			return 0;
 		case 'h':
 			argp_state_help (state, state->out_stream,
@@ -412,7 +441,7 @@ out:
 }
 
 /* lookup the page and display the results */
-static inline int do_whatis (char *page)
+static inline int do_whatis_section (char *page, const char *section)
 {
 	struct mandata *info;
 	int count = 0;
@@ -428,6 +457,21 @@ static inline int do_whatis (char *page)
 	 	free (info);
 		info = pinfo;
 	}
+	return count;
+}
+
+static inline int do_whatis (char *page)
+{
+	int count = 0;
+
+	if (sections) {
+		char * const *section;
+
+		for (section = sections; *section; ++section)
+			count += do_whatis_section (page, *section);
+	} else
+		count += do_whatis_section (page, NULL);
+
 	return count;
 }
 
@@ -542,12 +586,24 @@ static int do_apropos (char *page, char *lowpage)
 
 		split_content (MYDBM_DPTR (cont), &info);
 
-		/* If there's a section given, does it match either the
-		 * section or extension of this page?
+		/* If there are sections given, does any of them match
+		 * either the section or extension of this page?
 		 */
-		if (section &&
-		    (!STREQ (section, info.sec) && !STREQ (section, info.ext)))
-			goto nextpage;
+		if (sections) {
+			char * const *section;
+			int matched = 0;
+
+			for (section = sections; *section; ++section) {
+				if (STREQ (*section, info.sec) ||
+				    STREQ (*section, info.ext)) {
+					matched = 1;
+					break;
+				}
+			}
+
+			if (!matched)
+				goto nextpage;
+		}
 
 		tab = strrchr (MYDBM_DPTR (key), '\t');
 		if (tab) 
@@ -569,7 +625,7 @@ static int do_apropos (char *page, char *lowpage)
 			if (seen_count && !require_all)
 				goto nextpage_tab;
 			got_match = parse_name (lowpage, MYDBM_DPTR (key));
-			whatis = xstrdup (info.whatis);
+			whatis = info.whatis ? xstrdup (info.whatis) : NULL;
 			if (!got_match && whatis)
 				got_match = parse_whatis (page, lowpage,
 							  whatis);
@@ -722,8 +778,10 @@ int main (int argc, char *argv[])
 	   issued as an argument or in $MANOPT */
 	if (locale) {
 		free (internal_locale);
-		internal_locale = xstrdup (setlocale (LC_ALL, locale));
-		if (internal_locale == NULL)
+		internal_locale = setlocale (LC_ALL, locale);
+		if (internal_locale)
+			internal_locale = xstrdup (internal_locale);
+		else
 			internal_locale = xstrdup (locale);
 
 		debug ("main(): locale = %s, internal_locale = %s\n",

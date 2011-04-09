@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-03-06 20:21+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -43,7 +43,7 @@ msgstr "%.*s: Không biết tham số « ARGP_HELP_FMT »"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Gặp rác trong « ARGP_HELP_FMT » : %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -51,31 +51,31 @@ msgstr ""
 "Tất cả đối số bắt buộc phải sử dụng với tùy chọn dài cũng bắt buộc với tùy "
 "chọn ngắn tương ứng."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Cách sử dụng:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "  hoặc "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [TÙY_CHỌN...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr ""
 "Hãy thử lệnh « %s --help » (trợ giúp) hay « %s --usage » (cách sử dụng) để "
 "xem thông tin thêm.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Hãy thông báo lỗi cho %s\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Gặp lỗi hệ thống lạ"
 
@@ -176,233 +176,87 @@ msgstr "%s: tùy chọn « -W %s » không cho phép đối số\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: tùy chọn « %s » yêu cầu một đối số\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "không thể ghi lưu thư mục làm việc hiện thời"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "chưa trở về thư mục làm việc ban đầu"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Thành công"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Không khớp"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Biểu thức chính quy không hợp lệ"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Ký tự đối chiếu không hợp lệ"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Tên loại ký tự không hợp lệ"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Có xuyệc ngược theo sau"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Tham chiếu ngược không hợp lệ"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Chưa khớp ký tự « [ » hay « [^ »"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Chưa khớp ký tự « ( » hay « \\( »"
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Chưa khớp ký tự « \\{ »"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Nội dụng « \\{\\} » không hợp lệ"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Kết thúc phạm vi không hợp lệ"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Hết bộ nhớ hoàn toàn"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Biểu thức chính quy đi trước không hợp lệ"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Biểu thức chính quy kết thúc quá sớm"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Biểu thức chính quy quá lớn"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Chưa khớp ký tự « ) » hay « \\) »"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "Không có biểu thức chính quy đi trước"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Ngừng nói"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Ngắt"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Thoát"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Câu lệnh sai"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Bẫy vết/điểm ngắt"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Bị hủy bỏ"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Ngoại lệ điểm phù động"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Bị buộc kết thúc"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Lỗi mạch nối"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Lỗi phân đoạn"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Ống dẫn bị ngắt"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Đồng hồ báo động"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Bị chấm dứt"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Điều kiện V/R khẩn"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Bị ngừng (ký hiệu)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Bị ngừng"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Đã tiếp tục"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Tiến trình con đã thoát"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Bị ngừng (đầu vào TTY)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Bị ngừng (đầu ra TTY)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "Có thể V/R"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "Vượt quá thời hạn CPU"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Vượt quá giới hạn kích cỡ tập tin"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Hàm đếm thời gian ảo đã hết hạn"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "Hàm đếm thời gian đo hiệu năng sử dụng đã hết hạn"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Cửa sổ bị thay đổi"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Tín hiệu do người dùng xác định 1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Tín hiệu do người dùng xác định 2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "Bẫy EMT"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Sai gọi hệ thống"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Lỗi đống"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Yêu cầu thông tin"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Bị cúp điện đột ngột"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Tài nguyên bị mất"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Tín hiệu thời gian thật %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Không rõ tín hiệu %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -648,8 +502,116 @@ msgstr "hết bộ nhớ hoàn toàn"
 #~ msgid "setting permissions for %s"
 #~ msgstr "đang đặt quyền hạn về %s"
 
+#~ msgid "Hangup"
+#~ msgstr "Ngừng nói"
+
+#~ msgid "Interrupt"
+#~ msgstr "Ngắt"
+
+#~ msgid "Quit"
+#~ msgstr "Thoát"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Câu lệnh sai"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Bẫy vết/điểm ngắt"
+
+#~ msgid "Aborted"
+#~ msgstr "Bị hủy bỏ"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Ngoại lệ điểm phù động"
+
+#~ msgid "Killed"
+#~ msgstr "Bị buộc kết thúc"
+
+#~ msgid "Bus error"
+#~ msgstr "Lỗi mạch nối"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Lỗi phân đoạn"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Ống dẫn bị ngắt"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Đồng hồ báo động"
+
+#~ msgid "Terminated"
+#~ msgstr "Bị chấm dứt"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Điều kiện V/R khẩn"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Bị ngừng (ký hiệu)"
+
+#~ msgid "Stopped"
+#~ msgstr "Bị ngừng"
+
+#~ msgid "Continued"
+#~ msgstr "Đã tiếp tục"
+
+#~ msgid "Child exited"
+#~ msgstr "Tiến trình con đã thoát"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Bị ngừng (đầu vào TTY)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Bị ngừng (đầu ra TTY)"
+
+#~ msgid "I/O possible"
+#~ msgstr "Có thể V/R"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "Vượt quá thời hạn CPU"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Vượt quá giới hạn kích cỡ tập tin"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Hàm đếm thời gian ảo đã hết hạn"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "Hàm đếm thời gian đo hiệu năng sử dụng đã hết hạn"
+
+#~ msgid "Window changed"
+#~ msgstr "Cửa sổ bị thay đổi"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Tín hiệu do người dùng xác định 1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Tín hiệu do người dùng xác định 2"
+
+#~ msgid "EMT trap"
+#~ msgstr "Bẫy EMT"
+
+#~ msgid "Bad system call"
+#~ msgstr "Sai gọi hệ thống"
+
+#~ msgid "Stack fault"
+#~ msgstr "Lỗi đống"
+
+#~ msgid "Information request"
+#~ msgstr "Yêu cầu thông tin"
+
+#~ msgid "Power failure"
+#~ msgstr "Bị cúp điện đột ngột"
+
+#~ msgid "Resource lost"
+#~ msgstr "Tài nguyên bị mất"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "lỗi ghi vào một đường ống hay ổ cắm bị đóng"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Tín hiệu thời gian thật %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Không rõ tín hiệu %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "hàm iconv vô ích"

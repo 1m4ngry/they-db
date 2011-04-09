@@ -1,3 +1,71 @@
+man-db 2.6.0 (9 April 2011)
+===========================
+
+Major changes since man-db 2.5.9:
+
+	Fixes:
+	------
+
+	o Fix build with versions of GNU ld that default to
+	  --no-copy-dt-needed-entries.
+
+	o Fix failure to display manual pages in some encodings when
+	  installed setuid.
+
+	o Wrap long table cells in man(1), fixing test failures with groff
+	  1.21.
+
+	o If an explicit section is passed to man, then pages that match
+	  that section exactly will be preferred over pages that only have
+	  that section as a prefix.
+
+	o Fix a segfault when 'man -K' tries to display certain pages.
+
+	o Fix a segfault in some situations when processes are killed by
+	  SIGHUP, SIGINT, or SIGTERM.
+
+	Improvements:
+	-------------
+
+	o As promised in the release notes for man-db 2.5.8, man-db no
+	  longer ships its own copy of libpipeline
+	  (http://libpipeline.nongnu.org/).  You must build and install that
+	  library separately.
+
+	o Search the full manpath when expanding .so directives in manual
+	  pages.  As part of this, '.so name.1' should now work as well as
+	  '.so man1/name.1'.
+
+	o lexgrog handles roff named glyphs and perldoc strings in NAME
+	  sections.
+
+	o man no longer starts a pager if standard output is not a tty.
+
+	o The -s option to whatis and apropos now takes a colon- or
+	  comma-separated list of sections, similar to 'man -S'.
+
+	o mandb error output is neater when stderr is not a terminal.
+
+	o Add basic support for the implementation of nroff/troff in the
+	  Heirloom Documentation Tools.  Title lengths are not properly set
+	  as yet, and many features are untested.
+
+	o mandb removes cat* and NLS subdirectories of cat directories whose
+	  corresponding man directories no longer exist.
+
+	o mandb forces SIGPIPE back to its default disposition on startup,
+	  to avoid noisy output in case it was started in a context where
+	  SIGPIPE was ignored.
+
+	o SECTION entries in a user configuration file now override those in
+	  the system configuration file, rather than appending to them.
+
+	o The default less prompt now includes "(press h for help or q to
+	  quit)" to help novices find their way around.
+
+	o man-db may now be built to use Berkeley DB version 5
+	  (--with-db=db5).
+
 man-db 2.5.9 (17 November 2010)
 ===============================
 

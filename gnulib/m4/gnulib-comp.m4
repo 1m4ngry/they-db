@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2010 Free Software Foundation, Inc.
+# Copyright (C) 2002-2011 Free Software Foundation, Inc.
 #
 # This file is free software, distributed under the terms of the GNU
 # General Public License.  As a special exception to the GNU General
@@ -12,7 +12,8 @@
 # This file represents the compiled summary of the specification in
 # gnulib-cache.m4. It lists the computed macro invocations that need
 # to be invoked from configure.ac.
-# In projects using CVS, this file can be treated like other built files.
+# In projects that use version control, this file can be treated like
+# other built files.
 
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -26,7 +27,6 @@ AC_DEFUN([gl_EARLY],
   m4_pattern_allow([^gl_LTLIBOBJS$])dnl a variable
   AC_REQUIRE([AC_PROG_RANLIB])
   AC_REQUIRE([AM_PROG_CC_C_O])
-  # Code from module alignof:
   # Code from module alloca:
   # Code from module alloca-opt:
   # Code from module areadlink-with-size:
@@ -64,6 +64,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module fdopendir:
   # Code from module file-set:
   # Code from module float:
+  # Code from module flock:
   # Code from module fnmatch:
   # Code from module fnmatch-gnu:
   # Code from module getcwd:
@@ -79,6 +80,8 @@ AC_DEFUN([gl_EARLY],
   # Code from module hash-pjw:
   # Code from module hash-triple:
   # Code from module havelib:
+  # Code from module idpriv-drop:
+  # Code from module idpriv-droptemp:
   # Code from module include_next:
   # Code from module inline:
   # Code from module intprops:
@@ -88,7 +91,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module localcharset:
   # Code from module lock:
   # Code from module lstat:
-  # Code from module malloc:
+  # Code from module malloc-gnu:
   # Code from module malloc-posix:
   # Code from module malloca:
   # Code from module mbrtowc:
@@ -122,7 +125,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module sigprocmask:
   # Code from module size_max:
   # Code from module sleep:
-  # Code from module snprintf:
   # Code from module ssize_t:
   # Code from module stat:
   # Code from module stdarg:
@@ -147,9 +149,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module strnlen:
   # Code from module strnlen1:
   # Code from module strsep:
-  # Code from module strsignal:
-  # Code from module sys_select:
-  # Code from module sys_socket:
+  # Code from module sys_file:
   # Code from module sys_stat:
   # Code from module sys_time:
   # Code from module sysexits:
@@ -157,7 +157,6 @@ AC_DEFUN([gl_EARLY],
   # Code from module threadlib:
   gl_THREADLIB_EARLY
   # Code from module time:
-  # Code from module tls:
   # Code from module unistd:
   # Code from module unistd-safer:
   # Code from module unlink:
@@ -167,9 +166,10 @@ AC_DEFUN([gl_EARLY],
   # Code from module verify:
   # Code from module vsnprintf:
   # Code from module warn-on-use:
+  # Code from module warnings:
   # Code from module wchar:
   # Code from module wcrtomb:
-  # Code from module wctype:
+  # Code from module wctype-h:
   # Code from module xalloc:
   # Code from module xalloc-die:
   # Code from module xgetcwd:
@@ -192,7 +192,6 @@ AC_DEFUN([gl_INIT],
   m4_pushdef([gl_LIBSOURCES_DIR], [])
   gl_COMMON
   gl_source_base='gnulib/lib'
-  # Code from module alignof:
   # Code from module alloca:
 changequote(,)dnl
 LTALLOCA=`echo "$ALLOCA" | sed -e 's/\.[^.]* /.lo /g;s/\.[^.]*$/.lo/'`
@@ -236,6 +235,7 @@ AC_SUBST([LTALLOCA])
   gl_UNISTD_MODULE_INDICATOR([close])
   # Code from module close-hook:
   # Code from module configmake:
+  gl_CONFIGMAKE_PREP
   # Code from module d-ino:
   gl_CHECK_TYPE_STRUCT_DIRENT_D_INO
   # Code from module d-type:
@@ -285,6 +285,9 @@ AC_SUBST([LTALLOCA])
   # Code from module file-set:
   # Code from module float:
   gl_FLOAT_H
+  # Code from module flock:
+  gl_FUNC_FLOCK
+  gl_HEADER_SYS_FILE_MODULE_INDICATOR([flock])
   # Code from module fnmatch:
   gl_FUNC_FNMATCH_POSIX
   # Code from module fnmatch-gnu:
@@ -319,6 +322,10 @@ AC_SUBST([LTALLOCA])
   # Code from module hash-pjw:
   # Code from module hash-triple:
   # Code from module havelib:
+  # Code from module idpriv-drop:
+  gl_IDPRIV
+  # Code from module idpriv-droptemp:
+  gl_IDPRIV
   # Code from module include_next:
   # Code from module inline:
   gl_INLINE
@@ -339,9 +346,9 @@ AC_SUBST([LTALLOCA])
   # Code from module lstat:
   gl_FUNC_LSTAT
   gl_SYS_STAT_MODULE_INDICATOR([lstat])
-  # Code from module malloc:
-  AC_FUNC_MALLOC
-  AC_DEFINE([GNULIB_MALLOC_GNU], 1, [Define to indicate the 'malloc' module.])
+  # Code from module malloc-gnu:
+  gl_FUNC_MALLOC_GNU
+  gl_MODULE_INDICATOR([malloc-gnu])
   # Code from module malloc-posix:
   gl_FUNC_MALLOC_POSIX
   gl_STDLIB_MODULE_INDICATOR([malloc-posix])
@@ -426,9 +433,6 @@ AC_SUBST([LTALLOCA])
   # Code from module sleep:
   gl_FUNC_SLEEP
   gl_UNISTD_MODULE_INDICATOR([sleep])
-  # Code from module snprintf:
-  gl_FUNC_SNPRINTF
-  gl_STDIO_MODULE_INDICATOR([snprintf])
   # Code from module ssize_t:
   gt_TYPE_SSIZE_T
   # Code from module stat:
@@ -472,14 +476,8 @@ AC_SUBST([LTALLOCA])
   # Code from module strsep:
   gl_FUNC_STRSEP
   gl_STRING_MODULE_INDICATOR([strsep])
-  # Code from module strsignal:
-  gl_FUNC_STRSIGNAL
-  gl_STRING_MODULE_INDICATOR([strsignal])
-  # Code from module sys_select:
-  gl_HEADER_SYS_SELECT
-  AC_PROG_MKDIR_P
-  # Code from module sys_socket:
-  gl_HEADER_SYS_SOCKET
+  # Code from module sys_file:
+  gl_HEADER_SYS_FILE_H
   AC_PROG_MKDIR_P
   # Code from module sys_stat:
   gl_HEADER_SYS_STAT_H
@@ -495,8 +493,6 @@ AC_SUBST([LTALLOCA])
   gl_THREADLIB
   # Code from module time:
   gl_HEADER_TIME_H
-  # Code from module tls:
-  gl_TLS
   # Code from module unistd:
   gl_UNISTD_H
   # Code from module unistd-safer:
@@ -520,12 +516,14 @@ AC_SUBST([LTALLOCA])
   gl_FUNC_VSNPRINTF
   gl_STDIO_MODULE_INDICATOR([vsnprintf])
   # Code from module warn-on-use:
+  # Code from module warnings:
+  AC_SUBST([WARN_CFLAGS])
   # Code from module wchar:
   gl_WCHAR_H
   # Code from module wcrtomb:
   gl_FUNC_WCRTOMB
   gl_WCHAR_MODULE_INDICATOR([wcrtomb])
-  # Code from module wctype:
+  # Code from module wctype-h:
   gl_WCTYPE_H
   # Code from module xalloc:
   gl_XALLOC
@@ -680,7 +678,6 @@ AC_DEFUN([gl_FILE_LIST], [
   build-aux/c++defs.h
   build-aux/config.rpath
   build-aux/warn-on-use.h
-  lib/alignof.h
   lib/alloca.c
   lib/alloca.in.h
   lib/areadlink-with-size.c
@@ -742,6 +739,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/file-set.h
   lib/float+.h
   lib/float.in.h
+  lib/flock.c
   lib/fnmatch.c
   lib/fnmatch.in.h
   lib/fnmatch_loop.c
@@ -761,14 +759,15 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/glthread/lock.c
   lib/glthread/lock.h
   lib/glthread/threadlib.c
-  lib/glthread/tls.c
-  lib/glthread/tls.h
   lib/hash-pjw.c
   lib/hash-pjw.h
   lib/hash-triple.c
   lib/hash-triple.h
   lib/hash.c
   lib/hash.h
+  lib/idpriv-drop.c
+  lib/idpriv-droptemp.c
+  lib/idpriv.h
   lib/intprops.h
   lib/langinfo.in.h
   lib/lchown.c
@@ -781,6 +780,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/malloca.valgrind
   lib/mbrtowc.c
   lib/mbsinit.c
+  lib/mbsrtowcs-impl.h
   lib/mbsrtowcs-state.c
   lib/mbsrtowcs.c
   lib/memchr.c
@@ -827,12 +827,10 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/setenv.c
   lib/sig-handler.h
   lib/sigaction.c
-  lib/siglist.h
   lib/signal.in.h
   lib/sigprocmask.c
   lib/size_max.h
   lib/sleep.c
-  lib/snprintf.c
   lib/stat.c
   lib/stdarg.in.h
   lib/stdbool.in.h
@@ -856,9 +854,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strnlen1.c
   lib/strnlen1.h
   lib/strsep.c
-  lib/strsignal.c
-  lib/sys_select.in.h
-  lib/sys_socket.in.h
+  lib/sys_file.in.h
   lib/sys_stat.in.h
   lib/sys_time.in.h
   lib/sysexits.in.h
@@ -901,6 +897,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/cloexec.m4
   m4/close.m4
   m4/codeset.m4
+  m4/configmake.m4
   m4/d-ino.m4
   m4/d-type.m4
   m4/dirent_h.m4
@@ -921,6 +918,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/fcntl_h.m4
   m4/fdopendir.m4
   m4/float_h.m4
+  m4/flock.m4
   m4/fnmatch.m4
   m4/getcwd-abort-bug.m4
   m4/getcwd-path-max.m4
@@ -936,6 +934,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/gnulib-common.m4
   m4/hash.m4
   m4/iconv.m4
+  m4/idpriv.m4
   m4/include_next.m4
   m4/inline.m4
   m4/intdiv0.m4
@@ -1000,8 +999,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/signalblocking.m4
   m4/size_max.m4
   m4/sleep.m4
-  m4/snprintf.m4
-  m4/sockpfaf.m4
   m4/ssize_t.m4
   m4/stat.m4
   m4/stdarg.m4
@@ -1020,16 +1017,13 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/strndup.m4
   m4/strnlen.m4
   m4/strsep.m4
-  m4/strsignal.m4
-  m4/sys_select_h.m4
-  m4/sys_socket_h.m4
+  m4/sys_file_h.m4
   m4/sys_stat_h.m4
   m4/sys_time_h.m4
   m4/sysexits.m4
   m4/tempname.m4
   m4/threadlib.m4
   m4/time_h.m4
-  m4/tls.m4
   m4/uintmax_t.m4
   m4/unistd-safer.m4
   m4/unistd_h.m4
@@ -1039,6 +1033,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/visibility.m4
   m4/vsnprintf.m4
   m4/warn-on-use.m4
+  m4/warnings.m4
   m4/wchar_h.m4
   m4/wchar_t.m4
   m4/wcrtomb.m4

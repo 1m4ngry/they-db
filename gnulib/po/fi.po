@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-02-23 16:51+0200\n"
 "Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -44,7 +44,7 @@ msgstr "%.*s: Tuntematon ARGP_HELP_FMT-parametri"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Roskaa kohteessa ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -52,29 +52,29 @@ msgstr ""
 "Pitkien valitsimien pakolliset tai valinnaiset argumentit ovat pakollisia "
 "tai valinnaisia myös lyhyille valitsimille."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Käyttö:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "  tai: "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [VALITSIN...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Lisätietoja saa komennolla ”%s --help” tai ”%s --usage”.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Lähetä raportit ohjelmistovioista (englanniksi) osoitteeseen %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Tuntematon järjestelmävirhe"
 
@@ -175,233 +175,87 @@ msgstr "%s: valitsin ’-W %s’ ei salli argumenttia\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: valitsin ’%s’ vaatii argumentin\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "ei kyetä tallentaman nykyistä työhakemistoa"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "alkuperäiseen työhakemistoon palaaminen epäonnistui"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Onnistui"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Ei osumaa"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Virheellinen säännöllinen lauseke"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "virheellinen collation-merkkiluokka"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Virheellinen merkkiluokkanimi"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Jälkikenoviiva"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Virheellinen paluuviite"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Pariton [ tai [^"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "pariton ( tai \\("
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Pariton \\{"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Kohteen \\{\\} virheellinen sisältö"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Virheellinen lukualueen loppu"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Muisti loppui"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Virheellinen edeltävä säännöllinen lauseke"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Ennenaikainen säännöllisen lausekkeen loppu"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Säännöllinen lauseke on liian iso"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Pariton ) tai \\)"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "Ei edellistä säännöllistä lauseketta"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Yhteyden katkaisu"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Keskeytys"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Poistu"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Virheellinen käsky"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Jäljitys/keskeytyspistekeskeytys"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Keskeytetty"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Liukulukupoikkeus"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Sammutettu"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Väylävirhe"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Osiinjakamisvirhe"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Rikkoutunut putki"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Hälytyskello"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Päättynyt"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Kiireellinen siirräntätila"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Pysäytetty (signaali)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Pysäytetty"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Jatkettu"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Lapsiprosessi poistunut"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Pysäytetty (tty-syöte)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Pysäytetty (tty-tuloste)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "Siirräntä mahdollinen"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "Suoritinaikaraja ylitetty"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Tiedostonkokoraja ylitetty"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Virtuaaliajastin päättynyt"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "Profilointiajastin päättynyt"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Ikkuna vaihtunut"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Käyttäjän määrittelemä signaali 1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Käyttäjän määrittelemä signaali 2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "EMT-keskeytys"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Väärä järjestelmäkutsu"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Pinovirhe"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Tietopyyntö"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Teholähdevika"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Resurssi kadonnut"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Tosiaikasignaali %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Tuntematon signaali %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -646,8 +500,116 @@ msgstr "muisti loppui"
 #~ msgid "setting permissions for %s"
 #~ msgstr "asetetaan oikeudet kohteelle %s"
 
+#~ msgid "Hangup"
+#~ msgstr "Yhteyden katkaisu"
+
+#~ msgid "Interrupt"
+#~ msgstr "Keskeytys"
+
+#~ msgid "Quit"
+#~ msgstr "Poistu"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Virheellinen käsky"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Jäljitys/keskeytyspistekeskeytys"
+
+#~ msgid "Aborted"
+#~ msgstr "Keskeytetty"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Liukulukupoikkeus"
+
+#~ msgid "Killed"
+#~ msgstr "Sammutettu"
+
+#~ msgid "Bus error"
+#~ msgstr "Väylävirhe"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Osiinjakamisvirhe"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Rikkoutunut putki"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Hälytyskello"
+
+#~ msgid "Terminated"
+#~ msgstr "Päättynyt"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Kiireellinen siirräntätila"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Pysäytetty (signaali)"
+
+#~ msgid "Stopped"
+#~ msgstr "Pysäytetty"
+
+#~ msgid "Continued"
+#~ msgstr "Jatkettu"
+
+#~ msgid "Child exited"
+#~ msgstr "Lapsiprosessi poistunut"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Pysäytetty (tty-syöte)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Pysäytetty (tty-tuloste)"
+
+#~ msgid "I/O possible"
+#~ msgstr "Siirräntä mahdollinen"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "Suoritinaikaraja ylitetty"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Tiedostonkokoraja ylitetty"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Virtuaaliajastin päättynyt"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "Profilointiajastin päättynyt"
+
+#~ msgid "Window changed"
+#~ msgstr "Ikkuna vaihtunut"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Käyttäjän määrittelemä signaali 1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Käyttäjän määrittelemä signaali 2"
+
+#~ msgid "EMT trap"
+#~ msgstr "EMT-keskeytys"
+
+#~ msgid "Bad system call"
+#~ msgstr "Väärä järjestelmäkutsu"
+
+#~ msgid "Stack fault"
+#~ msgstr "Pinovirhe"
+
+#~ msgid "Information request"
+#~ msgstr "Tietopyyntö"
+
+#~ msgid "Power failure"
+#~ msgstr "Teholähdevika"
+
+#~ msgid "Resource lost"
+#~ msgstr "Resurssi kadonnut"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "virhe kirjoitettaessa suljettuun putkeen tai pistokkeeseen"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Tosiaikasignaali %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Tuntematon signaali %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "iconv-funktio ei ole käyttökelpoinen"

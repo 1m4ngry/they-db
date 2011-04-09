@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-02-23 11:21-0600\n"
 "Last-Translator: Cristian Othón Martínez Vera <cfuga@itam.mx>\n"
 "Language-Team: Spanish <es@li.org>\n"
@@ -48,7 +48,7 @@ msgstr "%.*s: Parámetro de ARGP_HELP_FMT desconocido"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Basura en ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -56,29 +56,29 @@ msgstr ""
 "Los argumentos obligatorios u opcionales para las opciones largas también "
 "son obligatorios u opcionales para cualquier opción corta correspondiente."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Modo de empleo:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "  o:"
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [OPCIÓN...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Pruebe `%s --help' ó `%s --usage' para más información.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Reporte bichos a %s.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Error desconocido de sistema"
 
@@ -179,233 +179,87 @@ msgstr "%s: la opción '-W %s' no admite un argumento\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: la opción '%s' requiere de un argumento\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "no se puede registrar el directorio de trabajo actual"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "no se puede volver al directorio de trabajo inicial"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Éxito"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Sin coincidencia"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Expresión regular inválida"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Carácter de ordenamiento inválido"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Nombre de clase de carácter inválido"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Barra invertida sobrante"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Referencia hacia atrás inválida"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "[ o [^ sin pareja"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "( o \\( sin pareja"
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "\\{ sin pareja"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Contenido inválido de \\{\\}"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Fin de rango inválido"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Memoria agotada"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Expresión regular precedente inválida"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Final prematuro de la expresión regular"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Expresión regular demasiado grande"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr ") o \\) sin pareja"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "No hay una expresión regular previa"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Colgar"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Interrumpir"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Salir"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Instrucción ilegal"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Captura de rastreo/punto de quiebre"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Abortar"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Excepción de coma flotante"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Matar"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Error de bus"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Falta de segmentación"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Tubería rota"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Reloj de alarma"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Terminar"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Condición de E/S urgente"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Detener (señal)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Detener"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Continuar"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Salió el hijo"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Detener (entrada de tty)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Detener (salida de tty)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "Posible E/S"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "Excede el límite de tiempo de CPU"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Excede el límite de tamaño de fichero"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Expira el temporizador virtual"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "Expira el temporizador de análisis de perfil"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Cambio de ventana"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Señal 1 definida por el usuario"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Señal 2 definida por el usuario"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "Captura EMT"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Llamada al sistema errónea"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Falta en la pila"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Petición de información"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Falla de energía"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Recurso perdido"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Señal de tiempo real %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Señal %d desconocida"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -651,8 +505,116 @@ msgstr "memoria agotada"
 #~ msgid "setting permissions for %s"
 #~ msgstr "se cambian los permisos de %s"
 
+#~ msgid "Hangup"
+#~ msgstr "Colgar"
+
+#~ msgid "Interrupt"
+#~ msgstr "Interrumpir"
+
+#~ msgid "Quit"
+#~ msgstr "Salir"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Instrucción ilegal"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Captura de rastreo/punto de quiebre"
+
+#~ msgid "Aborted"
+#~ msgstr "Abortar"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Excepción de coma flotante"
+
+#~ msgid "Killed"
+#~ msgstr "Matar"
+
+#~ msgid "Bus error"
+#~ msgstr "Error de bus"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Falta de segmentación"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Tubería rota"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Reloj de alarma"
+
+#~ msgid "Terminated"
+#~ msgstr "Terminar"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Condición de E/S urgente"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Detener (señal)"
+
+#~ msgid "Stopped"
+#~ msgstr "Detener"
+
+#~ msgid "Continued"
+#~ msgstr "Continuar"
+
+#~ msgid "Child exited"
+#~ msgstr "Salió el hijo"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Detener (entrada de tty)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Detener (salida de tty)"
+
+#~ msgid "I/O possible"
+#~ msgstr "Posible E/S"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "Excede el límite de tiempo de CPU"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Excede el límite de tamaño de fichero"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Expira el temporizador virtual"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "Expira el temporizador de análisis de perfil"
+
+#~ msgid "Window changed"
+#~ msgstr "Cambio de ventana"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Señal 1 definida por el usuario"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Señal 2 definida por el usuario"
+
+#~ msgid "EMT trap"
+#~ msgstr "Captura EMT"
+
+#~ msgid "Bad system call"
+#~ msgstr "Llamada al sistema errónea"
+
+#~ msgid "Stack fault"
+#~ msgstr "Falta en la pila"
+
+#~ msgid "Information request"
+#~ msgstr "Petición de información"
+
+#~ msgid "Power failure"
+#~ msgstr "Falla de energía"
+
+#~ msgid "Resource lost"
+#~ msgstr "Recurso perdido"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "error al escribir a una tubería o socket cerrados"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Señal de tiempo real %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Señal %d desconocida"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "la función iconv no es utilizable"

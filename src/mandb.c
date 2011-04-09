@@ -38,6 +38,7 @@
 #include <sys/stat.h>	/* for chmod() */
 #include <dirent.h>
 #include <unistd.h>
+#include <signal.h>
 
 #ifdef SECURE_MAN_UID
 #  include <pwd.h>
@@ -55,6 +56,7 @@
 
 #include "error.h"
 #include "cleanup.h"
+#include "hashtable.h"
 #include "pipeline.h"
 #include "security.h"
 
@@ -85,6 +87,11 @@ static int purge = 1;
 static int user;
 static int create;
 static const char *arg_manp;
+
+struct tried_catdirs_entry {
+	char *manpath;
+	int seen;
+};
 
 const char *argp_program_version = "mandb " PACKAGE_VERSION;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
@@ -489,9 +496,12 @@ static int mandb (const char *catpath, const char *manpath)
 	return amount;
 }
 
-static int process_manpath (const char *manpath, int global_manpath)
+static int process_manpath (const char *manpath, int global_manpath,
+			    struct hashtable *tried_catdirs)
 {
 	char *catpath;
+	struct tried_catdirs_entry *tried;
+	struct stat st;
 	int amount = 0;
 
 	if (global_manpath) { 	/* system db */
@@ -502,6 +512,14 @@ static int process_manpath (const char *manpath, int global_manpath)
 		if (!catpath)
 			catpath = xstrdup (manpath);
 	}
+	tried = XMALLOC (struct tried_catdirs_entry);
+	tried->manpath = xstrdup (manpath);
+	tried->seen = 0;
+	hashtable_install (tried_catdirs, catpath, strlen (catpath), tried);
+
+	if (stat (manpath, &st) < 0 || !S_ISDIR (st.st_mode))
+		return 0;
+	tried->seen = 1;
 
 	force_rescan = 0;
 	if (purge) {
@@ -566,11 +584,146 @@ out:
 	return amount;
 }
 
+int is_lang_dir (const char *base)
+{
+	return strlen (base) >= 2 &&
+	       base[0] >= 'a' && base[0] <= 'z' &&
+	       base[1] >= 'a' && base[1] <= 'z' &&
+	       (!base[2] || base[2] < 'a' || base[2] > 'z');
+}
+
+void tried_catdirs_free (void *defn)
+{
+	struct tried_catdirs_entry *tried = defn;
+
+	free (tried->manpath);
+	free (tried);
+}
+
+void purge_catdir (const struct hashtable *tried_catdirs, const char *path)
+{
+	struct stat st;
+
+	if (stat (path, &st) == 0 && S_ISDIR (st.st_mode) &&
+	    !hashtable_lookup (tried_catdirs, path, strlen (path))) {
+		if (!quiet)
+			printf (_("Removing obsolete cat directory %s...\n"),
+				path);
+		remove_directory (path, 1);
+	}
+}
+
+void purge_catsubdirs (const char *manpath, const char *catpath)
+{
+	DIR *dir;
+	struct dirent *ent;
+	struct stat st;
+
+	dir = opendir (catpath);
+	if (!dir)
+		return;
+	while ((ent = readdir (dir)) != NULL) {
+		char *mandir, *catdir;
+
+		if (!STRNEQ (ent->d_name, "cat", 3))
+			continue;
+
+		mandir = appendstr (NULL, manpath, "/man", ent->d_name + 3,
+				    NULL);
+		catdir = appendstr (NULL, catpath, "/", ent->d_name, NULL);
+
+		if (stat (mandir, &st) != 0 && errno == ENOENT) {
+			if (!quiet)
+				printf (_("Removing obsolete cat directory "
+					  "%s...\n"), catdir);
+			remove_directory (catdir, 1);
+		}
+
+		free (catdir);
+		free (mandir);
+	}
+	closedir (dir);
+}
+
+/* Remove catdirs whose corresponding mandirs no longer exist.  For safety,
+ * in case people set catdirs to silly locations, we only do this for the
+ * cat* and NLS subdirectories of catdirs, but not for the top-level catdir
+ * itself (which might contain other data, or which might be difficult for
+ * mandb to recreate with the proper permissions).
+ *
+ * We need to be careful here to avoid removing catdirs just because we
+ * happened not to inspect the corresponding mandir this time round.  If a
+ * mandir was inspected and turned out not to exist, then its catdir is
+ * clearly fair game for removal of NLS subdirectories.  These must match
+ * the usual NLS pattern (two lower-case letters followed by nothing or a
+ * non-letter).
+ */
+void purge_catdirs (const struct hashtable *tried_catdirs)
+{
+	struct hashtable_iter *iter = NULL;
+	const struct nlist *elt;
+
+	while ((elt = hashtable_iterate (tried_catdirs, &iter)) != NULL) {
+		const char *path = elt->name;
+		struct tried_catdirs_entry *tried = elt->defn;
+		char *base;
+		DIR *dir;
+		struct dirent *subdirent;
+
+		base = base_name (path);
+		if (is_lang_dir (base)) {
+			/* expect to check this as a subdirectory later */
+			free (base);
+			continue;
+		}
+		free (base);
+
+		purge_catsubdirs (tried->manpath, path);
+
+		dir = opendir (path);
+		if (!dir)
+			continue;
+		while ((subdirent = readdir (dir)) != NULL) {
+			char *subdirpath;
+
+			if (STREQ (subdirent->d_name, ".") ||
+			    STREQ (subdirent->d_name, ".."))
+				continue;
+			if (STRNEQ (subdirent->d_name, "cat", 3))
+				continue;
+			if (!is_lang_dir (subdirent->d_name))
+				continue;
+
+			subdirpath = appendstr (NULL, path, "/",
+						subdirent->d_name, NULL);
+
+			tried = hashtable_lookup (tried_catdirs, subdirpath,
+						  strlen (subdirpath));
+			if (tried && tried->seen) {
+				debug ("Seen mandir for %s; not deleting\n",
+				       subdirpath);
+				/* However, we may still need to purge cat*
+				 * subdirectories.
+				 */
+				purge_catsubdirs (tried->manpath, subdirpath);
+			} else
+				purge_catdir (tried_catdirs, subdirpath);
+
+			free (subdirpath);
+		}
+		closedir (dir);
+	}
+}
+
 int main (int argc, char *argv[])
 {
 	char *sys_manp;
 	int amount = 0;
 	char **mp;
+	struct hashtable *tried_catdirs;
+#ifdef SIGPIPE
+	struct sigaction sa;
+#endif /* SIGPIPE */
 
 #ifdef __profile__
 	char *cwd;
@@ -581,6 +734,19 @@ int main (int argc, char *argv[])
 	init_debug ();
 	pipeline_install_post_fork (pop_all_cleanups);
 	init_locale ();
+
+#ifdef SIGPIPE
+	/* Reset SIGPIPE to its default disposition.  Too many broken pieces
+	 * of software (Python << 3.2, gnome-session, etc.) spawn child
+	 * processes with SIGPIPE ignored, and this produces noise in cron
+	 * mail.
+	 */
+	memset (&sa, 0, sizeof sa);
+	sa.sa_handler = SIG_DFL;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction (SIGPIPE, &sa, NULL);
+#endif /* SIGPIPE */
 
 	if (argp_parse (&argp, argc, argv, 0, 0, 0))
 		exit (FAIL);
@@ -637,12 +803,13 @@ int main (int argc, char *argv[])
 	/* finished manpath processing, regain privs */
 	regain_effective_privs ();
 
+	tried_catdirs = hashtable_create (tried_catdirs_free);
+
 	for (mp = manpathlist; *mp; mp++) {
 		int global_manpath = is_global_mandir (*mp);
 		int ret;
 		DIR *dir;
 		struct dirent *subdirent;
-		struct stat st;
 
 		if (global_manpath) {	/* system db */
 			if (user)
@@ -651,7 +818,7 @@ int main (int argc, char *argv[])
 			drop_effective_privs ();
 		}
 
-		ret = process_manpath (*mp, global_manpath);
+		ret = process_manpath (*mp, global_manpath, tried_catdirs);
 		if (ret < 0)
 			exit (FATAL);
 		amount += ret;
@@ -674,14 +841,11 @@ int main (int argc, char *argv[])
 
 			subdirpath = appendstr (NULL, *mp, "/",
 						subdirent->d_name, NULL);
-			if (stat (subdirpath, &st) == 0 &&
-			    S_ISDIR (st.st_mode)) {
-				ret = process_manpath (subdirpath,
-						       global_manpath);
-				if (ret < 0)
-					exit (FATAL);
-				amount += ret;
-			}
+			ret = process_manpath (subdirpath, global_manpath,
+					       tried_catdirs);
+			if (ret < 0)
+				exit (FATAL);
+			amount += ret;
 			free (subdirpath);
 		}
 
@@ -693,6 +857,9 @@ next_manpath:
 
 		chkr_garbage_detector ();
 	}
+
+	purge_catdirs (tried_catdirs);
+	hashtable_free (tried_catdirs);
 
 	if (!quiet) {
 		printf (_(

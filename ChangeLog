@@ -1,3 +1,587 @@
+Sat Apr  9 13:30:16 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.0.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po, po/man-db.pot,
+	  po/*.po: Update.
+
+Sat Apr  9 13:21:08 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Libtool 2.4.
+
+Sat Apr  9 12:56:02 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (Controlling formatted output): Wrap first cell
+	  in --ascii translation table.
+	* man/man8/mandb.man8 (DATABASE CACHES): Wrap second cell in
+	  database type table.
+	* man/po4a/Locale/Po4a/Manext.pm (shiftline): Fix T} detection.
+	* man/po4a/po/ru.po: Don't translate "\\*[softhyphen]".
+
+Sat Apr  9 11:52:20 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (DESCRIPTION): Typeset ellipses in roman rather
+	  than bold (thanks, David Prévot).
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+	  Manually unfuzzy translations.
+
+Sat Apr  9 11:42:51 BST 2011  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+	* po/pl.po: Likewise.
+
+Sat Apr  9 11:38:52 BST 2011  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* man/po4a/po/ru.po: Update from Translation Project.
+
+Thu Apr  7 12:46:34 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* lib/cleanup.c (do_cleanups): Set tos and nslots to 0 before
+	  freeing stack, in case do_cleanups_sigsafe is called again from a
+	  signal handler (Fedora bug #694332).
+	* NEWS: Document this.
+
+Sat Apr  2 12:20:30 BST 2011  David Prévot  <david@tilapin.org>
+
+	* po/fr.po: Update from Translation Project.
+
+Mon Mar 28 17:59:45 BST 2011  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* po/ru.po: Update from Translation Project.
+
+Mon Mar 28 17:40:36 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import flock module.
+	* lib/Makefile.am (libman_la_SOURCES): Remove flock.h.
+	* lib/README: Remove flock.*.
+	* lib/flock.c, lib/flock.h: Remove.
+
+Mon Mar 28 13:07:50 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/mydbm.h (btree_close, btree_exists, btree_fetch,
+	  btree_firstkey, btree_nextkey, btree_replace, btree_nextkeydata):
+	  Drop inline specifier; these functions are typically used from
+	  different translation units from their definitions.
+
+Mon Mar 28 12:59:54 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Add support for db5.
+	* NEWS: Document this.
+
+Mon Mar 28 12:26:54 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Apply correct M4 quotation throughout.
+	* m4/man-bdb.m4: Likewise.
+	* m4/man-gnu-nroff.m4: Likewise.
+	* m4/man-linguas.m4: Likewise.
+	* m4/man-trans-subst.m4: Likewise.
+
+	* m4/man-bdb.m4: Use AS_VAR_IF rather than AS_IF plus AS_VAR_GET.
+
+Mon Mar 28 11:15:16 BST 2011  Joe Hansen  <joedalton2@yahoo.dk>
+
+	* po/da.po: Update from Translation Project.
+
+Mon Mar 28 11:12:38 BST 2011  David Prévot  <david@tilapin.org>
+
+	* man/po4a/po/fr.po: Update from Translation Project.
+	* man/THANKS: Update.
+
+Mon Mar 28 11:09:19 BST 2011  David Prévot  <david@tilapin.org>
+
+	* po/fr.po: Update from Translation Project.
+
+Mon Mar 28 11:06:04 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* m4/man-gcc-warning.m4: Remove.
+	* gnulib: Import warnings module.
+	* configure.ac: Replace MAN_GCC_WARNING with gl_WARN_ADD.
+
+Sun Mar 27 18:25:25 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.0-pre1.
+	* po/man-db.pot, po/*.po: Update.
+	* man/po4a/po/man-db-manpages.pot: Update.
+
+Thu Mar 24 12:46:38 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* lib/security.c (do_system_drop_privs_child): Remove unused
+	  variable.
+
+Thu Mar 24 12:43:51 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (lang): Make non-const.
+	  (local_man_loop): Free lang after calling display.
+	  (display_filesystem): Likewise.
+	  (display_database): Likewise.
+	  (do_global_apropos_section): Ensure lang is set while calling
+	  display.
+	* NEWS: Document this.
+
+Thu Mar 24 01:22:00 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	Help novices find their way around.  See
+	http://brainstorm.ubuntu.com/idea/25975.
+
+	* src/man.c (main): Add "(press h for help or q to quit)" to the
+	  default less prompt string.
+	* man/man1/man.man1 (Controlling formatted output): Update
+	  documentation.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+	* NEWS: Document this.
+
+Thu Mar 24 01:03:13 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	Rewrite all remaining subprocess handling in terms of libpipeline.
+
+	* lib/security.c (do_system_drop_privs_child): New function.
+	  (do_system_drop_privs): Rewrite using libpipeline.
+	* src/catman.c (post_fork): New function.
+	  (catman): Rewrite using libpipeline.
+	  (add_arg): Rewrite as a wrapper around pipecmd_arg.
+	  (do_catman): Remove.
+	  (reset_cursor): Remove.
+	  (parse_for_sec): Use libpipeline for subprocess handling.
+	  (main): Install custom post-fork handler.
+	* src/man.c (gripe_no_man) [_AIX || __sgi]: Rewrite vendor fallback
+	  using libpipeline.
+	* src/Makefile.am (catman_LDADD): Add $(libpipeline_LIBS).
+
+	* src/catman.c (main): Duplicate the output of setlocale if
+	  non-NULL.
+
+	* configure.ac (AC_FUNC_VFORK): Remove.
+	  (AC_REPLACE_FUNCS): Remove waitpid.
+	* gnulib: Remove waitpid module.
+	* lib/README: Remove waitpid.c.
+	* lib/waitpid.c: Remove.
+
+Sun Mar 20 12:58:42 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	Remove the need for our patched version of xstrdup.
+
+	* lib/encodings.c (get_locale_charset): Check return value of
+	  setlocale before passing to xstrdup.
+	  (find_charset_locale): Likewise.
+	* lib/pathsearch.c (pathsearch): Check return value of getenv before
+	  passing to xstrdup.
+	  (pathsearch_executable): Likewise.
+	* lib/tempfile.c (create_tempdir): Adjust appendstr call to avoid
+	  needing to pass return value of path_search to xstrdup.
+	* src/check_mandirs.c (test_manfile): Don't pass NULL lg.whatis to
+	  xstrdup.
+	* src/descriptions.c (parse_descriptions): Don't pass NULL
+	  head->whatis to xstrdup.
+	* src/man.c (main): Check return value of setlocale before passing
+	  to xstrdup.
+	  (add_col): Only call find_charset_locale if locale_charset is
+	  non-NULL.
+	  (add_candidate): Don't pass NULL ult to xstrdup.
+	* src/manp.c (read_config_file): Adjust appendstr call to avoid
+	  needing to pass return value of getenv to xstrdup.
+	* src/whatis.c (do_apropos): Don't pass NULL info.whatis to xstrdup.
+	  (main): Check return value of setlocale before passing to xstrdup.
+	* src/zsoelim.l (zsoelim_stdin_data_new): Don't pass NULL path to
+	  xstrdup.
+
+	* Makefile.am (EXTRA_DIST): Remove gnulib/lib/xmalloc.c.orig and
+	  gnulib/lib/xmalloc.patch.
+	* autogen.sh: Stop applying gnulib/lib/xmalloc.patch.
+	* gnulib/lib/xmalloc.c.orig, gnulib/lib/xmalloc.patch: Remove.
+
+Sun Mar 20 01:39:41 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import waitpid module.
+
+Sun Mar 20 01:31:33 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20110216-stable.
+
+Tue Mar 15 10:55:52 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* include/manconfig.h.in (STD_SECTIONS): Add section 0 between 3 and
+	  2, matching a change in man-db 2.5.6.
+
+Tue Mar 15 10:52:58 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (compare_candidates): If the user asked for an explicit
+	  section, sort exact matches first (Fedora bug #684977).
+	* src/tests/man-3: New file.
+	* src/tests/Makefile.am (ALL_TESTS): Add man-3.
+	* NEWS: Document this.
+
+Tue Mar 15 10:48:19 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (add_sections): Put user entries in a separate list.
+	  (get_sections): If any user entries are present, use them rather
+	  than system entries.
+	  (add_to_dirlist): Pass user to add_sections.
+	* NEWS: Document this.
+
+Mon Mar 14 10:55:39 GMT 2011  Joe Hansen  <joedalton2@yahoo.dk>
+
+	* po/da.po: Update from Translation Project.
+	* man/THANKS: Update.
+
+Wed Mar  2 11:12:13 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c (main): Reset SIGPIPE to SIG_DFL on startup, to avoid
+	  noisy output in the event that mandb was started from a context
+	  where SIGPIPE was ignored (e.g. Fedora bug #649674).
+	* NEWS: Document this.
+
+Tue Jan 25 00:20:29 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (MAN_NAME): Consider .PD requests as paragraph
+	  breaks, to work around poor lexical analysis that causes them to
+	  be matched as .P and emit a stray trailing "D" (Debian bug
+	  #611012).
+
+Sun Jan 23 23:50:38 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* Makefile.am (EXTRA_DIST): Remove gnulib/m4/sockpfaf.m4, which was
+	  removed along with the internal copy of libpipeline.
+	* man/po4a/Makefile.am (EXTRA_DIST): Add Locale/Po4a/Manext.pm.
+	  (PO4A_ENVIRONMENT): Set PERL5LIB to $(srcdir), not `pwd`.
+
+Sun Jan 23 17:01:51 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/apropos.man1 (OPTIONS), man/man1/lexgrog.man1 (OPTIONS),
+	  man/man1/man.man1 (OPTIONS), man/man1/manconv.man1 (OPTIONS),
+	  man/man1/manpath.man1 (OPTIONS), man/man1/whatis.man1 (OPTIONS),
+	  man/man1/zsoelim.man1 (OPTIONS), man/man8/accessdb.man8 (OPTIONS),
+	  man/man8/catman.man8 (OPTIONS), man/man8/mandb.man8 (OPTIONS):
+	  Print commas in roman rather than bold.  Based on a patch from
+	  David Prévot (Debian bug #600002).
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+	  Manually unfuzzy translations.
+
+Mon Jan 10 20:08:03 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	If mandb sees that A is a symlink to B, it should never store a
+	whatis reference for B (Debian bug #204249).
+
+	* src/check_mandirs.c (whatis_hashtable_free): New function.
+	  (test_manfile): Change whatis_hash free function to
+	  whatis_hashtable_free.  Fetch an ult_trace structure from ult_src,
+	  record it in whatis_hash in the case of a cache miss, and pass it
+	  to store_descriptions.
+	* src/descriptions_store.c (is_prefix): New function.
+	  (store_descriptions): Add path and trace parameters.  Update all
+	  callers.
+	* src/descriptions.h (store_descriptions): Update prototype.  Count
+	  a match for any name in the provided ult_trace structure as
+	  indicating that we shouldn't create a whatis reference.  If a name
+	  matches a trace entry outside the current manual hierarchy, skip
+	  that name entirely.
+	* src/ult_src.c (ult_trace, free_ult_trace): New functions.
+	  (ult_src): Add trace parameter.  Record each file name we
+	  encounter in the trace.  Update all callers.
+	* src/ult_src.h (ult_src): Update prototype.
+	  (free_ult_trace): Add prototype.
+	* src/Makefile.am (lexgrog_SOURCES): Add filenames.c and
+	  filenames.h.
+
+	* src/tests/mandb-2: Test two-level symlinks.
+	* src/tests/mandb-4: New file.
+	* src/tests/Makefile.am (ALL_TESTS): Add mandb-4.
+
+Mon Jan 10 16:20:22 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/man1/man.man1 (DESCRIPTION), man/de/man1/man.man1
+	  (BESCHREIBUNG), man/es/man1/man.man1 (DESCRIPCIÓN),
+	  man/it/man1/man.man1 (DESCRIZIONE), man/ja/man1/man.man1 (説明):
+	  Enclose long table cells in T{ T}.
+	* man/po4a/Locale/Po4a/Manext.pm: New file, to let us translate
+	  individual table cells separately.
+	* man/po4a/Makefile.am: Run po4a with PERL5LIB=`pwd`.
+	* man/po4a/po4a.cfg: Change type to manext.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+	* man/check-man: Stop ignoring "table wider than line width"
+	  warnings.
+	* NEWS: Document this.
+
+Sat Jan  8 18:21:07 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* po/POTFILES.in: Remove lib/pipeline.c (file removed) and
+	  src/descriptions.c (no translatable strings).
+	* po/man-db.pot, po/*.po: Update.
+
+Sat Jan  8 18:14:18 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	Remove obsolete cat* subdirectories as well as NLS subdirectories.
+
+	* src/mandb.c (process_manpath): Store the manpath in tried_catdirs
+	  along with whether it has been seen.
+	  (tried_catdirs_free): New function.
+	  (purge_catdir): Improve message.
+	  (purge_catsubdirs): New function.
+	  (purge_catdirs): Adjust tried_catdirs handling.  Call
+	  purge_catsubdirs for both top-level catdirs and NLS catdirs.
+	  (main): Set tried_catdirs free function to tried_catdirs_free.
+	* NEWS: Document this.
+
+Sat Jan  8 11:42:13 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	Remove obsolete NLS subdirectories of cat directories (Debian bug
+	#558804).
+
+	* lib/hashtable.c (hashtable_iterate): New function.
+	* lib/hashtable.h (hashtable_iterate): Add prototype.
+
+	* lib/util.c (remove_directory): Add recurse parameter.  Add missing
+	  closedir calls.
+	* include/manconfig.h.in (remove_directory): Update prototype.
+	* src/man.c (format_display): Update remove_directory callers.
+
+	* src/mandb.c (process_manpath): Add catpath to tried_catpath hash.
+	  Check that manpath exists and is a directory here rather than in
+	  the caller.
+	  (is_lang_dir, purge_catdir, purge_catdirs): New functions.
+	  (main): Create and free tried_catdirs.  Move manpath stat checks
+	  to process_manpath.  Call purge_catdirs after all manpath entries
+	  have been processed.
+
+	* NEWS: Document this.
+
+Fri Jan  7 23:49:55 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (format_display_and_save): Drop SIGPIPE handling.
+	  pipeline_pump handles this itself, and doing it here means that
+	  SIGPIPE is incorrectly ignored in subprocesses (Debian bug
+	  #597756).
+
+Fri Jan  7 23:25:39 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_roff_command): Use running_setuid.
+	* src/manp.c (get_def): Likewise.
+
+Tue Jan  4 11:09:00 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* lib/security.c (running_setuid): New function.
+	* lib/security.h (running_setuid): Add prototype.
+	* src/manconv_client.c (manconv_stdin): If running setuid, exec
+	  manconv as an external process, since iconv_open is not guaranteed
+	  to work correctly in setuid processes.
+
+	* configure.ac: Require libpipeline >= 1.1.0.
+	* docs/INSTALL.quick: Document increased version requirement.
+
+	* NEWS: Document this.
+
+Mon Jan  3 03:02:50 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	Add basic support for the Heirloom Documentation Tools.
+
+	* m4/man-heirloom-nroff.m4: New file.
+	* configure.ac: Call MAN_PROG_HEIRLOOM_NROFF.  If successful and an
+	  nroff macro was found, prepend -mg -msafe -mpadj to the nroff and
+	  troff options.
+	* lib/encodings.c (charset_table) [HEIRLOOM_NROFF]: Disable latin1
+	  and nippon devices.
+	  (device_table) [HEIRLOOM_NROFF]: Add locale device.
+	* src/man.c (heirloom_line_length) [HEIRLOOM_NROFF]: New function.
+	  (add_roff_line_length): Optionally return a command, which should
+	  be inserted before troff.
+	  (add_roff_line_length) [HEIRLOOM_NROFF]: Support Heirloom, which
+	  needs text inserted at the start of the input.
+	  (make_roff_command) [HEIRLOOM_NROFF]: Use locale device instead of
+	  utf8 in UTF-8 locales.  Handle add_roff_line_length return value.
+	  Unset TROFFMACS if running setuid.
+	  (make_browser): Compile only if TROFF_IS_GROFF.
+	  (format_display): Only declare variables related to HTML output if
+	  TROFF_IS_GROFF.
+	* src/tests/zsoelim-1: Ignore .ll and .lt lines inserted by
+	  heirloom_line_length.
+	* NEWS: Document this.
+
+Mon Jan  3 00:56:55 GMT 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (get_manpath_from_path): Return an empty string rather
+	  than asserting if no path elements with corresponding manpaths
+	  were found (Debian bug #608490).
+	* src/man.c (local_man_loop): Skip executable processing if no
+	  useful manpath was returned.
+	* src/tests/man-2: New test for this bug.
+	* src/tests/Makefile.am (ALL_TESTS): Add man-2.
+
+	* README (Copyright and licensing): New year.
+
+Thu Dec 23 16:00:06 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/check_mandirs.c (testmandirs): Make output neater when stderr
+	  is not a tty.  Suggested by C W Rose.
+	* NEWS: Document this.
+
+Thu Dec 23 15:50:39 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l (glyphs, perldocs): Remove terminating NULL entries;
+	  these arrays are handled using bsearch with an explicit length,
+	  and NULL-terminating them causes crashes.
+
+Mon Dec 20 00:41:04 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/catman.c (main): Initialise locale using the LC_MESSAGES
+	  category rather than LC_ALL.  glibc returns a composite name for
+	  the latter.
+	* lib/util.c (init_locale): Return void instead of returning the
+	  result of setlocale.
+	* include/manconfig.h.in (init_locale): Update prototype.
+
+Sun Dec 19 16:10:35 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import idpriv-drop and idpriv-droptemp modules.
+	* configure.ac: Stop checking for seteuid, setreuid, and setresuid.
+	* lib/security.c (POSIX_SAVED_IDS, SET_EUID, SWAP_UIDS): Remove in
+	  favour of idpriv.h.
+	  (drop_effective_privs): Use idpriv_temp_drop.
+	  (regain_effective_privs): Use idpriv_temp_restore.
+	  (do_system_drop_privs): Use idpriv_drop.  Drop saved-IDs case;
+	  avoiding a fork doesn't justify having two code paths.
+
+Sun Dec  5 20:58:10 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Provide byte positions in manconv errors (Debian bug #562789).
+
+	* src/manconv.c (locate_error): New function.
+	  (try_iconv): Skip over processed input data after handling errors.
+	  Use locate_error to produce exact byte positions for conversion
+	  errors.
+
+Thu Dec  2 23:54:03 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Allow passing multiple sections to whatis and apropos (Debian bug
+	#571285).
+
+	* src/whatis.c (options): Allow spelling --section as --sections;
+	  this is now the preferred long spelling.  Document that the
+	  argument may be colon-separated.
+	  (split_sections): New function.
+	  (parse_opt): Pass -s argument through split_sections.
+	  (do_whatis): Move most logic to ...
+	  (do_whatis_section): ... here.
+	  (do_whatis): Iterate over sections, calling do_whatis_section for
+	  each.
+	  (do_apropos): Test all requested sections.
+	* man/man1/apropos.man1 (SYNOPSIS, OPTIONS), man/man1/whatis.man1
+	  (SYNOPSIS, OPTIONS): Document new semantics.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+	* NEWS: Document this.
+
+Thu Dec  2 23:32:07 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/whatis.c (parse_opt): Make -f and -k force program identity to
+	  whatis and apropos respectively.  This is useful when running
+	  directly from the build tree, since libtool makes it hard to
+	  detect the program name correctly.
+
+Thu Dec  2 19:28:06 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/catman.c (parse_for_sec): Format ARG_MAX - arg_size using %zd.
+	* src/manp.c (has_mandir): Cast printf field precisions to int.
+	  (create_pathlist): Use %td to format pointer differences.
+
+Thu Dec  2 19:23:36 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_display_command): Make sure the returned pipeline
+	  is never NULL; this causes crashes later.
+
+Thu Dec  2 12:33:43 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (make_display_command): Don't start a pager if standard
+	  output is not a tty (Fedora bug #658132).
+	* NEWS: Document this.
+
+Thu Dec  2 00:31:31 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Handle roff named glyphs and perldoc strings in NAME sections
+	(Debian bug #601025).
+
+	* src/lexgrog.l (glyphs, perldocs): New arrays.
+	  (MAN_NAME): Call newline_found on encountering \& at the start of
+	  a line.  Call add_glyph_to_whatis on roff named glyphs, and
+	  add_perldoc_to_whatis on perldoc strings.
+	  (compare_macro, add_macro_to_whatis, add_glyph_to_whatis,
+	  add_perldoc_to_whatis): New functions.
+	* NEWS: Document this.
+
+Wed Dec  1 22:24:51 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Improve .so searching (Debian bug #503472).
+
+	* src/Makefile.am (zsoelim_SOURCES): Add manp.c and manp.h.
+	* src/zsoelim.l (zsoelim_parse_file): Take manpathlist and
+	  parent_path arguments, and save those to pass on to
+	  zsoelim_open_file.
+	  (try_compressed): New function, split out from zsoelim_open_file.
+	  (zsoelim_open_file): Take manpathlist and parent_path arguments.
+	  Rearrange search logic as follows: (1) if there is no parent_path,
+	  try opening directly; (2) look up filename within each manpath
+	  entry, treating filenames without directory parts as full manual
+	  page lookups; (3) if there is a parent_path, try opening directly.
+	  (zsoelim_stdin): Pass path and manpathlist from input data to
+	  zsoelim_open_file and zsoelim_parse_file.
+	  (zsoelim_stdin_data_new, zsoelim_stdin_data_free): New functions.
+	* src/zsoelim.h (zsoelim_open_file, zsoelim_parse_file): Update
+	  prototypes.
+	  (zsoelim_stdin_data_new, zsoelim_stdin_data_free): Add prototypes.
+	* src/zsoelim_main.c (main): Initialise locale and manpath.  Pass
+	  manpath to zsoelim_open_file and zsoelim_parse_file.
+	* src/man.c (main): Calculate manpath before handling -l option.
+	  (make_roff_command): Pass dir and manpathlist to zsoelim_stdin.
+	* src/tests/zsoelim-1: New test.
+	* src/tests/Makefile.am (ALL_TESTS): Add zsoelim-1.
+	* NEWS: Document this.
+
+	* src/manp.c (get_def): If not setuid, make this identical to
+	  get_def_user.
+	* src/manp.h (get_def): Likewise.
+
+Wed Dec  1 14:15:34 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	* lib/security.c (do_system_drop_privs): Copy-edit header comment,
+	  and update it for libpipeline.
+
+Mon Nov 29 17:48:29 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Remove obsolete versions of lexgrog.  They're still available in
+	revision control if people want them.
+
+	* src/Makefile.am (EXTRA_DIST): Remove.
+	* src/README.lexgrog, src/lexgrog.l-2.3.8, src/lexgrog.l-2.4a,
+	  src/lexgrog.l.new: Remove.
+
+Sun Nov 28 15:01:21 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Remove internal copy of libpipeline.
+
+	* configure.ac: Remove --enable-socketpair-pipe and
+	  --with-external-pipeline options.  Remove INTERNAL_PIPELINE
+	  Automake conditional.  Check for libpipeline unconditionally.
+	* docs/INSTALL.quick: Mention the need to install libpipeline.
+	* gnulib: Remove strsignal and sys_select modules.
+	* lib/Makefile.am (libman_la_SOURCES): Never add pipeline.c or
+	  pipeline.h.
+	* lib/pipeline.c, lib/pipeline.h: Remove.
+	* m4/man-socketpair.m4: Remove.
+	* NEWS: Document this.  Bump to 2.6.0.
+
+Thu Nov 18 13:46:04 GMT 2010  Colin Watson  <cjwatson@debian.org>
+
+	Reducing linkage when we switched to libtool caused build failures
+	with versions of GNU ld that default to --no-copy-dt-needed-entries.
+	Partially revert these changes, this time taking care to directly
+	link programs against libraries if and only if they use symbols from
+	those libraries directly (otherwise, the linkage from libman.la and
+	libmandb.la should be sufficient).
+
+	* src/Makefile.am (LIBMAN): Add $(top_builddir)/gnulib/lib/libgnu.la
+	  and @LTLIBINTL@.
+	  (LIBMANDB): Add $(LIBMAN) and $(DBLIBS).
+	  (lexgrog_LDADD, man_LDADD, manconv_LDADD, mandb_LDADD): Add
+	  $(libpipeline_LIBS) and $(LTLIBICONV).
+	  (whatis_LDADD, zsoelim_LDADD): Add $(libpipeline_LIBS).
+	* NEWS: Document this.
+
 Wed Nov 17 11:43:30 GMT 2010  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.5.9.

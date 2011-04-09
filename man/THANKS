@@ -9,7 +9,7 @@ Cesar BALLARDINI <cballard@santafe.com.ar>		man/es
 Luis Francisco Gonzalez <luisgh@cogs.susx.ac.uk>	man/es
 Nicolás Lichtmaier <nick@feedback.net.ar>		man/es
 Valéry Perrin <valery.perrin.debian@free.fr>		man/fr
-David Prévot <david@tilapin.org>			man/fr
+David Prévot <david@tilapin.org>			man/fr, fr.po
 Arif E. Nugroho <arif_endro@yahoo.com>			man/id, id.po
 UCHIDA Norihiro <KY4N-UCD@asahi-net.or.jp>		man/ja, ja.po
 Takeo NAKANO <nakano@apm.seikei.ac.jp>			man/ja
@@ -20,6 +20,8 @@ Jordi Mallach <jordi@gnu.org>				ca.po
 Vladimir Michl <Vladimir.Michl@seznam.cz>		cs.po
 Ondřej Surý <ondrej@sury.org>				cs.po
 Morten Brix Pedersen <morten@wtf.dk>			da.po
+Byrial Ole Jensen <byrial@image.dk>			da.po
+Joe Hansen <joedalton2@yahoo.dk>			da.po
 Michael Piefel <piefel@informatik.hu-berlin.de>		de.po
 Karl Eichwalder <ke@suse.de>				de.po
 Kai Wasserbäch <debian@carbon-project.org>		de.po

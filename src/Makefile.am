@@ -1,7 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 ##
 ## Copyright (C) 1994, 1995 Graeme Wilford.
-## Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 Colin Watson.
+## Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+##               2011 Colin Watson.
 ##
 ## This file is part of man-db.
 ##
@@ -56,7 +57,7 @@ LIBMAN = $(top_builddir)/lib/libman.la $(top_builddir)/gnulib/lib/libgnu.la \
 LIBMANDB = $(top_builddir)/libdb/libmandb.la $(LIBMAN) $(DBLIBS)
 
 accessdb_LDADD = $(LIBMANDB)
-catman_LDADD = $(LIBMANDB)
+catman_LDADD = $(LIBMANDB) $(libpipeline_LIBS)
 globbing_LDADD = $(LIBMAN)
 lexgrog_LDADD = $(LIBMAN) $(libpipeline_LIBS) $(LTLIBICONV)
 man_LDADD = $(LIBMANDB) $(libpipeline_LIBS) $(LTLIBICONV)
@@ -80,6 +81,8 @@ lexgrog_SOURCES = \
 	compression.c \
 	descriptions.c \
 	descriptions.h \
+	filenames.c \
+	filenames.h \
 	lexgrog.l \
 	lexgrog_test.c \
 	manconv.c \
@@ -147,17 +150,13 @@ whatis_SOURCES = \
 zsoelim_SOURCES = \
 	globbing.c \
 	globbing.h \
+	manp.c \
+	manp.h \
 	zsoelim.h \
 	zsoelim.l \
 	zsoelim_main.c
 
 CLEANFILES = apropos man_db.conf
-
-EXTRA_DIST = \
-	README.lexgrog \
-	lexgrog.l-2.3.8 \
-	lexgrog.l-2.4a \
-	lexgrog.l.new
 
 apropos$(EXEEXT): whatis$(EXEEXT)
 	rm -f $@

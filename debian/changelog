@@ -1,5 +1,38 @@
-man-db (2.5.9-5) UNRELEASED; urgency=low
+man-db (2.6.0-1) UNRELEASED; urgency=low
 
+  * New upstream release:
+    - Search the full manpath when expanding .so directives in manual pages.
+      As part of this, '.so name.1' should now work as well as '.so
+      man1/name.1' (closes: #503472, LP: #411534).
+    - Handle roff named glyphs and perldoc strings in NAME sections (closes:
+      #601025).
+    - Don't start a pager if stdout is not a tty.
+    - Allow passing multiple sections to whatis and apropos (closes:
+      #571285).
+    - Provide byte positions in manconv errors (closes: #562789).
+    - Make mandb error output neater when stderr is not a tty.
+    - Fix failure to display manual pages in some encodings when installed
+      setuid.
+    - Don't ignore SIGPIPE while forking iconv (closes: #597756).
+    - Remove obsolete subdirectories of cat directories (closes: #558804).
+    - If mandb sees that A is a symlink to B, it should never store a whatis
+      reference for B (closes: #204249).
+    - Print commas in roman rather than bold (thanks, David Prévot; closes:
+      #600002).
+    - Consider .PD requests as paragraph breaks (closes: #611012).
+    - Reset SIGPIPE to SIG_DFL on startup, to avoid noisy output in the
+      event that mandb was started from a context where SIGPIPE was ignored.
+    - SECTION entries in a user configuration file now override those in the
+      system configuration file, rather than appending to them.
+    - If the user asked for an explicit section, sort exact matches first.
+    - Rewrite all remaining subprocess handling in terms of libpipeline,
+      especially some crash-prone code in catman (LP: #27738).
+    - The default less prompt now includes "(press h for help or q to quit)"
+      to help novices find their way around
+      (http://brainstorm.ubuntu.com/idea/25975).
+    - Fix a segfault when 'man -K' tries to display certain pages.
+    - Fix a segfault in some situations when processes are killed by SIGHUP,
+      SIGINT, or SIGTERM (LP: #218336).
   * Avoid unnecessary metadata writes to /var/cache/man when doing recursive
     chown (thanks, Iustin Pop; closes: #619726).
 

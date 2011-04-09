@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-10-20 16:40+0900\n"
 "Last-Translator: Yasuaki Taniguchi <yasuakit@gmail.com>\n"
 "Language-Team: Japanese <translation-team-ja@lists.sourceforge.net>\n"
@@ -46,7 +46,7 @@ msgstr "%.*s: 不明な ARGP_HELP_FMT パラメータ"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "ARGP_HELP_FMT 中にごみがあります: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -54,24 +54,24 @@ msgstr ""
 "長い形式のオプションで必須または任意の引数は、それに対応する短い形式のオプ"
 "ションでも同様に必須または任意です。"
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "使用法:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "または: "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [OPTION...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "詳細は `%s --help' または `%s --usage' を実行して下さい。\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
@@ -79,7 +79,7 @@ msgstr ""
 "翻訳に関するバグは<translation-team-ja@lists.sourceforge.net>に報告してくださ"
 "い。\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "不明なシステムエラー"
 
@@ -180,233 +180,87 @@ msgstr "%s: オプション '-W %s' は引数を取ることができません\n
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: オプション '--%s' は引数が必要です\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "現在の作業ディレクトリを記録することができません"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "初期作業ディレクトリに戻るのに失敗しました"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "成功です"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "一致しません"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "無効な正規表現です"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "無効な照合文字です"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "無効な文字クラス名です"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "終端のバックスラッシュ"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "無効な前方参照です"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "[ または [^ が不一致です"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "( または \\( が不一致です"
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "\\{ が不一致です"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "\\{\\} の中身が無効です"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "無効な範囲終了です"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "メモリを使い果たしました"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "無効な前方正規表現です"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "正規表現が途中で終了しました"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "正規表現が大きすぎます"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr ") または \\) が不一致です"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "以前に正規表現がありません"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Hangup"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "割り込み"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "終了"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Illegal instruction"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Trace/breakpoint trap"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "中止"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "浮動小数点例外"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "強制終了"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "バスエラー"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Segmentation fault"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Broken pipe"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Alarm clock"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Terminated"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "緊急 I/O 状態"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "停止 (シグナル)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "停止"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "継続"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "子プロセス終了"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "停止 (tty 入力)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "停止 (tty 出力)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "I/O 可能"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "CPU時間制限を超過しました"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "ファイルサイズ制限を超過しました"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "仮想タイマーが終了しました"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "プロファイリングタイマーが終了しました"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Window が変更されました"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "ユーザー定義シグナル1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "ユーザー定義シグナル2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "EMT トラップ"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "間違ったシステムコール"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "スタックエラー"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "情報要求"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "電源エラー"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "リソースが無くなりました"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "リアルタイムシグナル %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "不明なシグナル %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -647,8 +501,116 @@ msgstr "メモリを使い果たしました"
 #~ msgid "setting permissions for %s"
 #~ msgstr "%s のパーミッションを設定します"
 
+#~ msgid "Hangup"
+#~ msgstr "Hangup"
+
+#~ msgid "Interrupt"
+#~ msgstr "割り込み"
+
+#~ msgid "Quit"
+#~ msgstr "終了"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Illegal instruction"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Trace/breakpoint trap"
+
+#~ msgid "Aborted"
+#~ msgstr "中止"
+
+#~ msgid "Floating point exception"
+#~ msgstr "浮動小数点例外"
+
+#~ msgid "Killed"
+#~ msgstr "強制終了"
+
+#~ msgid "Bus error"
+#~ msgstr "バスエラー"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Segmentation fault"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Broken pipe"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Alarm clock"
+
+#~ msgid "Terminated"
+#~ msgstr "Terminated"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "緊急 I/O 状態"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "停止 (シグナル)"
+
+#~ msgid "Stopped"
+#~ msgstr "停止"
+
+#~ msgid "Continued"
+#~ msgstr "継続"
+
+#~ msgid "Child exited"
+#~ msgstr "子プロセス終了"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "停止 (tty 入力)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "停止 (tty 出力)"
+
+#~ msgid "I/O possible"
+#~ msgstr "I/O 可能"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "CPU時間制限を超過しました"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "ファイルサイズ制限を超過しました"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "仮想タイマーが終了しました"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "プロファイリングタイマーが終了しました"
+
+#~ msgid "Window changed"
+#~ msgstr "Window が変更されました"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "ユーザー定義シグナル1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "ユーザー定義シグナル2"
+
+#~ msgid "EMT trap"
+#~ msgstr "EMT トラップ"
+
+#~ msgid "Bad system call"
+#~ msgstr "間違ったシステムコール"
+
+#~ msgid "Stack fault"
+#~ msgstr "スタックエラー"
+
+#~ msgid "Information request"
+#~ msgstr "情報要求"
+
+#~ msgid "Power failure"
+#~ msgstr "電源エラー"
+
+#~ msgid "Resource lost"
+#~ msgstr "リソースが無くなりました"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "閉じたパイプまたはソケットへの書き込みでエラーが発生しました"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "リアルタイムシグナル %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "不明なシグナル %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "iconv 関数が使えません"

@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2010-11-17 11:38+0000\n"
+"POT-Creation-Date: 2011-04-09 12:17+0100\n"
 "PO-Revision-Date: 2010-03-04 22:10+0100\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -47,7 +47,7 @@ msgstr "%.*s: Okänd ARGP_HELP_FMT-parameter"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Skräp i ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1244
+#: gnulib/lib/argp-help.c:1246
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -55,31 +55,31 @@ msgstr ""
 "Obligatoriska eller valfria argument till långa flaggor är obligatoriska "
 "eller valfria även för motsvarande korta flaggor."
 
-#: gnulib/lib/argp-help.c:1637
+#: gnulib/lib/argp-help.c:1639
 msgid "Usage:"
 msgstr "Användning:"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1643
 msgid "  or: "
 msgstr "   eller:  "
 
-#: gnulib/lib/argp-help.c:1653
+#: gnulib/lib/argp-help.c:1655
 msgid " [OPTION...]"
 msgstr " [FLAGGA...]"
 
-#: gnulib/lib/argp-help.c:1680
+#: gnulib/lib/argp-help.c:1682
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Försök med ”%s --help” eller ”%s --usage” för mer information.\n"
 
-#: gnulib/lib/argp-help.c:1708
+#: gnulib/lib/argp-help.c:1710
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "Rapportera fel till %s.\n"
 "Skicka synpunkter på översättningen till <tp-sv@listor.tp-sv.se>.\n"
 
-#: gnulib/lib/argp-help.c:1927 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
 msgid "Unknown system error"
 msgstr "Okänt systemfel"
 
@@ -180,233 +180,87 @@ msgstr "%s: flaggan \"-W %s\" tar inget argument\n"
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: flaggan \"%s\" kräver ett argument\n"
 
-#: gnulib/lib/openat-die.c:34
+#: gnulib/lib/openat-die.c:38
 #, c-format
 msgid "unable to record current working directory"
 msgstr "kan inte notera aktuell arbetskatalog"
 
-#: gnulib/lib/openat-die.c:52
+#: gnulib/lib/openat-die.c:57
 #, c-format
 msgid "failed to return to initial working directory"
 msgstr "kunde inte återvända till den ursprungliga arbetskatalogen"
 
-#: gnulib/lib/regcomp.c:132
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Lyckades"
 
-#: gnulib/lib/regcomp.c:135
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Ingen träff"
 
-#: gnulib/lib/regcomp.c:138
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Felaktigt reguljärt uttryck"
 
-#: gnulib/lib/regcomp.c:141
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Ogiltigt sorteringstecken"
 
-#: gnulib/lib/regcomp.c:144
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Ogiltigt teckenklassnamn"
 
-#: gnulib/lib/regcomp.c:147
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Avslutande bakstreck"
 
-#: gnulib/lib/regcomp.c:150
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Ogiltig bakåtreferens"
 
-#: gnulib/lib/regcomp.c:153
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Ensam [ eller [^"
 
-#: gnulib/lib/regcomp.c:156
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Ensam ( eller \\("
 
-#: gnulib/lib/regcomp.c:159
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Ensam \\\\{"
 
-#: gnulib/lib/regcomp.c:162
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Ogiltigt innehåll i \\{\\}"
 
-#: gnulib/lib/regcomp.c:165
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Ogiltigt intervallslut"
 
-#: gnulib/lib/regcomp.c:168
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Minnet slut"
 
-#: gnulib/lib/regcomp.c:171
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Felaktigt föregående reguljärt uttryck"
 
-#: gnulib/lib/regcomp.c:174
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Förtida slut av reguljärt uttryck"
 
-#: gnulib/lib/regcomp.c:177
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "För stort reguljärt uttryck"
 
-#: gnulib/lib/regcomp.c:180
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Ensam ) eller \\)"
 
-#: gnulib/lib/regcomp.c:701
+#: gnulib/lib/regcomp.c:700
 msgid "No previous regular expression"
 msgstr "Inget föregående reguljärt uttryck"
-
-#: gnulib/lib/siglist.h:29
-msgid "Hangup"
-msgstr "Avringd"
-
-#: gnulib/lib/siglist.h:32
-msgid "Interrupt"
-msgstr "Avbruten"
-
-#: gnulib/lib/siglist.h:35
-msgid "Quit"
-msgstr "Lämnad"
-
-#: gnulib/lib/siglist.h:38
-msgid "Illegal instruction"
-msgstr "Otillåten instruktion"
-
-#: gnulib/lib/siglist.h:41
-msgid "Trace/breakpoint trap"
-msgstr "Spårnings-/brytpunktsfälla"
-
-#: gnulib/lib/siglist.h:44
-msgid "Aborted"
-msgstr "Avbruten (abort)"
-
-#: gnulib/lib/siglist.h:47
-msgid "Floating point exception"
-msgstr "Flyttalsundantag"
-
-#: gnulib/lib/siglist.h:50
-msgid "Killed"
-msgstr "Dödad"
-
-#: gnulib/lib/siglist.h:53
-msgid "Bus error"
-msgstr "Bussfel"
-
-#: gnulib/lib/siglist.h:56
-msgid "Segmentation fault"
-msgstr "Segmenteringsfel"
-
-#: gnulib/lib/siglist.h:59
-msgid "Broken pipe"
-msgstr "Brutet rör"
-
-#: gnulib/lib/siglist.h:62
-msgid "Alarm clock"
-msgstr "Alarmklocka"
-
-#: gnulib/lib/siglist.h:65
-msgid "Terminated"
-msgstr "Avslutad"
-
-#: gnulib/lib/siglist.h:68
-msgid "Urgent I/O condition"
-msgstr "Brådskande I/O-situation"
-
-#: gnulib/lib/siglist.h:71
-msgid "Stopped (signal)"
-msgstr "Stoppad (signal)"
-
-#: gnulib/lib/siglist.h:74
-msgid "Stopped"
-msgstr "Stoppad"
-
-#: gnulib/lib/siglist.h:77
-msgid "Continued"
-msgstr "Återupptagen"
-
-#: gnulib/lib/siglist.h:80
-msgid "Child exited"
-msgstr "Barn avslutade"
-
-#: gnulib/lib/siglist.h:83
-msgid "Stopped (tty input)"
-msgstr "Stoppad (terminalläsning)"
-
-#: gnulib/lib/siglist.h:86
-msgid "Stopped (tty output)"
-msgstr "Stoppad (terminalskrivning)"
-
-#: gnulib/lib/siglist.h:89
-msgid "I/O possible"
-msgstr "I/O möjligt"
-
-#: gnulib/lib/siglist.h:92
-msgid "CPU time limit exceeded"
-msgstr "Begränsning av CPU-tid överskriden"
-
-#: gnulib/lib/siglist.h:95
-msgid "File size limit exceeded"
-msgstr "Begränsning av filstorlek överskriden"
-
-#: gnulib/lib/siglist.h:98
-msgid "Virtual timer expired"
-msgstr "Alarmklocka - virtuell tid"
-
-#: gnulib/lib/siglist.h:101
-msgid "Profiling timer expired"
-msgstr "Profileringsklocka"
-
-#: gnulib/lib/siglist.h:104
-msgid "Window changed"
-msgstr "Ändrat fönster"
-
-#: gnulib/lib/siglist.h:107
-msgid "User defined signal 1"
-msgstr "Användarsignal 1"
-
-#: gnulib/lib/siglist.h:110
-msgid "User defined signal 2"
-msgstr "Användarsignal 2"
-
-#: gnulib/lib/siglist.h:115
-msgid "EMT trap"
-msgstr "Emulatorfälla"
-
-#: gnulib/lib/siglist.h:118
-msgid "Bad system call"
-msgstr "Felaktigt systemanrop"
-
-#: gnulib/lib/siglist.h:121
-msgid "Stack fault"
-msgstr "Stackfel"
-
-#: gnulib/lib/siglist.h:124
-msgid "Information request"
-msgstr "Informationsbegäran"
-
-#: gnulib/lib/siglist.h:126
-msgid "Power failure"
-msgstr "Strömavbrott"
-
-#: gnulib/lib/siglist.h:129
-msgid "Resource lost"
-msgstr "Förlorad resurs"
-
-#: gnulib/lib/strsignal.c:110
-#, c-format
-msgid "Real-time signal %d"
-msgstr "Realtidsignal %d"
-
-#: gnulib/lib/strsignal.c:114
-#, c-format
-msgid "Unknown signal %d"
-msgstr "Okänd signal %d"
 
 #: gnulib/lib/xalloc-die.c:34
 msgid "memory exhausted"
@@ -646,8 +500,116 @@ msgstr "minnet slut"
 #~ msgid "setting permissions for %s"
 #~ msgstr "ändrar rättigheter på %s"
 
+#~ msgid "Hangup"
+#~ msgstr "Avringd"
+
+#~ msgid "Interrupt"
+#~ msgstr "Avbruten"
+
+#~ msgid "Quit"
+#~ msgstr "Lämnad"
+
+#~ msgid "Illegal instruction"
+#~ msgstr "Otillåten instruktion"
+
+#~ msgid "Trace/breakpoint trap"
+#~ msgstr "Spårnings-/brytpunktsfälla"
+
+#~ msgid "Aborted"
+#~ msgstr "Avbruten (abort)"
+
+#~ msgid "Floating point exception"
+#~ msgstr "Flyttalsundantag"
+
+#~ msgid "Killed"
+#~ msgstr "Dödad"
+
+#~ msgid "Bus error"
+#~ msgstr "Bussfel"
+
+#~ msgid "Segmentation fault"
+#~ msgstr "Segmenteringsfel"
+
+#~ msgid "Broken pipe"
+#~ msgstr "Brutet rör"
+
+#~ msgid "Alarm clock"
+#~ msgstr "Alarmklocka"
+
+#~ msgid "Terminated"
+#~ msgstr "Avslutad"
+
+#~ msgid "Urgent I/O condition"
+#~ msgstr "Brådskande I/O-situation"
+
+#~ msgid "Stopped (signal)"
+#~ msgstr "Stoppad (signal)"
+
+#~ msgid "Stopped"
+#~ msgstr "Stoppad"
+
+#~ msgid "Continued"
+#~ msgstr "Återupptagen"
+
+#~ msgid "Child exited"
+#~ msgstr "Barn avslutade"
+
+#~ msgid "Stopped (tty input)"
+#~ msgstr "Stoppad (terminalläsning)"
+
+#~ msgid "Stopped (tty output)"
+#~ msgstr "Stoppad (terminalskrivning)"
+
+#~ msgid "I/O possible"
+#~ msgstr "I/O möjligt"
+
+#~ msgid "CPU time limit exceeded"
+#~ msgstr "Begränsning av CPU-tid överskriden"
+
+#~ msgid "File size limit exceeded"
+#~ msgstr "Begränsning av filstorlek överskriden"
+
+#~ msgid "Virtual timer expired"
+#~ msgstr "Alarmklocka - virtuell tid"
+
+#~ msgid "Profiling timer expired"
+#~ msgstr "Profileringsklocka"
+
+#~ msgid "Window changed"
+#~ msgstr "Ändrat fönster"
+
+#~ msgid "User defined signal 1"
+#~ msgstr "Användarsignal 1"
+
+#~ msgid "User defined signal 2"
+#~ msgstr "Användarsignal 2"
+
+#~ msgid "EMT trap"
+#~ msgstr "Emulatorfälla"
+
+#~ msgid "Bad system call"
+#~ msgstr "Felaktigt systemanrop"
+
+#~ msgid "Stack fault"
+#~ msgstr "Stackfel"
+
+#~ msgid "Information request"
+#~ msgstr "Informationsbegäran"
+
+#~ msgid "Power failure"
+#~ msgstr "Strömavbrott"
+
+#~ msgid "Resource lost"
+#~ msgstr "Förlorad resurs"
+
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "fel vid skrivning till ett stängt rör eller uttag"
+
+#~ msgid "Real-time signal %d"
+#~ msgstr "Realtidsignal %d"
+
+#~ msgid "Unknown signal %d"
+#~ msgstr "Okänd signal %d"
 
 #~ msgid "iconv function not usable"
 #~ msgstr "iconv-funktion inte användbar"

@@ -178,19 +178,35 @@ numbers of the manual followed by the types of pages they contain.
 
 .TS
 tab (@);
-l l.
-1@Executable programs or shell commands
-2@System calls (functions provided by the kernel)
-3@Library calls (functions within program libraries)
-4@Special files (usually found in \fI/dev\fR)
-5@File formats and conventions eg \fI/etc/passwd\fR
-6@Games
+l lx.
+1@T{
+Executable programs or shell commands
+T}
+2@T{
+System calls (functions provided by the kernel)
+T}
+3@T{
+Library calls (functions within program libraries)
+T}
+4@T{
+Special files (usually found in \fI/dev\fR)
+T}
+5@T{
+File formats and conventions eg \fI/etc/passwd\fR
+T}
+6@T{
+Games
+T}
 7@T{
 Miscellaneous (including macro packages and conventions),
 e.g. \fBman\fR(7), \fBgroff\fR(7)
 T}
-8@System administration commands (usually only for root)
-9@Kernel routines [\|Non standard\|]
+8@T{
+System administration commands (usually only for root)
+T}
+9@T{
+Kernel routines [\|Non standard\|]
+T}
 .TE
 
 A manual
@@ -223,13 +239,25 @@ section and can be used as a guide in other sections.
 
 .TS
 tab (@);
-l l.
-\fBbold text\fR@type exactly as shown.
-\fIitalic text\fR@replace with appropriate argument.
-[\|\fB\-abc\fR\|]@any or all arguments within [ ] are optional.
-\fB\-a\|\fR|\|\fB\-b\fR@options delimited by | cannot be used together.
-\fIargument\fB .\|.\|.@\fIargument\fR is repeatable.
-[\|\fIexpression\fR\|]\fB .\|.\|.@\fRentire \fIexpression\fR\ within [ ] is repeatable.
+l lx.
+\fBbold text\fR@T{
+type exactly as shown.
+T}
+\fIitalic text\fR@T{
+replace with appropriate argument.
+T}
+[\|\fB\-abc\fR\|]@T{
+any or all arguments within [ ] are optional.
+T}
+\fB\-a\|\fR|\|\fB\-b\fR@T{
+options delimited by | cannot be used together.
+T}
+\fIargument\fR .\|.\|.@T{
+\fIargument\fR is repeatable.
+T}
+[\|\fIexpression\fR\|]\fR .\|.\|.@T{
+\fRentire \fIexpression\fR\ within [ ] is repeatable.
+T}
 .TE
 
 Exact rendering may vary depending on the output device.
@@ -522,14 +550,14 @@ For options that require an argument, each duplication will override the
 previous argument value.
 .SS "General options"
 .TP
-.BI \-C\  file ,\ \-\-config\-file= file
+.BI \-C\  file \fR,\ \fB\-\-config\-file= file
 Use this user configuration file rather than the default of
 .IR ~/.manpath .
 .TP
-.if !'po4a'hide' .B \-d, \-\-debug
+.if !'po4a'hide' .BR \-d ", " \-\-debug
 Print debugging information.
 .TP
-.if !'po4a'hide' .B \-D, \-\-default
+.if !'po4a'hide' .BR \-D ", " \-\-default
 This option is normally issued as the very first option and resets
 .B %man%'s
 behaviour to its default.
@@ -552,14 +580,14 @@ See the \(lqWarnings\(rq node in
 for a list of available warning names.
 .SS "Main modes of operation"
 .TP
-.if !'po4a'hide' .B \-f, \-\-whatis
+.if !'po4a'hide' .BR \-f ", " \-\-whatis
 Equivalent to
 .BR %whatis% .
 Display a short description from the manual page, if available. See
 .BR %whatis% (1)
 for details.
 .TP
-.if !'po4a'hide' .B \-k, \-\-apropos
+.if !'po4a'hide' .BR \-k ", " \-\-apropos
 Equivalent to
 .BR %apropos% .
 Search the short manual page descriptions for keywords and display any
@@ -568,7 +596,7 @@ See
 .BR %apropos% (1)
 for details.
 .TP
-.if !'po4a'hide' .B \-K, \-\-global\-apropos
+.if !'po4a'hide' .BR \-K ", " \-\-global\-apropos
 Search for text in all manual pages.
 This is a brute-force search, and is likely to take some time; if you can,
 you should specify a section to reduce the number of pages that need to be
@@ -578,7 +606,7 @@ the
 .B \-\-regex
 option is used.
 .TP
-.if !'po4a'hide' .B \-l, \-\-local\-file
+.if !'po4a'hide' .BR \-l ", " \-\-local\-file
 Activate `local' mode.
 Format and display local manual files instead of searching through the
 system's manual collection.
@@ -594,16 +622,16 @@ before displaying the error message, it attempts to act as if this
 option was supplied, using the name as a filename and looking for an
 exact match.
 .TP
-.if !'po4a'hide' .B \-w, \-\-where, \-\-location
+.if !'po4a'hide' .BR \-w ", " \-\-where ", " \-\-location
 Don't actually display the manual pages, but do print the location(s) of
 the source nroff files that would be formatted.
 .TP
-.if !'po4a'hide' .B \-W, \-\-where\-cat, \-\-location\-cat
+.if !'po4a'hide' .BR \-W ", " \-\-where\-cat ", " \-\-location\-cat
 Don't actually display the manual pages, but do print the location(s) of
 the cat files that would be displayed.
 If \-w and \-W are both specified, print both separated by a space.
 .TP
-.if !'po4a'hide' .B \-c, \-\-catman
+.if !'po4a'hide' .BR \-c ", " \-\-catman
 This option is not for general use and should only be used by the
 .B %catman%
 program.
@@ -621,7 +649,7 @@ that they were already installed in a structure similar to a manual page
 hierarchy.
 .SS "Finding manual pages"
 .TP
-.BI \-L\  locale ,\ \-\-locale= locale
+.BI \-L\  locale \fR,\ \fB\-\-locale= locale
 .B %program%
 will normally determine your current locale by a call to the C function
 .BR setlocale (3)
@@ -647,7 +675,7 @@ determined locale.
 .PP
 .B \-m
 .I system\c
-.RB \|[\|,.\|.\|.\|]\| ,
+\|[\|,.\|.\|.\|]\|,
 .BI \-\-systems= system\c
 \|[\|,.\|.\|.\|]
 .RS
@@ -670,7 +698,7 @@ This option will override the
 environment variable.
 .RE
 .TP
-.BI \-M\  path ,\ \-\-manpath= path
+.BI \-M\  path \fR,\ \fB\-\-manpath= path
 Specify an alternate manpath to use.
 By default,
 .B %man%
@@ -690,7 +718,7 @@ To view manual pages outside such hierarchies, see the
 .B \-l
 option.
 .TP
-.BI \-S\  list ,\ \-s\  list ,\ \-\-sections= list
+.BI \-S\  list \fR,\ \fB\-s\  list \fR,\ \fB\-\-sections= list
 List is a colon- or comma-separated list of `order specific' manual sections
 to search.
 This option overrides the
@@ -700,7 +728,7 @@ environment variable.
 .B \-s
 spelling is for compatibility with System V.)
 .TP
-.BI \-e\  sub-extension ,\ \-\-extension= sub-extension
+.BI \-e\  sub-extension \fR,\ \fB\-\-extension= sub-extension
 Some systems incorporate large packages of manual pages, such as those that
 accompany the
 .B Tcl
@@ -734,11 +762,11 @@ to
 will restrict the search to pages having an extension of
 .BR *tcl .
 .TP
-.if !'po4a'hide' .B \-i, \-\-ignore\-case
+.if !'po4a'hide' .BR \-i ", " \-\-ignore\-case
 Ignore case when searching for manual pages.
 This is the default.
 .TP
-.if !'po4a'hide' .B \-I, \-\-match\-case
+.if !'po4a'hide' .BR \-I ", " \-\-match\-case
 Search for manual pages case-sensitively.
 .TP
 .if !'po4a'hide' .B \-\-regex
@@ -775,7 +803,7 @@ option is used, match only page names, not page descriptions, as with
 .BR whatis (1).
 Otherwise, no effect.
 .TP
-.if !'po4a'hide' .B \-a, \-\-all
+.if !'po4a'hide' .BR \-a ", " \-\-all
 By default,
 .B %man%
 will exit after displaying the most suitable manual page it finds.
@@ -783,7 +811,7 @@ Using this option forces
 .B %man%
 to display all the manual pages with names that match the search criteria.
 .TP
-.if !'po4a'hide' .B \-u, \-\-update
+.if !'po4a'hide' .BR \-u ", " \-\-update
 This option causes
 .B %man%
 to perform an `inode level' consistency check on its database caches to
@@ -821,7 +849,7 @@ option.
 .fi
 .SS "Controlling formatted output"
 .TP
-.BI \-P\  pager ,\ \-\-pager= pager
+.BI \-P\  pager \fR,\ \fB\-\-pager= pager
 Specify which output pager to use.
 By default,
 .B %man%
@@ -843,7 +871,7 @@ It may not use pipes to connect multiple commands; if you need that, use a
 wrapper script, which may take the file to display either as an argument or
 on standard input.
 .TP
-.BI \-r\  prompt ,\ \-\-prompt= prompt
+.BI \-r\  prompt \fR,\ \fB\-\-prompt= prompt
 If a recent version of
 .B less
 is used as the pager,
@@ -886,8 +914,10 @@ The string used to produce the default could be expressed as
 .B \e\ Manual\e\ page\e\ \e$MAN_PN\e\ ?ltline\e\ %lt?L/%L.:
 .br
 .B byte\e\ %bB?s/%s..?\e\ (END):?pB\e\ %pB\e\e%..
+.br
+.B (press h for help or q to quit)
 
-It is broken into two lines here for the sake of readability only.
+It is broken into three lines here for the sake of readability only.
 For its meaning see the
 .BR less (1)
 manual page.
@@ -908,7 +938,7 @@ prompt string processing completely, use the
 .RB $ MANLESS
 environment variable described below.
 .TP
-.if !'po4a'hide' .B \-7, \-\-ascii
+.if !'po4a'hide' .BR \-7 ", " \-\-ascii
 When viewing a pure
 .IR ascii (7)
 manual page on a 7 bit terminal or terminal emulator, some characters may
@@ -943,10 +973,18 @@ tab (@);
 l c c c.
 Description@Octal@latin1@ascii
 _
-continuation hyphen@255@\*[softhyphen]@-
-bullet (middle dot)@267@\(bu@o
-acute accent@264@\(aa@'
-multiplication sign@327@\(mu@x
+T{
+continuation hyphen
+T}@255@\*[softhyphen]@-
+T{
+bullet (middle dot)
+T}@267@\(bu@o
+T{
+acute accent
+T}@264@\(aa@'
+T{
+multiplication sign
+T}@327@\(mu@x
 .TE
 
 If the
@@ -1022,7 +1060,7 @@ from justifying certain paragraphs, do not use this option, but consult the
 documentation instead; for instance, you can use the ".na", ".nf", ".fi",
 and ".ad" requests to temporarily disable adjusting and filling.
 .TP
-.BI \-p\  string ,\ \-\-preprocessor= string
+.BI \-p\  string \fR,\ \fB\-\-preprocessor= string
 Specify the sequence of preprocessors to run before
 .B nroff
 or
@@ -1041,7 +1079,7 @@ environment variable.
 .B %zsoelim%
 is always run as the very first preprocessor.
 .TP
-.if !'po4a'hide' .B \-t, \-\-troff
+.if !'po4a'hide' .BR \-t ", " \-\-troff
 Use
 .I %troff%
 to format the manual page to stdout.
@@ -1093,7 +1131,7 @@ This option implies
 .B \-T
 with the X75, X75-12, X100, or X100-12 device respectively.
 .TP
-.if !'po4a'hide' .B \-Z, \-\-ditroff
+.if !'po4a'hide' .BR \-Z ", " \-\-ditroff
 .B groff
 will run
 .B troff
@@ -1110,10 +1148,10 @@ It implies
 .BR \-t .
 .SS "Getting help"
 .TP
-.if !'po4a'hide' .B \-h, \-\-help
+.if !'po4a'hide' .BR \-h ", " \-\-help
 Print a help message and exit.
 .TP
-.if !'po4a'hide' .B \-V, \-\-version
+.if !'po4a'hide' .BR \-V ", " \-\-version
 Display version information.
 .SH "EXIT STATUS"
 .TP
