@@ -1,3 +1,12 @@
+man-db (2.6.0.1-1) UNRELEASED; urgency=low
+
+  * New upstream release, fixing test failures in 2.6.0 (closes: #621867):
+    - Ensure that the target of a symlink or .so chain is always recorded as
+      a real page.
+    - Read a user-specified configuration file even if HOME is unset.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 10 Apr 2011 23:06:49 +0100
+
 man-db (2.6.0-1) unstable; urgency=low
 
   * New upstream release:
