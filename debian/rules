@@ -31,6 +31,10 @@ override_dh_auto_configure:
 		    --with-lzma=lzma \
 		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
 
+override_dh_auto_install:
+	dh_auto_install
+	rm -f debian/tmp/usr/lib/man-db/*.la
+
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 override_dh_installman:
 	PATH="$(CURDIR)/$(dtmp)/usr/bin:$$PATH" \

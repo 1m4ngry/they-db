@@ -1,3 +1,9 @@
+man-db (2.6.0.1-2) UNRELEASED; urgency=low
+
+  * Remove unnecessary .la files (closes: #622443).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 12 Apr 2011 22:11:51 +0100
+
 man-db (2.6.0.1-1) unstable; urgency=low
 
   * New upstream release, fixing test failures in 2.6.0 (closes: #621867):
