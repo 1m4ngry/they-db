@@ -1,4 +1,4 @@
-man-db (2.6.0.2-1) UNRELEASED; urgency=low
+man-db (2.6.0.2-1) unstable; urgency=low
 
   * New upstream release:
     - Fix a segfault when scanning links to empty pages (closes: #622104).
@@ -7,7 +7,7 @@ man-db (2.6.0.2-1) UNRELEASED; urgency=low
       tend to be noise.
   * Remove unnecessary .la files (closes: #622443).
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 12 Apr 2011 22:11:51 +0100
+ -- Colin Watson <cjwatson@debian.org>  Wed, 13 Apr 2011 12:27:13 +0100
 
 man-db (2.6.0.1-1) unstable; urgency=low
 
