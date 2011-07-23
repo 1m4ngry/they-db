@@ -2,6 +2,7 @@ man-db (2.6.0.2-2) UNRELEASED; urgency=low
 
   * Add debconf translations:
     - Serbian (thanks, Zlatan Todoric; closes: #635062).
+    - Serbian (Latin) (thanks, Zlatan Todoric; closes: #635063).
 
  -- Colin Watson <cjwatson@debian.org>  Sat, 23 Jul 2011 09:15:02 +0100
 
