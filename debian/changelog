@@ -1,3 +1,9 @@
+man-db (2.6.0.2-3) UNRELEASED; urgency=low
+
+  * Honour CFLAGS and LDFLAGS values set by dpkg-buildflags.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 Sep 2011 11:24:07 +0100
+
 man-db (2.6.0.2-2) unstable; urgency=low
 
   * Add debconf translations:
