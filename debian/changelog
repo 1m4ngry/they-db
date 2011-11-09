@@ -1,11 +1,11 @@
-man-db (2.6.0.2-3) UNRELEASED; urgency=low
+man-db (2.6.0.2-3) unstable; urgency=low
 
   * Discard stderr from dpkg-query in cron jobs (LP: #783903).
   * Make man-db Multi-Arch: foreign.
   * Upgrade to debhelper v9 and its new arrangements for honouring
     dpkg-buildflags output.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 05 Sep 2011 11:24:07 +0100
+ -- Colin Watson <cjwatson@debian.org>  Wed, 09 Nov 2011 01:33:33 +0000
 
 man-db (2.6.0.2-2) unstable; urgency=low
 
