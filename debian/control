@@ -13,6 +13,7 @@ Suggests: groff, less, www-browser
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
 Replaces: man, nlsutils, manpages-de (<< 0.5-4)
+Multi-Arch: foreign
 Description: on-line manual pager
  This package provides the man command, the primary way of examining the
  on-line help files (manual pages). Other utilities provided include the
