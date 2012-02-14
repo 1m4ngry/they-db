@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the gnulib package.
 # Lauri Nurmi <lanurmi@iki.fi>, 2003, 2004.
 # Matti Koskimies <matti@apulanta.fi>, 2002.
-# Jorma Karvonen <karvonen.jorma@gmail.com>, 2009, 2010.
+# Jorma Karvonen <karvonen.jorma@gmail.com>, 2009-2011.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
+"Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2011-04-13 11:03+0100\n"
-"PO-Revision-Date: 2010-02-23 16:51+0200\n"
+"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"PO-Revision-Date: 2011-12-10 19:05+0200\n"
 "Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
 "Language: fi\n"
@@ -44,7 +44,7 @@ msgstr "%.*s: Tuntematon ARGP_HELP_FMT-parametri"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Roskaa kohteessa ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1246
+#: gnulib/lib/argp-help.c:1247
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -52,29 +52,29 @@ msgstr ""
 "Pitkien valitsimien pakolliset tai valinnaiset argumentit ovat pakollisia "
 "tai valinnaisia myös lyhyille valitsimille."
 
-#: gnulib/lib/argp-help.c:1639
+#: gnulib/lib/argp-help.c:1640
 msgid "Usage:"
 msgstr "Käyttö:"
 
-#: gnulib/lib/argp-help.c:1643
+#: gnulib/lib/argp-help.c:1644
 msgid "  or: "
 msgstr "  tai: "
 
-#: gnulib/lib/argp-help.c:1655
+#: gnulib/lib/argp-help.c:1656
 msgid " [OPTION...]"
 msgstr " [VALITSIN...]"
 
-#: gnulib/lib/argp-help.c:1682
+#: gnulib/lib/argp-help.c:1683
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Lisätietoja saa komennolla ”%s --help” tai ”%s --usage”.\n"
 
-#: gnulib/lib/argp-help.c:1710
+#: gnulib/lib/argp-help.c:1711
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Lähetä raportit ohjelmistovioista (englanniksi) osoitteeseen %s.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
 msgid "Unknown system error"
 msgstr "Tuntematon järjestelmävirhe"
 
@@ -119,61 +119,61 @@ msgstr "%s: Liian monta argumenttia\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(OHJELMAVIRHE) Valitsimen pitäisi olla tunnistettava!?"
 
-#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#: gnulib/lib/getopt.c:547 gnulib/lib/getopt.c:576
 #, c-format
-msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: valitsin ’%s’ ei ole yksiselitteinen\n"
+msgid "%s: option '%s' is ambiguous; possibilities:"
+msgstr "%s: valitsin ’%s’ ei ole yksiselitteinen; mahdollisuudet:"
 
-#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#: gnulib/lib/getopt.c:624 gnulib/lib/getopt.c:628
 #, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr "%s: valitsin ’--%s’ ei salli argumenttia\n"
 
-#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:642
 #, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr "%s: valitsin ’%c%s’ ei salli argumenttia\n"
 
-#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:685 gnulib/lib/getopt.c:704
+#, c-format
 msgid "%s: option '--%s' requires an argument\n"
-msgstr "%s: valitsin ’%s’ vaatii argumentin\n"
+msgstr "%s: valitsin ’--%s’ vaatii argumentin\n"
 
-#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#: gnulib/lib/getopt.c:742 gnulib/lib/getopt.c:745
 #, c-format
 msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: tunnistamaton valitsin ’--%s’\n"
 
-#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#: gnulib/lib/getopt.c:753 gnulib/lib/getopt.c:756
 #, c-format
 msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: tunnistamaton valitsin ’%c%s’\n"
 
-#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#: gnulib/lib/getopt.c:805 gnulib/lib/getopt.c:808
 #, c-format
 msgid "%s: invalid option -- '%c'\n"
 msgstr "%s: epäkelpo valitsin -- ’%c’\n"
 
-#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
-#: gnulib/lib/getopt.c:1053
+#: gnulib/lib/getopt.c:861 gnulib/lib/getopt.c:878 gnulib/lib/getopt.c:1088
+#: gnulib/lib/getopt.c:1106
 #, c-format
 msgid "%s: option requires an argument -- '%c'\n"
 msgstr "%s: valitsin vaatii argumentin -- ’%c’\n"
 
-#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#: gnulib/lib/getopt.c:934 gnulib/lib/getopt.c:950
 #, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: valitsin ’-W %s’ ei ole yksiselitteinen\n"
 
-#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#: gnulib/lib/getopt.c:974 gnulib/lib/getopt.c:992
 #, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: valitsin ’-W %s’ ei salli argumenttia\n"
 
-#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:1013 gnulib/lib/getopt.c:1031
+#, c-format
 msgid "%s: option '-W %s' requires an argument\n"
-msgstr "%s: valitsin ’%s’ vaatii argumentin\n"
+msgstr "%s: valitsin ’-W %s’ vaatii argumentin\n"
 
 #: gnulib/lib/openat-die.c:38
 #, c-format
@@ -481,8 +481,8 @@ msgstr "muisti loppui"
 #~ msgid "%s subprocess terminated with exit code %d"
 #~ msgstr "%s-aliprosessi päättyi poistumiskoodilla %d"
 
-#~ msgid "cannot create pipe"
-#~ msgstr "ei voida luoda putkea"
+#~ msgid "Franc,ois Pinard"
+#~ msgstr "François Pinard"
 
 #~ msgid "`"
 #~ msgstr "”"
@@ -604,6 +604,9 @@ msgstr "muisti loppui"
 
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "virhe kirjoitettaessa suljettuun putkeen tai pistokkeeseen"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "ei voida luoda putkea"
 
 #~ msgid "Real-time signal %d"
 #~ msgstr "Tosiaikasignaali %d"

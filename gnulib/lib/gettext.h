@@ -93,6 +93,12 @@
 
 #endif
 
+/* Prefer gnulib's setlocale override over libintl's setlocale override.  */
+#ifdef GNULIB_defined_setlocale
+# undef setlocale
+# define setlocale rpl_setlocale
+#endif
+
 /* A pseudo function call that serves as a marker for the automated
    extraction of messages, but does not call gettext().  The run-time
    translation is done at a different place in the code.
@@ -179,7 +185,7 @@ npgettext_aux (const char *domain,
 #include <string.h>
 
 #define _LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS \
-  (((__GNUC__ >= 3 || __GNUG__ >= 2) && !__STRICT_ANSI__) \
+  (((__GNUC__ >= 3 || __GNUG__ >= 2) && !defined __STRICT_ANSI__) \
    /* || __STDC_VERSION__ >= 199901L */ )
 
 #if !_LIBGETTEXT_HAVE_VARIABLE_SIZE_ARRAYS

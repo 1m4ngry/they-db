@@ -2,7 +2,8 @@
  * db_lookup.c: low level database interface routines for man.
  *
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2006, 2007, 2008 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2006, 2007, 2008, 2009, 2012
+ *               Colin Watson.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -178,7 +179,8 @@ char **split_data (char *content, char *start[])
 		start[count] = strsep (&content, "\t");
 		if (!start[count]) {
 			error (0, 0,
-			       _("only %d fields in content"),
+			       ngettext ("only %d field in content",
+					 "only %d fields in content", count),
 			       count);
 			gripe_corrupt_data ();
 		}
@@ -188,7 +190,8 @@ char **split_data (char *content, char *start[])
 	start[FIELDS - 1] = content;
 	if (!start[FIELDS - 1]) {
 		error (0, 0,
-		       _("only %d fields in content"),
+		       ngettext ("only %d field in content",
+				 "only %d fields in content", FIELDS - 1),
 		       FIELDS - 1);
 		gripe_corrupt_data ();
 	}

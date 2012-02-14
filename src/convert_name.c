@@ -2,6 +2,8 @@
  * convert_name.c
  *
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2012
+ *               Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -41,9 +43,11 @@
 #include "manp.h"
 #include "convert_name.h"
 
+static inline void gripe_converting_name (const char *name) ATTRIBUTE_NORETURN;
 static inline void gripe_converting_name (const char *name)
 {
 	error (FATAL, 0, _("Can't convert %s to cat name"), name);
+	abort (); /* error should have exited; help compilers prove noreturn */
 }
 
 /* Convert the trailing part of 'name' to be a cat page path by altering its

@@ -1,3 +1,17 @@
+man-db (2.6.1-1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - Translated manual pages are no longer displayed starting with a
+      spurious blank line (closes: #628639).
+    - Create a cache directory tag, per http://www.brynosaurus.com/cachedir/
+      (closes: #637046).
+    - Alphabetise "SEE ALSO" references and remove trailing full stops, per
+      man-pages(7) (closes: #651482).
+    - Update German manual page translations (closes: #494066, #596104,
+      #624096).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 14 Feb 2012 13:09:14 +0000
+
 man-db (2.6.0.2-3) unstable; urgency=low
 
   * Discard stderr from dpkg-query in cron jobs (LP: #783903).

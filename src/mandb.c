@@ -2,7 +2,8 @@
  * mandb.c: used to create and initialise global man database.
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011,
+ *               2012 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -47,6 +48,7 @@
 #include "argp.h"
 #include "dirname.h"
 #include "xgetcwd.h"
+#include "xvasprintf.h"
 
 #include "gettext.h"
 #define _(String) gettext (String)
@@ -245,7 +247,7 @@ static int xcopy (const char *from, const char *to)
 	}
 
 	while (!feof (ifp) && !ferror (ifp)) {
-		char buf[1024];
+		char buf[32 * 1024];
 		size_t in = fread (buf, 1, sizeof (buf), ifp);
 		if (in > 0) {
 			if (fwrite (buf, 1, in, ofp) == 0 && ferror (ofp)) {
@@ -363,10 +365,8 @@ static inline int update_db_wrapper (const char *manpath, const char *catpath)
 }
 
 /* remove incomplete databases */
-static void cleanup_sigsafe (void *dummy)
+static void cleanup_sigsafe (void *dummy ATTRIBUTE_UNUSED)
 {
-	dummy = dummy; /* not used */
-
 #ifdef NDBM
 #  ifdef BERKELEY_DB
 	if (tmpdbfile)
@@ -384,10 +384,8 @@ static void cleanup_sigsafe (void *dummy)
 }
 
 /* remove incomplete databases */
-static void cleanup (void *dummy)
+static void cleanup (void *dummy ATTRIBUTE_UNUSED)
 {
-	dummy = dummy; /* not used */
-
 #ifdef NDBM
 #  ifdef BERKELEY_DB
 	if (tmpdbfile) {
@@ -420,6 +418,8 @@ static int mandb (const char *catpath, const char *manpath)
 	char pid[23];
 	int ret, amount;
 	char *dbname;
+	char *cachedir_tag;
+	struct stat st;
 
 	dbname = mkdbname (catpath);
 	sprintf (pid, "%d", getpid ());
@@ -427,6 +427,25 @@ static int mandb (const char *catpath, const char *manpath)
 	
 	if (!quiet) 
 		printf (_("Processing manual pages under %s...\n"), manpath);
+
+	cachedir_tag = xasprintf ("%s/CACHEDIR.TAG", catpath);
+	if (stat (cachedir_tag, &st) == -1 && errno == ENOENT) {
+		FILE *cachedir_tag_file;
+
+		cachedir_tag_file = fopen (cachedir_tag, "w");
+		if (cachedir_tag_file) {
+			fputs ("Signature: 8a477f597d28d172789f06886806bc55\n"
+			       "# This file is a cache directory tag created "
+			       "by man-db.\n"
+			       "# For information about cache directory tags, "
+			       "see:\n"
+			       "#\thttp://www.brynosaurus.com/cachedir/\n",
+			       cachedir_tag_file);
+			fclose (cachedir_tag_file);
+		}
+	}
+	free (cachedir_tag);
+
 #ifdef NDBM
 #  ifdef BERKELEY_DB
 	dbfile = appendstr (NULL, dbname, ".db", NULL);
@@ -862,14 +881,24 @@ next_manpath:
 	hashtable_free (tried_catdirs);
 
 	if (!quiet) {
-		printf (_(
-		        "%d man subdirectories contained newer manual pages.\n"
-		        "%d manual pages were added.\n"), 
-		        amount, pages);
+		printf (ngettext ("%d man subdirectory contained newer "
+				  "manual pages.\n",
+				  "%d man subdirectories contained newer "
+				  "manual pages.\n", amount),
+			amount);
+		printf (ngettext ("%d manual page was added.\n",
+				  "%d manual pages were added.\n", pages),
+			pages);
 		if (check_for_strays)
-			printf (_("%d stray cats were added.\n"), strays);
+			printf (ngettext ("%d stray cat was added.\n",
+					  "%d stray cats were added.\n",
+					  strays),
+			        strays);
 		if (purge)
-			printf (_("%d old database entries were purged.\n"),
+			printf (ngettext ("%d old database entry was "
+					  "purged.\n",
+					  "%d old database entries were "
+					  "purged.\n", purged),
 				purged);
 	}
 

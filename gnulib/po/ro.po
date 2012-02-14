@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailutils 0.4\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2011-04-13 11:03+0100\n"
+"POT-Creation-Date: 2012-02-14 12:14+0000\n"
 "PO-Revision-Date: 2003-12-10 08:55+0200\n"
 "Last-Translator: Eugen Hoanca <eugenh@urban-grafx.ro>\n"
 "Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
@@ -41,7 +41,7 @@ msgstr "%.*s: Parametru ARGP_HELP_FMT necunoscut"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Gunoi(garbage) în ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1246
+#: gnulib/lib/argp-help.c:1247
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -50,29 +50,29 @@ msgstr ""
 "asemenea obligatorii sau opþionale pentru toate opþiunile scurte "
 "corespunzãtoare."
 
-#: gnulib/lib/argp-help.c:1639
+#: gnulib/lib/argp-help.c:1640
 msgid "Usage:"
 msgstr "Folosire:"
 
-#: gnulib/lib/argp-help.c:1643
+#: gnulib/lib/argp-help.c:1644
 msgid "  or: "
 msgstr "  sau: "
 
-#: gnulib/lib/argp-help.c:1655
+#: gnulib/lib/argp-help.c:1656
 msgid " [OPTION...]"
 msgstr " [OPÞIUNE...]"
 
-#: gnulib/lib/argp-help.c:1682
+#: gnulib/lib/argp-help.c:1683
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Încercaþi `%s --help' sau `%s --usage' pentru mai multe informaþii.\n"
 
-#: gnulib/lib/argp-help.c:1710
+#: gnulib/lib/argp-help.c:1711
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Raportaþi bug-urile la %s.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
 #, fuzzy
 msgid "Unknown system error"
 msgstr "tip de mesaj necunoscut"
@@ -124,58 +124,58 @@ msgstr "%s: Prea multe argumente\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(EROARE DE PROGRAM) Opþiunea ar fi trebuit recunoscutã!?"
 
-#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#: gnulib/lib/getopt.c:547 gnulib/lib/getopt.c:576
 #, fuzzy, c-format
-msgid "%s: option '%s' is ambiguous\n"
+msgid "%s: option '%s' is ambiguous; possibilities:"
 msgstr "%s: opþiunea `%s' este ambiguã\n"
 
-#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#: gnulib/lib/getopt.c:624 gnulib/lib/getopt.c:628
 #, fuzzy, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
 msgstr "%s: opþiunea `--%s' nu permite argumente\n"
 
-#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:642
 #, fuzzy, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
 msgstr "%s: opþiunea `%c%s' nu permite argumente\n"
 
-#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
+#: gnulib/lib/getopt.c:685 gnulib/lib/getopt.c:704
 #, fuzzy, c-format
 msgid "%s: option '--%s' requires an argument\n"
 msgstr "%s: opþiunea `%s' necesitã un argument\n"
 
-#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#: gnulib/lib/getopt.c:742 gnulib/lib/getopt.c:745
 #, fuzzy, c-format
 msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: opþiune necunoscutã `--%s'\n"
 
-#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#: gnulib/lib/getopt.c:753 gnulib/lib/getopt.c:756
 #, fuzzy, c-format
 msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: opþiune necunoscutã `%c%s'\n"
 
-#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#: gnulib/lib/getopt.c:805 gnulib/lib/getopt.c:808
 #, fuzzy, c-format
 msgid "%s: invalid option -- '%c'\n"
 msgstr "%s: opþiune invalidã -- %c\n"
 
-#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
-#: gnulib/lib/getopt.c:1053
+#: gnulib/lib/getopt.c:861 gnulib/lib/getopt.c:878 gnulib/lib/getopt.c:1088
+#: gnulib/lib/getopt.c:1106
 #, fuzzy, c-format
 msgid "%s: option requires an argument -- '%c'\n"
 msgstr "%s: opþiunea necesitã un argument -- %c\n"
 
-#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#: gnulib/lib/getopt.c:934 gnulib/lib/getopt.c:950
 #, fuzzy, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: opþiune `-W %s' este ambiguã\n"
 
-#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#: gnulib/lib/getopt.c:974 gnulib/lib/getopt.c:992
 #, fuzzy, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: opþiune `-W %s' nu permite argumente\n"
 
-#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
+#: gnulib/lib/getopt.c:1013 gnulib/lib/getopt.c:1031
 #, fuzzy, c-format
 msgid "%s: option '-W %s' requires an argument\n"
 msgstr "%s: opþiunea `%s' necesitã un argument\n"

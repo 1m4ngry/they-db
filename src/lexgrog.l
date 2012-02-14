@@ -1,10 +1,17 @@
+%top{
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif /* HAVE_CONFIG_H */
+}
+
 %{
 
 /*
  * lexgrog.l: extract 'whatis' info from nroff man / formatted cat pages.
  *  
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007 Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+ *               2011, 2012 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -29,10 +36,6 @@
  */
 
 #undef PROFILE
-
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif /* HAVE_CONFIG_H */
 
 #include <sys/stat.h>
 #include <errno.h>
@@ -660,8 +663,15 @@ vgrind_request	\.vS
 /* print warning and force scanner to terminate */
 static void too_big (void)
 {
+	/* Even though MAX_NAME is a macro expanding to a constant, we
+	 * translate it using ngettext anyway because that will make it
+	 * easier to change the macro later.
+	 */
 	error (0, 0,
-	       _("warning: whatis for %s exceeds %d bytes, truncating."),
+	       ngettext ("warning: whatis for %s exceeds %d byte, "
+			 "truncating.",
+			 "warning: whatis for %s exceeds %d bytes, "
+			 "truncating.", MAX_NAME),
 	       fname, MAX_NAME);
 
 	BEGIN (FORCE_EXIT);

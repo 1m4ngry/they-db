@@ -1,3 +1,342 @@
+Tue Feb 14 12:18:50 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.1.
+	* man/po4a/po/man-db-manpages.pot, po/man-db.pot, po/*.po: Update.
+
+Thu Feb  9 08:44:09 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Automake 1.11.3.
+
+Thu Feb  9 08:16:12 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l, src/zsoelim.l: Ensure that config.h is included at
+	  the very top of the scanner, before any other headers.  This
+	  should fix a compilation problem on Solaris reported by Clark J.
+	  Wang.
+
+Wed Feb  8 14:07:41 GMT 2012  Joe Hansen  <joedalton2@yahoo.dk>
+
+	* po/da.po: Update from Translation Project.
+
+Tue Feb  7 00:20:51 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* docs/INSTALL.quick: Document requirement for libiconv >= 1.8 on
+	  non-glibc systems.
+
+Mon Feb  6 23:00:33 GMT 2012  David Prévot  <david@tilapin.org>
+
+	* man/po4a/po/fr.po, po/fr.po: Update from Translation Project.
+
+Mon Feb  6 22:57:12 GMT 2012  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* man/po4a/po/ru.po, po/ru.po: Update from Translation Project.
+
+Mon Feb  6 10:45:22 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* FAQ: New file.
+	* Makefile.am (dist_noinst_DATA): Add FAQ.
+
+Sun Feb  5 21:59:39 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* README (Notice to users of man-db version 2.2 or 2.2.1): Remove
+	  this section.  The chances of anyone still running man-db versions
+	  from 1995 seem remote in the extreme.
+
+Sun Feb  5 21:57:49 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* release.sh: Make sure that src/lexgrog.c and src/zsoelim.c are
+	  fresh.
+
+Sun Feb  5 15:36:52 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* README (Copyright and licensing): New year.
+
+Sun Feb  5 13:14:42 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* manual/README: Fix spelling mistake.
+
+Sun Feb  5 02:11:04 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.1-pre1.
+	* man/po4a/po/man-db-manpages.pot, po/man-db.pot, po/*.po: Update.
+
+Sun Feb  5 01:34:14 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	Fix 'make distcheck' to pass with Automake 1.11.2.
+
+	* Makefile.am (distuninstallcheck_listfiles): Ignore the
+	  configuration file, which is deliberately left in place on
+	  uninstall.
+	* configure.ac (AM_INIT_AUTOMAKE): Add -Wno-override.
+	* src/Makefile.am (EXTRA_DIST): Force distribution of lexgrog.c and
+	  zsoelim.c.
+
+Sun Feb  5 00:53:23 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Revision control): Recommend 'bzr branch' rather
+	  than 'bzr get'; the latter is apparently deprecated in bzr 2.4.
+
+Sat Feb  4 23:38:15 GMT 2012  David Prévot  <taffit@debian.org>
+
+	* man/man1/apropos.man1 (SEE ALSO), man/man1/lexgrog.man1 (SEE
+	  ALSO), man/man1/man.man1 (SEE ALSO), man/man1/manconv.man1 (SEE
+	  ALSO), man/man1/manpath.man1 (SEE ALSO), man/man1/whatis.man1 (SEE
+	  ALSO), man/man1/zsoelim.man1 (SEE ALSO), man/man8/catman.man8 (SEE
+	  ALSO), man/man8/mandb.man8 (SEE ALSO): Alphabetise references and
+	  remove trailing full stops, per man-pages(7) (Debian bug #651482).
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+
+Sat Feb  4 23:27:39 GMT 2012  Marek Černocký  <marek@manet.cz>
+
+	* po/cs.po: Update from Translation Project.
+	* man/THANKS: Update.
+
+Sat Feb  4 23:10:58 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_lookup.c (split_data): Use ngettext to translate strings
+	  containing plural forms (Savannah bug #34968).
+	* src/lexgrog.l (too_big): Likewise.
+	* src/mandb.c (main): Likewise.
+	* po/man-db.pot, po/*.po: Update.
+
+Sat Feb  4 21:44:47 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (options): Add --path as an alias for -w.
+	  (main): Running 'man -w' (etc.) without a name now prints the
+	  manpath, for compatibility with other man implementations.
+	* NEWS: Document this.
+
+Thu Feb  2 18:05:16 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* include/comp_src.h.in (comp_list): Don't handle .lzma files using
+	  lzip.  Requested by Matias A. Fonzo.
+
+Thu Feb  2 01:51:18 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	Fix some errors spotted by the clang static analyser.  Some just
+	needed to be suppressed, but there were two real bugs.
+
+	* src/manconv.c (try_iconv): Make sure outptr is always initialised,
+	  even in the corner case where we convert some input text but don't
+	  get any UTF-8 text in return.
+	* src/manp.c (get_catpath): Handle manpaths not containing a slash.
+
+	* src/convert_name.c: Mark as non-returning, and add an abort after
+	  error (FATAL) to help the compiler prove this.
+	* src/man.c (format_display): Add an assert to help clang prove that
+	  old_cwd is always non-NULL when used.
+	* src/ult_src.c: Add asserts to help clang prove that buf is always
+	  non-NULL when used.
+
+Thu Feb  2 00:02:07 GMT 2012  Matias A. Fonzo  <selk@dragora.org>
+
+	Add support for Lzip-compressed manual pages.
+
+	* configure.ac: Check for lzip.  Don't test for lzma if lzip is
+	  present, as was already the case for xz.
+	* include/comp_src.h.in (comp_list): Add lzip.
+	* include/manconfig.h.in: Define UNLZIP.
+	* NEWS: Document this.
+
+Wed Feb  1 23:25:03 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Automake 1.11.2 and Gnulib 20111211-stable.
+
+	* gnulib: Import closedir, fstat, and opendir modules.
+
+Wed Nov  2 14:33:18 GMT 2011  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+
+Sun Oct  9 23:32:41 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* lib/hashtable.c (null_hashtable_free): Use ATTRIBUTE_UNUSED to
+	  appease compiler warnings rather than assigning an argument to
+	  itself.
+	* src/mandb.c (cleanup_sigsafe, cleanup): Likewise.
+
+Sun Oct  9 23:14:11 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (get_roff_line_length, add_roff_line_length): Only
+	  compile if either TROFF_IS_GROFF or HEIRLOOM_NROFF is defined.
+	  Spotted by cppcheck.
+
+Sun Oct  9 22:50:36 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (add_to_dirlist): Read lines from configuration file
+	  using getline rather than fgets with a fixed-size buffer.
+
+Sun Oct  9 22:42:00 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* gnulib: Import getline module (used in lib/encodings.c).
+
+Sun Oct  9 22:26:15 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/es/man8/accessdb.man8: Remove; this is simply an out-of-date
+	  copy of the English page.  Reported by Křištof Želechovski.
+	* man/es/Makefile.am (man8_MANS): Remove man8/accessdb.8.
+
+Sun Oct  9 22:21:19 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20110908-stable.
+
+Sun Oct  9 00:24:22 BST 2011  Peter Schiffer  <pschiffe@redhat.com>
+
+	* src/filenames.c (filename_info): Zero-initialise the contents of
+	  info to avoid a double-free in store_descriptions (Fedora bug
+	  #702904).
+	* src/tests/mandb-6: New file.
+	* src/tests/Makefile.am (ALL_TESTS): Add mandb-6.
+	* NEWS: Document this.
+
+Sun Oct  9 00:16:25 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* NEWS: Update.
+
+Sat Oct  8 23:34:26 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	Convert the German manual pages translation to po4a.
+
+	* man/po4a/po/de.po: New from Translation Project (thanks, Martin
+	  Eberhard Schauer).
+	* man/LINGUAS: Remove de.
+	* man/LINGUAS.po4a: Add de.
+	* man/de/man1, man/de/man5, man/de/man8: Remove.
+	* man/de/Makefile.am (PO4A_LINGUA): Set to yes.
+	  (EXTRA_DIST): Add translator.add.
+	  (man1_MANS): Add man1/lexgrog.1 and man1/manconv.1.
+	* man/po4a/Makefile.am (POFILES): Add po/de.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add de.
+	* man/THANKS: Credit Martin Schauer with man/de as well as de.po.
+	* .bzrignore: Add man/de/man1, man/de/man5, and man/de/man8.
+
+Sat Oct  8 17:11:08 BST 2011  Yasuaki Taniguchi  <yasuakit@gmail.com>
+
+	* po/ja.po: Update from Translation Project.
+
+Sat Oct  8 17:09:41 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/THANKS: Consolidate duplicated credit.
+
+Sat Oct  8 17:07:17 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	Convert the Japanese manual pages translation to po4a.
+
+	* man/po4a/po/ja.po: New from Translation Project (thanks, Yasuaki
+	  Taniguchi).
+	* man/LINGUAS: Remove ja.
+	* man/LINGUAS.po4a: Add ja.
+	* man/ja/man1, man/ja/man5, man/ja/man8: Remove.
+	* man/ja/Makefile.am (PO4A_LINGUA): Set to yes.
+	  (EXTRA_DIST): Add translator.add.
+	  (man1_MANS): Add man1/lexgrog.1 and man1/manconv.1.
+	* man/po4a/Makefile.am (POFILES): Add po/ja.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add ja.
+	* man/THANKS: Add Yasuaki Taniguchi.
+	* .bzrignore: Add man/ja/man1, man/ja/man5, and man/ja/man8.
+
+Sun Sep 18 18:28:37 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/tests/mandb-5: Make executable.
+
+Sat Sep 17 13:28:33 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* docs/HACKING (Revision control): man-db's Bazaar repository now
+	  requires bzr 1.16 or later.
+
+Mon Sep  5 11:29:53 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c: Include "xvasprintf.h" for xasprintf.
+
+Mon Aug  8 14:00:32 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c (mandb): Create a cache directory tag, per
+	  http://www.brynosaurus.com/cachedir/ ("Cache Directory Tagging
+	  Standard").  Suggested by Josh Triplett (Debian bug #637046).
+
+Fri Jul  8 13:27:41 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/mandb.c (xcopy): Use a 32KiB buffer when copying files, rather
+	  than a 1KiB buffer.  This seems somewhat faster (although it's
+	  hard to tell on an SSD!).
+
+Fri Jul  8 12:49:46 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20110609-stable.
+
+Thu Jun 16 12:18:08 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* libdb/db_btree.c, libdb/db_ndbm.c: Stop including "flock.h",
+	  removed in 2.6.0.  Reported by Maciej Mrozowski.  Include
+	  <sys/file.h> unconditionally, since Gnulib now provides it.
+	* NEWS: Document this.
+
+Mon Jun  6 11:25:28 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/Locale/Po4a/Manext.pm (translate): Exclude a number of
+	  untranslatable table entries from translation.
+
+Mon Jun  6 10:36:01 BST 2011  David Prévot  <david@tilapin.org>
+
+	* man/po4a/po/fr.po: Update from Translation Project.
+
+Mon Jun  6 10:34:26 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* man/man8/accessdb.man8 (NAME): Remove trailing full stop
+	  (suggested by David Prévot).  Unfuzzy all translations.
+
+Mon Jun  6 10:06:09 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/straycats.c (check_for_stray): Pass mandir_base as base
+	  argument to store_descriptions, not mandir.  Regression introduced
+	  in man-db 2.6.0 (r1309).
+
+Sat Jun  4 07:33:36 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/straycats.c (check_for_stray): When invoking col, try to
+	  ensure that LC_CTYPE is set to a UTF-8 locale (Arch Linux bug
+	  #18722).
+
+Fri Jun  3 10:05:45 BST 2011  David Prévot  <david@tilapin.org>
+
+	* man/po4a/po/fr.po: Update from Translation Project.
+
+Tue May 31 01:04:26 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* lib/encodings.c (get_locale_charset): Eliminate ctype variable,
+	  which was set but not used.
+	* src/man.c (make_roff_command): Preprocess out code to set
+	  using_tbl if GNU_NROFF is defined, since that code is only used if
+	  it is not defined.
+
+Tue May 31 00:59:01 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (locale_macros): Add a backslash to the end of the .if
+	  line, to avoid adding a blank line to the output (Debian bug
+	  #628639).
+
+Fri May 20 16:35:02 BST 2011  Yasuaki Taniguchi  <yasuakit@gmail.com>
+
+	* po/ja.po: Update from Translation Project.
+
+Wed May 18 17:25:46 BST 2011  Yasuaki Taniguchi  <yasuakit@gmail.com>
+
+	* po/ja.po: Update from Translation Project.
+	* man/THANKS: Update.
+
+Fri May 13 16:11:07 BST 2011  Martin Eberhard Schauer  <Martin.E.Schauer@gmx.de>
+
+	* po/de.po: Update from Translation Project.
+
+Sat Apr 23 18:54:06 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	* src/Makefile.am (SUBDIRS): Build this directory before tests/, so
+	  that 'make check' works even if 'make' has not been run.
+
+Sat Apr 23 18:00:34 BST 2011  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Autoconf 2.68 and Gnulib 20110412-stable.
+
 Wed Apr 13 11:22:39 BST 2011  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.6.0.2.

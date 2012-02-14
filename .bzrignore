@@ -30,6 +30,7 @@ gnulib/lib/langinfo.h
 gnulib/lib/ref-add.sed
 gnulib/lib/ref-del.sed
 gnulib/lib/signal.h
+gnulib/lib/stdalign.h
 gnulib/lib/stdarg.h
 gnulib/lib/stdbool.h
 gnulib/lib/stdint.h
@@ -62,12 +63,18 @@ man/*/replace.sed
 man/*/man1/*.1
 man/*/man5/*.5
 man/*/man8/*.8
+man/de/man1
+man/de/man5
+man/de/man8
 man/fr/man1
 man/fr/man5
 man/fr/man8
 man/id/man1
 man/id/man5
 man/id/man8
+man/ja/man1
+man/ja/man5
+man/ja/man8
 man/nl/man1
 man/nl/man5
 man/nl/man8

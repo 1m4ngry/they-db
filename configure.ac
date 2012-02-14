@@ -2,9 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.6.0.2], [cjwatson@debian.org])
+AC_INIT([man-db], [2.6.1], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([tools])
-AM_INIT_AUTOMAKE([1.10 -Wall -Werror foreign])
+AM_INIT_AUTOMAKE([1.10 -Wall -Wno-override -Werror foreign])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2011-04-13
+date=2012-02-14
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -346,15 +346,19 @@ MAN_CHECK_PROGS([xz], [XZ], [use XZ as Lempel-Ziv-Markov chain-Algorithm compres
 if test -n "$xz"
 then
 	unxz="$xz -dc"
-else
-dnl lzma not used/needed if we have xz
+fi
+MAN_CHECK_PROGS([lzip], [LZIP], [use LZIP as Lempel-Ziv-Markov chain-Algorithm compression utility], [lzip])
+if test -n "$lzip"
+then
+	unlzip="$lzip -dc"
+fi
+dnl lzma not used/needed if we have xz or lzip
 MAN_CHECK_PROGS([lzma], [LZMA], [use LZMA as Lempel-Ziv-Markov chain-Algorithm compression utility], [lzma])
-if test -n "$lzma"
+if test -n "$lzma" && test -z "$xz" && test -z "$lzip"
 then
 	unlzma="$lzma -dc"
 fi
-fi
-if test -n "$gzip" || test -n "$compress" || test -n "$bzip2" || test -n "$xz" || test -n "$lzma"
+if test -n "$gzip" || test -n "$compress" || test -n "$bzip2" || test -n "$xz" || test -n "$lzip" || test -n "$lzma"
 then
 	AC_DEFINE([COMP_CAT], [1], [Define if you have compressors and want to support compressed cat files.])
 	AC_DEFINE([COMP_SRC], [1], [Define if you have compressors and want to support compressed manual source.])
@@ -366,6 +370,7 @@ AC_SUBST([uncompress])
 AC_SUBST([bunzip2])
 AC_SUBST([unlzma])
 AC_SUBST([unxz])
+AC_SUBST([unlzip])
 MAN_COMPRESS_LIB([z], [gzopen])
 dnl To add more decompressors just follow the scheme above.
 

@@ -1,19 +1,19 @@
 # Swedish messages for gnulib.
-# Copyright © 1997, 2002, 2003, 2004, 2005, 2007, 2009, 2010 Free Software Foundation, Inc.
+# Copyright © 1997, 2002, 2003, 2004, 2005, 2007, 2009, 2010, 2011 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 # Peter Antman <peter.antman@abc.se>, 1997.
 # Thomas Olsson <cid95tho@lustudat.student.lu.se>, 1997.
 # Daniel Resare <daniel@resare.com>, 1999, 2000.
-# Göran Uddeborg <goeran@uddeborg.se>, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2009, 2010.
+# Göran Uddeborg <goeran@uddeborg.se>, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2009, 2010, 2011.
 #
-# $Revision: 1.8 $
+# $Revision: 1.10 $
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
+"Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2011-04-13 11:03+0100\n"
-"PO-Revision-Date: 2010-03-04 22:10+0100\n"
+"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"PO-Revision-Date: 2011-08-22 19:16+0200\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -47,7 +47,7 @@ msgstr "%.*s: Okänd ARGP_HELP_FMT-parameter"
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Skräp i ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1246
+#: gnulib/lib/argp-help.c:1247
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -55,31 +55,31 @@ msgstr ""
 "Obligatoriska eller valfria argument till långa flaggor är obligatoriska "
 "eller valfria även för motsvarande korta flaggor."
 
-#: gnulib/lib/argp-help.c:1639
+#: gnulib/lib/argp-help.c:1640
 msgid "Usage:"
 msgstr "Användning:"
 
-#: gnulib/lib/argp-help.c:1643
+#: gnulib/lib/argp-help.c:1644
 msgid "  or: "
 msgstr "   eller:  "
 
-#: gnulib/lib/argp-help.c:1655
+#: gnulib/lib/argp-help.c:1656
 msgid " [OPTION...]"
 msgstr " [FLAGGA...]"
 
-#: gnulib/lib/argp-help.c:1682
+#: gnulib/lib/argp-help.c:1683
 #, c-format
 msgid "Try `%s --help' or `%s --usage' for more information.\n"
 msgstr "Försök med ”%s --help” eller ”%s --usage” för mer information.\n"
 
-#: gnulib/lib/argp-help.c:1710
+#: gnulib/lib/argp-help.c:1711
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "Rapportera fel till %s.\n"
 "Skicka synpunkter på översättningen till <tp-sv@listor.tp-sv.se>.\n"
 
-#: gnulib/lib/argp-help.c:1929 gnulib/lib/error.c:181
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
 msgid "Unknown system error"
 msgstr "Okänt systemfel"
 
@@ -124,61 +124,61 @@ msgstr "%s: För många argument\n"
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(PROGRAMFEL) Flaggan borde ha känts igen!?"
 
-#: gnulib/lib/getopt.c:527 gnulib/lib/getopt.c:543
+#: gnulib/lib/getopt.c:547 gnulib/lib/getopt.c:576
 #, c-format
-msgid "%s: option '%s' is ambiguous\n"
-msgstr "%s: flaggan \"%s\" är tvetydig\n"
+msgid "%s: option '%s' is ambiguous; possibilities:"
+msgstr "%s: flaggan ”%s” är tvetydig: möjligheter:"
 
-#: gnulib/lib/getopt.c:576 gnulib/lib/getopt.c:580
+#: gnulib/lib/getopt.c:624 gnulib/lib/getopt.c:628
 #, c-format
 msgid "%s: option '--%s' doesn't allow an argument\n"
-msgstr "%s: flaggan \"--%s\" tar inget argument\n"
+msgstr "%s: flaggan ”--%s” tar inget argument\n"
 
-#: gnulib/lib/getopt.c:589 gnulib/lib/getopt.c:594
+#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:642
 #, c-format
 msgid "%s: option '%c%s' doesn't allow an argument\n"
-msgstr "%s: flaggan \"%c%s\" tar inget argument\n"
+msgstr "%s: flaggan ”%c%s” tar inget argument\n"
 
-#: gnulib/lib/getopt.c:637 gnulib/lib/getopt.c:656
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:685 gnulib/lib/getopt.c:704
+#, c-format
 msgid "%s: option '--%s' requires an argument\n"
-msgstr "%s: flaggan \"%s\" kräver ett argument\n"
+msgstr "%s: flaggan ”--%s” kräver ett argument\n"
 
-#: gnulib/lib/getopt.c:694 gnulib/lib/getopt.c:697
+#: gnulib/lib/getopt.c:742 gnulib/lib/getopt.c:745
 #, c-format
 msgid "%s: unrecognized option '--%s'\n"
 msgstr "%s: okänd flagga \"--%s\"\n"
 
-#: gnulib/lib/getopt.c:705 gnulib/lib/getopt.c:708
+#: gnulib/lib/getopt.c:753 gnulib/lib/getopt.c:756
 #, c-format
 msgid "%s: unrecognized option '%c%s'\n"
 msgstr "%s: okänd flagga \"%c%s\"\n"
 
-#: gnulib/lib/getopt.c:757 gnulib/lib/getopt.c:760
+#: gnulib/lib/getopt.c:805 gnulib/lib/getopt.c:808
 #, c-format
 msgid "%s: invalid option -- '%c'\n"
 msgstr "%s: ogiltig flagga -- \"%c\"\n"
 
-#: gnulib/lib/getopt.c:810 gnulib/lib/getopt.c:827 gnulib/lib/getopt.c:1035
-#: gnulib/lib/getopt.c:1053
+#: gnulib/lib/getopt.c:861 gnulib/lib/getopt.c:878 gnulib/lib/getopt.c:1088
+#: gnulib/lib/getopt.c:1106
 #, c-format
 msgid "%s: option requires an argument -- '%c'\n"
 msgstr "%s: flaggan kräver ett argument -- \"%c\"\n"
 
-#: gnulib/lib/getopt.c:883 gnulib/lib/getopt.c:899
+#: gnulib/lib/getopt.c:934 gnulib/lib/getopt.c:950
 #, c-format
 msgid "%s: option '-W %s' is ambiguous\n"
 msgstr "%s: flaggan \"-W %s\" är tvetydig\n"
 
-#: gnulib/lib/getopt.c:923 gnulib/lib/getopt.c:941
+#: gnulib/lib/getopt.c:974 gnulib/lib/getopt.c:992
 #, c-format
 msgid "%s: option '-W %s' doesn't allow an argument\n"
 msgstr "%s: flaggan \"-W %s\" tar inget argument\n"
 
-#: gnulib/lib/getopt.c:962 gnulib/lib/getopt.c:980
-#, fuzzy, c-format
+#: gnulib/lib/getopt.c:1013 gnulib/lib/getopt.c:1031
+#, c-format
 msgid "%s: option '-W %s' requires an argument\n"
-msgstr "%s: flaggan \"%s\" kräver ett argument\n"
+msgstr "%s: flaggan ”-W %s” kräver ett argument\n"
 
 #: gnulib/lib/openat-die.c:38
 #, c-format
@@ -285,7 +285,7 @@ msgstr "minnet slut"
 #~ msgstr "kan inte hitta en temporärkatalog, försök sätta $TMPDIR"
 
 #~ msgid "cannot create a temporary directory using template \"%s\""
-#~ msgstr "kan inte skapa en temporärkatalog med användning av mallen \"%s\""
+#~ msgstr "kan inte skapa en temporärkatalog med användning av mallen ”%s”"
 
 #~ msgid "cannot remove temporary file %s"
 #~ msgstr "kan inte ta bort temporärfil %s"
@@ -482,8 +482,8 @@ msgstr "minnet slut"
 #~ msgid "%s subprocess terminated with exit code %d"
 #~ msgstr "%s-underprocess avslutad med slutstatus %d"
 
-#~ msgid "cannot create pipe"
-#~ msgstr "kan inte skapa rör"
+#~ msgid "Franc,ois Pinard"
+#~ msgstr "François Pinard"
 
 #~ msgid "`"
 #~ msgstr "”"
@@ -604,6 +604,9 @@ msgstr "minnet slut"
 
 #~ msgid "error writing to a closed pipe or socket"
 #~ msgstr "fel vid skrivning till ett stängt rör eller uttag"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "kan inte skapa rör"
 
 #~ msgid "Real-time signal %d"
 #~ msgstr "Realtidsignal %d"

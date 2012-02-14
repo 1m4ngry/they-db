@@ -28,13 +28,13 @@
 #else
 /* Normal invocation convention.  */
 
-#ifndef _GL_STDLIB_H
+#ifndef _@GUARD_PREFIX@_STDLIB_H
 
 /* The include_next requires a split double-inclusion guard.  */
 #@INCLUDE_NEXT@ @NEXT_STDLIB_H@
 
-#ifndef _GL_STDLIB_H
-#define _GL_STDLIB_H
+#ifndef _@GUARD_PREFIX@_STDLIB_H
+#define _@GUARD_PREFIX@_STDLIB_H
 
 /* NetBSD 5.0 mis-defines NULL.  */
 #include <stddef.h>
@@ -81,18 +81,15 @@ struct random_data
 # endif
 #endif
 
-#if (@GNULIB_MKSTEMP@ || @GNULIB_GETSUBOPT@ || defined GNULIB_POSIXCHECK) && ! defined __GLIBC__ && !((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)
+#if (@GNULIB_MKSTEMP@ || @GNULIB_MKSTEMPS@ || @GNULIB_GETSUBOPT@ || defined GNULIB_POSIXCHECK) && ! defined __GLIBC__ && !((defined _WIN32 || defined __WIN32__) && ! defined __CYGWIN__)
 /* On MacOS X 10.3, only <unistd.h> declares mkstemp.  */
+/* On MacOS X 10.5, only <unistd.h> declares mkstemps.  */
 /* On Cygwin 1.7.1, only <unistd.h> declares getsubopt.  */
 /* But avoid namespace pollution on glibc systems and native Windows.  */
 # include <unistd.h>
 #endif
 
-#if 3 <= __GNUC__ || __GNUC__ == 2 && 8 <= __GNUC_MINOR__
-# define _GL_ATTRIBUTE_NORETURN __attribute__ ((__noreturn__))
-#else
-# define _GL_ATTRIBUTE_NORETURN
-#endif
+/* The definition of _Noreturn is copied here.  */
 
 /* The definitions of _GL_FUNCDECL_RPL etc. are copied here.  */
 
@@ -119,7 +116,7 @@ struct random_data
 /* Terminate the current process with the given return code, without running
    the 'atexit' handlers.  */
 # if !@HAVE__EXIT@
-_GL_FUNCDECL_SYS (_Exit, void, (int status) _GL_ATTRIBUTE_NORETURN);
+_GL_FUNCDECL_SYS (_Exit, _Noreturn void, (int status));
 # endif
 _GL_CXXALIAS_SYS (_Exit, void, (int status));
 _GL_CXXALIASWARN (_Exit);
@@ -250,14 +247,19 @@ _GL_CXXALIASWARN (grantpt);
 #elif defined GNULIB_POSIXCHECK
 # undef grantpt
 # if HAVE_RAW_DECL_GRANTPT
-_GL_WARN_ON_USE (ptsname, "grantpt is not portable - "
+_GL_WARN_ON_USE (grantpt, "grantpt is not portable - "
                  "use gnulib module grantpt for portability");
 # endif
 #endif
 
+/* If _GL_USE_STDLIB_ALLOC is nonzero, the including module does not
+   rely on GNU or POSIX semantics for malloc and realloc (for example,
+   by never specifying a zero size), so it does not need malloc or
+   realloc to be redefined.  */
 #if @GNULIB_MALLOC_POSIX@
 # if @REPLACE_MALLOC@
-#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#  if !((defined __cplusplus && defined GNULIB_NAMESPACE) \
+        || _GL_USE_STDLIB_ALLOC)
 #   undef malloc
 #   define malloc rpl_malloc
 #  endif
@@ -267,11 +269,26 @@ _GL_CXXALIAS_RPL (malloc, void *, (size_t size));
 _GL_CXXALIAS_SYS (malloc, void *, (size_t size));
 # endif
 _GL_CXXALIASWARN (malloc);
-#elif defined GNULIB_POSIXCHECK
+#elif defined GNULIB_POSIXCHECK && !_GL_USE_STDLIB_ALLOC
 # undef malloc
 /* Assume malloc is always declared.  */
 _GL_WARN_ON_USE (malloc, "malloc is not POSIX compliant everywhere - "
                  "use gnulib module malloc-posix for portability");
+#endif
+
+/* Convert a multibyte character to a wide character.  */
+#if @GNULIB_MBTOWC@
+# if @REPLACE_MBTOWC@
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef mbtowc
+#   define mbtowc rpl_mbtowc
+#  endif
+_GL_FUNCDECL_RPL (mbtowc, int, (wchar_t *pwc, const char *s, size_t n));
+_GL_CXXALIAS_RPL (mbtowc, int, (wchar_t *pwc, const char *s, size_t n));
+# else
+_GL_CXXALIAS_SYS (mbtowc, int, (wchar_t *pwc, const char *s, size_t n));
+# endif
+_GL_CXXALIASWARN (mbtowc);
 #endif
 
 #if @GNULIB_MKDTEMP@
@@ -406,6 +423,22 @@ _GL_WARN_ON_USE (mkstemps, "mkstemps is unportable - "
 # endif
 #endif
 
+#if @GNULIB_POSIX_OPENPT@
+/* Return an FD open to the master side of a pseudo-terminal.  Flags should
+   include O_RDWR, and may also include O_NOCTTY.  */
+# if !@HAVE_POSIX_OPENPT@
+_GL_FUNCDECL_SYS (posix_openpt, int, (int flags));
+# endif
+_GL_CXXALIAS_SYS (posix_openpt, int, (int flags));
+_GL_CXXALIASWARN (posix_openpt);
+#elif defined GNULIB_POSIXCHECK
+# undef posix_openpt
+# if HAVE_RAW_DECL_POSIX_OPENPT
+_GL_WARN_ON_USE (posix_openpt, "posix_openpt is not portable - "
+                 "use gnulib module posix_openpt for portability");
+# endif
+#endif
+
 #if @GNULIB_PTSNAME@
 /* Return the pathname of the pseudo-terminal slave associated with
    the master FD is open on, or NULL on errors.  */
@@ -419,6 +452,32 @@ _GL_CXXALIASWARN (ptsname);
 # if HAVE_RAW_DECL_PTSNAME
 _GL_WARN_ON_USE (ptsname, "ptsname is not portable - "
                  "use gnulib module ptsname for portability");
+# endif
+#endif
+
+#if @GNULIB_PTSNAME_R@
+/* Set the pathname of the pseudo-terminal slave associated with
+   the master FD is open on and return 0, or set errno and return
+   non-zero on errors.  */
+# if @REPLACE_PTSNAME_R@
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef ptsname_r
+#   define ptsname_r rpl_ptsname_r
+#  endif
+_GL_FUNCDECL_RPL (ptsname_r, int, (int fd, char *buf, size_t len));
+_GL_CXXALIAS_RPL (ptsname_r, int, (int fd, char *buf, size_t len));
+# else
+#  if !@HAVE_PTSNAME_R@
+_GL_FUNCDECL_SYS (ptsname_r, int, (int fd, char *buf, size_t len));
+#  endif
+_GL_CXXALIAS_SYS (ptsname_r, int, (int fd, char *buf, size_t len));
+# endif
+_GL_CXXALIASWARN (ptsname_r);
+#elif defined GNULIB_POSIXCHECK
+# undef ptsname_r
+# if HAVE_RAW_DECL_PTSNAME_R
+_GL_WARN_ON_USE (ptsname_r, "ptsname_r is not portable - "
+                 "use gnulib module ptsname_r for portability");
 # endif
 #endif
 
@@ -516,7 +575,8 @@ _GL_WARN_ON_USE (setstate_r, "setstate_r is unportable - "
 
 #if @GNULIB_REALLOC_POSIX@
 # if @REPLACE_REALLOC@
-#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#  if !((defined __cplusplus && defined GNULIB_NAMESPACE) \
+        || _GL_USE_STDLIB_ALLOC)
 #   undef realloc
 #   define realloc rpl_realloc
 #  endif
@@ -526,7 +586,7 @@ _GL_CXXALIAS_RPL (realloc, void *, (void *ptr, size_t size));
 _GL_CXXALIAS_SYS (realloc, void *, (void *ptr, size_t size));
 # endif
 _GL_CXXALIASWARN (realloc);
-#elif defined GNULIB_POSIXCHECK
+#elif defined GNULIB_POSIXCHECK && !_GL_USE_STDLIB_ALLOC
 # undef realloc
 /* Assume realloc is always declared.  */
 _GL_WARN_ON_USE (realloc, "realloc is not POSIX compliant everywhere - "
@@ -723,7 +783,22 @@ _GL_WARN_ON_USE (unsetenv, "unsetenv is unportable - "
 # endif
 #endif
 
+/* Convert a wide character to a multibyte character.  */
+#if @GNULIB_WCTOMB@
+# if @REPLACE_WCTOMB@
+#  if !(defined __cplusplus && defined GNULIB_NAMESPACE)
+#   undef wctomb
+#   define wctomb rpl_wctomb
+#  endif
+_GL_FUNCDECL_RPL (wctomb, int, (char *s, wchar_t wc));
+_GL_CXXALIAS_RPL (wctomb, int, (char *s, wchar_t wc));
+# else
+_GL_CXXALIAS_SYS (wctomb, int, (char *s, wchar_t wc));
+# endif
+_GL_CXXALIASWARN (wctomb);
+#endif
 
-#endif /* _GL_STDLIB_H */
-#endif /* _GL_STDLIB_H */
+
+#endif /* _@GUARD_PREFIX@_STDLIB_H */
+#endif /* _@GUARD_PREFIX@_STDLIB_H */
 #endif

@@ -2,8 +2,8 @@
  * ult_src.c: Find the ultimate source of a page
  *
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
- * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011
- *               Colin Watson.
+ * Copyright (C) 2001, 2002, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011,
+ *               2012 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -255,6 +255,7 @@ const char *ult_src (const char *name, const char *path,
 
 		/* Permit semi local (inter-tree) soft links */
 		if (flags & SOFT_LINK) {
+			assert (buf); /* initialised above */
 			if (S_ISLNK (buf->st_mode)) {
 				/* Is a symlink, resolve it. */
 				char *softlink = ult_softlink (base);
@@ -268,6 +269,7 @@ const char *ult_src (const char *name, const char *path,
 
 		/* Only deal with local (inter-dir) HARD links */
 		if (flags & HARD_LINK) {
+			assert (buf); /* initialised above */
 			if (buf->st_nlink > 1) {
 				/* Has HARD links, find least value */
 				char *hardlink = ult_hardlink (base,

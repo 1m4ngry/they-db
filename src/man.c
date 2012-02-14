@@ -4,7 +4,7 @@
  * Copyright (C) 1990, 1991 John W. Eaton.
  * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
  * Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
- *               2011 Colin Watson.
+ *               2011, 2012 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -280,6 +280,7 @@ static struct argp_option options[] = {
 	{ "apropos",		'k',	0,		0,		N_("equivalent to apropos") },
 	{ "global-apropos",	'K',	0,		0,		N_("search for text in all pages") },
 	{ "where",		'w',	0,		0,		N_("print physical location of man page(s)") },
+	{ "path",		0,	0,		OPTION_ALIAS },
 	{ "location",		0,	0,		OPTION_ALIAS },
 	{ "where-cat",		'W',	0,		0,		N_("print physical location of cat file(s)") },
 	{ "location-cat",	0,	0,		OPTION_ALIAS },
@@ -625,6 +626,7 @@ static void get_term (void)
 	}
 }
 
+#if defined(TROFF_IS_GROFF) || defined(HEIRLOOM_NROFF)
 static int get_roff_line_length (void)
 {
 	int line_length = cat_width ? cat_width : get_line_length ();
@@ -696,6 +698,7 @@ static pipecmd *add_roff_line_length (pipecmd *cmd, int *save_cat_p)
 
 	return ret;
 }
+#endif /* TROFF_IS_GROFF || HEIRLOOM_NROFF */
 
 static inline void gripe_no_man (const char *name, const char *sec)
 {
@@ -1152,8 +1155,21 @@ int main (int argc, char *argv[])
 
 	debug ("\nusing %s as pager\n", pager);
 
-	if (first_arg == argc)
-		gripe_no_name (NULL);
+	if (first_arg == argc) {
+		/* http://twitter.com/#!/marnanel/status/132280557190119424 */
+		time_t now = time (NULL);
+		struct tm *localnow = localtime (&now);
+		if (localnow &&
+		    localnow->tm_hour == 0 && localnow->tm_min == 30)
+			fprintf (stderr, "gimme gimme gimme\n");
+
+		if (print_where) {
+			manp = get_manpath ("");
+			printf ("%s\n", manp);
+			exit (OK);
+		} else
+			gripe_no_name (NULL);
+	}
 
 	section_list = get_section_list ();
 
@@ -1643,7 +1659,9 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	if (recode)
 		;
 	else if (!fmt_prog) {
+#ifndef GNU_NROFF
 		int using_tbl = 0;
+#endif /* GNU_NROFF */
 
 		do {
 #ifdef TROFF_IS_GROFF
@@ -1676,7 +1694,9 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			case 't':
 				cmd = pipecmd_new_argstr
 					(get_def ("tbl", TBL));
+#ifndef GNU_NROFF
 				using_tbl = 1;
+#endif /* GNU_NROFF */
 				break;
 			case 'v':
 				cmd = pipecmd_new_argstr
@@ -2264,6 +2284,8 @@ static void format_display (pipeline *decomp,
 	if (format_cmd && htmlout) {
 		char *browser_list, *candidate;
 
+		assert (old_cwd); /* initialised above */
+
 		if (status) {
 			if (chdir (old_cwd) == -1) {
 				error (0, errno,
@@ -2383,7 +2405,8 @@ static void locale_macros (void *data)
 		 */
 		".if (\\n[.g] & ((\\n[.x] > 1) :"
 		" ((\\n[.x] == 1) & (\\n[.y] > 20)) :"
-		" ((\\n[.x] == 1) & (\\n[.y] == 20) & (\\n[.Y] >= 2)))) \\{\n"
+		" ((\\n[.x] == 1) & (\\n[.y] == 20) & (\\n[.Y] >= 2)))) "
+		"\\{\\\n"
 		/*   disable warnings of category 'file' */
 		".  warn (\\n[.warn] -"
 		" (\\n[.warn] / 1048576 %% 2 * 1048576))\n"

@@ -1,7 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 ##
 ## Copyright (C) 1994, 1995 Graeme Wilford.
-## Copyright (C) 2001, 2002, 2003, 2005, 2006, 2007, 2009 Colin Watson.
+## Copyright (C) 2001, 2002, 2003, 2005, 2006, 2007, 2009, 2010, 2011, 2012
+##               Colin Watson.
 ##
 ## This file is part of man-db.
 ##
@@ -21,7 +22,7 @@
 
 SUBDIRS = docs gnulib/lib gnulib/po lib libdb src man manual po tools
 
-dist_noinst_DATA = NEWS README include/README
+dist_noinst_DATA = FAQ NEWS README include/README
 
 EXTRA_DIST = \
 	.bzrignore \
@@ -43,6 +44,11 @@ EXTRA_DIST += \
 	gnulib/m4/printf-posix.m4 \
 	gnulib/m4/uintmax_t.m4 \
 	gnulib/m4/visibility.m4
+
+# We deliberately leave the configuration file in place on uninstall, since
+# it may contain local customisations.
+distuninstallcheck_listfiles = \
+	find . -type f -print | grep -v 'etc/man_db\.conf'
 
 # Note that autopoint installs into the first directory here. Yes, this
 # means that it installs into gnulib/m4, so we always run gnulib-tool after
