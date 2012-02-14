@@ -10,6 +10,7 @@ man-db (2.6.1-1) UNRELEASED; urgency=low
     - Update German manual page translations (closes: #494066, #596104,
       #624096).
   * Install FAQ.
+  * Update debian/copyright.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 14 Feb 2012 13:09:14 +0000
 
