@@ -1,4 +1,4 @@
-man-db (2.6.1-1) UNRELEASED; urgency=low
+man-db (2.6.1-1) unstable; urgency=low
 
   * New upstream release:
     - Translated manual pages are no longer displayed starting with a
@@ -12,7 +12,7 @@ man-db (2.6.1-1) UNRELEASED; urgency=low
   * Install FAQ.
   * Update debian/copyright.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 14 Feb 2012 13:09:14 +0000
+ -- Colin Watson <cjwatson@debian.org>  Tue, 14 Feb 2012 13:53:58 +0000
 
 man-db (2.6.0.2-3) unstable; urgency=low
 
