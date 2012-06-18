@@ -9,6 +9,8 @@ man-db (2.6.2-1) UNRELEASED; urgency=low
   * Configure with --with-xz=xz --with-lzip=lzip.
   * Adjust debian/watch to track .tar.xz releases.
   * Convert debian/copyright to copyright-format 1.0.
+  * Override hardening-no-fortify-functions Lintian warning for
+    /usr/bin/manpath, as a false positive.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 18 Jun 2012 14:49:04 +0100
 
