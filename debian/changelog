@@ -8,6 +8,7 @@ man-db (2.6.2-1) UNRELEASED; urgency=low
       process (LP: #1001189).
   * Configure with --with-xz=xz --with-lzip=lzip.
   * Adjust debian/watch to track .tar.xz releases.
+  * Convert debian/copyright to copyright-format 1.0.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 18 Jun 2012 14:49:04 +0100
 
