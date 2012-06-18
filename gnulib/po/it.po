@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib-3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2011-08-22 21:58+0200\n"
 "Last-Translator: Milo Casagrande <milo@casagrande.name>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -65,8 +65,8 @@ msgid " [OPTION...]"
 msgstr " [OPZIONE...]"
 
 #: gnulib/lib/argp-help.c:1683
-#, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+#, fuzzy, c-format
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Usare \"%s --help\" o \"%s --usage\" per ulteriori informazioni.\n"
 
 #: gnulib/lib/argp-help.c:1711
@@ -74,7 +74,7 @@ msgstr "Usare \"%s --help\" o \"%s --usage\" per ulteriori informazioni.\n"
 msgid "Report bugs to %s.\n"
 msgstr "Segnalare i bug a %s.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Errore di sistema sconosciuto"
 
@@ -106,16 +106,16 @@ msgstr "Resta in attesa per SEC secondi (predefinito 3600)"
 msgid "print program version"
 msgstr "Stampa la versione del programma"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(ERRORE DEL PROGRAMMA) Nessuna versione conosciuta."
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s: troppi argomenti\n"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(ERRORE DEL PROGRAMMA) L'opzione dovrebbe essere stata riconosciuta."
 
@@ -185,76 +185,76 @@ msgstr "impossibile registrare la directory di lavoro corrente"
 msgid "failed to return to initial working directory"
 msgstr "ritorno alla directory di lavoro iniziale non riuscito"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr "Successo"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr "Nessuna corrispondenza"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 msgid "Invalid regular expression"
 msgstr "Espressione regolare non valida"
 
 # (ndt) http://en.wikipedia.org/wiki/Collation
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 msgid "Invalid collation character"
 msgstr "Carattere di collazione non valido"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 msgid "Invalid character class name"
 msgstr "Nome classe del carattere non valida"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr "Backslash finale"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 msgid "Invalid back reference"
 msgstr "Riferimento all'indietro non valido"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr "[ o [^ senza corrispondenza"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr "( o \\( senza corrispondenza"
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr "\\{ senza corrispondenza"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 msgid "Invalid content of \\{\\}"
 msgstr "Contenuto di \\{\\} non valido"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 msgid "Invalid range end"
 msgstr "Fine dell'intervallo non valida"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 msgid "Memory exhausted"
 msgstr "Memoria esaurita"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 msgid "Invalid preceding regular expression"
 msgstr "Espressione regolare precedente non valida"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 msgid "Premature end of regular expression"
 msgstr "Fine prematura dell'espressione regolare"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 msgid "Regular expression too big"
 msgstr "Espressione regolare troppo grande"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr ") o \\) senza corrispondenza"
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 msgid "No previous regular expression"
 msgstr "Nessuna espressione regolare precedente"
 

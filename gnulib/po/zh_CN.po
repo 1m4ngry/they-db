@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2010-02-26 09:54+0800\n"
 "Last-Translator: Ji ZhengYu <zhengyuji@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -66,8 +66,8 @@ msgid " [OPTION...]"
 msgstr "[选项...]"
 
 #: gnulib/lib/argp-help.c:1683
-#, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+#, fuzzy, c-format
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "请尝试执行“%s --help”或“%s --usage”来获取更多信息。\n"
 
 #: gnulib/lib/argp-help.c:1711
@@ -75,7 +75,7 @@ msgstr "请尝试执行“%s --help”或“%s --usage”来获取更多信息�
 msgid "Report bugs to %s.\n"
 msgstr "请向 %s 报告错误。\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "未知的系统错误"
 
@@ -107,16 +107,16 @@ msgstr "挂起 SECS 秒（默认 3600 秒）"
 msgid "print program version"
 msgstr "打印程序版本"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "（程序错误）未知版本！？"
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s：参数太多\n"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "（程序错误）未知的选项！？"
 
@@ -186,76 +186,76 @@ msgstr "无法记录当前工作的目录"
 msgid "failed to return to initial working directory"
 msgstr "返回到初始工作目录失败"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr "成功"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr "不匹配"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 msgid "Invalid regular expression"
 msgstr "正则表达式无效"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "无效的重组字符"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 msgid "Invalid character class name"
 msgstr "无效的字符类名"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr "多余的反斜杠"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 msgid "Invalid back reference"
 msgstr "无效的向后索引"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr "[ 或 [^ 不匹配"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr "( 或 \\( 不匹配"
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr "\\{ 不匹配"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 msgid "Invalid content of \\{\\}"
 msgstr "\\{\\} 的内容无效"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 msgid "Invalid range end"
 msgstr "无效的范围结尾"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 msgid "Memory exhausted"
 msgstr "内存用尽"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 msgid "Invalid preceding regular expression"
 msgstr "前置的正则表达式无效"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 msgid "Premature end of regular expression"
 msgstr "正则表达式结尾过早"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 msgid "Regular expression too big"
 msgstr "正则表达式太大"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr ") 或 \\) 不匹配"
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 msgid "No previous regular expression"
 msgstr "没有前次正则表达式"
 

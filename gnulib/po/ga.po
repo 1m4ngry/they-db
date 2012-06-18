@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 1.1\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2007-07-20 12:24-0600\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -64,8 +64,8 @@ msgid " [OPTION...]"
 msgstr " [ROGHA...]"
 
 #: gnulib/lib/argp-help.c:1683
-#, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+#, fuzzy, c-format
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Bain triail as `%s --help' nó `%s --usage' chun tuilleadh eolais a fháil.\n"
 
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Report bugs to %s.\n"
 msgstr "Seol tuairiscí fabhtanna chuig %s.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Earráid chórais anaithnid"
 
@@ -106,16 +106,16 @@ msgstr "déan moill SOIC soicind (réamhshocrú: 3600)"
 msgid "print program version"
 msgstr "taispeáin leagan an chláir"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(EARRÁID CHLÁIR) Leagan anaithnid!?"
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s: An iomarca argóintí\n"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(EARRÁID CHLÁIR) Ba chóir an rogha a aithint!?"
 
@@ -185,75 +185,75 @@ msgstr "ní féidir an chomhadlann oibre a thaifead"
 msgid "failed to return to initial working directory"
 msgstr "níl aon fháil ar an chéad chomhadlann oibre"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr "D'éirigh leis"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr "Gan mheaitseáil"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 msgid "Invalid regular expression"
 msgstr "Slonn ionadaíochta neamhbhailí"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 msgid "Invalid collation character"
 msgstr "Carachtar neamhbhailí comhordaithe"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 msgid "Invalid character class name"
 msgstr "Ainm neamhbhailí ar aicme charachtar"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr "Cúlslais chun deiridh"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 msgid "Invalid back reference"
 msgstr "Cúltagairt neamhbhailí"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr "[ nó [^ corr"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr "( nó \\( corr"
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr "\\{ corr"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 msgid "Invalid content of \\{\\}"
 msgstr "Ábhar neamhbhailí idir \\{ agus \\}"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 msgid "Invalid range end"
 msgstr "Deireadh raoin neamhbhailí"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 msgid "Memory exhausted"
 msgstr "Cuimhne ídithe"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 msgid "Invalid preceding regular expression"
 msgstr "Is neamhbhailí an slonn ionadaíochta roimhe seo"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 msgid "Premature end of regular expression"
 msgstr "Deireadh le slonn ionadaíochta gan choinne"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 msgid "Regular expression too big"
 msgstr "Slonn ionadaíochta rómhór"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr ") nó \\) corr"
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 msgid "No previous regular expression"
 msgstr "Níl aon slonn ionadaíochta roimhe seo"
 

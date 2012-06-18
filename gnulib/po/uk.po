@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2011-08-22 09:50+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
@@ -65,8 +65,8 @@ msgid " [OPTION...]"
 msgstr " [ПАРАМЕТР...]"
 
 #: gnulib/lib/argp-help.c:1683
-#, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+#, fuzzy, c-format
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Спробуйте `%s --help' або `%s --usage' для отримання докладнішого опису.\n"
 
@@ -75,7 +75,7 @@ msgstr ""
 msgid "Report bugs to %s.\n"
 msgstr "Про помилки звітуйте на <%s>.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Невідома системна помилка"
 
@@ -107,16 +107,16 @@ msgstr "зачекати вказану кількість секунд (тип�
 msgid "print program version"
 msgstr "вивести версію програми"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(ПОМИЛКА ПРОГРАМУВАННЯ) Невідома версія!?"
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s: забагато аргументів\n"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(ПОМИЛКА ПРОГРАМУВАННЯ) Параметр мала бути розпізнана!?"
 
@@ -186,75 +186,75 @@ msgstr "не вдається змінити поточний каталог"
 msgid "failed to return to initial working directory"
 msgstr "не вдається зберегти поточний каталог"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr "Успіх"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr "Брак збігів"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 msgid "Invalid regular expression"
 msgstr "Некоректний формальний вираз"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 msgid "Invalid collation character"
 msgstr "Некоректний об'єднувальний символ"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 msgid "Invalid character class name"
 msgstr "Некоректна назва класу символів"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr "Зворотна похила риска наприкінці виразу"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 msgid "Invalid back reference"
 msgstr "Недійсне зворотнє посилання"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr "Незакрита [ або [^"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr "Незакрита ( або \\("
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr "Незакрита \\{"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 msgid "Invalid content of \\{\\}"
 msgstr "Некоректний вміст \\{\\}"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 msgid "Invalid range end"
 msgstr "Некоректний кінець діапазону"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 msgid "Memory exhausted"
 msgstr "Пам'ять вичерпана"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 msgid "Invalid preceding regular expression"
 msgstr "Некоректний попередній формальний вираз"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 msgid "Premature end of regular expression"
 msgstr "Передчасне закінчення формального виразу"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 msgid "Regular expression too big"
 msgstr "Завеликий формальний вираз"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr "Неузгоджена ) або \\)"
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 msgid "No previous regular expression"
 msgstr "Не вказано попереднього формального виразу"
 

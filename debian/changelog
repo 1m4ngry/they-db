@@ -1,8 +1,14 @@
-man-db (2.6.1-3) UNRELEASED; urgency=low
+man-db (2.6.2-1) UNRELEASED; urgency=low
 
+  * New upstream release:
+    - Optimise apropos when given many arguments (LP: #927028).
+    - apropos prints an error message and returns non-zero when it finds no
+      matches (closes: #672661).
+    - Avoid fatal errors when opening a 64-bit GDBM database from a 32-bit
+      process (LP: #1001189).
   * Configure with --with-xz=xz --with-lzip=lzip.
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 08 Jun 2012 14:37:34 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon, 18 Jun 2012 14:49:04 +0100
 
 man-db (2.6.1-2) unstable; urgency=low
 

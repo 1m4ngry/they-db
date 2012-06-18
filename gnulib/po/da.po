@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2011-01-20 22:11+0100\n"
 "Last-Translator: Keld Simonsen <keld@keldix.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -69,8 +69,8 @@ msgid " [OPTION...]"
 msgstr " [FLAG...]"
 
 #: gnulib/lib/argp-help.c:1683
-#, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+#, fuzzy, c-format
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Forsøg med '%s --help' eller '%s --usage' for mere information.\n"
 
 #: gnulib/lib/argp-help.c:1711
@@ -80,7 +80,7 @@ msgstr ""
 "Rapportér fejl til %s.\n"
 "Send synspunkter på oversættelsen til <dansk@dansk-gruppen.dk>\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Ukendt systemfejl"
 
@@ -112,16 +112,16 @@ msgstr "hæng i S sekunder (som standard 3600)"
 msgid "print program version"
 msgstr "udskriv programversion"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(PROGRAMFEJL) Ingen version kendt!?"
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s: For mange argumenter\n"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(PROGRAMFEJL) Flaget burde være blevet genkendt!?"
 
@@ -191,75 +191,75 @@ msgstr "kan ikke notere aktuelt arbejdskatalog"
 msgid "failed to return to initial working directory"
 msgstr "kunne ikke gå tilbage til det oprindelige arbejdskatalog"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr "Lykkedes"
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr "Ingen træffer"
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 msgid "Invalid regular expression"
 msgstr "Fejlagtigt regulært udtryk"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 msgid "Invalid collation character"
 msgstr "Ugyldigt sorteringstegn"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 msgid "Invalid character class name"
 msgstr "Ugyldigt tegnklassenavn"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr "Afsluttende baglæns skråstreg"
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 msgid "Invalid back reference"
 msgstr "Ugyldig bagudreference"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr "Ensomt [ eller [^"
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr "Ensomt ( eller \\("
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr "Ensomt \\\\{"
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 msgid "Invalid content of \\{\\}"
 msgstr "Ugyldigt indhold i \\{\\}"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 msgid "Invalid range end"
 msgstr "Ugyldigt intervalslut"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 msgid "Memory exhausted"
 msgstr "Hukommelse opbrugt"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 msgid "Invalid preceding regular expression"
 msgstr "Fejlagtigt foregående regulært udtryk"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 msgid "Premature end of regular expression"
 msgstr "For tidlig afslutning af regulært udtryk"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 msgid "Regular expression too big"
 msgstr "For stort regulært udtryk"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr "Ensomt ) eller \\)"
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 msgid "No previous regular expression"
 msgstr "Intet foregående regulært udtryk"
 

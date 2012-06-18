@@ -2,9 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.6.1], [cjwatson@debian.org])
+AC_INIT([man-db], [2.6.2], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([tools])
-AM_INIT_AUTOMAKE([1.10 -Wall -Wno-override -Werror foreign])
+AM_INIT_AUTOMAKE([1.10 -Wall -Wno-override -Werror foreign dist-xz])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
@@ -20,7 +20,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2012-02-14
+date=2012-06-18
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -156,7 +156,7 @@ fi
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_CHECK_PROGS([cat], [cat])
-MAN_CHECK_PROGS([browser], [BROWSER], [use BROWSER as default web browser], [www-browser lynx])
+MAN_CHECK_PROGS([browser], [BROWSER], [use BROWSER as default web browser], [www-browser lynx elinks w3m])
 test -n "$browser" && browser="exec $browser"
 AC_CHECK_PROGS([tr], [tr])
 AC_CHECK_PROGS([grep], [grep])
@@ -346,17 +346,19 @@ MAN_CHECK_PROGS([xz], [XZ], [use XZ as Lempel-Ziv-Markov chain-Algorithm compres
 if test -n "$xz"
 then
 	unxz="$xz -dc"
+	unlzma=
+else
+	dnl lzma not used/needed if we have xz
+	MAN_CHECK_PROGS([lzma], [LZMA], [use LZMA as Lempel-Ziv-Markov chain-Algorithm compression utility], [lzma])
+	if test -n "$lzma"
+	then
+		unlzma="$lzma -dc"
+	fi
 fi
 MAN_CHECK_PROGS([lzip], [LZIP], [use LZIP as Lempel-Ziv-Markov chain-Algorithm compression utility], [lzip])
 if test -n "$lzip"
 then
 	unlzip="$lzip -dc"
-fi
-dnl lzma not used/needed if we have xz or lzip
-MAN_CHECK_PROGS([lzma], [LZMA], [use LZMA as Lempel-Ziv-Markov chain-Algorithm compression utility], [lzma])
-if test -n "$lzma" && test -z "$xz" && test -z "$lzip"
-then
-	unlzma="$lzma -dc"
 fi
 if test -n "$gzip" || test -n "$compress" || test -n "$bzip2" || test -n "$xz" || test -n "$lzip" || test -n "$lzma"
 then

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU textutils 2.0.20\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2002-01-27 21:35+0100\n"
 "Last-Translator: Eivind Tagseth <eivindt@multinet.no>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
@@ -63,7 +63,7 @@ msgstr "Bruk: %s [FLAGG] [FIL]...\n"
 
 #: gnulib/lib/argp-help.c:1683
 #, fuzzy, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Prøv med «%s --help» for mer informasjon.\n"
 
 #: gnulib/lib/argp-help.c:1711
@@ -73,7 +73,7 @@ msgstr ""
 "\n"
 "Rapportér feil til <bug-textutils@gnu.org>."
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Ukjent systemfeil"
 
@@ -106,16 +106,16 @@ msgstr ""
 msgid "print program version"
 msgstr "lesefeil"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr ""
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, fuzzy, c-format
 msgid "%s: Too many arguments\n"
 msgstr "for mange argumenter"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr ""
 
@@ -185,83 +185,83 @@ msgstr "kan ikke opprette katalog %s"
 msgid "failed to return to initial working directory"
 msgstr "kan ikke opprette katalog %s"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s: ugyldig regulært uttrykk: %s"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "ugyldig tegn-klasse «%s»"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "ugyldig tegn-klasse «%s»"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 msgid "Invalid back reference"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 #, fuzzy
 msgid "Invalid range end"
 msgstr "%s: ugyldig regulært uttrykk: %s"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "virtuelt minne oppbrukt"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s: ugyldig regulært uttrykk: %s"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "feil i søk med regulært uttrykk"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s: ugyldig regulært uttrykk: %s"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "feil i søk med regulært uttrykk"

@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.6.1-pre1\n"
 "Report-Msgid-Bugs-To: Colin Watson <cjwatson@debian.org>\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
-"PO-Revision-Date: 2012-02-08 23:42+0100\n"
+"POT-Creation-Date: 2012-06-18 13:40+0100\n"
+"PO-Revision-Date: 2012-03-17 23:42+0100\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -77,7 +77,7 @@ msgstr[1] "kun %d felter i indhold"
 msgid "bad fetch on multi key %s"
 msgstr "fejlagtig hentning på multinøgle %s"
 
-#: libdb/db_lookup.c:455 src/whatis.c:574
+#: libdb/db_lookup.c:455 src/whatis.c:721
 #, c-format
 msgid "Database %s corrupted; rebuild with mandb --create"
 msgstr "Databasen %s er beskadiget; genopbyg med mandb --create"
@@ -108,7 +108,7 @@ msgstr "Manualdatabasen er som standard %s%s."
 
 #: src/accessdb.c:64 src/catman.c:98 src/globbing_test.c:58
 #: src/lexgrog_test.c:68 src/man.c:273 src/manconv_main.c:94 src/mandb.c:105
-#: src/manpath.c:65 src/whatis.c:121 src/zsoelim_main.c:66
+#: src/manpath.c:65 src/whatis.c:124 src/zsoelim_main.c:66
 msgid "emit debugging messages"
 msgstr "vis fejlsøgningsbeskeder"
 
@@ -121,21 +121,21 @@ msgstr "kan ikke åbne %s for læsning"
 msgid "[SECTION...]"
 msgstr "[AFSNIT...]"
 
-#: src/catman.c:99 src/man.c:294 src/whatis.c:131
+#: src/catman.c:99 src/man.c:294 src/whatis.c:134
 msgid "PATH"
 msgstr "STI"
 
-#: src/catman.c:99 src/man.c:294 src/whatis.c:131
+#: src/catman.c:99 src/man.c:294 src/whatis.c:134
 msgid "set search path for manual pages to PATH"
 msgstr "angiv søgesti for manualsider med STI"
 
 #: src/catman.c:100 src/man.c:272 src/mandb.c:113 src/manpath.c:67
-#: src/whatis.c:133
+#: src/whatis.c:136
 msgid "FILE"
 msgstr "FIL"
 
 #: src/catman.c:100 src/man.c:272 src/mandb.c:113 src/manpath.c:67
-#: src/whatis.c:133
+#: src/whatis.c:136
 msgid "use this user configuration file"
 msgstr "brug denne brugers konfigurationsfil"
 
@@ -388,7 +388,7 @@ msgstr "uddatakildeside kodet i KODNING"
 msgid "Finding manual pages:"
 msgstr "Finder manualsider:"
 
-#: src/man.c:292 src/whatis.c:132
+#: src/man.c:292 src/whatis.c:135
 msgid "LOCALE"
 msgstr "SPROG"
 
@@ -397,15 +397,15 @@ msgstr "SPROG"
 msgid "define the locale for this particular man search"
 msgstr "definere sproget for netop denne manualsøgning"
 
-#: src/man.c:293 src/manpath.c:68 src/whatis.c:130
+#: src/man.c:293 src/manpath.c:68 src/whatis.c:133
 msgid "SYSTEM"
 msgstr "SYSTEM"
 
-#: src/man.c:293 src/manpath.c:68 src/whatis.c:130
+#: src/man.c:293 src/manpath.c:68 src/whatis.c:133
 msgid "use manual pages from other systems"
 msgstr "brug manualsider fra andre systemer"
 
-#: src/man.c:295 src/whatis.c:128
+#: src/man.c:295 src/whatis.c:131
 msgid "LIST"
 msgstr "LISTE"
 
@@ -775,8 +775,8 @@ msgstr[1] "%d vildfarne katalogsider blev tilføjet.\n"
 #, c-format
 msgid "%d old database entry was purged.\n"
 msgid_plural "%d old database entries were purged.\n"
-msgstr[0] "%d gammel databaseindgang tømtes.\n"
-msgstr[1] "%d gamle databaseindgange tømtes.\n"
+msgstr[0] "%d gammel databaseindgang blev tømt.\n"
+msgstr[1] "%d gamle databaseindgange blev tømt.\n"
 
 #: src/mandb.c:916
 #, c-format
@@ -897,61 +897,61 @@ msgstr "advarsel: kan ikke opdatere indekscachen %s"
 msgid "%s is self referencing"
 msgstr "%s refererer til sig selv"
 
-#: src/whatis.c:117
+#: src/whatis.c:120
 msgid "KEYWORD..."
 msgstr "NØGLEORD..."
 
-#: src/whatis.c:118
+#: src/whatis.c:121
 msgid "The --regex option is enabled by default."
 msgstr "Tilvalget --regex er aktiveret som standard."
 
-#: src/whatis.c:122
+#: src/whatis.c:125
 msgid "print verbose warning messages"
 msgstr "vis uddybende advarselsbeskeder"
 
-#: src/whatis.c:123
+#: src/whatis.c:126
 msgid "interpret each keyword as a regex"
 msgstr "fortolk hvert nøgleord som et regulært udtryk"
 
-#: src/whatis.c:124
+#: src/whatis.c:127
 msgid "search each keyword for exact match"
 msgstr "søg i hvert nøgleord for nøjagtigt match"
 
-#: src/whatis.c:125
+#: src/whatis.c:128
 msgid "the keyword(s) contain wildcards"
 msgstr "nøgleordene indeholder jokertegn"
 
-#: src/whatis.c:126
+#: src/whatis.c:129
 msgid "require all keywords to match"
 msgstr "alle nøgleord skal matche"
 
-#: src/whatis.c:127
+#: src/whatis.c:130
 msgid "do not trim output to terminal width"
 msgstr "tilpas ikke uddata til terminalbredde"
 
-#: src/whatis.c:128
+#: src/whatis.c:131
 msgid "search only these sections (colon-separated)"
 msgstr "søg kun i disse afsnit (kolonadskilt)"
 
-#: src/whatis.c:132
+#: src/whatis.c:135
 msgid "define the locale for this search"
 msgstr "definer sproget for denne søgning"
 
-#: src/whatis.c:229
+#: src/whatis.c:232
 #, c-format
 msgid "%s what?\n"
 msgstr "%s hvad?\n"
 
-#: src/whatis.c:354 src/whatis.c:372
+#: src/whatis.c:393 src/whatis.c:411
 #, c-format
 msgid "warning: %s contains a pointer loop"
 msgstr "advarsel: %s indeholder en pegerløkke"
 
-#: src/whatis.c:366 src/whatis.c:374
+#: src/whatis.c:405 src/whatis.c:413
 msgid "(unknown subject)"
 msgstr "(ukendt emne)"
 
-#: src/whatis.c:725
+#: src/whatis.c:877
 #, c-format
 msgid "%s: nothing appropriate.\n"
 msgstr "%s: ingenting egnet.\n"

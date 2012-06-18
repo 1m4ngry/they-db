@@ -1,3 +1,26 @@
+man-db 2.6.2 (18 June 2012)
+===========================
+
+Major changes since man-db 2.6.1:
+
+	Fixes:
+	------
+
+	o apropos prints an error message and returns non-zero when it finds
+	  no matches.  (Regression introduced in 2.5.1.)
+
+	o The presence of a 64-bit GDBM database on the manpath no longer
+	  causes a 32-bit man process to exit with a fatal error.
+
+	Improvements:
+	-------------
+
+	o apropos is much faster when run with many arguments.
+
+	o whatis may be given the full path to an executable as an argument,
+	  in which case it will look up the base name of that executable in
+	  the appropriate parts of the manpath.
+
 man-db 2.6.1 (14 February 2012)
 ===============================
 

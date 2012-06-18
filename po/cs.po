@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the man-db package.
 #
 # Vladimir Michl <Vladimir.Michl@seznam.cz>, 1998.
-# Marek Černocký <marek@manet.cz>, 2011.
+# Marek Černocký <marek@manet.cz>, 2011, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: man-db 2.6.0.2\n"
+"Project-Id-Version: man-db 2.6.1-pre1\n"
 "Report-Msgid-Bugs-To: Colin Watson <cjwatson@debian.org>\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
-"PO-Revision-Date: 2011-12-05 09:03+0100\n"
+"POT-Creation-Date: 2012-06-18 13:40+0100\n"
+"PO-Revision-Date: 2012-04-07 19:04+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "Language: cs\n"
@@ -54,11 +54,11 @@ msgid "cannot replace key %s"
 msgstr "nelze nahradit klíč %s"
 
 #: libdb/db_lookup.c:182 libdb/db_lookup.c:193
-#, fuzzy, c-format
+#, c-format
 msgid "only %d field in content"
 msgid_plural "only %d fields in content"
-msgstr[0] "pouze %d položek v obsahu"
-msgstr[1] "pouze %d položek v obsahu"
+msgstr[0] "pouze %d položka v obsahu"
+msgstr[1] "pouze %d položky v obsahu"
 msgstr[2] "pouze %d položek v obsahu"
 
 #: libdb/db_lookup.c:383
@@ -66,7 +66,7 @@ msgstr[2] "pouze %d položek v obsahu"
 msgid "bad fetch on multi key %s"
 msgstr "nelze získat vícenásobný klíč %s"
 
-#: libdb/db_lookup.c:455 src/whatis.c:574
+#: libdb/db_lookup.c:455 src/whatis.c:721
 #, c-format
 msgid "Database %s corrupted; rebuild with mandb --create"
 msgstr "Databáze %s je poškozena; znovu ji sestavte pomocí „mandb --create“"
@@ -97,7 +97,7 @@ msgstr "Výchozí manuálová databáze je %s%s."
 
 #: src/accessdb.c:64 src/catman.c:98 src/globbing_test.c:58
 #: src/lexgrog_test.c:68 src/man.c:273 src/manconv_main.c:94 src/mandb.c:105
-#: src/manpath.c:65 src/whatis.c:121 src/zsoelim_main.c:66
+#: src/manpath.c:65 src/whatis.c:124 src/zsoelim_main.c:66
 msgid "emit debugging messages"
 msgstr "vysílat ladicí zprávy"
 
@@ -110,21 +110,21 @@ msgstr "soubor %s nelze otevřít pro čtení"
 msgid "[SECTION...]"
 msgstr "[ODDÍL…]"
 
-#: src/catman.c:99 src/man.c:294 src/whatis.c:131
+#: src/catman.c:99 src/man.c:294 src/whatis.c:134
 msgid "PATH"
 msgstr "CESTA"
 
-#: src/catman.c:99 src/man.c:294 src/whatis.c:131
+#: src/catman.c:99 src/man.c:294 src/whatis.c:134
 msgid "set search path for manual pages to PATH"
 msgstr "nastavit cestu pro vyhledávání v manuálových stránkách na CESTA"
 
 #: src/catman.c:100 src/man.c:272 src/mandb.c:113 src/manpath.c:67
-#: src/whatis.c:133
+#: src/whatis.c:136
 msgid "FILE"
 msgstr "SOUBOR"
 
 #: src/catman.c:100 src/man.c:272 src/mandb.c:113 src/manpath.c:67
-#: src/whatis.c:133
+#: src/whatis.c:136
 msgid "use this user configuration file"
 msgstr "použít tento soubor s uživatelským nastavením"
 
@@ -261,11 +261,11 @@ msgid "the page name contains wildcards"
 msgstr "název stránky obsahuje divoké znaky"
 
 #: src/lexgrog.l:671
-#, fuzzy, c-format
+#, c-format
 msgid "warning: whatis for %s exceeds %d byte, truncating."
 msgid_plural "warning: whatis for %s exceeds %d bytes, truncating."
-msgstr[0] "varování: program whatis pro %s překročil %d bajtů, bude zkrácen"
-msgstr[1] "varování: program whatis pro %s překročil %d bajtů, bude zkrácen"
+msgstr[0] "varování: program whatis pro %s překročil %d bajt, bude zkrácen"
+msgstr[1] "varování: program whatis pro %s překročil %d bajty, bude zkrácen"
 msgstr[2] "varování: program whatis pro %s překročil %d bajtů, bude zkrácen"
 
 #: src/lexgrog.l:822 src/man.c:2555 src/man.c:2636 src/man.c:2732
@@ -374,7 +374,7 @@ msgstr "vypsat zdrojovou stránku kódovanou v KÓDOVÁNÍ"
 msgid "Finding manual pages:"
 msgstr "Hledání manuálových stránek:"
 
-#: src/man.c:292 src/whatis.c:132
+#: src/man.c:292 src/whatis.c:135
 msgid "LOCALE"
 msgstr "LOCALE"
 
@@ -384,15 +384,15 @@ msgstr ""
 "definovat národní prostředí LOCALE pro toto konkrétní hledání v manuálových "
 "stránkách"
 
-#: src/man.c:293 src/manpath.c:68 src/whatis.c:130
+#: src/man.c:293 src/manpath.c:68 src/whatis.c:133
 msgid "SYSTEM"
 msgstr "SYSTÉM"
 
-#: src/man.c:293 src/manpath.c:68 src/whatis.c:130
+#: src/man.c:293 src/manpath.c:68 src/whatis.c:133
 msgid "use manual pages from other systems"
 msgstr "použít manuálové stránky z jiných systémů"
 
-#: src/man.c:295 src/whatis.c:128
+#: src/man.c:295 src/whatis.c:131
 msgid "LIST"
 msgstr "SEZNAM"
 
@@ -736,41 +736,35 @@ msgstr ""
 "varování: v souboru %s není direktiva MANDB_MAP, použije se program manpath"
 
 #: src/mandb.c:884
-#, fuzzy, c-format
+#, c-format
 msgid "%d man subdirectory contained newer manual pages.\n"
 msgid_plural "%d man subdirectories contained newer manual pages.\n"
-msgstr[0] ""
-"%d manuálové podsložky obsahovaly nové manuálové stránky.\n"
-"%d manuálových stránek bylo přidáno.\n"
-msgstr[1] ""
-"%d manuálové podsložky obsahovaly nové manuálové stránky.\n"
-"%d manuálových stránek bylo přidáno.\n"
-msgstr[2] ""
-"%d manuálové podsložky obsahovaly nové manuálové stránky.\n"
-"%d manuálových stránek bylo přidáno.\n"
+msgstr[0] "%d manuálová podsložka obsahovala nové manuálové stránky.\n"
+msgstr[1] "%d manuálové podsložky obsahovaly nové manuálové stránky.\n"
+msgstr[2] "%d manuálových podsložek obsahovalo nové manuálové stránky.\n"
 
 #: src/mandb.c:889
-#, fuzzy, c-format
+#, c-format
 msgid "%d manual page was added.\n"
 msgid_plural "%d manual pages were added.\n"
-msgstr[0] " Manuálová stránka "
-msgstr[1] " Manuálová stránka "
-msgstr[2] " Manuálová stránka "
+msgstr[0] "%d manuálová stránka byla přidána.\n"
+msgstr[1] "%d manuálové stránky byly přidány.\n"
+msgstr[2] "%d manuálových stránek bylo přidáno.\n"
 
 #: src/mandb.c:893
-#, fuzzy, c-format
+#, c-format
 msgid "%d stray cat was added.\n"
 msgid_plural "%d stray cats were added.\n"
-msgstr[0] "Byly přidány %d bezprizorní katalogy.\n"
+msgstr[0] "Byl přidán %d bezprizorní katalog.\n"
 msgstr[1] "Byly přidány %d bezprizorní katalogy.\n"
-msgstr[2] "Byly přidány %d bezprizorní katalogy.\n"
+msgstr[2] "Bylo přidáno %d bezprizorních katalogů.\n"
 
 #: src/mandb.c:898
-#, fuzzy, c-format
+#, c-format
 msgid "%d old database entry was purged.\n"
 msgid_plural "%d old database entries were purged.\n"
-msgstr[0] "Bylo vymazáno %d starých databázových záznamů.\n"
-msgstr[1] "Bylo vymazáno %d starých databázových záznamů.\n"
+msgstr[0] "Byl vymazán %d starý databázový záznam.\n"
+msgstr[1] "Byly vymazány %d staré databázové záznamy.\n"
 msgstr[2] "Bylo vymazáno %d starých databázových záznamů.\n"
 
 #: src/mandb.c:916
@@ -893,61 +887,61 @@ msgstr "varování: rejstřík %s nelze aktualizovat"
 msgid "%s is self referencing"
 msgstr "stránka %s se odkazuje sama na sebe"
 
-#: src/whatis.c:117
+#: src/whatis.c:120
 msgid "KEYWORD..."
 msgstr "KLÍČOVÉ_SLOVO…"
 
-#: src/whatis.c:118
+#: src/whatis.c:121
 msgid "The --regex option is enabled by default."
 msgstr "Přepínač --regex je standardně zapnutý."
 
-#: src/whatis.c:122
+#: src/whatis.c:125
 msgid "print verbose warning messages"
 msgstr "vypisovat podrobné varovné zprávy"
 
-#: src/whatis.c:123
+#: src/whatis.c:126
 msgid "interpret each keyword as a regex"
 msgstr "každé klíčové slovo považovat za regulární výraz"
 
-#: src/whatis.c:124
+#: src/whatis.c:127
 msgid "search each keyword for exact match"
 msgstr "každé klíčové slovo hledat na přesnou shodu"
 
-#: src/whatis.c:125
+#: src/whatis.c:128
 msgid "the keyword(s) contain wildcards"
 msgstr "klíčové slovo (či slova) obsahují divoké znaky"
 
-#: src/whatis.c:126
+#: src/whatis.c:129
 msgid "require all keywords to match"
 msgstr "požadovat shodu všech klíčových slov"
 
-#: src/whatis.c:127
+#: src/whatis.c:130
 msgid "do not trim output to terminal width"
 msgstr "neořezávat výstup na šířku terminálu"
 
-#: src/whatis.c:128
+#: src/whatis.c:131
 msgid "search only these sections (colon-separated)"
 msgstr "prohledávat jen tyto oddíly (oddělené dvojtečkou)"
 
-#: src/whatis.c:132
+#: src/whatis.c:135
 msgid "define the locale for this search"
 msgstr "definovat národní prostředí pro toto hledání"
 
-#: src/whatis.c:229
+#: src/whatis.c:232
 #, c-format
 msgid "%s what?\n"
 msgstr "Co má příkaz %s provést?\n"
 
-#: src/whatis.c:354 src/whatis.c:372
+#: src/whatis.c:393 src/whatis.c:411
 #, c-format
 msgid "warning: %s contains a pointer loop"
 msgstr "varování: %s obsahuje zacyklený ukazatel"
 
-#: src/whatis.c:366 src/whatis.c:374
+#: src/whatis.c:405 src/whatis.c:413
 msgid "(unknown subject)"
 msgstr "(neznámý předmět)"
 
-#: src/whatis.c:725
+#: src/whatis.c:877
 #, c-format
 msgid "%s: nothing appropriate.\n"
 msgstr "%s: nic neodpovídá.\n"

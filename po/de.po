@@ -6,19 +6,21 @@
 # Karl Eichwalder <ke@suse.de>, 2006.
 # Kai Wasserbäch <debian@carbon-project.org>, 2009.
 # Martin Schauer <Martin.E.Schauer@gmx.de>, 2010, 2011.
+# Arun Persaud <arun@nubati.net>, 2012
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: man-db 2.6.0-pre1\n"
+"Project-Id-Version: man-db 2.6.1-pre1\n"
 "Report-Msgid-Bugs-To: Colin Watson <cjwatson@debian.org>\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
-"PO-Revision-Date: 2011-04-28 12:35+0200\n"
-"Last-Translator: Martin Eberhard Schauer <Martin.E.Schauer@gmx.de>\n"
+"POT-Creation-Date: 2012-06-18 13:40+0100\n"
+"PO-Revision-Date: 2012-04-25 21:22-0700\n"
+"Last-Translator: Arun Persaud <arun@nubati.net>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: lib/security.c:74
@@ -57,10 +59,10 @@ msgid "cannot replace key %s"
 msgstr "Schlüssel %s kann nicht ersetzt werden"
 
 #: libdb/db_lookup.c:182 libdb/db_lookup.c:193
-#, fuzzy, c-format
+#, c-format
 msgid "only %d field in content"
 msgid_plural "only %d fields in content"
-msgstr[0] "nur %d Felder im Inhalt enthalten"
+msgstr[0] "nur %d Feld im Inhalt enthalten"
 msgstr[1] "nur %d Felder im Inhalt enthalten"
 
 #: libdb/db_lookup.c:383
@@ -68,7 +70,7 @@ msgstr[1] "nur %d Felder im Inhalt enthalten"
 msgid "bad fetch on multi key %s"
 msgstr "Suchschlüssel %s kann nicht eingelesen werden"
 
-#: libdb/db_lookup.c:455 src/whatis.c:574
+#: libdb/db_lookup.c:455 src/whatis.c:721
 #, c-format
 msgid "Database %s corrupted; rebuild with mandb --create"
 msgstr "Datenbank %s beschädigt; mit »mandb --create« neu erstellen"
@@ -99,7 +101,7 @@ msgstr "Die Handbuchdatenbank benutzt standardmäßig %s%s."
 
 #: src/accessdb.c:64 src/catman.c:98 src/globbing_test.c:58
 #: src/lexgrog_test.c:68 src/man.c:273 src/manconv_main.c:94 src/mandb.c:105
-#: src/manpath.c:65 src/whatis.c:121 src/zsoelim_main.c:66
+#: src/manpath.c:65 src/whatis.c:124 src/zsoelim_main.c:66
 msgid "emit debugging messages"
 msgstr "Hinweise zur Fehlersuche werden ausgegeben"
 
@@ -112,21 +114,21 @@ msgstr "%s kann nicht zum Lesen geöffnet werden"
 msgid "[SECTION...]"
 msgstr "[ABSCHNITT ...]"
 
-#: src/catman.c:99 src/man.c:294 src/whatis.c:131
+#: src/catman.c:99 src/man.c:294 src/whatis.c:134
 msgid "PATH"
 msgstr "PFAD"
 
-#: src/catman.c:99 src/man.c:294 src/whatis.c:131
+#: src/catman.c:99 src/man.c:294 src/whatis.c:134
 msgid "set search path for manual pages to PATH"
 msgstr "Suchpfad für Handbuchseiten auf PFAD setzen"
 
 #: src/catman.c:100 src/man.c:272 src/mandb.c:113 src/manpath.c:67
-#: src/whatis.c:133
+#: src/whatis.c:136
 msgid "FILE"
 msgstr "DATEI"
 
 #: src/catman.c:100 src/man.c:272 src/mandb.c:113 src/manpath.c:67
-#: src/whatis.c:133
+#: src/whatis.c:136
 msgid "use this user configuration file"
 msgstr "diese Benutzerkonfigurationsdatei verwenden"
 
@@ -266,11 +268,11 @@ msgid "the page name contains wildcards"
 msgstr "der Seitenname enthält Platzhalter"
 
 #: src/lexgrog.l:671
-#, fuzzy, c-format
+#, c-format
 msgid "warning: whatis for %s exceeds %d byte, truncating."
 msgid_plural "warning: whatis for %s exceeds %d bytes, truncating."
 msgstr[0] ""
-"Warnung: whatis-Eintrag für %s ist größer als %d Bytes, verkürze ihn."
+"Warnung: whatis-Eintrag für %s ist größer als %d Byte, verkürze ihn."
 msgstr[1] ""
 "Warnung: whatis-Eintrag für %s ist größer als %d Bytes, verkürze ihn."
 
@@ -380,7 +382,7 @@ msgstr "Quellseiten mit KODIERUNG kodiert ausgeben"
 msgid "Finding manual pages:"
 msgstr "Handbuchseiten finden: "
 
-#: src/man.c:292 src/whatis.c:132
+#: src/man.c:292 src/whatis.c:135
 msgid "LOCALE"
 msgstr "LOCALE"
 
@@ -388,15 +390,15 @@ msgstr "LOCALE"
 msgid "define the locale for this particular man search"
 msgstr "Locale für diese spezielle Handbuchsuche definieren"
 
-#: src/man.c:293 src/manpath.c:68 src/whatis.c:130
+#: src/man.c:293 src/manpath.c:68 src/whatis.c:133
 msgid "SYSTEM"
 msgstr "SYSTEM"
 
-#: src/man.c:293 src/manpath.c:68 src/whatis.c:130
+#: src/man.c:293 src/manpath.c:68 src/whatis.c:133
 msgid "use manual pages from other systems"
 msgstr "Handbuchseiten von anderen Systemen verwenden"
 
-#: src/man.c:295 src/whatis.c:128
+#: src/man.c:295 src/whatis.c:131
 msgid "LIST"
 msgstr "LISTE"
 
@@ -748,35 +750,31 @@ msgstr ""
 "Warnung: keine MANDB_MAP-Anweisungen in %s, ihr Handbuchpfad wird verwendet"
 
 #: src/mandb.c:884
-#, fuzzy, c-format
+#, c-format
 msgid "%d man subdirectory contained newer manual pages.\n"
 msgid_plural "%d man subdirectories contained newer manual pages.\n"
-msgstr[0] ""
-"%d Handbuchverzeichnisse enthielten neuere Handbuchseiten.\n"
-"%d Handbuchseiten wurden hinzugefügt.\n"
-msgstr[1] ""
-"%d Handbuchverzeichnisse enthielten neuere Handbuchseiten.\n"
-"%d Handbuchseiten wurden hinzugefügt.\n"
+msgstr[0] "%d Handbuchverzeichnis enthielt neuere Handbuchseiten.\n"
+msgstr[1] "%d Handbuchverzeichnisse enthielten neuere Handbuchseiten.\n"
 
 #: src/mandb.c:889
-#, fuzzy, c-format
+#, c-format
 msgid "%d manual page was added.\n"
 msgid_plural "%d manual pages were added.\n"
-msgstr[0] " Handbuchseite "
-msgstr[1] " Handbuchseite "
+msgstr[0] "%d Handbuchseite wurde hinzugefügt.\n"
+msgstr[1] "%d Handbuchseiten wurden hinzugefügt.\n"
 
 #: src/mandb.c:893
-#, fuzzy, c-format
+#, c-format
 msgid "%d stray cat was added.\n"
 msgid_plural "%d stray cats were added.\n"
-msgstr[0] "%d Handbuchseiten ohne »cat«-Dateien wurden hinzugefügt.\n"
-msgstr[1] "%d Handbuchseiten ohne »cat«-Dateien wurden hinzugefügt.\n"
+msgstr[0] "%d herrenlose »cat«-Datei wurde hinzugefügt.\n"
+msgstr[1] "%d herrenlose »cat«-Dateien wurden hinzugefügt.\n"
 
 #: src/mandb.c:898
-#, fuzzy, c-format
+#, c-format
 msgid "%d old database entry was purged.\n"
 msgid_plural "%d old database entries were purged.\n"
-msgstr[0] "%d alte Datenbankeinträge wurden entfernt.\n"
+msgstr[0] "%d alter Datenbankeintrag wurde entfernt.\n"
 msgstr[1] "%d alte Datenbankeinträge wurden entfernt.\n"
 
 #: src/mandb.c:916
@@ -899,61 +897,61 @@ msgstr "Warnung: Indexcache %s kann nicht aktualisiert werden"
 msgid "%s is self referencing"
 msgstr "%s bezieht sich auf sich selbst"
 
-#: src/whatis.c:117
+#: src/whatis.c:120
 msgid "KEYWORD..."
 msgstr "SCHLÜSSELWORT ..."
 
-#: src/whatis.c:118
+#: src/whatis.c:121
 msgid "The --regex option is enabled by default."
 msgstr "Die »--regex«-Option ist standardmäßig aktiviert."
 
-#: src/whatis.c:122
+#: src/whatis.c:125
 msgid "print verbose warning messages"
 msgstr "ausführliche Warnmeldungen anzeigen"
 
-#: src/whatis.c:123
+#: src/whatis.c:126
 msgid "interpret each keyword as a regex"
 msgstr "jedes Schlüsselwort als RegEx interpretieren"
 
-#: src/whatis.c:124
+#: src/whatis.c:127
 msgid "search each keyword for exact match"
 msgstr "mit jedem Schlüsselwort nach exakten Treffern suchen"
 
-#: src/whatis.c:125
+#: src/whatis.c:128
 msgid "the keyword(s) contain wildcards"
 msgstr "das bzw. die Schlüsselwort(e) enthalten Platzhalter"
 
-#: src/whatis.c:126
+#: src/whatis.c:129
 msgid "require all keywords to match"
 msgstr "alle Schlüsselwörter müssen übereinstimmen"
 
-#: src/whatis.c:127
+#: src/whatis.c:130
 msgid "do not trim output to terminal width"
 msgstr "Ausgabe nicht an Terminalbreite anpassen"
 
-#: src/whatis.c:128
+#: src/whatis.c:131
 msgid "search only these sections (colon-separated)"
 msgstr "nur diese Abschnitte durchsuchen (durch Doppelpunkte getrennt)"
 
-#: src/whatis.c:132
+#: src/whatis.c:135
 msgid "define the locale for this search"
 msgstr "Locale für diese Suche definieren"
 
-#: src/whatis.c:229
+#: src/whatis.c:232
 #, c-format
 msgid "%s what?\n"
 msgstr "%s was bitte?\n"
 
-#: src/whatis.c:354 src/whatis.c:372
+#: src/whatis.c:393 src/whatis.c:411
 #, c-format
 msgid "warning: %s contains a pointer loop"
 msgstr "Warnung: %s enthält zyklische Verweise"
 
-#: src/whatis.c:366 src/whatis.c:374
+#: src/whatis.c:405 src/whatis.c:413
 msgid "(unknown subject)"
 msgstr "(unbekanntes Thema)"
 
-#: src/whatis.c:725
+#: src/whatis.c:877
 #, c-format
 msgid "%s: nothing appropriate.\n"
 msgstr "%s: nichts passendes.\n"

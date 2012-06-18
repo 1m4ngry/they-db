@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: coreutils 5.0\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2003-06-27 19:20-0300\n"
 "Last-Translator: Juan Carlos Castro y Castro <jcastro@vialink.com.br>\n"
 "Language-Team: Brazilian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
@@ -67,7 +67,7 @@ msgstr "Uso: %s [OPÇÃO]...\n"
 # , c-format
 #: gnulib/lib/argp-help.c:1683
 #, fuzzy, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Tente `%s --help' para mais informação.\n"
 
 #: gnulib/lib/argp-help.c:1711
@@ -77,7 +77,7 @@ msgstr ""
 "\n"
 "Comunicar `bugs' para <%s>.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Erro de sistema desconhecido"
 
@@ -110,16 +110,16 @@ msgstr ""
 msgid "print program version"
 msgstr "erro de leitura"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr ""
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, fuzzy, c-format
 msgid "%s: Too many arguments\n"
 msgstr "muitos argumentos\n"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr ""
 
@@ -194,89 +194,89 @@ msgstr "não é possível criar o diretório %s"
 msgid "failed to return to initial working directory"
 msgstr "não é possível criar o diretório %s"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr ""
 
 # , c-format
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s: a expressão  regular não é válida: %s"
 
 # , c-format
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "classe de caracteres inválida `%s'"
 
 # , c-format
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "classe de caracteres inválida `%s'"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 msgid "Invalid back reference"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
 # , c-format
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 #, fuzzy
 msgid "Invalid range end"
 msgstr "%s: a expressão  regular não é válida: %s"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "memória esgotada"
 
 # , c-format
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s: a expressão  regular não é válida: %s"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "erro na busca da expressão  regular"
 
 # , c-format
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s: a expressão  regular não é válida: %s"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "erro na busca da expressão  regular"

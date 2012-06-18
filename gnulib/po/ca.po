@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailutils 0.6.90\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-02-14 12:14+0000\n"
+"POT-Creation-Date: 2012-06-18 11:45+0100\n"
 "PO-Revision-Date: 2005-05-21 04:10+0200\n"
 "Last-Translator: Jordi Mallach <jordi@gnu.org>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
@@ -64,8 +64,8 @@ msgid " [OPTION...]"
 msgstr " [OPCIÓ...]"
 
 #: gnulib/lib/argp-help.c:1683
-#, c-format
-msgid "Try `%s --help' or `%s --usage' for more information.\n"
+#, fuzzy, c-format
+msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Proveu «%s --help» o «%s --usage» per a obtindre més informació.\n"
 
 #: gnulib/lib/argp-help.c:1711
@@ -73,7 +73,7 @@ msgstr "Proveu «%s --help» o «%s --usage» per a obtindre més informació.\n
 msgid "Report bugs to %s.\n"
 msgstr "Informeu dels errors a %s.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:187
+#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "S'ha produït un error desconegut del sistema"
 
@@ -111,16 +111,16 @@ msgstr "Penja durant SEGS segons (per defecte 3600)"
 msgid "print program version"
 msgstr "Mostra la versió del programa"
 
-#: gnulib/lib/argp-parse.c:158
+#: gnulib/lib/argp-parse.c:159
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(ERROR DEL PROGRAMA) Cap versió coneguda!?"
 
-#: gnulib/lib/argp-parse.c:611
+#: gnulib/lib/argp-parse.c:612
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s: Massa arguments\n"
 
-#: gnulib/lib/argp-parse.c:754
+#: gnulib/lib/argp-parse.c:755
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(ERROR DEL PROGRAMA) L'opció s'hauria d'haver reconegut!?"
 
@@ -190,85 +190,85 @@ msgstr "openat: no s'ha pogut registrar el directori de treball actual"
 msgid "failed to return to initial working directory"
 msgstr "no s'ha pogut tornar al directori inicial de treball"
 
-#: gnulib/lib/regcomp.c:131
+#: gnulib/lib/regcomp.c:130
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:134
+#: gnulib/lib/regcomp.c:133
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:137
+#: gnulib/lib/regcomp.c:136
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s: l'expressió regular no és vàlida: %s"
 
-#: gnulib/lib/regcomp.c:140
+#: gnulib/lib/regcomp.c:139
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "la classe de caràcters «%s» no és vàlida"
 
-#: gnulib/lib/regcomp.c:143
+#: gnulib/lib/regcomp.c:142
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "la classe de caràcters «%s» no és vàlida"
 
-#: gnulib/lib/regcomp.c:146
+#: gnulib/lib/regcomp.c:145
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:149
+#: gnulib/lib/regcomp.c:148
 #, fuzzy
 msgid "Invalid back reference"
 msgstr "El número no és vàlid"
 
-#: gnulib/lib/regcomp.c:152
+#: gnulib/lib/regcomp.c:151
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:155
+#: gnulib/lib/regcomp.c:154
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:158
+#: gnulib/lib/regcomp.c:157
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:161
+#: gnulib/lib/regcomp.c:160
 #, fuzzy
 msgid "Invalid content of \\{\\}"
 msgstr "L'opció no és vàlida -- %s"
 
-#: gnulib/lib/regcomp.c:164
+#: gnulib/lib/regcomp.c:163
 #, fuzzy
 msgid "Invalid range end"
 msgstr "el rang de pàgines no és vàlid: «%s»"
 
-#: gnulib/lib/regcomp.c:167
+#: gnulib/lib/regcomp.c:166
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "la memòria s'ha exhaurit"
 
-#: gnulib/lib/regcomp.c:170
+#: gnulib/lib/regcomp.c:169
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s: l'expressió regular no és vàlida: %s"
 
-#: gnulib/lib/regcomp.c:173
+#: gnulib/lib/regcomp.c:172
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "error en la recerca de l'expressió regular"
 
-#: gnulib/lib/regcomp.c:176
+#: gnulib/lib/regcomp.c:175
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s: l'expressió regular no és vàlida: %s"
 
-#: gnulib/lib/regcomp.c:179
+#: gnulib/lib/regcomp.c:178
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:700
+#: gnulib/lib/regcomp.c:703
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "error en la recerca de l'expressió regular"
