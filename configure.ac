@@ -2,14 +2,15 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.6.2], [cjwatson@debian.org])
+AC_INIT([man-db], [2.6.3], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([tools])
-AM_INIT_AUTOMAKE([1.10 -Wall -Wno-override -Werror foreign dist-xz])
+AM_INIT_AUTOMAKE([1.10 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([src/man.c])
 AC_GNU_SOURCE
+AM_PROG_AR
 LT_INIT([disable-static])
 
 if test ! -f "$srcdir/gnulib/po/Makefile.in.in"; then
@@ -20,7 +21,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2012-06-18
+date=2012-09-17
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl

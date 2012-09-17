@@ -1,3 +1,48 @@
+Mon Sep 17 23:22:48 BST 2012  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.3.
+
+Mon Sep 17 23:20:19 BST 2012  Colin Watson  <cjwatson@debian.org>
+
+	Stop distributing .tar.gz, as promised in the release notes for
+	2.6.2.
+
+	* configure.ac (AM_INIT_AUTOMAKE): Add no-dist-gzip.
+	* docs/man-db.lsm (Primary-site): Drop .tar.gz size.
+
+Mon Sep 17 22:53:40 BST 2012  Colin Watson  <cjwatson@debian.org>
+
+	* autogen.sh, release.sh: Use 'set -e' rather than '#! /bin/sh -e',
+	  to avoid accidents when debugging with 'sh -x'.
+
+Mon Sep 17 22:53:14 BST 2012  Colin Watson  <cjwatson@debian.org>
+
+	* Makefile.am (EXTRA_DIST): Add gnulib/gets.patch.
+
+Mon Sep 17 22:33:41 BST 2012  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Use AM_PROG_AR before LT_INIT, for compatibility
+	  with Automake 1.12.
+	* NEWS: Document this.
+
+Mon Sep 17 22:28:27 BST 2012  Colin Watson  <cjwatson@debian.org>
+
+	Backport Gnulib commit 66712c23388e93e5c518ebc8515140fa0c807348 to
+	stop assuming gets (Savannah bug #37255).
+
+	* gnulib/gets.patch: New file.
+	* autogen.sh: Apply gnulib/gets.patch.
+	* NEWS: Document this.
+
+Mon Sep 17 22:07:02 BST 2012  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Automake 1.11.6.
+
+Thu Aug 16 12:08:48 BST 2012  Trần Ngọc Quân  <vnwildman@gmail.com>
+
+	* po/vi.po: Update from Translation Project.
+	* man/THANKS: Update.
+
 Mon Jun 18 13:37:45 BST 2012  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.6.2.
