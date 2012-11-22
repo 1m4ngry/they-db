@@ -8,6 +8,8 @@ DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 dtmp    = debian/man-db
 
 export DEB_BUILD_MAINT_OPTIONS := hardening=+all
+# Use DT_RUNPATH rather than DT_RPATH, so that LD_LIBRARY_PATH works properly.
+export DEB_LDFLAGS_MAINT_APPEND := -Wl,--enable-new-dtags
 
 export V := 1
 
