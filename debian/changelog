@@ -1,11 +1,11 @@
-man-db (2.6.3-2) UNRELEASED; urgency=low
+man-db (2.6.3-2) unstable; urgency=low
 
   * Use xz compression for binary packages.
   * Use dh-autoreconf.
   * Link with -Wl,--enable-new-dtags, so that LD_LIBRARY_PATH can be used to
     override our private library directory.
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 28 Sep 2012 17:47:13 +0100
+ -- Colin Watson <cjwatson@debian.org>  Thu, 22 Nov 2012 11:33:34 +0000
 
 man-db (2.6.3-1) unstable; urgency=low
 
