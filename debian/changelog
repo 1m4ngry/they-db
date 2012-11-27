@@ -1,3 +1,9 @@
+man-db (2.6.3-3) UNRELEASED; urgency=low
+
+  * Support parallel builds.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 27 Nov 2012 23:12:13 +0000
+
 man-db (2.6.3-2) unstable; urgency=low
 
   * Use xz compression for binary packages.
