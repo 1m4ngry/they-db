@@ -1,6 +1,8 @@
 man-db (2.6.3-3) UNRELEASED; urgency=low
 
   * Support parallel builds.
+  * Handle incompatible change to option string escaping in less 456
+    (closes: #695459).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 27 Nov 2012 23:12:13 +0000
 
