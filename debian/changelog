@@ -1,4 +1,4 @@
-man-db (2.6.3-4) UNRELEASED; urgency=low
+man-db (2.6.3-4) unstable; urgency=low
 
   * Make postinst output clearer about whether the database is being rebuilt
     (e.g. due to man-db/auto-update=false).
@@ -7,7 +7,7 @@ man-db (2.6.3-4) UNRELEASED; urgency=low
     closes: #706916).  I've chosen to drop the Breaks entirely as it's a bit
     too heavyweight for a relatively minor display bug.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 07 May 2013 09:38:18 +0100
+ -- Colin Watson <cjwatson@debian.org>  Tue, 07 May 2013 09:45:40 +0100
 
 man-db (2.6.3-3) unstable; urgency=low
 
