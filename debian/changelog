@@ -1,9 +1,9 @@
-man-db (2.6.3-6) UNRELEASED; urgency=low
+man-db (2.6.3-6) unstable; urgency=low
 
   * Switch triggers to interest-noawait, since they are non-essential for
     the triggering packages (closes: #707129).
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 07 May 2013 20:49:04 +0100
+ -- Colin Watson <cjwatson@debian.org>  Tue, 07 May 2013 20:49:47 +0100
 
 man-db (2.6.3-5) unstable; urgency=low
 
