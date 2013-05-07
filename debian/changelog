@@ -2,6 +2,10 @@ man-db (2.6.3-4) UNRELEASED; urgency=low
 
   * Make postinst output clearer about whether the database is being rebuilt
     (e.g. due to man-db/auto-update=false).
+  * Drop handling of option string escaping in less 456, since the
+    incompatible change has been reverted upstream (thanks, Geoffrey Thomas;
+    closes: #695361).  I've chosen to drop the Breaks entirely as it's a bit
+    too heavyweight for a relatively minor display bug.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 07 May 2013 09:38:18 +0100
 
