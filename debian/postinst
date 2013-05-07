@@ -20,7 +20,7 @@ run_mandb () {
 if [ "$1" = triggered ]; then
     # We don't print a status message here, as dpkg already said
     # "Processing triggers for man-db ...".
-    run_mandb -pq
+    run_mandb "" -pq
     exit 0
 fi
 

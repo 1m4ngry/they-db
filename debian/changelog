@@ -1,3 +1,9 @@
+man-db (2.6.3-5) UNRELEASED; urgency=low
+
+  * Fix trigger handling following cleanup of postinst output.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 07 May 2013 13:11:35 +0100
+
 man-db (2.6.3-4) unstable; urgency=low
 
   * Make postinst output clearer about whether the database is being rebuilt
