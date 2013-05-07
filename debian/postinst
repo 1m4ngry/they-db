@@ -5,7 +5,13 @@ db_version 2.0
 
 run_mandb () {
     db_get man-db/auto-update
-    [ "$RET" = true ] || return 0
+    if [ "$RET" != true ]; then
+	echo "Not building database; man-db/auto-update is not 'true'." >&2
+	return 0
+    fi
+    local message="$1"
+    shift
+    [ "$message" ] && echo "$message" >&2
     # start-stop-daemon isn't available when running from debootstrap.
     perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
 	     exec "/usr/bin/mandb", @ARGV' -- "$@" || true
@@ -106,14 +112,12 @@ fi
 if [ $build_db -eq 1 ]; then
     # Chances are we're being run from debootstrap, which will have problems
     # if mandb runs backgrounded for too long (bug #100616).
-    echo "Building database of manual pages ..." >&2
-    run_mandb -cq
+    run_mandb "Building database of manual pages ..." -cq
 else
     # Otherwise, just update the database in the foreground. It's unlikely
     # to take very long, and configuration needs to cover everything that
     # happens when we're triggered.
-    echo "Updating database of manual pages ..." >&2
-    run_mandb -pq
+    run_mandb "Updating database of manual pages ..." -pq
 fi
 
 #DEBHELPER#

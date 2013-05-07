@@ -1,3 +1,10 @@
+man-db (2.6.3-4) UNRELEASED; urgency=low
+
+  * Make postinst output clearer about whether the database is being rebuilt
+    (e.g. due to man-db/auto-update=false).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 07 May 2013 09:38:18 +0100
+
 man-db (2.6.3-3) unstable; urgency=low
 
   * Support parallel builds.
