@@ -1,3 +1,10 @@
+man-db (2.6.3-7) UNRELEASED; urgency=low
+
+  * Build-depend on debhelper (>= 9~) directly rather than requiring a
+    Lintian override for use of 8.9.0.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 28 May 2013 18:16:40 +0100
+
 man-db (2.6.3-6) unstable; urgency=low
 
   * Switch triggers to interest-noawait, since they are non-essential for
