@@ -2,6 +2,10 @@ man-db (2.6.3-7) UNRELEASED; urgency=low
 
   * Build-depend on debhelper (>= 9~) directly rather than requiring a
     Lintian override for use of 8.9.0.
+  * Temporarily drop -Werror from AM_INIT_AUTOMAKE options and backport
+    patches to handle the Automake parallel test harness, working around
+    warnings caused by the version of Gnulib currently in use here (closes:
+    #710309).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 28 May 2013 18:16:40 +0100
 
