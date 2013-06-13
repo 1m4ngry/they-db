@@ -1,4 +1,5 @@
-#!/bin/sh -e
+#!/bin/sh
+set -e
 
 # Clean up a cron job that the old man package apparently left around.
 if [ -e /etc/cron.daily/man ]; then

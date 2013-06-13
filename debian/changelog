@@ -1,3 +1,9 @@
+man-db (2.6.3-8) UNRELEASED; urgency=low
+
+  * Use 'set -e' rather than '#! /bin/sh -e' in maintainer scripts.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 13 Jun 2013 13:58:49 +0100
+
 man-db (2.6.3-7) unstable; urgency=low
 
   * Build-depend on debhelper (>= 9~) directly rather than requiring a
