@@ -13,12 +13,6 @@ if [ -e /etc/cron.weekly/catman ]; then
     mv /etc/cron.weekly/catman /etc/cron.weekly/catman.moved-by-preinst
 fi
 
-# Old postrms removed catpages; we don't necessarily want to. Those postrms
-# didn't do anything else that's useful now, so remove them.
-if [ "$1" = upgrade ] && dpkg --compare-versions "$2" ge 2.3.16; then
-    rm -f /var/lib/dpkg/info/man-db.postrm
-fi
-
 # Migrate old statoverrides to new paths.
 if dpkg --compare-versions "$2" lt 2.5.5-4; then
     for x in $maybesetuid; do
