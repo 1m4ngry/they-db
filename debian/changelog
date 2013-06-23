@@ -1,5 +1,12 @@
-man-db (2.6.3-8) UNRELEASED; urgency=low
+man-db (2.6.4-1) UNRELEASED; urgency=low
 
+  * New upstream release:
+    - Document default section list in manual pages (closes: #611007).
+    - Quieten most warnings from compiling Gnulib (closes: #668429).
+    - The MANLESS environment variable is now treated as if it were a
+      default value for the -r option to man: occurrences of the text
+      "$MAN_PN" are expanded, and explicitly using the -r option overrides
+      the default (closes: #690831).
   * Use 'set -e' rather than '#! /bin/sh -e' in maintainer scripts.
   * Remove maintainer script support for direct upgrades from pre-etch
     (three releases before current stable).

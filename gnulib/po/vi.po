@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib-3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-09-17 23:35+0100\n"
+"POT-Creation-Date: 2013-06-23 22:52+0100\n"
 "PO-Revision-Date: 2012-03-30 14:47+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
@@ -22,32 +22,32 @@ msgstr ""
 "X-Poedit-Country: VIET NAM\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: gnulib/lib/argp-help.c:147
+#: gnulib/lib/argp-help.c:148
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr "ARGP_HELP_FMT: giá trị %s value nhỏ hơn hay bằng %s"
 
-#: gnulib/lib/argp-help.c:220
+#: gnulib/lib/argp-help.c:221
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr "%.*s: tham số « ARGP_HELP_FMT » cần thiết giá trị"
 
-#: gnulib/lib/argp-help.c:226
+#: gnulib/lib/argp-help.c:227
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr "%.*s: tham số « ARGP_HELP_FMT » phải là số dương"
 
-#: gnulib/lib/argp-help.c:235
+#: gnulib/lib/argp-help.c:236
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr "%.*s: Không biết tham số « ARGP_HELP_FMT »"
 
-#: gnulib/lib/argp-help.c:247
+#: gnulib/lib/argp-help.c:248
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Gặp rác trong « ARGP_HELP_FMT » : %s"
 
-#: gnulib/lib/argp-help.c:1247
+#: gnulib/lib/argp-help.c:1248
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -55,31 +55,31 @@ msgstr ""
 "Tất cả đối số bắt buộc phải sử dụng với tùy chọn dài cũng bắt buộc với tùy "
 "chọn ngắn tương ứng."
 
-#: gnulib/lib/argp-help.c:1640
+#: gnulib/lib/argp-help.c:1641
 msgid "Usage:"
 msgstr "Cách sử dụng:"
 
-#: gnulib/lib/argp-help.c:1644
+#: gnulib/lib/argp-help.c:1645
 msgid "  or: "
 msgstr "  hoặc "
 
-#: gnulib/lib/argp-help.c:1656
+#: gnulib/lib/argp-help.c:1657
 msgid " [OPTION...]"
 msgstr " [TÙY_CHỌN...]"
 
-#: gnulib/lib/argp-help.c:1683
+#: gnulib/lib/argp-help.c:1684
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Hãy thử lệnh « %s --help » (trợ giúp) hay « %s --usage » (cách sử dụng) để "
 "xem thông tin thêm.\n"
 
-#: gnulib/lib/argp-help.c:1711
+#: gnulib/lib/argp-help.c:1712
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Hãy thông báo lỗi cho %s\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Gặp lỗi hệ thống lạ"
 
@@ -190,75 +190,75 @@ msgstr "không thể ghi lưu thư mục làm việc hiện thời"
 msgid "failed to return to initial working directory"
 msgstr "chưa trở về thư mục làm việc ban đầu"
 
-#: gnulib/lib/regcomp.c:130
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Thành công"
 
-#: gnulib/lib/regcomp.c:133
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Không khớp"
 
-#: gnulib/lib/regcomp.c:136
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Biểu thức chính quy không hợp lệ"
 
-#: gnulib/lib/regcomp.c:139
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Ký tự đối chiếu không hợp lệ"
 
-#: gnulib/lib/regcomp.c:142
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Tên loại ký tự không hợp lệ"
 
-#: gnulib/lib/regcomp.c:145
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Có xuyệc ngược theo sau"
 
-#: gnulib/lib/regcomp.c:148
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Tham chiếu ngược không hợp lệ"
 
-#: gnulib/lib/regcomp.c:151
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Chưa khớp ký tự « [ » hay « [^ »"
 
-#: gnulib/lib/regcomp.c:154
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Chưa khớp ký tự « ( » hay « \\( »"
 
-#: gnulib/lib/regcomp.c:157
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Chưa khớp ký tự « \\{ »"
 
-#: gnulib/lib/regcomp.c:160
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Nội dụng « \\{\\} » không hợp lệ"
 
-#: gnulib/lib/regcomp.c:163
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Kết thúc phạm vi không hợp lệ"
 
-#: gnulib/lib/regcomp.c:166
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Hết bộ nhớ hoàn toàn"
 
-#: gnulib/lib/regcomp.c:169
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Biểu thức chính quy đi trước không hợp lệ"
 
-#: gnulib/lib/regcomp.c:172
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Biểu thức chính quy kết thúc quá sớm"
 
-#: gnulib/lib/regcomp.c:175
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Biểu thức chính quy quá lớn"
 
-#: gnulib/lib/regcomp.c:178
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Chưa khớp ký tự « ) » hay « \\) »"
 
-#: gnulib/lib/regcomp.c:703
+#: gnulib/lib/regcomp.c:707
 msgid "No previous regular expression"
 msgstr "Không có biểu thức chính quy đi trước"
 

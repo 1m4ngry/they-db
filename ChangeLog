@@ -1,3 +1,319 @@
+Sun Jun 23 22:50:24 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.4.
+
+Sun Jun 23 22:44:19 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20130623.
+
+Sun Jun 23 21:21:13 BST 2013  Peter Schiffer  <pschiffe@redhat.com>
+                              Colin Watson  <cjwatson@debian.org>
+
+	Search the full manpath when expanding manual pages that consist
+	only of a .so directive (Fedora bug #693458).
+
+	* src/ult_src.c (find_include): New function, handling manpath
+	  search where necessary.
+	  (ult_src): Call it when a .so directive is found.
+	* src/Makefile.am (lexgrog_SOURCES): Add globbing.c and globbing.h.
+	* src/tests/man-5: New file.
+	* src/tests/Makefile.am (ALL_TESTS): Add man-5.
+	* NEWS: Document this.
+
+Sun Jun 23 21:15:45 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/tests/mandb-3: Don't rely on ".so test.1" not working.
+
+Sun Jun 23 14:35:51 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (def_path): Expand wildcards in MANDATORY_MANPATH.
+
+Sun Jun 23 14:29:34 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/manp.c (guess_manpath): Honour MAN_TEST_DISABLE_PATH
+	  environment variable, allowing the test suite to disable PATH
+	  handling.  (May change without notice.)
+	  (read_config_file): Honour MAN_TEST_DISABLE_SYSTEM_CONFIG
+	  environment variable, allowing the test suite to disable reading
+	  the system configuration file.  (May change without notice.)
+	* src/tests/testlib.sh: Set MAN_TEST_DISABLE_SYSTEM_CONFIG=1.
+	* src/tests/man-4: Set MAN_TEST_DISABLE_PATH=1.
+
+Sun Jun 23 12:28:19 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/ult_src.c (test_for_include): Return NULL immediately if
+	  buffer is NULL.
+	  (ult_src): Use this to remove a level of indentation.
+
+Sun Jun 23 11:14:27 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Automake 1.13.3.
+
+Fri Jun 14 09:53:47 BST 2013  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+
+Tue Jun 11 12:44:24 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/zh_CN.po: New from Translation Project (thanks, Wylmer
+	  Wang).
+	* configure.ac (AC_CONFIG_FILES): Add man/zh_CN/Makefile.
+	* man/LINGUAS.po4a: Add zh_CN.
+	* man/Makefile.am (DIST_SUBDIRS): Add zh_CN.
+	* man/zh_CN/Makefile.am, man/zh_CN/translator.add: New files.
+	* man/po4a/Makefile.am (POFILES): Add po/zh_CN.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add zh_CN.
+	* man/THANKS: Add translator credit.
+	* .bzrignore: Add man/zh_CN/man1, man/zh_CN/man5, and
+	  man/zh_CN/man8.
+
+Thu Jun  6 12:24:27 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Check whether tbl supports the 'x' format character
+	  (e.g. versions of groff before 1.20), and substitute TBL_X_FORMAT
+	  accordingly.
+	* man/replace.sin.in: Replace "l lx." with "l l." if tbl does not
+	  support the 'x' format character.
+
+Thu Jun  6 12:03:59 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Add a check for whether 'nroff -wmac' works.
+	* src/man.c (default_roff_warnings, roff_warnings): Define if
+	  NROFF_WARNINGS is defined, rather than TROFF_IS_GROFF.
+	  (options): Hide the --warnings option unless NROFF_WARNINGS is
+	  defined.
+	  (parse_opt, make_roff_command): Handle the --warnings option if
+	  NROFF_WARNINGS is defined, rather than TROFF_IS_GROFF.
+
+Thu Jun  6 11:11:36 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Set MANDIR_LAYOUT using AC_SUBST as well as
+	  AC_DEFINE/AC_DEFINE_UNQUOTED.
+	* src/tests/Makefile.am (TESTS_ENVIRONMENT): Export MANDIR_LAYOUT.
+	* src/tests/testlib.sh (skip): New function.
+	* src/tests/man-3: Skip unless the GNU layout is in use.
+
+Thu Jun  6 10:57:17 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/tests/man-1, src/tests/man-2, src/tests/man-3,
+	  src/tests/man-4, src/tests/mandb-1, src/tests/mandb-2,
+	  src/tests/mandb-3, src/tests/mandb-4, src/tests/mandb-5,
+	  src/tests/mandb-6, src/tests/whatis-1, src/tests/zsoelim-1: Export
+	  MANPATH separately rather than trying to set it just for the 'run'
+	  function.  The latter approach does not seem to work reliably in
+	  FreeBSD's /bin/sh.
+	* src/tests/testlib.sh: Stop exporting MANPATH here.
+
+Thu Jun  6 09:37:46 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac: Use BSD layout on *-*bsd* (e.g. FreeBSD), not just
+	  *-bsd*.
+	  Test for Berkeley DB in libc, as is the case on FreeBSD.
+
+Thu Jun  6 09:36:09 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/check_mandirs.c (purge_missing) [NDBM]: Check for the
+	  existence of DATABASE.dir rather than DATABASE.
+
+Thu Jun  6 09:32:24 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/catman.c (add_arg): MYDBM_DSIZE may return size_t; cast (for
+	  the cases where it returns int instead) and format using %zu
+	  rather than %d.
+
+Thu Jun  6 09:01:46 BST 2013  Trần Ngọc Quân  <vnwildman@gmail.com>
+
+	* po/vi.po: Update from Translation Project.
+
+Thu Jun  6 02:51:15 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/tests/testlib.sh: Export LC_ALL and MANPATH, for the benefit
+	  of shells that do not automatically re-export variables they
+	  receive in their environment.
+
+Thu Jun  6 02:50:25 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/descriptions_store.c (store_description): Format size_t using
+	  %zu, not %d.
+
+Thu Jun  6 02:40:10 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/tests/manconv-2, src/tests/manconv-3: Use octal escapes rather
+	  than hexadecimal escapes; the latter are not portable to all
+	  printf(1) implementations.
+
+Thu Jun  6 01:49:32 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man (TESTS_ENVIRONMENT): Quote variable assignments.
+
+Thu Jun  6 01:43:29 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* man/Rules.man (TESTS_ENVIRONMENT): Move environment variable
+	  settings here, rather than using non-portable 'export'.
+
+Thu Jun  6 01:39:29 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* docs/INSTALL.quick: Reformat external package requirements as a
+	  bullet list.  Add flex >= 2.5.30.
+
+Thu Jun  6 01:32:19 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* tools/config.guess: Update to 2013-05-16.
+	* tools/config.sub: Update to 2013-04-24.
+
+Tue Jun  4 09:38:08 BST 2013  David Prévot  <david@tilapin.org>
+
+	* man/po4a/po/fr.po: Update from Translation Project.
+
+Mon Jun  3 22:59:03 BST 2013  Yuri Kozlov  <yuray@komyakino.ru>
+
+	* man/po4a/po/ru.po: Update from Translation Project.
+
+Mon Jun  3 13:06:43 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.4-pre1.
+
+Mon Jun  3 12:39:22 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* NEWS: Document changes since 2.6.3.
+
+Mon Jun  3 12:18:55 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* manual/files.me (NLS manual pages): Wrap a table cell to avoid a
+	  line-width warning from nroff.
+
+Mon Jun  3 12:07:35 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	Quieten most warnings from compiling Gnulib (Debian bug #668429).
+
+	* configure.ac: Add gl_WARN_ADD results to WARN_CFLAGS rather than
+	  CFLAGS.
+	* lib/Makefile.am (AM_CFLAGS): Add $(WARN_CFLAGS).
+	* libdb/Makefile.am (AM_CFLAGS): Likewise.
+	* src/Makefile.am (AM_CFLAGS): Likewise.  Move $(libpipeline_CFLAGS)
+	  here from AM_CPPFLAGS.
+
+Mon Jun  3 00:01:47 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/tests/Makefile.am (AM_LOG_FLAGS): Force each test to run with
+	  the configure-detected shell.
+
+Thu May 30 12:57:50 BST 2013  Peter Schiffer  <pschiffe@redhat.com>
+                              Colin Watson  <cjwatson@debian.org>
+
+	Add support for wildcards in MANPATH (Fedora bug #677669).
+
+	* src/Makefile.am (catman_SOURCES, manpath_SOURCES, whatis_SOURCES):
+	  Add globbing.c and globbing.h.
+	* src/globbing.c (expand_path): New function.
+	* src/globbing.h (expand_path): Add prototype.
+	* src/manp.c (add_dir_to_list): Rename to ...
+	  (add_expanded_dir_to_list): ... this.
+	  (add_dir_to_list): New function, expanding wildcards and wrapping
+	  add_expanded_dir_to_list.
+	  (add_dir_to_path_list): Expand wildcards.
+	* src/tests/man-4: New file.
+	* src/tests/Makefile.am (ALL_TESTS): Add man-4.
+
+Thu May 30 11:51:54 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* Makefile.am (EXTRA_DIST): Remove gnulib/gets.patch.
+
+Thu 30 May 11:42:29 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Automake 1.13.2 and Gnulib 20130529.
+
+	* .bzrignore: Add gnulib/lib/locale.h, man/**/*.log, man/**/*.trs,
+	  src/tests/*.log, and src/tests/*.trs.
+	* autogen.sh: Drop gnulib/gets.patch backport.
+	* gnulib/gets.patch: Remove.
+	* configure.ac (AM_INIT_AUTOMAKE): Set minimum Automake version to
+	  1.11.  Add parallel-tests option for compatibility with 1.11.
+	* man/Rules.man (TESTS_ENVIRONMENT): Move to ...
+	  (LOG_COMPILER): ... this.
+	* src/tests/Makefile.am (TESTS_ENVIRONMENT): Rewrite as a list of
+	  variable exports rather than as a command prefix, for
+	  compatibility with parallel-tests.
+
+Tue May 14 22:55:09 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/lexgrog.l: Define YY_NO_INPUT, suppressing a -Wunused-function
+	  warning from GCC (thanks, Bjarni Ingi Gislason).
+	* src/zsoelim.l: Likewise.
+
+Tue May  7 15:27:28 BST 2013  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (escape_less): Revert handling of incompatible option
+	  string escaping in less 456.  That change was reverted upstream in
+	  less 457.
+
+Sun Mar  3 14:22:32 GMT 2013  Felipe Castro  <fefcas@gmail.com>
+
+	* po/eo.po: New from Translation Project.
+	* po/LINGUAS: Add eo.
+	* man/THANKS: Add translator credit.
+
+Sun Mar  3 14:19:38 GMT 2013  Robert Luberda  <robert@debian.org>
+
+	* po/pl.po: Update from Translation Project.
+	* man/po4a/po/pl.po: Likewise.
+
+Tue Jan 29 13:15:26 GMT 2013  Will  <cwr@netcom.co.uk>
+
+	* src/manp.c (add_to_dirlist): Increase key length to handle buried
+	  binutils manual page paths.
+
+Mon Jan 21 11:20:48 GMT 2013  Colin Watson  <cjwatson@debian.org>
+
+	* configure.ac (AC_HEADER_SYS_WAIT): Remove; no longer used.
+
+Mon Jan 21 11:04:44 GMT 2013  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Libtool 2.4.2-1.2 (from Debian).
+
+Sat Dec 22 13:59:14 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	Document default section list in manual pages (Debian bug #611007).
+
+	* man/replace.sin.in: Substitute %sections%.
+	* man/man1/man.man1 (DESCRIPTION): Fix misplaced comma.  Document
+	  configured list of sections rather than simply saying "a
+	  pre-defined order".
+	  (ENVIRONMENT): Document default for $MANSECT.
+	* man/man8/catman.man8 (ENVIRONMENT): Likewise.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+
+Fri Dec 21 21:29:27 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (main): Use $MANLESS as the default for prompt_string if
+	  the -r option was not used.
+	  (setenv_less): Remove code to copy $MANLESS verbatim into $LESS.
+	* man/man1/man.man1 (Controlling formatted output, ENVIRONMENT):
+	  Describe new behaviour of $MANLESS.
+	* man/po4a/po/man-db-manpages.pot, man/po4a/po/*.po: Update.
+
+Sun Dec 16 12:00:55 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* src/man.c (escape_less): Handle incompatible change to option
+	  string escaping in less 456.  Reported by Vincent Lefevre.
+
+Sat Dec 15 10:49:46 GMT 2012  Joe Hansen  <joedalton2@yahoo.dk>
+
+	* man/po4a/po/da.po: Update from Translation Project.
+
+Sat Nov 24 22:42:01 GMT 2012  Colin Watson  <cjwatson@debian.org>
+
+	* man/po4a/po/da.po: New from Translation Project (thanks, Joe
+	  Hansen).
+	* configure.ac (AC_CONFIG_FILES): Add man/da/Makefile.
+	* man/LINGUAS.po4a: Add da.
+	* man/Makefile.am (DIST_SUBDIRS): Add da.
+	* man/da/Makefile.am, man/da/translator.add: New files.
+	* man/po4a/Makefile.am (POFILES): Add po/da.po.
+	* man/po4a/po4a.cfg (po4a_langs): Add da.
+	* man/THANKS: Credit Joe Hansen with man/da as well as da.po.
+	* .bzrignore: Add man/da/man1, man/da/man5, and man/da/man8.
+
 Mon Sep 17 23:22:48 BST 2012  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.6.3.

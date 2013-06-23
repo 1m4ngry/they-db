@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: coreutils 5.3.0\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-09-17 23:35+0100\n"
+"POT-Creation-Date: 2013-06-23 22:52+0100\n"
 "PO-Revision-Date: 2005-07-02 04:13+0800\n"
 "Last-Translator: Abel Cheung <abelcheung@gmail.com>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -23,64 +23,64 @@ msgstr ""
 "Content-Transfer-Encoding: 8-bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: gnulib/lib/argp-help.c:147
+#: gnulib/lib/argp-help.c:148
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:220
+#: gnulib/lib/argp-help.c:221
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:226
+#: gnulib/lib/argp-help.c:227
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:235
+#: gnulib/lib/argp-help.c:236
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:247
+#: gnulib/lib/argp-help.c:248
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1247
+#: gnulib/lib/argp-help.c:1248
 #, fuzzy
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
 msgstr "長選項必須用的參數在使用短選項時也是必須的。\n"
 
-#: gnulib/lib/argp-help.c:1640
+#: gnulib/lib/argp-help.c:1641
 msgid "Usage:"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1644
+#: gnulib/lib/argp-help.c:1645
 msgid "  or: "
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1656
+#: gnulib/lib/argp-help.c:1657
 #, fuzzy
 msgid " [OPTION...]"
 msgstr "用法：%s [選項] [檔案]...\n"
 
-#: gnulib/lib/argp-help.c:1683
+#: gnulib/lib/argp-help.c:1684
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "請嘗試執行‘%s --help’來獲取更多資訊。\n"
 
-#: gnulib/lib/argp-help.c:1711
+#: gnulib/lib/argp-help.c:1712
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "\n"
 "請向 <%s> 回報錯誤。\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "不明的系統錯誤"
 
@@ -192,84 +192,84 @@ msgstr "無法建立目錄%s"
 msgid "failed to return to initial working directory"
 msgstr "無法建立目錄%s"
 
-#: gnulib/lib/regcomp.c:130
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:133
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:136
+#: gnulib/lib/regcomp.c:137
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s：無效的正規表示式：%s"
 
-#: gnulib/lib/regcomp.c:139
+#: gnulib/lib/regcomp.c:140
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "無效的字元種類‘%s’"
 
-#: gnulib/lib/regcomp.c:142
+#: gnulib/lib/regcomp.c:143
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "無效的字元種類‘%s’"
 
-#: gnulib/lib/regcomp.c:145
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:148
+#: gnulib/lib/regcomp.c:149
 #, fuzzy
 msgid "Invalid back reference"
 msgstr "無效的類型‘%s’"
 
-#: gnulib/lib/regcomp.c:151
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:154
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:157
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:160
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:163
+#: gnulib/lib/regcomp.c:164
 #, fuzzy
 msgid "Invalid range end"
 msgstr "無效的類型‘%s’"
 
-#: gnulib/lib/regcomp.c:166
+#: gnulib/lib/regcomp.c:167
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "記憶體耗盡"
 
-#: gnulib/lib/regcomp.c:169
+#: gnulib/lib/regcomp.c:170
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s：無效的正規表示式：%s"
 
-#: gnulib/lib/regcomp.c:172
+#: gnulib/lib/regcomp.c:173
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "在正規運算式搜尋時發生錯誤"
 
-#: gnulib/lib/regcomp.c:175
+#: gnulib/lib/regcomp.c:176
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s：無效的正規表示式：%s"
 
-#: gnulib/lib/regcomp.c:178
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:703
+#: gnulib/lib/regcomp.c:707
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "在正規運算式搜尋時發生錯誤"

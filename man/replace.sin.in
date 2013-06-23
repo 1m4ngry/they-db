@@ -1,6 +1,7 @@
 s,%pager%,@pager@,g
 s,%troff%,@troff@,g
 s,%date%,@date@,g
+s,%sections%,@sections@,g
 s,%version%,@VERSION@,g
 s,%zsoelim%,@TRANS_ZSOELIM@,g
 s,%man%,@TRANS_MAN@,g
@@ -19,4 +20,5 @@ s,%thapropos%,@TRANS_APROPOS_UPPER@,g
 s,%thwhatis%,@TRANS_WHATIS_UPPER@,g
 s,%thmanconv%,@TRANS_MANCONV_UPPER@,g
 s,%manpath_config_file%,%REPLACE_CONFIG_FILE%,g
+s,^l lx\.$,l l@TBL_X_FORMAT@.,
 s,^\.if !'po4a'hide' ,,

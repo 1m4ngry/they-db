@@ -51,7 +51,9 @@ AM_CPPFLAGS = \
 	-DMANCONV=\"$(pkglibexecdir)/$(TRANS_MANCONV)\" \
 	-DMANDB=\"$(bindir)/$(TRANS_MANDB)\" \
 	-DSOELIM=\"$(bindir)/$(TRANS_ZSOELIM)\" \
-	-DWHATIS=\"$(bindir)/$(TRANS_WHATIS)\" \
+	-DWHATIS=\"$(bindir)/$(TRANS_WHATIS)\"
+AM_CFLAGS = \
+	$(WARN_CFLAGS) \
 	$(libpipeline_CFLAGS)
 
 LIBMAN = $(top_builddir)/lib/libman.la $(top_builddir)/gnulib/lib/libgnu.la \
@@ -73,6 +75,8 @@ accessdb_SOURCES = \
 	accessdb.c
 catman_SOURCES = \
 	catman.c \
+	globbing.c \
+	globbing.h \
 	manp.c \
 	manp.h
 globbing_SOURCES = \
@@ -85,6 +89,8 @@ lexgrog_SOURCES = \
 	descriptions.h \
 	filenames.c \
 	filenames.h \
+	globbing.c \
+	globbing.h \
 	lexgrog.l \
 	lexgrog_test.c \
 	manconv.c \
@@ -140,10 +146,14 @@ mandb_SOURCES = \
 	ult_src.c \
 	ult_src.h
 manpath_SOURCES = \
+	globbing.c \
+	globbing.h \
 	manp.c \
 	manp.h \
 	manpath.c
 whatis_SOURCES = \
+	globbing.c \
+	globbing.h \
 	manconv.c \
 	manconv.h \
 	manp.c \

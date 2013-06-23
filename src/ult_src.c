@@ -59,16 +59,19 @@
 #include <unistd.h>
 
 #include "canonicalize.h"
+#include "dirname.h"
+#include "error.h"
+#include "xvasprintf.h"
 
 #include "gettext.h"
 #define _(String) gettext (String)
 
 #include "manconfig.h"
 
-#include "error.h"
 #include "pipeline.h"
 #include "decompress.h"
 
+#include "globbing.h"
 #include "ult_src.h"
 
 /* Find minimum value hard link filename for given file and inode.
@@ -153,6 +156,9 @@ static char *ult_softlink (const char *fullpath)
  */
 static char *test_for_include (const char *buffer)
 {
+	if (!buffer)
+		return NULL;
+
 	/* strip out any leading whitespace (if any) */
 	while (CTYPE (isspace, *buffer))
 		buffer++;
@@ -183,6 +189,52 @@ static char *test_for_include (const char *buffer)
 		}
 	}
 	return NULL;
+}
+
+static char *find_include (const char *name, const char *path,
+			   const char *include)
+{
+	char *ret;
+	char *dirname;
+	char *temp_file;
+
+	/* Restore the original path from before ult_softlink() etc., in
+	 * case it went outside the mantree.
+	 */
+	ret = xasprintf ("%s/%s", path, include);
+
+	/* If the original path from above doesn't exist, try to create new
+	 * path as if the "include" was relative to the current man page.
+	 */
+	if (access (ret, F_OK) == 0)
+		return ret;
+
+	dirname = dir_name (name);
+	temp_file = xasprintf ("%s/%s", dirname, include);
+	free (dirname);
+
+	if (access (temp_file, F_OK) == 0) {
+		/* Just plain include. */
+		free (ret);
+		ret = canonicalize_file_name (temp_file);
+	} else {
+		/* Try globbing - the file suffix might be missing. */
+		char *temp_file_asterisk = xasprintf ("%s*", temp_file);
+		char **candidate_files = expand_path (temp_file_asterisk);
+		int i;
+
+		free (temp_file_asterisk);
+		if (access (candidate_files[0], F_OK) == 0) {
+			free (ret);
+			ret = canonicalize_file_name (candidate_files[0]);
+		}
+		for (i = 0; candidate_files[i]; i++)
+			free (candidate_files[i]);
+		free (candidate_files);
+	}
+	free (temp_file);
+
+	return ret;
 }
 
 static void ult_trace (struct ult_trace *trace, const char *s)
@@ -293,6 +345,7 @@ const char *ult_src (const char *name, const char *path,
 		const char *buffer;
 		char *decomp_base;
 		pipeline *decomp;
+		char *include;
 #ifdef COMP_SRC
 		struct stat st;
 
@@ -331,31 +384,24 @@ const char *ult_src (const char *name, const char *path,
 			buffer = pipeline_readline (decomp);
 		} while (buffer && STRNEQ (buffer, ".\\\"", 3));
 
-		if (buffer) {
-			char *include = test_for_include (buffer);
-			if (include) {
-				const char *ult;
+		include = test_for_include (buffer);
+		if (include) {
+			const char *ult;
 
-				/* Restore the original path from before
-				 * ult_softlink() etc., in case it went
-				 * outside the mantree.
-				 */
-				free (base);
-				base = appendstr (NULL, path, "/", include,
-						  NULL);
-				free (include);
+			free (base);
+			base = find_include (name, path, include);
+			free (include);
 
-				debug ("ult_src: points to %s\n", base);
+			debug ("ult_src: points to %s\n", base);
 
-				recurse++;
-				ult = ult_src (base, path, NULL, flags, trace);
-				recurse--;
+			recurse++;
+			ult = ult_src (base, path, NULL, flags, trace);
+			recurse--;
 
-				pipeline_wait (decomp);
-				pipeline_free (decomp);
-				free (decomp_base);
-				return ult;
-			}
+			pipeline_wait (decomp);
+			pipeline_free (decomp);
+			free (decomp_base);
+			return ult;
 		}
 
 		pipeline_wait (decomp);

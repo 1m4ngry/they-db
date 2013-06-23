@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib-3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-09-17 23:35+0100\n"
+"POT-Creation-Date: 2013-06-23 22:52+0100\n"
 "PO-Revision-Date: 2011-12-07 20:41-0400\n"
 "Last-Translator: David Prévot <david@tilapin.org>\n"
 "Language-Team: French <traduc@traduc.org>\n"
@@ -20,32 +20,32 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Lokalize 1.2\n"
 
-#: gnulib/lib/argp-help.c:147
+#: gnulib/lib/argp-help.c:148
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr "ARGP_HELP_FMT : la valeur %s est inférieure ou égale à %s"
 
-#: gnulib/lib/argp-help.c:220
+#: gnulib/lib/argp-help.c:221
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr "%.*s : le paramètre ARGP_HELP_FMT nécessite une valeur"
 
-#: gnulib/lib/argp-help.c:226
+#: gnulib/lib/argp-help.c:227
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr "%.*s : le paramètre ARGP_HELP_FMT doit être positif"
 
-#: gnulib/lib/argp-help.c:235
+#: gnulib/lib/argp-help.c:236
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr "%.*s : paramètre ARGP_HELP_FMT inconnu"
 
-#: gnulib/lib/argp-help.c:247
+#: gnulib/lib/argp-help.c:248
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Problème dans ARGP_HELP_FMT : %s"
 
-#: gnulib/lib/argp-help.c:1247
+#: gnulib/lib/argp-help.c:1248
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -53,31 +53,31 @@ msgstr ""
 "Les arguments obligatoires pour la forme longue des options le sont aussi "
 "pour les formes courtes associées."
 
-#: gnulib/lib/argp-help.c:1640
+#: gnulib/lib/argp-help.c:1641
 msgid "Usage:"
 msgstr "Utilisation :"
 
-#: gnulib/lib/argp-help.c:1644
+#: gnulib/lib/argp-help.c:1645
 msgid "  or: "
 msgstr "  ou : "
 
-#: gnulib/lib/argp-help.c:1656
+#: gnulib/lib/argp-help.c:1657
 msgid " [OPTION...]"
 msgstr " [OPTION...]"
 
-#: gnulib/lib/argp-help.c:1683
+#: gnulib/lib/argp-help.c:1684
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Essayez « %s --help » ou « %s --usage » pour obtenir plus de "
 "renseignements.\n"
 
-#: gnulib/lib/argp-help.c:1711
+#: gnulib/lib/argp-help.c:1712
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Signalez toute anomalie à %s.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Erreur système inconnue"
 
@@ -188,75 +188,75 @@ msgstr "impossible de mémoriser le répertoire de travail courant"
 msgid "failed to return to initial working directory"
 msgstr "échec de retour au répertoire initial de travail"
 
-#: gnulib/lib/regcomp.c:130
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Succès"
 
-#: gnulib/lib/regcomp.c:133
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Pas de correspondance"
 
-#: gnulib/lib/regcomp.c:136
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Expression rationnelle non valable"
 
-#: gnulib/lib/regcomp.c:139
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Caractère d'assemblage non valable"
 
-#: gnulib/lib/regcomp.c:142
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Nom de classe de caractères non valable"
 
-#: gnulib/lib/regcomp.c:145
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Barre oblique inverse en fin de ligne"
 
-#: gnulib/lib/regcomp.c:148
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Référence antérieure non valable"
 
-#: gnulib/lib/regcomp.c:151
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "[ ou [^ non appairé"
 
-#: gnulib/lib/regcomp.c:154
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "( ou \\( non appairée"
 
-#: gnulib/lib/regcomp.c:157
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "\\{ non appairée"
 
-#: gnulib/lib/regcomp.c:160
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Le contenu de \\{\\} n'est pas valable"
 
-#: gnulib/lib/regcomp.c:163
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Borne finale de l'intervalle non valable"
 
-#: gnulib/lib/regcomp.c:166
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Mémoire épuisée"
 
-#: gnulib/lib/regcomp.c:169
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Expression rationnelle précédente non valable"
 
-#: gnulib/lib/regcomp.c:172
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Fin prématurée d'expression rationnelle"
 
-#: gnulib/lib/regcomp.c:175
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Expression rationnelle trop grande"
 
-#: gnulib/lib/regcomp.c:178
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr ") ou \\) non appairée"
 
-#: gnulib/lib/regcomp.c:703
+#: gnulib/lib/regcomp.c:707
 msgid "No previous regular expression"
 msgstr "Pas d'expression rationnelle précédente"
 

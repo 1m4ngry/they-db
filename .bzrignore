@@ -27,6 +27,7 @@ gnulib/lib/glob.h
 gnulib/lib/glthread/.deps
 gnulib/lib/glthread/.dirstamp
 gnulib/lib/langinfo.h
+gnulib/lib/locale.h
 gnulib/lib/ref-add.sed
 gnulib/lib/ref-del.sed
 gnulib/lib/signal.h
@@ -63,6 +64,11 @@ man/*/replace.sed
 man/*/man1/*.1
 man/*/man5/*.5
 man/*/man8/*.8
+man/**/*.log
+man/**/*.trs
+man/da/man1
+man/da/man5
+man/da/man8
 man/de/man1
 man/de/man5
 man/de/man8
@@ -84,6 +90,9 @@ man/pl/man8
 man/ru/man1
 man/ru/man5
 man/ru/man8
+man/zh_CN/man1
+man/zh_CN/man5
+man/zh_CN/man8
 manual/Makefile
 manual/man_db.cat
 manual/man_db.dvi
@@ -118,6 +127,8 @@ src/whatis
 src/wrapper
 src/zsoelim
 src/zsoelim.c
+src/tests/*.log
+src/tests/*.trs
 src/tests/Makefile
 src/tests/tmp-*
 tools/Makefile

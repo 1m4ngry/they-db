@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 1.1\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-09-17 23:35+0100\n"
+"POT-Creation-Date: 2013-06-23 22:52+0100\n"
 "PO-Revision-Date: 2007-07-20 12:24-0600\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -18,32 +18,32 @@ msgstr ""
 "Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :"
 "(n>6 && n<11) ? 3 : 4;\n"
 
-#: gnulib/lib/argp-help.c:147
+#: gnulib/lib/argp-help.c:148
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr "ARGP_HELP_FMT: luach %s níos lú ná nó cothrom le %s"
 
-#: gnulib/lib/argp-help.c:220
+#: gnulib/lib/argp-help.c:221
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr "%.*s: luach de dhíth ar pharaiméadar ARGP_HELP_FMT"
 
-#: gnulib/lib/argp-help.c:226
+#: gnulib/lib/argp-help.c:227
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr "%.*s: luach deimhneach de dhíth ar pharaiméadar ARGP_HELP_FMT"
 
-#: gnulib/lib/argp-help.c:235
+#: gnulib/lib/argp-help.c:236
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr "%.*s: Paraiméadar anaithnid ARGP_HELP_FMT"
 
-#: gnulib/lib/argp-help.c:247
+#: gnulib/lib/argp-help.c:248
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Truflais i ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1247
+#: gnulib/lib/argp-help.c:1248
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -51,30 +51,30 @@ msgstr ""
 "Is riachtanach/roghnach le rogha ghearr aon argóint atá riachtanach/roghnach "
 "leis an rogha fhada."
 
-#: gnulib/lib/argp-help.c:1640
+#: gnulib/lib/argp-help.c:1641
 msgid "Usage:"
 msgstr "Úsáid:"
 
-#: gnulib/lib/argp-help.c:1644
+#: gnulib/lib/argp-help.c:1645
 msgid "  or: "
 msgstr "  nó: "
 
-#: gnulib/lib/argp-help.c:1656
+#: gnulib/lib/argp-help.c:1657
 msgid " [OPTION...]"
 msgstr " [ROGHA...]"
 
-#: gnulib/lib/argp-help.c:1683
+#: gnulib/lib/argp-help.c:1684
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Bain triail as `%s --help' nó `%s --usage' chun tuilleadh eolais a fháil.\n"
 
-#: gnulib/lib/argp-help.c:1711
+#: gnulib/lib/argp-help.c:1712
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Seol tuairiscí fabhtanna chuig %s.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Earráid chórais anaithnid"
 
@@ -185,75 +185,75 @@ msgstr "ní féidir an chomhadlann oibre a thaifead"
 msgid "failed to return to initial working directory"
 msgstr "níl aon fháil ar an chéad chomhadlann oibre"
 
-#: gnulib/lib/regcomp.c:130
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "D'éirigh leis"
 
-#: gnulib/lib/regcomp.c:133
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Gan mheaitseáil"
 
-#: gnulib/lib/regcomp.c:136
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Slonn ionadaíochta neamhbhailí"
 
-#: gnulib/lib/regcomp.c:139
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Carachtar neamhbhailí comhordaithe"
 
-#: gnulib/lib/regcomp.c:142
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Ainm neamhbhailí ar aicme charachtar"
 
-#: gnulib/lib/regcomp.c:145
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Cúlslais chun deiridh"
 
-#: gnulib/lib/regcomp.c:148
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Cúltagairt neamhbhailí"
 
-#: gnulib/lib/regcomp.c:151
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "[ nó [^ corr"
 
-#: gnulib/lib/regcomp.c:154
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "( nó \\( corr"
 
-#: gnulib/lib/regcomp.c:157
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "\\{ corr"
 
-#: gnulib/lib/regcomp.c:160
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Ábhar neamhbhailí idir \\{ agus \\}"
 
-#: gnulib/lib/regcomp.c:163
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Deireadh raoin neamhbhailí"
 
-#: gnulib/lib/regcomp.c:166
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Cuimhne ídithe"
 
-#: gnulib/lib/regcomp.c:169
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Is neamhbhailí an slonn ionadaíochta roimhe seo"
 
-#: gnulib/lib/regcomp.c:172
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Deireadh le slonn ionadaíochta gan choinne"
 
-#: gnulib/lib/regcomp.c:175
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Slonn ionadaíochta rómhór"
 
-#: gnulib/lib/regcomp.c:178
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr ") nó \\) corr"
 
-#: gnulib/lib/regcomp.c:703
+#: gnulib/lib/regcomp.c:707
 msgid "No previous regular expression"
 msgstr "Níl aon slonn ionadaíochta roimhe seo"
 

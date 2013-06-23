@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-09-17 23:35+0100\n"
+"POT-Creation-Date: 2013-06-23 22:52+0100\n"
 "PO-Revision-Date: 2011-08-22 09:50+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
@@ -20,62 +20,62 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.1\n"
 
-#: gnulib/lib/argp-help.c:147
+#: gnulib/lib/argp-help.c:148
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr "ARGP_HELP_FMT: значення %s є менше ніж або дорівнює %s"
 
-#: gnulib/lib/argp-help.c:220
+#: gnulib/lib/argp-help.c:221
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr "%.*s: параметр ARGP_HELP_FMT вимагає значення"
 
-#: gnulib/lib/argp-help.c:226
+#: gnulib/lib/argp-help.c:227
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr "%.*s: параметр ARGP_HELP_FMT має бути додатнім"
 
-#: gnulib/lib/argp-help.c:235
+#: gnulib/lib/argp-help.c:236
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr "%.*s: Невідомий параметр ARGP_HELP_FMT"
 
-#: gnulib/lib/argp-help.c:247
+#: gnulib/lib/argp-help.c:248
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Хибні дані в ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1247
+#: gnulib/lib/argp-help.c:1248
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
 msgstr ""
 "Аргументи, обов'язкові для довгих ключів, є обов'язковими й для коротких."
 
-#: gnulib/lib/argp-help.c:1640
+#: gnulib/lib/argp-help.c:1641
 msgid "Usage:"
 msgstr "Використання:"
 
-#: gnulib/lib/argp-help.c:1644
+#: gnulib/lib/argp-help.c:1645
 msgid "  or: "
 msgstr " чи: "
 
-#: gnulib/lib/argp-help.c:1656
+#: gnulib/lib/argp-help.c:1657
 msgid " [OPTION...]"
 msgstr " [ПАРАМЕТР...]"
 
-#: gnulib/lib/argp-help.c:1683
+#: gnulib/lib/argp-help.c:1684
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Спробуйте `%s --help' або `%s --usage' для отримання докладнішого опису.\n"
 
-#: gnulib/lib/argp-help.c:1711
+#: gnulib/lib/argp-help.c:1712
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Про помилки звітуйте на <%s>.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Невідома системна помилка"
 
@@ -186,75 +186,75 @@ msgstr "не вдається змінити поточний каталог"
 msgid "failed to return to initial working directory"
 msgstr "не вдається зберегти поточний каталог"
 
-#: gnulib/lib/regcomp.c:130
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr "Успіх"
 
-#: gnulib/lib/regcomp.c:133
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr "Брак збігів"
 
-#: gnulib/lib/regcomp.c:136
+#: gnulib/lib/regcomp.c:137
 msgid "Invalid regular expression"
 msgstr "Некоректний формальний вираз"
 
-#: gnulib/lib/regcomp.c:139
+#: gnulib/lib/regcomp.c:140
 msgid "Invalid collation character"
 msgstr "Некоректний об'єднувальний символ"
 
-#: gnulib/lib/regcomp.c:142
+#: gnulib/lib/regcomp.c:143
 msgid "Invalid character class name"
 msgstr "Некоректна назва класу символів"
 
-#: gnulib/lib/regcomp.c:145
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr "Зворотна похила риска наприкінці виразу"
 
-#: gnulib/lib/regcomp.c:148
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr "Недійсне зворотнє посилання"
 
-#: gnulib/lib/regcomp.c:151
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr "Незакрита [ або [^"
 
-#: gnulib/lib/regcomp.c:154
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr "Незакрита ( або \\("
 
-#: gnulib/lib/regcomp.c:157
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr "Незакрита \\{"
 
-#: gnulib/lib/regcomp.c:160
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr "Некоректний вміст \\{\\}"
 
-#: gnulib/lib/regcomp.c:163
+#: gnulib/lib/regcomp.c:164
 msgid "Invalid range end"
 msgstr "Некоректний кінець діапазону"
 
-#: gnulib/lib/regcomp.c:166
+#: gnulib/lib/regcomp.c:167
 msgid "Memory exhausted"
 msgstr "Пам'ять вичерпана"
 
-#: gnulib/lib/regcomp.c:169
+#: gnulib/lib/regcomp.c:170
 msgid "Invalid preceding regular expression"
 msgstr "Некоректний попередній формальний вираз"
 
-#: gnulib/lib/regcomp.c:172
+#: gnulib/lib/regcomp.c:173
 msgid "Premature end of regular expression"
 msgstr "Передчасне закінчення формального виразу"
 
-#: gnulib/lib/regcomp.c:175
+#: gnulib/lib/regcomp.c:176
 msgid "Regular expression too big"
 msgstr "Завеликий формальний вираз"
 
-#: gnulib/lib/regcomp.c:178
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr "Неузгоджена ) або \\)"
 
-#: gnulib/lib/regcomp.c:703
+#: gnulib/lib/regcomp.c:707
 msgid "No previous regular expression"
 msgstr "Не вказано попереднього формального виразу"
 

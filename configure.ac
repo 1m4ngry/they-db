@@ -2,9 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.6.3], [cjwatson@debian.org])
+AC_INIT([man-db], [2.6.4], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([tools])
-AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override foreign dist-xz no-dist-gzip parallel-tests])
+AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
@@ -21,7 +21,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2012-09-17
+date=2013-06-23
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -145,14 +145,14 @@ case $host_os in
 esac
 if test "$GCC" = yes
 then
-	gl_WARN_ADD([-W], [CFLAGS])
-	gl_WARN_ADD([-Wpointer-arith], [CFLAGS])
-	gl_WARN_ADD([-Wwrite-strings], [CFLAGS])
-	gl_WARN_ADD([-Wstrict-prototypes], [CFLAGS])
-	gl_WARN_ADD([-Wshadow], [CFLAGS])
-	gl_WARN_ADD([-Wformat-security], [CFLAGS])
-	gl_WARN_ADD([-Wredundant-decls], [CFLAGS])
-	gl_WARN_ADD([-Wno-missing-field-initializers], [CFLAGS])
+	gl_WARN_ADD([-W])
+	gl_WARN_ADD([-Wpointer-arith])
+	gl_WARN_ADD([-Wwrite-strings])
+	gl_WARN_ADD([-Wstrict-prototypes])
+	gl_WARN_ADD([-Wshadow])
+	gl_WARN_ADD([-Wformat-security])
+	gl_WARN_ADD([-Wredundant-decls])
+	gl_WARN_ADD([-Wno-missing-field-initializers])
 fi
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -218,7 +218,21 @@ dnl		nroff="$nroff ${man_cv_prog_nroff_macro}${nroff_device}"
 	else
 		AC_MSG_RESULT([ambiguous])
 		AC_MSG_WARN([please edit include/manconfig.h and add nroff definition])
-	fi 
+	fi
+
+	AC_CACHE_CHECK([whether nroff supports warning control],
+		       [man_cv_prog_nroff_warnings], [
+		if test "x$troff_is_groff" = xyes && \
+		   nroff -wmac </dev/null >/dev/null 2>&1
+		then
+			man_cv_prog_nroff_warnings=yes
+		else
+			man_cv_prog_nroff_warnings=no
+		fi])
+	if test "x$man_cv_prog_nroff_warnings" = xyes; then
+		AC_DEFINE([NROFF_WARNINGS], [1],
+			  [Define if nroff supports warning control.])
+	fi
 else
 	AC_MSG_WARN([Cannot find an nroff-like program, formatting of manual page source will not be supported.])
 	nroff="(nroff not installed)"
@@ -314,6 +328,24 @@ then
 	(test -n "$nroff_device" && neqn="$eqn -T$nroff_device" || neqn="$eqn -Tascii")
 fi
 MAN_CHECK_PROGS([tbl], [TBL], [use TBL to preprocess tables], [tbl gtbl])
+TBL_X_FORMAT=
+if test -n "$tbl"
+then
+	AC_CACHE_CHECK([whether tbl supports the 'x' format character],
+		       [man_cv_tbl_x_format], [
+		if (echo .TS; echo ';'; echo lx.; echo SENTINEL; echo .TE) | \
+		   $tbl 2>/dev/null | grep SENTINEL >/dev/null 2>&1
+		then
+			man_cv_tbl_x_format=yes
+		else
+			man_cv_tbl_x_format=no
+		fi])
+	if test "x$man_cv_tbl_x_format" = xyes
+	then
+		TBL_X_FORMAT=x
+	fi
+fi
+AC_SUBST([TBL_X_FORMAT])
 MAN_CHECK_PROGS([col], [COL], [use COL to filter formatting characters from output], [col gcol])
 MAN_CHECK_PROGS([vgrind], [VGRIND], [use VGRIND to preprocess program sources], [vgrind gvgrind])
 MAN_CHECK_PROGS([refer], [REFER], [use REFER to preprocess bibliographic references], [refer grefer])
@@ -382,29 +414,32 @@ AC_ARG_ENABLE([mandirs],
 [AS_HELP_STRING([--enable-mandirs=OS], [select manual page hierarchy organization (GNU, HPUX, IRIX, Solaris, BSD)])],
 	[AC_MSG_NOTICE([Using $enableval hierarchy organization(s)])
 	 AC_DEFINE_UNQUOTED([MANDIR_LAYOUT], ["$enableval"],
-			    [Define to the manual page hierarchy organization(s) in use.])],
+			    [Define to the manual page hierarchy organization(s) in use.])
+	 MANDIR_LAYOUT="$enableval"],
 	[case $host in
 		*-gnu)          mandirs=GNU;;
 		*-hpux*)        mandirs=HPUX;;
 		*-irix*)        mandirs=IRIX;;
 		*-solaris*)     mandirs=Solaris;;
-		*-bsd*)         mandirs=BSD;;
+		*-*bsd*)        mandirs=BSD;;
 		*)              mandirs=;;
 	 esac
 	 if test -n "$mandirs"; then
 		AC_MSG_NOTICE([Using $mandirs hierarchy organization])
 		AC_DEFINE_UNQUOTED([MANDIR_LAYOUT], ["$mandirs"])
+		MANDIR_LAYOUT="$mandirs"
 	 else
 		AC_MSG_NOTICE([Allowing any hierarchy organization])
 		AC_DEFINE([MANDIR_LAYOUT], [""])
+		MANDIR_LAYOUT=
 	 fi])
+AC_SUBST([MANDIR_LAYOUT])
 
 # Check for various header files and associated libraries.
 AC_ISC_POSIX
 dnl AC_PROG_LEX calls AC_TRY_LINK: must come after above 3
 AC_PROG_LEX
 gl_INIT
-AC_HEADER_SYS_WAIT
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS([fcntl.h sys/file.h])
 
@@ -455,15 +490,10 @@ MAN_CHECK_BDB([db5 db], [db5/db_185.h db_185.h], [db5 db-5])
 MAN_CHECK_BDB([db4 db], [db4/db_185.h db_185.h], [db4 db-4])
 MAN_CHECK_BDB([db3 db], [db3/db_185.h db_185.h], [db3])
 MAN_CHECK_BDB([db2 db], [db_185.h db2/db_185.h db2_185.h], [db2 db])
-MAN_CHECK_BDB([db1 db], [db/db.h db.h db1/db.h], [db db1])
+MAN_CHECK_BDB([db1 db], [db/db.h db.h db1/db.h], [db db1 c])
 
 dnl MAN_CHECK_BDB([db2], [db2_185.h], [db2 db c], [AC_DEFINE(DB_ON_LIBC)])
 dnl MAN_CHECK_BDB([db2], [db2/db_185.h], [db2 db c])
-dnl # from package libdb1-dev
-dnl MAN_CHECK_BDB([db], [db/db.h], [db c])
-dnl # from package libc6-dev
-dnl # ########## statically linked #####
-dnl MAN_CHECK_BDB([db], [db1/db.h], [db c], [AC_DEFINE(DB_ON_LIBC)])
 
 # Check for UNIX ndbm routines.
 if test "$db" = "no" || test "$db" = "ndbm"
@@ -526,6 +556,7 @@ AC_CONFIG_FILES([Makefile
 	man/Makefile
 	man/replace.sin
 	man/po4a/Makefile
+	man/da/Makefile
 	man/de/Makefile
 	man/es/Makefile
 	man/fr/Makefile
@@ -535,6 +566,7 @@ AC_CONFIG_FILES([Makefile
 	man/nl/Makefile
 	man/pl/Makefile
 	man/ru/Makefile
+	man/zh_CN/Makefile
 	manual/Makefile
 	libdb/Makefile
 	docs/Makefile

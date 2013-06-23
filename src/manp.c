@@ -75,6 +75,7 @@
 #endif
 
 #include "manp.h"
+#include "globbing.h"
 
 struct list {
 	char *key;
@@ -671,9 +672,9 @@ static char *guess_manpath (const char *systems)
 	const char *path = getenv ("PATH");
 	char *manpathlist, *manpath;
 
-	if (path == NULL) {
+	if (path == NULL || getenv ("MAN_TEST_DISABLE_PATH")) {
 		/* Things aren't going to work well, but hey... */
-		if (!quiet)
+		if (path == NULL && !quiet)
 			error (0, 0, _("warning: $PATH not set"));
 
 		manpathlist = def_path (MANDATORY);
@@ -763,7 +764,7 @@ static void add_to_dirlist (FILE *config, int user)
 	char *bp;
 	char *buf = NULL;
 	size_t n = 0;
-	char key[50], cont[512];
+	char key[512], cont[512];
 	int val;
 	int c;
 
@@ -785,14 +786,15 @@ static void add_to_dirlist (FILE *config, int user)
 			goto next;	/* match any word starting with NO */
 		else if (sscanf (bp, "MANBIN %*s") == 1)
 			goto next;
-		else if (sscanf (bp, "MANDATORY_MANPATH %49s", key) == 1)
+		else if (sscanf (bp, "MANDATORY_MANPATH %511s", key) == 1)
 			add_mandatory (key);	
-		else if (sscanf (bp, "MANPATH_MAP %49s %511s", key, cont) == 2) 
+		else if (sscanf (bp, "MANPATH_MAP %511s %511s",
+			 key, cont) == 2) 
 			add_manpath_map (key, cont);
-		else if ((c = sscanf (bp, "MANDB_MAP %49s %511s",
+		else if ((c = sscanf (bp, "MANDB_MAP %511s %511s",
 				      key, cont)) > 0) 
 			add_mandb_map (key, cont, c, user);
-		else if ((c = sscanf (bp, "DEFINE %49s %511[^\n]",
+		else if ((c = sscanf (bp, "DEFINE %511s %511[^\n]",
 				      key, cont)) > 0)
 			add_def (key, cont, c, user);
 		else if (sscanf (bp, "SECTION %511[^\n]", cont) == 1)
@@ -860,20 +862,23 @@ void read_config_file (int optional)
 		free (dotmanpath);
 	}
 
-	config = fopen (CONFIG_FILE, "r");
-	if (config == NULL) {
-		if (optional)
-			debug ("can't open %s; continuing anyway\n",
-			       CONFIG_FILE);
-		else
-			error (FAIL, 0,
-			       _("can't open the manpath configuration file "
-				 "%s"), CONFIG_FILE);
-	} else {
-		debug ("From the config file %s:\n\n", CONFIG_FILE);
+	if (getenv ("MAN_TEST_DISABLE_SYSTEM_CONFIG") == NULL) {
+		config = fopen (CONFIG_FILE, "r");
+		if (config == NULL) {
+			if (optional)
+				debug ("can't open %s; continuing anyway\n",
+				       CONFIG_FILE);
+			else
+				error (FAIL, 0,
+				       _("can't open the manpath "
+					 "configuration file %s"),
+				       CONFIG_FILE);
+		} else {
+			debug ("From the config file %s:\n\n", CONFIG_FILE);
 
-		add_to_dirlist (config, 0);
-		fclose (config);
+			add_to_dirlist (config, 0);
+			fclose (config);
+		}
 	}
 
 	print_list ();
@@ -893,16 +898,26 @@ static char *def_path (int flag)
 
 	for (list = namestore; list; list = list->next)
 		if (list->flag == flag) {
-	 		int status = is_directory (list->key);
+			char **expanded_dirs;
+			int i;
 
-			if (status < 0)
-				gripe_stat_file (list->key);
-			else if (status == 0 && !quiet)
-				error (0, 0,
-				       _("warning: mandatory directory %s "
-					 "doesn't exist"), list->key);
-			else if (status == 1)
-				manpath = pathappend (manpath, list->key);
+			expanded_dirs = expand_path (list->key);
+			for (i = 0; expanded_dirs[i]; i++) {
+				int status = is_directory (expanded_dirs[i]);
+
+				if (status < 0)
+					gripe_stat_file (expanded_dirs[i]);
+				else if (status == 0 && !quiet)
+					error (0, 0,
+					       _("warning: mandatory "
+						 "directory %s doesn't exist"),
+					       expanded_dirs[i]);
+				else if (status == 1)
+					manpath = pathappend
+						(manpath, expanded_dirs[i]);
+				free (expanded_dirs[i]);
+			}
+			free (expanded_dirs);
 		}
 
 	/* If we have complete config file failure... */
@@ -1029,10 +1044,8 @@ char *get_manpath_from_path (const char *path, int mandatory)
 	return manpathlist;
 }
 
-/*
- * Add a directory to the manpath list if it isn't already there.
- */
-static void add_dir_to_list (char **lp, const char *dir)
+/* Add a directory to the manpath list if it isn't already there. */
+static void add_expanded_dir_to_list (char **lp, const char *dir)
 {
 	int status;
 	int pos = 0;
@@ -1061,6 +1074,23 @@ static void add_dir_to_list (char **lp, const char *dir)
 
 		*lp = xstrdup (dir);
 	}
+}
+
+/*
+ * Add a directory to the manpath list if it isn't already there, expanding
+ * wildcards.
+ */
+static void add_dir_to_list (char **lp, const char *dir)
+{
+	char **expanded_dirs;
+	int i;
+
+	expanded_dirs = expand_path (dir);
+	for (i = 0; expanded_dirs[i]; i++) {
+		add_expanded_dir_to_list (lp, expanded_dirs[i]);
+		free (expanded_dirs[i]);
+	}
+	free (expanded_dirs);
 }
 
 /* path does not exist in config file: check to see if path/../man,
@@ -1104,33 +1134,40 @@ static inline char *has_mandir (const char *path)
 
 static char **add_dir_to_path_list (char **mphead, char **mp, const char *p)
 {
-	int status;
-	char *cwd;
+	int status, i;
+	char *cwd, *d, **expanded_dirs;
 
 	if (mp - mphead > MAXDIRS - 1)
 		gripe_overlong_list ();
 
-	status = is_directory (p);
+	expanded_dirs = expand_path (p);
+	for (i = 0; expanded_dirs[i]; i++) {
+		d = expanded_dirs[i];
 
-	if (status < 0)
-		gripe_stat_file (p);
-	else if (status == 0)
-		gripe_not_directory (p);
-	else {
-		/* deal with relative paths */
+		status = is_directory (d);
 
-		if (*p != '/') {
-			cwd = xgetcwd ();
-			if (!cwd)
-				error (FATAL, errno,
-				       _("can't determine current directory"));
-			*mp = appendstr (cwd, "/", p, NULL);
-		} else 
-			*mp = xstrdup (p);
+		if (status < 0)
+			gripe_stat_file (d);
+		else if (status == 0)
+			gripe_not_directory (d);
+		else {
+			/* deal with relative paths */
+			if (*d != '/') {
+				cwd = xgetcwd ();
+				if (!cwd)
+					error (FATAL, errno,
+							_("can't determine current directory"));
+				*mp = appendstr (cwd, "/", d, NULL);
+			} else
+				*mp = xstrdup (d);
 
-		debug ("adding %s to manpathlist\n", *mp);
-		mp++;
+			debug ("adding %s to manpathlist\n", *mp);
+			mp++;
+		}
+		free (d);
 	}
+	free (expanded_dirs);
+
 	return mp;
 }
 

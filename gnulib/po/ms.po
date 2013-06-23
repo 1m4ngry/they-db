@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  coreutils 5.0.90\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2012-09-17 23:35+0100\n"
+"POT-Creation-Date: 2013-06-23 22:52+0100\n"
 "PO-Revision-Date: 2003-08-10 16:00+0800\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Malay <translation-team-ms@lists.sourceforge.net>\n"
@@ -15,32 +15,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: gnulib/lib/argp-help.c:147
+#: gnulib/lib/argp-help.c:148
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:220
+#: gnulib/lib/argp-help.c:221
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:226
+#: gnulib/lib/argp-help.c:227
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:235
+#: gnulib/lib/argp-help.c:236
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:247
+#: gnulib/lib/argp-help.c:248
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1247
+#: gnulib/lib/argp-help.c:1248
 #, fuzzy
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
@@ -49,32 +49,32 @@ msgstr ""
 "Hujah mandatori kepada opsyen panjang andalah mandatori bagi opsyen pendek "
 "juga.\n"
 
-#: gnulib/lib/argp-help.c:1640
+#: gnulib/lib/argp-help.c:1641
 msgid "Usage:"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1644
+#: gnulib/lib/argp-help.c:1645
 msgid "  or: "
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1656
+#: gnulib/lib/argp-help.c:1657
 #, fuzzy
 msgid " [OPTION...]"
 msgstr "Pengunaan: %s [OPSYEN]...\n"
 
-#: gnulib/lib/argp-help.c:1683
+#: gnulib/lib/argp-help.c:1684
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Cuba `%s --help' untuk maklumat lanjut .\n"
 
-#: gnulib/lib/argp-help.c:1711
+#: gnulib/lib/argp-help.c:1712
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "\n"
 "Lapor pepijat ke <%s>.\n"
 
-#: gnulib/lib/argp-help.c:1930 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Ralat sistem yang tidak diketahui"
 
@@ -186,83 +186,83 @@ msgstr "gagal untuk kembali ke direktori kerja pemulaan"
 msgid "failed to return to initial working directory"
 msgstr "gagal untuk kembali ke direktori kerja pemulaan"
 
-#: gnulib/lib/regcomp.c:130
+#: gnulib/lib/regcomp.c:131
 msgid "Success"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:133
+#: gnulib/lib/regcomp.c:134
 msgid "No match"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:136
+#: gnulib/lib/regcomp.c:137
 #, fuzzy
 msgid "Invalid regular expression"
 msgstr "%s: ungkapan biasa (regexp) tidak sah: %s"
 
-#: gnulib/lib/regcomp.c:139
+#: gnulib/lib/regcomp.c:140
 #, fuzzy
 msgid "Invalid collation character"
 msgstr "aksara tidak sah pada %s pada rentetan mod %s"
 
-#: gnulib/lib/regcomp.c:142
+#: gnulib/lib/regcomp.c:143
 #, fuzzy
 msgid "Invalid character class name"
 msgstr "aksara tidak sah pada %s pada rentetan mod %s"
 
-#: gnulib/lib/regcomp.c:145
+#: gnulib/lib/regcomp.c:146
 msgid "Trailing backslash"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:148
+#: gnulib/lib/regcomp.c:149
 msgid "Invalid back reference"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:151
+#: gnulib/lib/regcomp.c:152
 msgid "Unmatched [ or [^"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:154
+#: gnulib/lib/regcomp.c:155
 msgid "Unmatched ( or \\("
 msgstr ""
 
-#: gnulib/lib/regcomp.c:157
+#: gnulib/lib/regcomp.c:158
 msgid "Unmatched \\{"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:160
+#: gnulib/lib/regcomp.c:161
 msgid "Invalid content of \\{\\}"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:163
+#: gnulib/lib/regcomp.c:164
 #, fuzzy
 msgid "Invalid range end"
 msgstr "%s: ungkapan biasa (regexp) tidak sah: %s"
 
-#: gnulib/lib/regcomp.c:166
+#: gnulib/lib/regcomp.c:167
 #, fuzzy
 msgid "Memory exhausted"
 msgstr "memori keletihan"
 
-#: gnulib/lib/regcomp.c:169
+#: gnulib/lib/regcomp.c:170
 #, fuzzy
 msgid "Invalid preceding regular expression"
 msgstr "%s: ungkapan biasa (regexp) tidak sah: %s"
 
-#: gnulib/lib/regcomp.c:172
+#: gnulib/lib/regcomp.c:173
 #, fuzzy
 msgid "Premature end of regular expression"
 msgstr "ralat pada carian ungkapan biasa (regexp)"
 
-#: gnulib/lib/regcomp.c:175
+#: gnulib/lib/regcomp.c:176
 #, fuzzy
 msgid "Regular expression too big"
 msgstr "%s: ungkapan biasa (regexp) tidak sah: %s"
 
-#: gnulib/lib/regcomp.c:178
+#: gnulib/lib/regcomp.c:179
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gnulib/lib/regcomp.c:703
+#: gnulib/lib/regcomp.c:707
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "ralat pada carian ungkapan biasa (regexp)"
