@@ -1,4 +1,4 @@
-man-db (2.6.4-1) UNRELEASED; urgency=low
+man-db (2.6.4-1) unstable; urgency=low
 
   * New upstream release:
     - Document default section list in manual pages (closes: #611007).
@@ -13,7 +13,7 @@ man-db (2.6.4-1) UNRELEASED; urgency=low
   * Breaks/Replaces manpages-zh (<< 1.5.2-1.1); man-db now ships zh_CN
     translations formerly included there.
 
- -- Colin Watson <cjwatson@debian.org>  Thu, 13 Jun 2013 13:58:49 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon, 24 Jun 2013 11:34:02 +0100
 
 man-db (2.6.3-7) unstable; urgency=low
 
