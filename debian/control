@@ -13,7 +13,8 @@ Depends: groff-base (>= 1.18.1.1-15), bsdmainutils, debconf (>= 1.2.0) | debconf
 Suggests: groff, less, www-browser
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
-Replaces: man, nlsutils, manpages-de (<< 0.5-4)
+Breaks: manpages-zh (<< 1.5.2-1.1)
+Replaces: man, nlsutils, manpages-de (<< 0.5-4), manpages-zh (<< 1.5.2-1.1)
 Multi-Arch: foreign
 Description: on-line manual pager
  This package provides the man command, the primary way of examining the

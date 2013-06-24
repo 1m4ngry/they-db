@@ -10,6 +10,8 @@ man-db (2.6.4-1) UNRELEASED; urgency=low
   * Use 'set -e' rather than '#! /bin/sh -e' in maintainer scripts.
   * Remove maintainer script support for direct upgrades from pre-etch
     (three releases before current stable).
+  * Breaks/Replaces manpages-zh (<< 1.5.2-1.1); man-db now ships zh_CN
+    translations formerly included there.
 
  -- Colin Watson <cjwatson@debian.org>  Thu, 13 Jun 2013 13:58:49 +0100
 
