@@ -831,6 +831,7 @@ char *yytext;
 
 #include "dirname.h"
 #include "xgetcwd.h"
+#include "xvasprintf.h"
 
 #include "gettext.h"
 #include <locale.h>
@@ -886,7 +887,7 @@ struct zsoelim_stdin_data {
 
 
 
-#line 890 "zsoelim.c"
+#line 891 "zsoelim.c"
 
 #define INITIAL 0
 #define so 1
@@ -1079,10 +1080,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 127 "zsoelim.l"
+#line 128 "zsoelim.l"
 
 
-#line 1086 "zsoelim.c"
+#line 1087 "zsoelim.c"
 
 	if ( !(yy_init) )
 		{
@@ -1156,7 +1157,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 129 "zsoelim.l"
+#line 130 "zsoelim.l"
 {	
 			no_newline = 1;
 			ECHO;
@@ -1165,7 +1166,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 135 "zsoelim.l"
+#line 136 "zsoelim.l"
 {	
 			no_newline = 1;
 			BEGIN (so);	/* Now we're in the .so environment */
@@ -1173,7 +1174,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 140 "zsoelim.l"
+#line 141 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;		/* Now we're in the .lf environment */
@@ -1181,26 +1182,26 @@ YY_RULE_SETUP
 		}
 	YY_BREAK
 case 4:
-#line 147 "zsoelim.l"
+#line 148 "zsoelim.l"
 case 5:
 /* rule 5 can match eol */
-#line 148 "zsoelim.l"
+#line 149 "zsoelim.l"
 case 6:
 /* rule 6 can match eol */
-#line 149 "zsoelim.l"
+#line 150 "zsoelim.l"
 case 7:
 /* rule 7 can match eol */
-#line 150 "zsoelim.l"
+#line 151 "zsoelim.l"
 case 8:
 /* rule 8 can match eol */
-#line 151 "zsoelim.l"
+#line 152 "zsoelim.l"
 case 9:
 /* rule 9 can match eol */
-#line 152 "zsoelim.l"
+#line 153 "zsoelim.l"
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 152 "zsoelim.l"
+#line 153 "zsoelim.l"
 {
 				no_newline = 1;
 				ECHO;
@@ -1209,7 +1210,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 157 "zsoelim.l"
+#line 158 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1218,7 +1219,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 164 "zsoelim.l"
+#line 165 "zsoelim.l"
 { 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
@@ -1254,7 +1255,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 196 "zsoelim.l"
+#line 197 "zsoelim.l"
 {
 			no_newline = 0;
 			BEGIN (INITIAL);
@@ -1263,7 +1264,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 201 "zsoelim.l"
+#line 202 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1277,7 +1278,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 212 "zsoelim.l"
+#line 213 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1286,7 +1287,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 218 "zsoelim.l"
+#line 219 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1295,7 +1296,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 223 "zsoelim.l"
+#line 224 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1304,7 +1305,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 230 "zsoelim.l"
+#line 231 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1315,7 +1316,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 238 "zsoelim.l"
+#line 239 "zsoelim.l"
 {	/* file names including whitespace ?? */
 			no_newline = 1;
 			ECHO;
@@ -1329,7 +1330,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 249 "zsoelim.l"
+#line 250 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1337,7 +1338,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 254 "zsoelim.l"
+#line 255 "zsoelim.l"
 {
 			no_newline = 1;
 			error (OK, 0,
@@ -1351,7 +1352,7 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 264 "zsoelim.l"
+#line 265 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1369,7 +1370,7 @@ case YY_STATE_EOF(de):
 case YY_STATE_EOF(end_request):
 case YY_STATE_EOF(lfnumber):
 case YY_STATE_EOF(lfname):
-#line 275 "zsoelim.l"
+#line 276 "zsoelim.l"
 {
 		pipeline_wait (PIPE);
 		pipeline_free (PIPE);
@@ -1394,10 +1395,10 @@ case YY_STATE_EOF(lfname):
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 296 "zsoelim.l"
+#line 297 "zsoelim.l"
 ECHO;
 	YY_BREAK
-#line 1401 "zsoelim.c"
+#line 1402 "zsoelim.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2345,7 +2346,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 296 "zsoelim.l"
+#line 297 "zsoelim.l"
 
 
 
@@ -2443,7 +2444,7 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 
 		/* If there is no parent path, try opening directly first. */
 		if (!parent_path) {
-			compfile = appendstr (NULL, filename, ".", NULL);
+			compfile = xasprintf ("%s.", filename);
 
 			decomp = try_compressed (&compfile);
 			if (decomp) {
@@ -2458,8 +2459,8 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 			 * up within each manpath entry.
 			 */
 			if (parent_path) {
-				compfile = appendstr (NULL, parent_path, "/",
-						      filename, ".", NULL);
+				compfile = xasprintf ("%s/%s.", parent_path,
+						      filename);
 
 				decomp = try_compressed (&compfile);
 				if (decomp) {
@@ -2474,8 +2475,7 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 				if (parent_path && STREQ (*mp, parent_path))
 					continue;
 
-				compfile = appendstr (NULL, *mp, "/",
-						      filename, ".", NULL);
+				compfile = xasprintf ("%s/%s.", *mp, filename);
 
 				decomp = try_compressed (&compfile);
 				if (decomp) {
@@ -2537,7 +2537,7 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 
 		/* If there is a parent path, try opening directly last. */
 		if (parent_path) {
-			compfile = appendstr (NULL, filename, ".", NULL);
+			compfile = xasprintf ("%s.", filename);
 
 			decomp = try_compressed (&compfile);
 			if (decomp) {

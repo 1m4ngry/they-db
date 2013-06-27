@@ -28,6 +28,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "xvasprintf.h"
+
 #include "manconfig.h"
 
 #include "pipeline.h"
@@ -107,15 +109,16 @@ static void free_manconv_codes (void *data)
 
 void add_manconv (pipeline *p, const char *source, const char *target)
 {
-	struct manconv_codes *codes = xmalloc (sizeof *codes);
+	struct manconv_codes *codes;
 	char *name;
 	pipecmd *cmd;
 
 	if (STREQ (source, "UTF-8") && STREQ (target, "UTF-8"))
 		return;
 
+	codes = xmalloc (sizeof *codes);
 	/* informational only; no shell quoting concerns */
-	name = appendstr (NULL, MANCONV, " -f ", NULL);
+	name = xasprintf ("%s -f ", MANCONV);
 	if (STREQ (source, "UTF-8")) {
 		codes->from = XNMALLOC (2, char *);
 		codes->from[0] = xstrdup (source);
@@ -128,7 +131,7 @@ void add_manconv (pipeline *p, const char *source, const char *target)
 		codes->from[2] = NULL;
 		name = appendstr (name, "UTF-8:", source, NULL);
 	}
-	codes->to = appendstr (NULL, target, "//IGNORE", NULL);
+	codes->to = xasprintf ("%s//IGNORE", target);
 	/* informational only; no shell quoting concerns */
 	name = appendstr (name, " -t ", codes->to, NULL);
 	if (quiet >= 2)

@@ -242,7 +242,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 static struct argp apropos_argp = { options, parse_opt, args_doc, apropos_doc };
 static struct argp whatis_argp = { options, parse_opt, args_doc };
 
-static char *locale_manpath (char *manpath)
+static char *locale_manpath (const char *manpath)
 {
 	char *all_locales;
 	char *new_manpath;
@@ -308,7 +308,7 @@ static char *simple_convert (iconv_t conv, char *string)
 static void use_grep (const char * const *pages, int num_pages, char *manpath,
 		      int *found)
 {
-	char *whatis_file = appendstr (NULL, manpath, "/whatis", NULL);
+	char *whatis_file = xasprintf ("%s/whatis", manpath);
 
 	if (access (whatis_file, R_OK) == 0) {
 		const char *flags;
@@ -334,8 +334,7 @@ static void use_grep (const char * const *pages, int num_pages, char *manpath,
 			if (am_apropos)
 				anchored_page = xstrdup (pages[i]);
 			else
-				anchored_page = appendstr (NULL, "^", pages[i],
-							   NULL);
+				anchored_page = xasprintf ("^%s", pages[i]);
 
 			grep_cmd = pipecmd_new_argstr (get_def_user ("grep",
 								     GREP));
@@ -441,10 +440,9 @@ static void display (struct mandata *info, const char *page)
 
 	line_len = get_line_length ();
 
-	if (strlen (page_name) > (size_t) (line_len / 2)) {
-		string = xstrndup (page_name, line_len / 2 - 3);
-		string = appendstr (string, "...", NULL);
-	} else
+	if (strlen (page_name) > (size_t) (line_len / 2))
+		string = xasprintf ("%.*s...", line_len / 2 - 3, page_name);
+	else
 		string = xstrdup (page_name);
 	string = appendstr (string, " (", newinfo->ext, ")", NULL);
 	if (!STREQ (newinfo->pointer, "-") && !STREQ (newinfo->pointer, page))
@@ -501,7 +499,7 @@ static inline int do_whatis_section (const char *page, const char *section)
 
 static int suitable_manpath (const char *manpath, const char *page_dir)
 {
-	char *page_manp;
+	char *page_manp, *pm;
 	char *page_manpathlist[MAXDIRS], **mp;
 	int ret;
 
@@ -510,7 +508,9 @@ static int suitable_manpath (const char *manpath, const char *page_dir)
 		free (page_manp);
 		return 0;
 	}
-	page_manp = locale_manpath (page_manp);
+	pm = locale_manpath (page_manp);
+	free (page_manp);
+	page_manp = pm;
 	create_pathlist (page_manp, page_manpathlist);
 
 	ret = 0;
@@ -554,6 +554,7 @@ static void do_whatis (const char * const *pages, int num_pages,
 					debug ("%s not on manpath for %s\n",
 					       manpath, page);
 					free (page_dir);
+					free (page);
 					continue;
 				}
 			}
@@ -958,8 +959,7 @@ int main (int argc, char *argv[])
 	display_seen = hashtable_create (&null_hashtable_free);
 
 #ifdef HAVE_ICONV
-	locale_charset = appendstr (NULL, get_locale_charset (), "//IGNORE",
-				    NULL);
+	locale_charset = xasprintf ("%s//IGNORE", get_locale_charset ());
 	conv_to_locale = iconv_open (locale_charset, "UTF-8");
 	free (locale_charset);
 #endif /* HAVE_ICONV */

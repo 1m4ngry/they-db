@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.6.4], [cjwatson@debian.org])
+AC_INIT([man-db], [2.6.5], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([tools])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -21,7 +21,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2013-06-23
+date=2013-06-27
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -219,20 +219,6 @@ dnl		nroff="$nroff ${man_cv_prog_nroff_macro}${nroff_device}"
 		AC_MSG_RESULT([ambiguous])
 		AC_MSG_WARN([please edit include/manconfig.h and add nroff definition])
 	fi
-
-	AC_CACHE_CHECK([whether nroff supports warning control],
-		       [man_cv_prog_nroff_warnings], [
-		if test "x$troff_is_groff" = xyes && \
-		   nroff -wmac </dev/null >/dev/null 2>&1
-		then
-			man_cv_prog_nroff_warnings=yes
-		else
-			man_cv_prog_nroff_warnings=no
-		fi])
-	if test "x$man_cv_prog_nroff_warnings" = xyes; then
-		AC_DEFINE([NROFF_WARNINGS], [1],
-			  [Define if nroff supports warning control.])
-	fi
 else
 	AC_MSG_WARN([Cannot find an nroff-like program, formatting of manual page source will not be supported.])
 	nroff="(nroff not installed)"
@@ -288,6 +274,23 @@ then
 	fi
 else
 	troff="(troff not installed)"
+fi
+
+if test -n "$nroff"
+then
+	AC_CACHE_CHECK([whether nroff supports warning control],
+		       [man_cv_prog_nroff_warnings], [
+		if test "x$troff_is_groff" = xyes && \
+		   nroff -wmac </dev/null >/dev/null 2>&1
+		then
+			man_cv_prog_nroff_warnings=yes
+		else
+			man_cv_prog_nroff_warnings=no
+		fi])
+	if test "x$man_cv_prog_nroff_warnings" = xyes; then
+		AC_DEFINE([NROFF_WARNINGS], [1],
+			  [Define if nroff supports warning control.])
+	fi
 fi
 
 AC_CHECK_PROGS([preconv], [gpreconv preconv])

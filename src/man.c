@@ -188,7 +188,7 @@ static char *manpathlist[MAXDIRS];
 /* globals */
 int quiet = 1;
 char *program_name;
-char *database;
+char *database = NULL;
 MYDBM_FILE dbf; 
 extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
@@ -535,25 +535,23 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			/* check for incompatible options */
 			if (troff + whatis + apropos + catman +
 			    (print_where || print_where_cat) > 1) {
-				char *badopts = appendstr
-					(NULL,
+				char *badopts = xasprintf
+					("%s%s%s%s%s%s",
 					 troff ? "-[tTZH] " : "",
 					 whatis ? "-f " : "",
 					 apropos ? "-k " : "",
 					 catman ? "-c " : "",
 					 print_where ? "-w " : "",
-					 print_where_cat ? "-W " : "",
-					 NULL);
+					 print_where_cat ? "-W " : "");
 				argp_error (state,
 					    _("%s: incompatible options"),
 					    badopts);
 			}
 			if (regex_opt + wildcard > 1) {
-				char *badopts = appendstr
-					(NULL,
+				char *badopts = xasprintf
+					("%s%s",
 					 regex_opt ? "--regex " : "",
-					 wildcard ? "--wildcard " : "",
-					 NULL);
+					 wildcard ? "--wildcard " : "");
 				argp_error (state,
 					    _("%s: incompatible options"),
 					    badopts);
@@ -881,7 +879,7 @@ static int run_mandb (int create, const char *manpath, const char *filename)
 #endif /* MAN_DB_CREATES || MAN_DB_UPDATES */
 
 
-static char *locale_manpath (char *manpath)
+static char *locale_manpath (const char *manpath)
 {
 	char *all_locales;
 	char *new_manpath;
@@ -956,7 +954,7 @@ static int local_man_loop (const char *argv)
 
 			if (directory_on_path (argv_dir)) {
 				char *argv_base = base_name (argv);
-				char *new_manp;
+				char *new_manp, *nm;
 				char **old_manpathlist, **mp;
 
 				debug ("recalculating manpath for executable "
@@ -968,7 +966,9 @@ static int local_man_loop (const char *argv)
 					       "executable\n");
 					goto executable_out;
 				}
-				new_manp = locale_manpath (new_manp);
+				nm = locale_manpath (new_manp);
+				free (new_manp);
+				new_manp = nm;
 
 				old_manpathlist = XNMALLOC (MAXDIRS, char *);
 				memcpy (old_manpathlist, manpathlist,
@@ -1176,15 +1176,21 @@ int main (int argc, char *argv[])
 			manp = get_manpath ("");
 			printf ("%s\n", manp);
 			exit (OK);
-		} else
+		} else {
+			free (cwd);
+			free (internal_locale);
+			free (program_name);
 			gripe_no_name (NULL);
+		}
 	}
 
 	section_list = get_section_list ();
 
-	if (manp == NULL)
-		manp = locale_manpath (get_manpath (alt_system_name));
-	else
+	if (manp == NULL) {
+		char *mp = get_manpath (alt_system_name);
+		manp = locale_manpath (mp);
+		free (mp);
+	} else
 		free (get_manpath (NULL));
 
 	debug ("manpath search path (with duplicates) = %s\n", manp);
@@ -1359,6 +1365,7 @@ int main (int argc, char *argv[])
 	if (cwd[0])
 		chdir (cwd);
 
+	free (database);
 	free_pathlist (manpathlist);
 	free (cwd);
 	free (internal_locale);
@@ -1389,16 +1396,9 @@ static inline const char *is_section (const char *name)
 	return NULL;
 }
 
-/* Snarf pre-processors from file, return (static) string or NULL on failure */
-static const char *get_preprocessors_from_file (pipeline *decomp)
+/* Snarf pre-processors from file, return string or NULL on failure */
+static char *get_preprocessors_from_file (pipeline *decomp)
 {
-	static char *directive = NULL;
-
-	if (directive) {
-		free (directive);
-		directive = NULL;
-	}
-
 #ifdef PP_COOKIE
 	const char *line;
 
@@ -1412,45 +1412,45 @@ static const char *get_preprocessors_from_file (pipeline *decomp)
 	if (!strncmp (line, PP_COOKIE, 4)) {
 		const char *newline = strchr (line, '\n');
 		if (newline)
-			directive = xstrndup (line + 4, newline - (line + 4));
+			return xstrndup (line + 4, newline - (line + 4));
 		else
-			directive = xstrdup (line + 4);
+			return xstrdup (line + 4);
 	}
-
-	/* if we didn't find PP_COOKIE, then directive == NULL */
 #endif
-	return directive;
+	return NULL;
 }
 
 
-/* Determine pre-processors, set save_cat and return
-   (static) string */
-static const char *get_preprocessors (pipeline *decomp, const char *dbfilters)
+/* Determine pre-processors, set save_cat and return string */
+static char *get_preprocessors (pipeline *decomp, const char *dbfilters)
 {
-	const char *pp_string;
+	char *pp_string;
 	const char *pp_source;
+	const char *env;
 
 	/* try in order: database, command line, file, environment, default */
 	/* command line overrides the database, but database empty overrides default */
 	if (dbfilters && (dbfilters[0] != '-') && !preprocessors) {
-		pp_string = dbfilters;
+		pp_string = xstrdup (dbfilters);
 		pp_source = "database";
 		save_cat = 1;
-	} else if ((pp_string = preprocessors)) {
+	} else if (preprocessors) {
+		pp_string = xstrdup (preprocessors);
 		pp_source = "command line";
 		save_cat = 0;
 	} else if ((pp_string = get_preprocessors_from_file (decomp))) {
 		pp_source = "file";
 		save_cat = 1;
-	} else if ((pp_string = getenv ("MANROFFSEQ"))) {
+	} else if ((env = getenv ("MANROFFSEQ"))) {
+		pp_string = xstrdup (env);
 		pp_source = "environment";
 		save_cat = 0;
 	} else if (!dbfilters) {
-		pp_string = DEFAULT_MANROFFSEQ;
+		pp_string = xstrdup (DEFAULT_MANROFFSEQ);
 		pp_source = "default";
 		save_cat = 1;
 	} else {
-		pp_string = "";
+		pp_string = xstrdup ("");
 		pp_source = "no filters";
 		save_cat = 1;
 	}
@@ -1493,7 +1493,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				    pipeline *decomp, const char *dbfilters,
 				    char **result_encoding)
 {
-	const char *pp_string;
+	char *raw_pp_string, *pp_string;
 	const char *roff_opt;
 	char *fmt_prog;
 	pipeline *p = pipeline_new ();
@@ -1504,7 +1504,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 
 	*result_encoding = xstrdup ("UTF-8"); /* optimistic default */
 
-	pp_string = get_preprocessors (decomp, dbfilters);
+	pp_string = raw_pp_string = get_preprocessors (decomp, dbfilters);
 
 	roff_opt = getenv ("MANROFFOPT");
 	if (!roff_opt)
@@ -1820,6 +1820,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	}
 
 	free (page_encoding);
+	free (raw_pp_string);
 	return p;
 }
 
@@ -2330,6 +2331,7 @@ static void format_display (pipeline *decomp,
 			       htmldir);
 		free (htmlfile);
 		free (htmldir);
+		free (old_cwd);
 	} else
 #endif /* TROFF_IS_GROFF */
 	/* TODO: check format_cmd status too? */
@@ -2501,6 +2503,7 @@ static int display (const char *dir, const char *man_file,
 				free (name);
 				free_locale_bits (&bits);
 			}
+			free (page_lang);
 		}
 #endif /* TROFF_IS_GROFF */
 
@@ -2567,6 +2570,7 @@ static int display (const char *dir, const char *man_file,
 			if (prompt && do_prompt (title)) {
 				pipeline_free (format_cmd);
 				pipeline_free (decomp);
+				free (formatted_encoding);
 				return 0;
 			}
 			drop_effective_privs ();
@@ -2693,6 +2697,7 @@ static int display (const char *dir, const char *man_file,
 			if (prompt && do_prompt (title)) {
 				pipeline_free (format_cmd);
 				pipeline_free (decomp);
+				free (formatted_encoding);
 				if (local_man_file)
 					return 1;
 				else
@@ -2743,6 +2748,8 @@ static int display (const char *dir, const char *man_file,
 			pipeline_free (decomp_cat);
 		}
 	}
+
+	free (formatted_encoding);
 
 	pipeline_free (format_cmd);
 	pipeline_free (decomp);
@@ -2805,6 +2812,7 @@ static char *find_cat_file (const char *path, const char *original,
 				*tmp = 0;
 			if (is_directory (cat_dir)) {
 				debug ("will try cat file %s\n", cat_file);
+				free (cat_dir);
 				return cat_file;
 			} else
 				debug ("cat dir %s does not exist\n", cat_dir);
@@ -3276,6 +3284,8 @@ static int try_section (const char *path, const char *sec, const char *name,
 		struct mandata *info = infoalloc ();
 		char *info_buffer = filename_info (*np, info, name);
 		const char *ult;
+		int f;
+
 		if (!info_buffer) {
 			free_mandata_struct (info);
 			continue;
@@ -3300,8 +3310,17 @@ static int try_section (const char *path, const char *sec, const char *name,
 		else
 			info->id = SO_MAN;
 
-		found += add_candidate (cand_head, CANDIDATE_FILESYSTEM,
-					cat, name, path, ult, info);
+		f = add_candidate (cand_head, CANDIDATE_FILESYSTEM,
+				   cat, name, path, ult, info);
+		found += f;
+		/* Free info and info_buffer if they weren't added to the
+		 * candidates.
+		 */
+		if (f == 0) {
+			free (info_buffer);
+			info->addr = NULL;
+			free_mandata_struct (info);
+		}
 		/* Don't free info and info_buffer here. */
 	}
 
@@ -3313,12 +3332,18 @@ static int display_filesystem (struct candidate *candp)
 	char *filename = make_filename (candp->path, NULL, candp->source,
 					candp->cat ? "cat" : "man");
 	/* source->name is never NULL thanks to add_candidate() */
-	char *title = appendstr (NULL, candp->source->name,
-				 "(", candp->source->ext, ")", NULL);
+	char *title = xasprintf ("%s(%s)", candp->source->name,
+				 candp->source->ext);
 	if (candp->cat) {
-		if (troff || want_encoding || recode)
+		int r;
+
+		if (troff || want_encoding || recode) {
+			free (title);
 			return 0;
-		return display (candp->path, NULL, filename, title, NULL);
+		}
+		r = display (candp->path, NULL, filename, title, NULL);
+		free (title);
+		return r;
 	} else {
 		const char *man_file;
 		char *cat_file;
@@ -3341,6 +3366,7 @@ static int display_filesystem (struct candidate *candp)
 		free (lang);
 		lang = NULL;
 		free (title);
+		free (filename);
 
 		return found;
 	}
@@ -3386,7 +3412,7 @@ static int display_database (struct candidate *candp)
 	if (in->id == WHATIS_MAN || in->id == WHATIS_CAT)
 		debug (_("%s: relying on whatis refs is deprecated\n"), name);
 
-	title = appendstr (NULL, name, "(", in->ext, ")", NULL);
+	title = xasprintf ("%s(%s)", name, in->ext);
 
 #ifndef NROFF_MISSING /* #ifdef NROFF */
 	/*
@@ -3566,6 +3592,7 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 	/* find out where our db for this manpath should be */
 
 	catpath = get_catpath (manpath, global_manpath ? SYSTEM_CAT : USER_CAT);
+	free (database);
 	if (catpath) {
 		database = mkdbname (catpath);
 		free (catpath);
@@ -3835,8 +3862,8 @@ static int do_global_apropos_section (const char *path, const char *sec,
 			goto next;
 		info->addr = info_buffer;
 
-		title = appendstr (NULL, strchr (info_buffer, '\0') + 1,
-				   "(", info->ext, ")", NULL);
+		title = xasprintf ("%s(%s)", strchr (info_buffer, '\0') + 1,
+				   info->ext);
 		man_file = ult_src (*np, path, NULL, ult_flags, NULL);
 		if (!man_file)
 			goto next;
@@ -3937,7 +3964,7 @@ static int man (const char *name, int *found)
 
 	for (cand = candidates; cand; cand = candnext) {
 		candnext = cand->next;
-		free (cand);
+		free_candidate (cand);
 	}
 
 	return *found ? OK : NOT_FOUND;

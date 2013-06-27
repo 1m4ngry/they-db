@@ -323,7 +323,7 @@ static inline void add_dir_entries (const char *path, char *infile)
 	struct dirent *newdir;
 	DIR *dir;
 
-	manpage = appendstr (NULL, path, "/", infile, "/", NULL);
+	manpage = xasprintf ("%s/%s/", path, infile);
 	len = strlen (manpage);
 
 	/*
@@ -385,8 +385,8 @@ static void mkcatdirs (const char *mandir, const char *catdir)
 			drop_effective_privs ();
 		}
 		/* then the hierarchy */
-		catname = appendstr (NULL, catdir, "/cat1", NULL);
-		manname = appendstr (NULL, mandir, "/man1", NULL);
+		catname = xasprintf ("%s/cat1", catdir);
+		manname = xasprintf ("%s/man1", mandir);
 		if (is_directory (catdir) == 1) {
 			int j;
 			regain_effective_privs ();
@@ -441,7 +441,11 @@ static int testmandirs (const char *path, const char *catpath, time_t last,
 		return 0;
 	}
 
-	chdir (path);
+	if (chdir (path) != 0) {
+		error (0, errno, _("can't change to directory %s"), path);
+		closedir (dir);
+		return 0;
+	}
 
 	while( (mandir = readdir (dir)) ) {
 		if (strncmp (mandir->d_name, "man", 3) != 0)
@@ -477,11 +481,13 @@ static int testmandirs (const char *path, const char *catpath, time_t last,
 				if (errno == EACCES || errno == EROFS) {
 					debug ("database %s is read-only\n",
 					       database);
+					closedir (dir);
 					return 0;
 				} else {
 					error (0, errno,
 					       _("can't create index cache %s"),
 					       database);
+					closedir (dir);
 					return -errno;
 				}
 			}
@@ -494,6 +500,7 @@ static int testmandirs (const char *path, const char *catpath, time_t last,
 
 		if (!dbf) {
 			gripe_rwopen_failed ();
+			closedir (dir);
 			return 0;
 		}
 

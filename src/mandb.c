@@ -227,6 +227,8 @@ static inline void xchmod (const char *path, mode_t mode)
 static int xcopy (const char *from, const char *to)
 {
 	FILE *ifp, *ofp;
+	static const size_t buf_size = 32 * 1024;
+	char *buf;
 	int ret = 0;
 
 	ifp = fopen (from, "r");
@@ -246,9 +248,9 @@ static int xcopy (const char *from, const char *to)
 		return ret;
 	}
 
+	buf = xmalloc (buf_size);
 	while (!feof (ifp) && !ferror (ifp)) {
-		char buf[32 * 1024];
-		size_t in = fread (buf, 1, sizeof (buf), ifp);
+		size_t in = fread (buf, 1, buf_size, ifp);
 		if (in > 0) {
 			if (fwrite (buf, 1, in, ofp) == 0 && ferror (ofp)) {
 				ret = -errno;
@@ -261,6 +263,7 @@ static int xcopy (const char *from, const char *to)
 			break;
 		}
 	}
+	free (buf);
 
 	fclose (ifp);
 	fclose (ofp);
@@ -415,16 +418,14 @@ static void cleanup (void *dummy ATTRIBUTE_UNUSED)
 /* sort out the database names */
 static int mandb (const char *catpath, const char *manpath)
 {
-	char pid[23];
 	int ret, amount;
 	char *dbname;
 	char *cachedir_tag;
 	struct stat st;
 
 	dbname = mkdbname (catpath);
-	sprintf (pid, "%d", getpid ());
-	database = appendstr (NULL, catpath, "/", pid, NULL);
-	
+	database = xasprintf ("%s/%d", catpath, getpid ());
+
 	if (!quiet) 
 		printf (_("Processing manual pages under %s...\n"), manpath);
 
@@ -448,9 +449,9 @@ static int mandb (const char *catpath, const char *manpath)
 
 #ifdef NDBM
 #  ifdef BERKELEY_DB
-	dbfile = appendstr (NULL, dbname, ".db", NULL);
+	dbfile = xasprintf ("%s.db", dbname);
 	free (dbname);
-	tmpdbfile = appendstr (NULL, database, ".db", NULL);
+	tmpdbfile = xasprintf ("%s.db", database);
 	if (create || force_rescan || opt_test) {
 		xremove (tmpdbfile);
 		ret = create_db (manpath, catpath);
@@ -467,11 +468,11 @@ static int mandb (const char *catpath, const char *manpath)
 		amount = ret;
 	}
 #  else /* !BERKELEY_DB NDBM */
-	dirfile = appendstr (NULL, dbname, ".dir", NULL);
-	pagfile = appendstr (NULL, dbname, ".pag", NULL);
+	dirfile = xasprintf ("%s.dir", dbname);
+	pagfile = xasprintf ("%s.pag", dbname);
 	free (dbname);
-	tmpdirfile = appendstr (NULL, database, ".dir", NULL);
-	tmppagfile = appendstr (NULL, database, ".pag", NULL);
+	tmpdirfile = xasprintf ("%s.dir", database);
+	tmppagfile = xasprintf ("%s.pag", database);
 	if (create || force_rescan || opt_test) {
 		xremove (tmpdirfile);
 		xremove (tmppagfile);
@@ -554,7 +555,7 @@ static int process_manpath (const char *manpath, int global_manpath,
 		/* The file might be in a per-locale subdirectory that we
 		 * aren't processing right now.
 		 */
-		char *manpath_prefix = appendstr (NULL, manpath, "/man", NULL);
+		char *manpath_prefix = xasprintf ("%s/man", manpath);
 		if (STRNEQ (manpath_prefix, single_filename,
 		    strlen (manpath_prefix))) {
 			int ret = mandb (catpath, manpath);
@@ -647,9 +648,8 @@ void purge_catsubdirs (const char *manpath, const char *catpath)
 		if (!STRNEQ (ent->d_name, "cat", 3))
 			continue;
 
-		mandir = appendstr (NULL, manpath, "/man", ent->d_name + 3,
-				    NULL);
-		catdir = appendstr (NULL, catpath, "/", ent->d_name, NULL);
+		mandir = xasprintf ("%s/man%s", manpath, ent->d_name + 3);
+		catdir = xasprintf ("%s/%s", catpath, ent->d_name);
 
 		if (stat (mandir, &st) != 0 && errno == ENOENT) {
 			if (!quiet)
@@ -713,8 +713,8 @@ void purge_catdirs (const struct hashtable *tried_catdirs)
 			if (!is_lang_dir (subdirent->d_name))
 				continue;
 
-			subdirpath = appendstr (NULL, path, "/",
-						subdirent->d_name, NULL);
+			subdirpath = xasprintf ("%s/%s", path,
+					        subdirent->d_name);
 
 			tried = hashtable_lookup (tried_catdirs, subdirpath,
 						  strlen (subdirpath));
@@ -858,8 +858,8 @@ int main (int argc, char *argv[])
 			if (STRNEQ (subdirent->d_name, "man", 3))
 				continue;
 
-			subdirpath = appendstr (NULL, *mp, "/",
-						subdirent->d_name, NULL);
+			subdirpath = xasprintf ("%s/%s", *mp,
+						subdirent->d_name);
 			ret = process_manpath (subdirpath, global_manpath,
 					       tried_catdirs);
 			if (ret < 0)

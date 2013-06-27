@@ -304,9 +304,8 @@ static char *pathappend (char *oldpath, const char *appendage)
 				} else if (*terminator == ':') {
 					char *newapp;
 					*search = 0;
-					newapp = appendstr (NULL, app_dedup,
-							    terminator + 1,
-							    NULL);
+					newapp = xasprintf ("%s%s", app_dedup,
+							    terminator + 1);
 					free (app_dedup);
 					app_dedup = newapp;
 				}
@@ -473,7 +472,7 @@ static char *get_nls_manpath (const char *manpathlist, const char *locale)
 				continue;
 			if (STRNEQ (name, "man", 3))
 				continue;
-			fullpath = appendstr (NULL, path, "/", name, NULL);
+			fullpath = xasprintf ("%s/%s", path, name);
 			if (is_directory (fullpath) != 1) {
 				free (fullpath);
 				continue;
@@ -500,12 +499,13 @@ static char *get_nls_manpath (const char *manpathlist, const char *locale)
 
 		closedir (mandir);
 	}
+	free (manpathlist_copy);
 
 	free_locale_bits (&lbits);
 	return manpath;
 }
 
-char *add_nls_manpaths (char *manpathlist, const char *locales)
+char *add_nls_manpaths (const char *manpathlist, const char *locales)
 {
 	char *manpath = NULL;
 	char *locales_copy, *tok, *locales_ptr;
@@ -514,7 +514,7 @@ char *add_nls_manpaths (char *manpathlist, const char *locales)
 	debug ("add_nls_manpaths(): processing %s\n", manpathlist);
 
 	if (locales == NULL || *locales == '\0')
-		return manpathlist;
+		return xstrdup (manpathlist);
 
 	/* For each locale, we iterate over the manpath and find appropriate
 	 * locale directories for each item. We then concatenate the results
@@ -563,6 +563,7 @@ char *add_nls_manpaths (char *manpathlist, const char *locales)
 			free (locale_manpath);
 		}
 	}
+	free (locales_copy);
 
 	/* Always try untranslated pages as a last resort. */
 	locale_manpath = get_nls_manpath (manpathlist, "C");
@@ -715,7 +716,7 @@ char *get_manpath (const char *systems)
 				       CONFIG_FILE);
 			system1 = add_system_manpath (systems, manpathlist);
 			guessed = guess_manpath (systems);
-			manpathlist = appendstr (NULL, guessed, system1, NULL);
+			manpathlist = xasprintf ("%s%s", guessed, system1);
 			free (guessed);
 			free (system1);
 		} else if (manpathlist[strlen (manpathlist) - 1] == ':') {
@@ -726,7 +727,7 @@ char *get_manpath (const char *systems)
 				       CONFIG_FILE);
 			system1 = add_system_manpath (systems, manpathlist);
 			guessed = guess_manpath (systems);
-			manpathlist = appendstr (NULL, system1, guessed, NULL);
+			manpathlist = xasprintf ("%s%s", system1, guessed);
 			free (guessed);
 			free (system1);
 		} else if ((pos = strstr (manpathlist,"::"))) {
@@ -739,8 +740,8 @@ char *get_manpath (const char *systems)
 			system1 = add_system_manpath (systems, manpathlist);
 			guessed = guess_manpath (systems);
 			system2 = add_system_manpath (systems, pos);
-			manpathlist = appendstr (NULL, system1, ":", guessed,
-						 system2, NULL);
+			manpathlist = xasprintf ("%s:%s%s", system1, guessed,
+						 system2);
 			free (system2);
 			free (guessed);
 			free (system1);
@@ -817,6 +818,8 @@ next:
 		free (buf);
 		buf = NULL;
 	}
+
+	free (buf);
 }
 
 static void free_config_file (void *unused ATTRIBUTE_UNUSED)
@@ -850,7 +853,7 @@ void read_config_file (int optional)
 	else {
 		char *home = getenv ("HOME");
 		if (home)
-			dotmanpath = appendstr (NULL, home, "/.manpath", NULL);
+			dotmanpath = xasprintf ("%s/.manpath", home);
 	}
 	if (dotmanpath) {
 		config = fopen (dotmanpath, "r");
@@ -1111,7 +1114,7 @@ static inline char *has_mandir (const char *path)
 		free (newpath);
 	}
 
-	newpath = appendstr (NULL, path, "/man", NULL);
+	newpath = xasprintf ("%s/man", path);
 	if (is_directory (newpath) == 1)
 		return newpath;
 	free (newpath);
@@ -1124,7 +1127,7 @@ static inline char *has_mandir (const char *path)
 		free (newpath);
 	}
 
-	newpath = appendstr (NULL, path, "/share/man", NULL);
+	newpath = xasprintf ("%s/share/man", path);
 	if (is_directory (newpath) == 1)
 		return newpath;
 	free (newpath);

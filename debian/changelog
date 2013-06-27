@@ -1,3 +1,11 @@
+man-db (2.6.5-1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - man's --warnings option works again on systems with versions of groff
+      that support it (broken in 2.6.4).  This broke Lintian's test suite.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 27 Jun 2013 11:54:34 +0100
+
 man-db (2.6.4-1) unstable; urgency=low
 
   * New upstream release:
