@@ -1,11 +1,11 @@
-man-db (2.6.5-2) UNRELEASED; urgency=low
+man-db (2.6.5-2) unstable; urgency=low
 
   * Backport from trunk:
     - Attempt fallback locales even if /usr/share/i18n/SUPPORTED exists.
       (It may exist but none of the UTF-8 locales mentioned it in may be
       present; nevertheless, C.UTF-8 may be available.)
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 28 Jun 2013 06:16:57 +0100
+ -- Colin Watson <cjwatson@debian.org>  Fri, 28 Jun 2013 06:18:32 +0100
 
 man-db (2.6.5-1) unstable; urgency=low
 
