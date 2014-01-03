@@ -3,6 +3,7 @@ man-db (2.6.5-3) UNRELEASED; urgency=low
   * Drop obsolete dpkg version check in cron jobs; the version in question
     predates oldstable, and man-db pre-depends on a newer version anyway
     (closes: #731687).
+  * Silence errors caused by cron.daily racing with mandb (closes: #734063).
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 08 Dec 2013 14:16:57 +0000
 
