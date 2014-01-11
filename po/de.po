@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.3.90\n"
-"POT-Creation-Date: 2002-06-25 01:26+0100\n"
+"POT-Creation-Date: 2002-06-26 15:00+0000\n"
 "PO-Revision-Date: 2002-06-05 15:09:13+0200\n"
 "Last-Translator: Michael Piefel <piefel@informatik.hu-berlin.de>\n"
 "Language-Team: German <de@li.org>\n"

@@ -1,9 +1,0 @@
-ABOUT-NLS
-GNUmakefile
-aclocal.m4
-autom4te.cache
-config.log
-config.status
-configure
-makefile
-stamp-h*
