@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.3.10-69i\n"
-"POT-Creation-Date: 2001-07-04 18:24+0100\n"
+"POT-Creation-Date: 2001-07-05 15:58+0100\n"
 "PO-Revision-Date: 1999-08-20 13:12+02:00\n"
 "Last-Translator: Giovanni Bortolozzo <borto@pluto.linux.it>\n"
 "Language-Team: Italian <it@li.org>\n"

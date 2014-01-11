@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.3.10\n"
-"POT-Creation-Date: 2001-07-04 18:24+0100\n"
+"POT-Creation-Date: 2001-07-05 15:58+0100\n"
 "PO-Revision-Date: 1998-03-09 08:18+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"

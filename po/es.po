@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: man-db 2.3.10\n"
-"POT-Creation-Date: 2001-07-04 18:24+0100\n"
+"POT-Creation-Date: 2001-07-05 15:58+0100\n"
 "PO-Revision-Date: 1998-04-16 19:52+0200\n"
 "Last-Translator: César Ballardini <cballard@santafe.com.ar>\n"
 "Language-Team: debian-l10n-spanish@lists.debian.org\n"
