@@ -1,14 +1,22 @@
-Description: Attempt fallback locales even if /usr/share/i18n/SUPPORTED exists
-Author: Colin Watson <cjwatson@debian.org>
-Origin: backport, http://bazaar.launchpad.net/~cjwatson/man-db/trunk/revision/1501
+From b620637b2aa33742229f7549cb711862b6e51cb4 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Wed, 15 Jan 2014 02:42:50 +0000
+Subject: Attempt fallback locales even if /usr/share/i18n/SUPPORTED exists
+
+Origin: backport, http://git.savannah.gnu.org/cgit/man-db.git/commit/?id=97186737a1e518cd55a38b1358e58c9ee4c05d05
 Forwarded: not-needed
 Last-Update: 2013-06-28
 
-Index: b/lib/encodings.c
-===================================================================
+Patch-Name: fallback-locales.patch
+---
+ lib/encodings.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
+
+diff --git a/lib/encodings.c b/lib/encodings.c
+index db61696..d982827 100644
 --- a/lib/encodings.c
 +++ b/lib/encodings.c
-@@ -591,23 +591,7 @@
+@@ -591,23 +591,7 @@ char *find_charset_locale (const char *charset)
  		saved_locale = xstrdup (saved_locale);
  
  	supported = fopen (supported_path, "r");
@@ -33,7 +41,7 @@ Index: b/lib/encodings.c
  		const char *space = strchr (line, ' ');
  		if (space) {
  			char *encoding = xstrdup (space + 1);
-@@ -620,7 +604,6 @@
+@@ -620,7 +604,6 @@ char *find_charset_locale (const char *charset)
  				/* Is this locale actually installed? */
  				if (setlocale (LC_CTYPE, locale)) {
  					free (encoding);
@@ -41,7 +49,7 @@ Index: b/lib/encodings.c
  					goto out;
  				} else
  					locale = NULL;
-@@ -631,7 +614,21 @@
+@@ -631,7 +614,21 @@ char *find_charset_locale (const char *charset)
  		line = NULL;
  	}
  
