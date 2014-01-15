@@ -1,3 +1,10 @@
+man-db (2.6.5-4) UNRELEASED; urgency=medium
+
+  * Switch to git (thanks to reposurgeon for helping with the tricky
+    stitching involved); adjust Vcs-* fields.
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 15 Jan 2014 02:04:42 +0000
+
 man-db (2.6.5-3) unstable; urgency=low
 
   * Drop obsolete dpkg version check in cron jobs; the version in question
