@@ -2,6 +2,7 @@ man-db (2.6.5-4) UNRELEASED; urgency=medium
 
   * Switch to git (thanks to reposurgeon for helping with the tricky
     stitching involved); adjust Vcs-* fields.
+  * Policy version 3.9.5: no changes required.
 
  -- Colin Watson <cjwatson@debian.org>  Wed, 15 Jan 2014 02:04:42 +0000
 
