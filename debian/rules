@@ -28,6 +28,9 @@ override_dh_auto_configure:
 		    --with-xz=xz --with-lzip=lzip --with-lzma=lzma \
 		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
 
+override_dh_auto_test:
+	VERBOSE=1 dh_auto_test
+
 override_dh_auto_install:
 	dh_auto_install
 	rm -f $(dtmp)/usr/lib/man-db/*.la
