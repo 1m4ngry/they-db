@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2013-06-27 11:07+0100\n"
+"POT-Creation-Date: 2014-01-23 13:49+0000\n"
 "PO-Revision-Date: 2010-02-23 19:52+0100\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -19,32 +19,32 @@ msgstr ""
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: gnulib/lib/argp-help.c:148
+#: gnulib/lib/argp-help.c:158
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr "ARGP_HELP_FMT: %s értéke nem nagyobb, mint %s"
 
-#: gnulib/lib/argp-help.c:221
+#: gnulib/lib/argp-help.c:231
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr "%.*s: Az ARGP_HELP_FMT paraméter értéket igényel"
 
-#: gnulib/lib/argp-help.c:227
+#: gnulib/lib/argp-help.c:237
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr "%.*s: Az ARGP_HELP_FMT paraméternek pozitívnak kell lennie"
 
-#: gnulib/lib/argp-help.c:236
+#: gnulib/lib/argp-help.c:246
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr "%.*s: Ismeretlen ARGP_HELP_FMT paraméter"
 
-#: gnulib/lib/argp-help.c:248
+#: gnulib/lib/argp-help.c:258
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Szemét az ARGP_HELP_FMT-ben: %s"
 
-#: gnulib/lib/argp-help.c:1248
+#: gnulib/lib/argp-help.c:1258
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -52,71 +52,71 @@ msgstr ""
 "Ha egy hosszú kapcsolóhoz kötelező vagy opcionális argumentumot megadni, "
 "akkor ez a megfelelő rövid kapcsolónál is kötelező vagy opcionális."
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1651
 msgid "Usage:"
 msgstr "Használat:"
 
-#: gnulib/lib/argp-help.c:1645
+#: gnulib/lib/argp-help.c:1655
 msgid "  or: "
 msgstr "  vagy: "
 
-#: gnulib/lib/argp-help.c:1657
+#: gnulib/lib/argp-help.c:1667
 msgid " [OPTION...]"
 msgstr " [KAPCSOLÓ…]"
 
-#: gnulib/lib/argp-help.c:1684
+#: gnulib/lib/argp-help.c:1694
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "További információkért lásd a(z) „%s --help” vagy „%s --usage” kimenetét.\n"
 
-#: gnulib/lib/argp-help.c:1712
+#: gnulib/lib/argp-help.c:1722
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "A hibák itt jelenthetők: %s.\n"
 
-#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1940 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Ismeretlen rendszerhiba"
 
-#: gnulib/lib/argp-parse.c:81
+#: gnulib/lib/argp-parse.c:91
 msgid "give this help list"
 msgstr "ezen súgószöveg megjelenítése"
 
-#: gnulib/lib/argp-parse.c:82
+#: gnulib/lib/argp-parse.c:92
 msgid "give a short usage message"
 msgstr "rövid használati utasítás megjelenítése"
 
-#: gnulib/lib/argp-parse.c:83
+#: gnulib/lib/argp-parse.c:93
 msgid "NAME"
 msgstr "NÉV"
 
-#: gnulib/lib/argp-parse.c:83
+#: gnulib/lib/argp-parse.c:93
 msgid "set the program name"
 msgstr "a program nevének beállítása"
 
-#: gnulib/lib/argp-parse.c:84
+#: gnulib/lib/argp-parse.c:94
 msgid "SECS"
 msgstr "MÁSODPERC"
 
-#: gnulib/lib/argp-parse.c:85
+#: gnulib/lib/argp-parse.c:95
 msgid "hang for SECS seconds (default 3600)"
 msgstr "szünet MP másodpercre (alapértelmezetten 3600)"
 
-#: gnulib/lib/argp-parse.c:142
+#: gnulib/lib/argp-parse.c:153
 msgid "print program version"
 msgstr "a programverzió kiírása"
 
-#: gnulib/lib/argp-parse.c:159
+#: gnulib/lib/argp-parse.c:170
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(PROGRAMHIBA) A verzió nem ismert!"
 
-#: gnulib/lib/argp-parse.c:612
+#: gnulib/lib/argp-parse.c:623
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s: Túl sok argumentum\n"
 
-#: gnulib/lib/argp-parse.c:755
+#: gnulib/lib/argp-parse.c:766
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(PROGRAMHIBA) A kapcsolót ismerni kellene?"
 

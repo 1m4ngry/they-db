@@ -1,5 +1,12 @@
-man-db (2.6.5-4) UNRELEASED; urgency=medium
+man-db (2.6.6-1) UNRELEASED; urgency=medium
 
+  * New upstream release:
+    - Reimplement 'apropos --and' in a way that works with the optimisations
+      introduced in 2.6.2 (closes: #678670).
+    - Clarify that whatis displays one-line descriptions, rather than e.g.
+      the contents of DESCRIPTION sections (closes: #713992).
+    - Downgrade EAGAIN/EWOULDBLOCK errors from attempts to open a database
+      read-write to debug messages (closes: #684235).
   * Switch to git (thanks to reposurgeon for helping with the tricky
     stitching involved); adjust Vcs-* fields.
   * Policy version 3.9.5: no changes required.

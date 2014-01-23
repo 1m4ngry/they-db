@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.6.5], [cjwatson@debian.org])
+AC_INIT([man-db], [2.6.6], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([tools])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -10,7 +10,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([src/man.c])
 AC_GNU_SOURCE
-AM_PROG_AR
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT([disable-static])
 
 if test ! -f "$srcdir/gnulib/po/Makefile.in.in"; then
@@ -21,7 +21,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2013-06-27
+date=2014-01-23
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -118,6 +118,15 @@ AC_ARG_ENABLE([cats],
 		AC_DEFINE([MAN_CATS], [1], [Allow man to create/update cat files.])
 	 fi],
 	[AC_DEFINE([MAN_CATS], [1], [Allow man to create/update cat files.])])
+AC_ARG_WITH([override-dir],
+[AS_HELP_STRING([--with-override-dir=OVERRIDE], [use OVERRIDE as relative override dir inside the man path - the first directory to be searched when looking for man pages])],
+	[if test "$withval" = "yes" || test "$withval" = "no"
+	 then
+		AC_MSG_ERROR([--with-override-dir requires an argument])
+	 else
+		override_dir=$withval
+	 fi],
+	[: ${override_dir=""}])
 
 # Finish the argument parsing.
 AC_SUBST([man_owner])dnl
@@ -126,6 +135,7 @@ AC_SUBST([config_file])dnl
 AC_SUBST([config_file_basename])dnl
 AC_SUBST([config_file_dirname])dnl
 AC_SUBST([sections])dnl
+AC_SUBST([override_dir])dnl
 
 # Check $PATH for the following programs and append suitable options.
 AC_PROG_CC
