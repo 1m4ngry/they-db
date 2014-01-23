@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 1.1\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2013-06-27 11:07+0100\n"
+"POT-Creation-Date: 2014-01-23 13:49+0000\n"
 "PO-Revision-Date: 2007-07-20 12:24-0600\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -18,32 +18,32 @@ msgstr ""
 "Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :"
 "(n>6 && n<11) ? 3 : 4;\n"
 
-#: gnulib/lib/argp-help.c:148
+#: gnulib/lib/argp-help.c:158
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr "ARGP_HELP_FMT: luach %s níos lú ná nó cothrom le %s"
 
-#: gnulib/lib/argp-help.c:221
+#: gnulib/lib/argp-help.c:231
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr "%.*s: luach de dhíth ar pharaiméadar ARGP_HELP_FMT"
 
-#: gnulib/lib/argp-help.c:227
+#: gnulib/lib/argp-help.c:237
 #, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr "%.*s: luach deimhneach de dhíth ar pharaiméadar ARGP_HELP_FMT"
 
-#: gnulib/lib/argp-help.c:236
+#: gnulib/lib/argp-help.c:246
 #, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr "%.*s: Paraiméadar anaithnid ARGP_HELP_FMT"
 
-#: gnulib/lib/argp-help.c:248
+#: gnulib/lib/argp-help.c:258
 #, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "Truflais i ARGP_HELP_FMT: %s"
 
-#: gnulib/lib/argp-help.c:1248
+#: gnulib/lib/argp-help.c:1258
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
 "optional for any corresponding short options."
@@ -51,71 +51,71 @@ msgstr ""
 "Is riachtanach/roghnach le rogha ghearr aon argóint atá riachtanach/roghnach "
 "leis an rogha fhada."
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1651
 msgid "Usage:"
 msgstr "Úsáid:"
 
-#: gnulib/lib/argp-help.c:1645
+#: gnulib/lib/argp-help.c:1655
 msgid "  or: "
 msgstr "  nó: "
 
-#: gnulib/lib/argp-help.c:1657
+#: gnulib/lib/argp-help.c:1667
 msgid " [OPTION...]"
 msgstr " [ROGHA...]"
 
-#: gnulib/lib/argp-help.c:1684
+#: gnulib/lib/argp-help.c:1694
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Bain triail as `%s --help' nó `%s --usage' chun tuilleadh eolais a fháil.\n"
 
-#: gnulib/lib/argp-help.c:1712
+#: gnulib/lib/argp-help.c:1722
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Seol tuairiscí fabhtanna chuig %s.\n"
 
-#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1940 gnulib/lib/error.c:188
 msgid "Unknown system error"
 msgstr "Earráid chórais anaithnid"
 
-#: gnulib/lib/argp-parse.c:81
+#: gnulib/lib/argp-parse.c:91
 msgid "give this help list"
 msgstr "taispeáin an chabhair seo"
 
-#: gnulib/lib/argp-parse.c:82
+#: gnulib/lib/argp-parse.c:92
 msgid "give a short usage message"
 msgstr "tabhair teachtaireacht bheag úsáide"
 
-#: gnulib/lib/argp-parse.c:83
+#: gnulib/lib/argp-parse.c:93
 msgid "NAME"
 msgstr "AINM"
 
-#: gnulib/lib/argp-parse.c:83
+#: gnulib/lib/argp-parse.c:93
 msgid "set the program name"
 msgstr "socraigh ainm an chláir"
 
-#: gnulib/lib/argp-parse.c:84
+#: gnulib/lib/argp-parse.c:94
 msgid "SECS"
 msgstr "SOIC"
 
-#: gnulib/lib/argp-parse.c:85
+#: gnulib/lib/argp-parse.c:95
 msgid "hang for SECS seconds (default 3600)"
 msgstr "déan moill SOIC soicind (réamhshocrú: 3600)"
 
-#: gnulib/lib/argp-parse.c:142
+#: gnulib/lib/argp-parse.c:153
 msgid "print program version"
 msgstr "taispeáin leagan an chláir"
 
-#: gnulib/lib/argp-parse.c:159
+#: gnulib/lib/argp-parse.c:170
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(EARRÁID CHLÁIR) Leagan anaithnid!?"
 
-#: gnulib/lib/argp-parse.c:612
+#: gnulib/lib/argp-parse.c:623
 #, c-format
 msgid "%s: Too many arguments\n"
 msgstr "%s: An iomarca argóintí\n"
 
-#: gnulib/lib/argp-parse.c:755
+#: gnulib/lib/argp-parse.c:766
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(EARRÁID CHLÁIR) Ba chóir an rogha a aithint!?"
 

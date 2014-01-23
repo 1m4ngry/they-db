@@ -1,3 +1,34 @@
+man-db 2.6.6 (23 January 2014)
+==============================
+
+Major changes since man-db 2.6.5:
+
+	man-db is now revision-controlled using git (http://git-scm.com/).
+	See docs/HACKING for the location of the repository.
+
+	Fixes:
+	------
+
+	o apropos's --and option now works again; it was broken by the
+	  optimisations in 2.6.2.
+
+	o Restore compatibility with Automake 1.10.
+
+	o Improve support for translation of common elements of help
+	  messages.
+
+	o Don't issue error messages when the database refers to a page that
+	  no longer exists.
+
+	o Pass macro and hyphenation language tags to groff again (broken in
+	  2.6.5).
+
+	Improvements:
+	-------------
+
+	o ./configure --with-override-dir=OVERRIDE arranges to look for
+	  manual pages in DIR/OVERRIDE before each path element DIR.
+
 man-db 2.6.5 (27 June 2013)
 ===========================
 

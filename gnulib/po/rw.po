@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailutils 0.6\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2013-06-27 11:07+0100\n"
+"POT-Creation-Date: 2014-01-23 13:49+0000\n"
 "PO-Revision-Date: 2005-04-04 10:55-0700\n"
 "Last-Translator: Steven Michael Murphy <murf@e-tools.com>\n"
 "Language-Team: Kinyarwanda <translation-team-rw@lists.sourceforge.net>\n"
@@ -26,12 +26,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: gnulib/lib/argp-help.c:148
+#: gnulib/lib/argp-help.c:158
 #, c-format
 msgid "ARGP_HELP_FMT: %s value is less than or equal to %s"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:221
+#: gnulib/lib/argp-help.c:231
 #, fuzzy, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter requires a value"
 msgstr ""
@@ -44,7 +44,7 @@ msgstr ""
 "X- Generator: KBabel 1. 0\n"
 "."
 
-#: gnulib/lib/argp-help.c:227
+#: gnulib/lib/argp-help.c:237
 #, fuzzy, c-format
 msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
 msgstr ""
@@ -57,7 +57,7 @@ msgstr ""
 "X- Generator: KBabel 1. 0\n"
 "."
 
-#: gnulib/lib/argp-help.c:236
+#: gnulib/lib/argp-help.c:246
 #, fuzzy, c-format
 msgid "%.*s: Unknown ARGP_HELP_FMT parameter"
 msgstr ""
@@ -70,12 +70,12 @@ msgstr ""
 "X- Generator: KBabel 1. 0\n"
 "."
 
-#: gnulib/lib/argp-help.c:248
+#: gnulib/lib/argp-help.c:258
 #, fuzzy, c-format
 msgid "Garbage in ARGP_HELP_FMT: %s"
 msgstr "in"
 
-#: gnulib/lib/argp-help.c:1248
+#: gnulib/lib/argp-help.c:1258
 #, fuzzy
 msgid ""
 "Mandatory or optional arguments to long options are also mandatory or "
@@ -84,81 +84,81 @@ msgstr ""
 "Cyangwa Bitari ngombwa ingingo Kuri Amahitamo Cyangwa Bitari ngombwa "
 "kugirango Amahitamo"
 
-#: gnulib/lib/argp-help.c:1641
+#: gnulib/lib/argp-help.c:1651
 msgid "Usage:"
 msgstr "Ikoresha:"
 
-#: gnulib/lib/argp-help.c:1645
+#: gnulib/lib/argp-help.c:1655
 #, fuzzy
 msgid "  or: "
 msgstr "Cyangwa"
 
-#: gnulib/lib/argp-help.c:1657
+#: gnulib/lib/argp-help.c:1667
 msgid " [OPTION...]"
 msgstr ""
 
-#: gnulib/lib/argp-help.c:1684
+#: gnulib/lib/argp-help.c:1694
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Cyangwa kugirango Birenzeho Ibisobanuro"
 
-#: gnulib/lib/argp-help.c:1712
+#: gnulib/lib/argp-help.c:1722
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Kuri"
 
-#: gnulib/lib/argp-help.c:1931 gnulib/lib/error.c:188
+#: gnulib/lib/argp-help.c:1940 gnulib/lib/error.c:188
 #, fuzzy
 msgid "Unknown system error"
 msgstr "Sisitemu Ikosa"
 
-#: gnulib/lib/argp-parse.c:81
+#: gnulib/lib/argp-parse.c:91
 #, fuzzy
 msgid "give this help list"
 msgstr "iyi Ifashayobora Urutonde"
 
-#: gnulib/lib/argp-parse.c:82
+#: gnulib/lib/argp-parse.c:92
 #, fuzzy
 msgid "give a short usage message"
 msgstr "a Ikoresha: Ubutumwa"
 
-#: gnulib/lib/argp-parse.c:83
+#: gnulib/lib/argp-parse.c:93
 #, fuzzy
 msgid "NAME"
 msgstr "Izina"
 
-#: gnulib/lib/argp-parse.c:83
+#: gnulib/lib/argp-parse.c:93
 #, fuzzy
 msgid "set the program name"
 msgstr "i Porogaramu Izina:"
 
 # offmgr/source\offapp\dialog\optgdlg.src:OFA_TP_MISC.FT_HELPAGENT_TIME_UNIT.text
-#: gnulib/lib/argp-parse.c:84
+#: gnulib/lib/argp-parse.c:94
 #, fuzzy
 msgid "SECS"
 msgstr "amasogonda"
 
-#: gnulib/lib/argp-parse.c:85
+#: gnulib/lib/argp-parse.c:95
 #, fuzzy
 msgid "hang for SECS seconds (default 3600)"
 msgstr "kugirango amasogonda Mburabuzi"
 
-#: gnulib/lib/argp-parse.c:142
+#: gnulib/lib/argp-parse.c:153
 #, fuzzy
 msgid "print program version"
 msgstr "Porogaramu Verisiyo"
 
-#: gnulib/lib/argp-parse.c:159
+#: gnulib/lib/argp-parse.c:170
 #, fuzzy
 msgid "(PROGRAM ERROR) No version known!?"
 msgstr "(Verisiyo"
 
-#: gnulib/lib/argp-parse.c:612
+#: gnulib/lib/argp-parse.c:623
 #, fuzzy, c-format
 msgid "%s: Too many arguments\n"
 msgstr "ingingo"
 
-#: gnulib/lib/argp-parse.c:755
+#: gnulib/lib/argp-parse.c:766
 #, fuzzy
 msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(Verisiyo"

@@ -2256,8 +2256,7 @@ static void format_display (pipeline *decomp,
 		man_ext = strchr (man_base, '.');
 		if (man_ext)
 			*man_ext = '\0';
-		htmlfile = xstrdup (htmldir);
-		htmlfile = appendstr (htmlfile, "/", man_base, ".html", NULL);
+		htmlfile = xasprintf ("%s/%s.html", htmldir, man_base);
 		free (man_base);
 		htmlfd = open (htmlfile, O_CREAT | O_EXCL | O_WRONLY, 0644);
 		if (htmlfd == -1)
@@ -2502,8 +2501,8 @@ static int display (const char *dir, const char *man_file,
 				++seq_ncmds;
 				free (name);
 				free_locale_bits (&bits);
-			}
-			free (page_lang);
+			} else
+				free (page_lang);
 		}
 #endif /* TROFF_IS_GROFF */
 
@@ -3114,6 +3113,8 @@ static int add_candidate (struct candidate **head, char from_db, char cat,
 			name = req_name;
 
 		filename = make_filename (path, name, source, cat ? "cat" : "man");
+		if (!filename)
+			return 0;
 		ult = ult_src (filename, path, NULL,
 			       get_ult_flags (from_db, source->id), NULL);
 		free (filename);
@@ -3331,30 +3332,26 @@ static int display_filesystem (struct candidate *candp)
 {
 	char *filename = make_filename (candp->path, NULL, candp->source,
 					candp->cat ? "cat" : "man");
-	/* source->name is never NULL thanks to add_candidate() */
-	char *title = xasprintf ("%s(%s)", candp->source->name,
-				 candp->source->ext);
-	if (candp->cat) {
-		int r;
+	char *title;
+	int found = 0;
 
-		if (troff || want_encoding || recode) {
-			free (title);
-			return 0;
-		}
-		r = display (candp->path, NULL, filename, title, NULL);
-		free (title);
-		return r;
+	if (!filename)
+		return 0;
+	/* source->name is never NULL thanks to add_candidate() */
+	title = xasprintf ("%s(%s)", candp->source->name, candp->source->ext);
+
+	if (candp->cat) {
+		if (troff || want_encoding || recode)
+			goto out;
+		found = display (candp->path, NULL, filename, title, NULL);
 	} else {
 		const char *man_file;
 		char *cat_file;
-		int found;
 
 		man_file = ult_src (filename, candp->path, NULL, ult_flags,
 				    NULL);
-		if (man_file == NULL) {
-			free (title);
-			return 0;
-		}
+		if (man_file == NULL)
+			goto out;
 
 		debug ("found ultimate source file %s\n", man_file);
 		lang = lang_dir (man_file);
@@ -3365,11 +3362,12 @@ static int display_filesystem (struct candidate *candp)
 			free (cat_file);
 		free (lang);
 		lang = NULL;
-		free (title);
-		free (filename);
-
-		return found;
 	}
+
+out:
+	free (title);
+	free (filename);
+	return found;
 }
 
 #ifdef MAN_DB_UPDATES
@@ -3421,9 +3419,7 @@ static int display_database (struct candidate *candp)
 
 	if (in->id < STRAY_CAT) {	/* There should be a src page */
 		file = make_filename (candp->path, name, in, "man");
-		debug ("Checking physical location: %s\n", file);
-
-		if (access (file, R_OK) == 0) {
+		if (file) {
 			const char *man_file;
 			char *cat_file;
 
@@ -3444,8 +3440,9 @@ static int display_database (struct candidate *candp)
 				free (cat_file);
 			free (lang);
 			lang = NULL;
+			free (file);
 		} /* else {drop through to the bottom and return 0 anyway} */
-	} else 
+	} else
 
 #endif /* NROFF_MISSING */
 
@@ -3470,9 +3467,7 @@ static int display_database (struct candidate *candp)
 		}
 
 		file = make_filename (candp->path, name, in, "cat");
-		debug ("Checking physical location: %s\n", file);
-
-		if (access (file, R_OK) != 0) {
+		if (!file) {
 			char *catpath;
 			catpath = get_catpath (candp->path,
 					       global_manpath ? SYSTEM_CAT
@@ -3482,10 +3477,7 @@ static int display_database (struct candidate *candp)
 				file = make_filename (catpath, name,
 						      in, "cat");
 				free (catpath);
-				debug ("Checking physical location: %s\n",
-				       file);
-
-				if (access (file, R_OK) != 0) {
+				if (!file) {
 					/* don't delete here, 
 					   return==0 will do that */
 					free (title);
@@ -3500,6 +3492,7 @@ static int display_database (struct candidate *candp)
 		}
 
 		found += display (candp->path, NULL, file, title, in->filter);
+		free (file);
 	}
 	free (title);
 	return found;
@@ -3549,6 +3542,8 @@ static int maybe_update_file (const char *manpath, const char *name,
 		real_name = name;
 
 	file = make_filename (manpath, real_name, info, "man");
+	if (!file)
+		return 0;
 	if (lstat (file, &buf) != 0)
 		return 0;
 	if (buf.st_mtime == info->_st_mtime)
@@ -3560,6 +3555,7 @@ static int maybe_update_file (const char *manpath, const char *name,
 	if (status)
 		error (0, 0, _("mandb command failed with exit status %d"),
 		       status);
+	free (file);
 
 	return 1;
 }
