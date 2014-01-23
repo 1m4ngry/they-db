@@ -1,0 +1,46 @@
+From 9f83c51d73672e1e147b8ec0fe917110a70230ce Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Thu, 23 Jan 2014 15:35:48 +0000
+Subject: Fix test failure with --enable-undoc
+
+* src/man.c (gripe_no_man): Don't print "See ... for help" message
+when MAN_TEST_DISABLE_UNDOCUMENTED is set in the environment.
+* src/tests/man-7: Export MAN_TEST_DISABLE_UNDOCUMENTED=1.
+
+Origin: backport, http://git.savannah.gnu.org/cgit/man-db.git/commit/?id=2e9c63ff619e4dd10ce89e22631b761ac0934135
+Last-Update: 2014-01-23
+
+Patch-Name: undoc-test.patch
+---
+ src/man.c       | 3 ++-
+ src/tests/man-7 | 3 +++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/man.c b/src/man.c
+index b2e9dbd..7471ef7 100644
+--- a/src/man.c
++++ b/src/man.c
+@@ -727,7 +727,8 @@ static inline void gripe_no_man (const char *name, const char *sec)
+ 		fprintf (stderr, _("No manual entry for %s\n"), name);
+ 
+ #ifdef UNDOC_COMMAND
+-	if (pathsearch_executable (name))
++	if (getenv ("MAN_TEST_DISABLE_UNDOCUMENTED") == NULL &&
++	    pathsearch_executable (name))
+ 		fprintf (stderr,
+ 			 _("See '%s' for help when manual pages are not "
+ 			   "available.\n"), UNDOC_COMMAND);
+diff --git a/src/tests/man-7 b/src/tests/man-7
+index 7dd0ed0..6cecf13 100755
+--- a/src/tests/man-7
++++ b/src/tests/man-7
+@@ -13,6 +13,9 @@ init
+ fake_config /usr/share/man
+ export MANPATH="$tmpdir/usr/share/man"
+ 
++MAN_TEST_DISABLE_UNDOCUMENTED=1
++export MAN_TEST_DISABLE_UNDOCUMENTED
++
+ write_page test 1 "$tmpdir/usr/share/man/man1/test.1" \
+ 	UTF-8 '' '' 'test \- top-level test page'
+ run $MANDB -C "$tmpdir/manpath.config" -u -q "$tmpdir/usr/share/man"
