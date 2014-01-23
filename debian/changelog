@@ -1,4 +1,4 @@
-man-db (2.6.6-1) UNRELEASED; urgency=medium
+man-db (2.6.6-1) unstable; urgency=medium
 
   * New upstream release:
     - Reimplement 'apropos --and' in a way that works with the optimisations
@@ -13,7 +13,7 @@ man-db (2.6.6-1) UNRELEASED; urgency=medium
   * Set VERBOSE=1 when running tests so that Automake will print test logs
     on failure.
 
- -- Colin Watson <cjwatson@debian.org>  Wed, 15 Jan 2014 02:04:42 +0000
+ -- Colin Watson <cjwatson@debian.org>  Thu, 23 Jan 2014 15:49:44 +0000
 
 man-db (2.6.5-3) unstable; urgency=low
 
