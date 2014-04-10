@@ -1,4 +1,4 @@
-man-db (2.6.7-1) UNRELEASED; urgency=medium
+man-db (2.6.7.1-1) UNRELEASED; urgency=medium
 
   * Add OpenPGP signature checking configuration to watch file.
   * New upstream release.
