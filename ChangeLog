@@ -1,5 +1,17 @@
 2014-04-10  Colin Watson  <cjwatson@debian.org>
 
+	* Version: 2.6.7.1.
+
+2014-04-10  Colin Watson  <cjwatson@debian.org>
+
+	Remove test suite dependency on realpath(1)
+
+	* src/tests/mandb-7: Prepend "$(pwd -P)/" to $tmpdir in
+	configuration files rather than calling realpath.
+	* NEWS: Document this.
+
+2014-04-10  Colin Watson  <cjwatson@debian.org>
+
 	* Version: 2.6.7.
 
 	* Makefile.am (EXTRA_DIST): Add gnulib/argp-domain.patch.
