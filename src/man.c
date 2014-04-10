@@ -727,7 +727,8 @@ static inline void gripe_no_man (const char *name, const char *sec)
 		fprintf (stderr, _("No manual entry for %s\n"), name);
 
 #ifdef UNDOC_COMMAND
-	if (pathsearch_executable (name))
+	if (getenv ("MAN_TEST_DISABLE_UNDOCUMENTED") == NULL &&
+	    pathsearch_executable (name))
 		fprintf (stderr,
 			 _("See '%s' for help when manual pages are not "
 			   "available.\n"), UNDOC_COMMAND);
@@ -1975,6 +1976,7 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 	}
 
 	if (pager_cmd) {
+		pipecmd_chdir (pager_cmd, cwd);
 		setenv_less (pager_cmd, title);
 		pipeline_command (p, pager_cmd);
 	}

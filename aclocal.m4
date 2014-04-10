@@ -793,7 +793,8 @@ to "yes", and re-run configure.
 END
     AC_MSG_ERROR([Your 'rm' program is bad, sorry.])
   fi
-fi])
+fi
+])
 
 dnl Hook into '_AC_COMPILER_EXEEXT' early to learn its expansion.  Do not
 dnl add the conditional right here, as _AC_COMPILER_EXEEXT may be further
@@ -1412,6 +1413,7 @@ m4_include([m4/man-linguas.m4])
 m4_include([m4/man-po4a.m4])
 m4_include([m4/man-trans-subst.m4])
 m4_include([gnulib/m4/00gnulib.m4])
+m4_include([gnulib/m4/absolute-header.m4])
 m4_include([gnulib/m4/alloca.m4])
 m4_include([gnulib/m4/argp.m4])
 m4_include([gnulib/m4/btowc.m4])

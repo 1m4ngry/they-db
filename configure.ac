@@ -2,8 +2,8 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.6.6], [cjwatson@debian.org])
-AC_CONFIG_AUX_DIR([tools])
+AC_INIT([man-db], [2.6.7], [cjwatson@debian.org])
+AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -21,7 +21,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2014-01-23
+date=2014-04-10
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -472,7 +472,7 @@ AC_TYPE_UID_T
 AC_TYPE_SIZE_T
 
 # Check for pipeline library.
-PKG_CHECK_MODULES([libpipeline], [libpipeline >= 1.1.0])
+PKG_CHECK_MODULES([libpipeline], [libpipeline >= 1.3.0])
 
 # Find a suitable database interface header and library.
 #
