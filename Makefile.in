@@ -82,11 +82,17 @@ DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure $(am__configure_deps) \
 	$(srcdir)/config.h.in $(top_srcdir)/include/comp_src.h.in \
 	$(top_srcdir)/include/manconfig.h.in $(dist_noinst_DATA) \
-	ABOUT-NLS NEWS README $(top_srcdir)/tools/ar-lib \
-	$(top_srcdir)/tools/compile $(top_srcdir)/tools/config.guess \
-	$(top_srcdir)/tools/config.rpath \
-	$(top_srcdir)/tools/config.sub $(top_srcdir)/tools/install-sh \
-	$(top_srcdir)/tools/ltmain.sh $(top_srcdir)/tools/missing
+	ABOUT-NLS NEWS README build-aux/ar-lib build-aux/compile \
+	build-aux/config.guess build-aux/config.rpath \
+	build-aux/config.sub build-aux/depcomp build-aux/install-sh \
+	build-aux/missing build-aux/ylwrap build-aux/ltmain.sh \
+	$(top_srcdir)/build-aux/ar-lib $(top_srcdir)/build-aux/compile \
+	$(top_srcdir)/build-aux/config.guess \
+	$(top_srcdir)/build-aux/config.rpath \
+	$(top_srcdir)/build-aux/config.sub \
+	$(top_srcdir)/build-aux/install-sh \
+	$(top_srcdir)/build-aux/ltmain.sh \
+	$(top_srcdir)/build-aux/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/man-bdb.m4 \
 	$(top_srcdir)/m4/man-check-progs.m4 \
@@ -96,6 +102,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-bdb.m4 \
 	$(top_srcdir)/m4/man-linguas.m4 $(top_srcdir)/m4/man-po4a.m4 \
 	$(top_srcdir)/m4/man-trans-subst.m4 \
 	$(top_srcdir)/gnulib/m4/00gnulib.m4 \
+	$(top_srcdir)/gnulib/m4/absolute-header.m4 \
 	$(top_srcdir)/gnulib/m4/alloca.m4 \
 	$(top_srcdir)/gnulib/m4/argp.m4 \
 	$(top_srcdir)/gnulib/m4/btowc.m4 \
@@ -1060,11 +1067,13 @@ REPLACE_FUTIMENS = @REPLACE_FUTIMENS@
 REPLACE_GETCWD = @REPLACE_GETCWD@
 REPLACE_GETDELIM = @REPLACE_GETDELIM@
 REPLACE_GETDOMAINNAME = @REPLACE_GETDOMAINNAME@
+REPLACE_GETDTABLESIZE = @REPLACE_GETDTABLESIZE@
 REPLACE_GETGROUPS = @REPLACE_GETGROUPS@
 REPLACE_GETLINE = @REPLACE_GETLINE@
 REPLACE_GETLOGIN_R = @REPLACE_GETLOGIN_R@
 REPLACE_GETPAGESIZE = @REPLACE_GETPAGESIZE@
 REPLACE_GETTIMEOFDAY = @REPLACE_GETTIMEOFDAY@
+REPLACE_GMTIME = @REPLACE_GMTIME@
 REPLACE_ISATTY = @REPLACE_ISATTY@
 REPLACE_ISWBLANK = @REPLACE_ISWBLANK@
 REPLACE_ISWCNTRL = @REPLACE_ISWCNTRL@
@@ -1073,6 +1082,7 @@ REPLACE_LCHOWN = @REPLACE_LCHOWN@
 REPLACE_LINK = @REPLACE_LINK@
 REPLACE_LINKAT = @REPLACE_LINKAT@
 REPLACE_LOCALECONV = @REPLACE_LOCALECONV@
+REPLACE_LOCALTIME = @REPLACE_LOCALTIME@
 REPLACE_LOCALTIME_R = @REPLACE_LOCALTIME_R@
 REPLACE_LSEEK = @REPLACE_LSEEK@
 REPLACE_LSTAT = @REPLACE_LSTAT@
@@ -1292,6 +1302,7 @@ program_transform_name = @program_transform_name@
 psdir = @psdir@
 refer = @refer@
 roff_version = @roff_version@
+runstatedir = @runstatedir@
 sbindir = @sbindir@
 sections = @sections@
 sharedstatedir = @sharedstatedir@
@@ -1316,12 +1327,13 @@ dist_noinst_DATA = FAQ NEWS README include/README
 # These macro files are imported by gnulib-tool, but at present not used. We
 # include them in the distribution anyway for maximum consistency.
 EXTRA_DIST = .gitignore ChangeLog-2013 autogen.sh \
-	gnulib/m4/gnulib-cache.m4 gnulib/m4/gnulib-tool.m4 release.sh \
-	gnulib/m4/glibc2.m4 gnulib/m4/intdiv0.m4 gnulib/m4/intl.m4 \
-	gnulib/m4/intldir.m4 gnulib/m4/intmax.m4 \
-	gnulib/m4/inttypes-pri.m4 gnulib/m4/lcmessage.m4 \
-	gnulib/m4/math_h.m4 gnulib/m4/printf-posix.m4 \
-	gnulib/m4/uintmax_t.m4 gnulib/m4/visibility.m4
+	gnulib/argp-domain.patch gnulib/m4/gnulib-cache.m4 \
+	gnulib/m4/gnulib-tool.m4 release.sh gnulib/m4/glibc2.m4 \
+	gnulib/m4/intdiv0.m4 gnulib/m4/intl.m4 gnulib/m4/intldir.m4 \
+	gnulib/m4/intmax.m4 gnulib/m4/inttypes-pri.m4 \
+	gnulib/m4/lcmessage.m4 gnulib/m4/math_h.m4 \
+	gnulib/m4/printf-posix.m4 gnulib/m4/uintmax_t.m4 \
+	gnulib/m4/visibility.m4
 
 # We deliberately leave the configuration file in place on uninstall, since
 # it may contain local customisations.
@@ -1828,7 +1840,7 @@ dist-hook: gen-ChangeLog
 .PHONY: gen-ChangeLog
 gen-ChangeLog:
 	$(AM_V_GEN)if test -d .git; then \
-		$(top_srcdir)/tools/gitlog-to-changelog \
+		$(top_srcdir)/build-aux/gitlog-to-changelog \
 			--format='%s%n%n%b%n' \
 			--since="$(gen_start_date)" > $(distdir)/cl-t; \
 		rm -f $(distdir)/ChangeLog; \

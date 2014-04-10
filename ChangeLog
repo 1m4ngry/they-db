@@ -1,3 +1,84 @@
+2014-04-10  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.6.7.
+
+	* Makefile.am (EXTRA_DIST): Add gnulib/argp-domain.patch.
+
+2014-04-10  Peter Schiffer  <pschiffe@redhat.com>
+
+	Only create a cache directory tag if catpath != manpath
+
+	* src/mandb.c (mandb): Don't create CACHEDIR.TAG if the catpath is
+	equal to the manpath.
+	* src/tests/mandb-7: New file.
+	* src/tests/Makefile.am (ALL_TESTS): Add mandb-7.
+	* NEWS: Document this.
+
+2014-04-10  Colin Watson  <cjwatson@debian.org>
+
+	Make cache directory tag creation more readable
+
+	* src/mandb.c (mandb): Move cache directory tag string to ...
+	(CACHEDIR_TAG): ... here (new macro).
+
+2014-03-26  Colin Watson  <cjwatson@debian.org>
+
+	Run the pager in man's original working directory
+
+	Reported by Peng Yu.
+
+	* src/man.c (make_display_command): Set pager_cmd's working
+	directory to man's original working directory.
+	* configure.ac: Require libpipeline >= 1.3.0.
+	* NEWS: Document this.
+
+2014-03-26  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Automake 1:1.14.1-3 (from Debian).
+
+2014-03-20  Mario Blättermann  <mario.blaettermann@gmail.com>
+
+	Update German manual page translation
+
+	* man/po4a/po/de.po: Update from Translation Project.
+	* man/THANKS: Add translator credit.
+
+2014-03-17  Robert Luberda  <robert@debian.org>
+
+	* man/po4a/po/pl.po: Update from Translation Project.
+
+2014-02-20  Colin Watson  <cjwatson@debian.org>
+
+	Move Autotools auxiliary build files from tools to build-aux.
+
+	This keeps man-db's own tools separate, reducing confusion, and
+	"build-aux" is a more conventional location for the Autotools files.
+
+2014-02-18  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade to Gnulib 20140202 and Libtool 2.4.2-1.7 (from Debian).
+
+	* lib/appendstr.c (appendstr): Use size_t type for string lengths.
+
+2014-01-23  Colin Watson  <cjwatson@debian.org>
+
+	Improve compatibility with archaic shells
+
+	* src/tests/man-5: Assign and export shell variables in two steps,
+	for improved compatibility with some archaic shells.
+	* src/tests/man-7: Likewise.
+	* src/tests/man-8: Likewise.
+	* src/tests/zsoelim-1: Likewise.
+
+2014-01-23  Colin Watson  <cjwatson@debian.org>
+
+	Fix test failure with --enable-undoc
+
+	* src/man.c (gripe_no_man): Don't print "See ... for help" message
+	when MAN_TEST_DISABLE_UNDOCUMENTED is set in the environment.
+	* src/tests/man-7: Export MAN_TEST_DISABLE_UNDOCUMENTED=1.
+	* NEWS: Document this.
+
 2014-01-23  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.6.6.

@@ -415,6 +415,12 @@ static void cleanup (void *dummy ATTRIBUTE_UNUSED)
 #endif /* NDBM */
 }
 
+#define CACHEDIR_TAG \
+	"Signature: 8a477f597d28d172789f06886806bc55\n" \
+	"# This file is a cache directory tag created by man-db.\n" \
+	"# For information about cache directory tags, see:\n" \
+	"#\thttp://www.brynosaurus.com/cachedir/\n"
+
 /* sort out the database names */
 static int mandb (const char *catpath, const char *manpath)
 {
@@ -429,23 +435,19 @@ static int mandb (const char *catpath, const char *manpath)
 	if (!quiet) 
 		printf (_("Processing manual pages under %s...\n"), manpath);
 
-	cachedir_tag = xasprintf ("%s/CACHEDIR.TAG", catpath);
-	if (stat (cachedir_tag, &st) == -1 && errno == ENOENT) {
-		FILE *cachedir_tag_file;
+	if (!STREQ (catpath, manpath)) {
+		cachedir_tag = xasprintf ("%s/CACHEDIR.TAG", catpath);
+		if (stat (cachedir_tag, &st) == -1 && errno == ENOENT) {
+			FILE *cachedir_tag_file;
 
-		cachedir_tag_file = fopen (cachedir_tag, "w");
-		if (cachedir_tag_file) {
-			fputs ("Signature: 8a477f597d28d172789f06886806bc55\n"
-			       "# This file is a cache directory tag created "
-			       "by man-db.\n"
-			       "# For information about cache directory tags, "
-			       "see:\n"
-			       "#\thttp://www.brynosaurus.com/cachedir/\n",
-			       cachedir_tag_file);
-			fclose (cachedir_tag_file);
+			cachedir_tag_file = fopen (cachedir_tag, "w");
+			if (cachedir_tag_file) {
+				fputs (CACHEDIR_TAG, cachedir_tag_file);
+				fclose (cachedir_tag_file);
+			}
 		}
+		free (cachedir_tag);
 	}
-	free (cachedir_tag);
 
 #ifdef NDBM
 #  ifdef BERKELEY_DB
