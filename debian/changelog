@@ -1,9 +1,9 @@
-man-db (2.6.7.1-1) UNRELEASED; urgency=medium
+man-db (2.6.7.1-1) unstable; urgency=medium
 
   * Add OpenPGP signature checking configuration to watch file.
   * New upstream release.
 
- -- Colin Watson <cjwatson@debian.org>  Sat, 08 Feb 2014 09:03:08 +0000
+ -- Colin Watson <cjwatson@debian.org>  Thu, 10 Apr 2014 03:43:39 +0100
 
 man-db (2.6.6-1) unstable; urgency=medium
 
