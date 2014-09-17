@@ -1,6 +1,9 @@
 man-db (2.6.7.1-2) UNRELEASED; urgency=medium
 
   * Remove unnecessary entries from debian/dirs.
+  * Cache the value of man-db/auto-update in the file system, so that we
+    don't have to talk to debconf when processing triggers (closes:
+    #579075).
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 16 Sep 2014 23:21:17 +0100
 

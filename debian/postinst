@@ -1,12 +1,8 @@
 #!/bin/sh
 set -e
 
-. /usr/share/debconf/confmodule
-db_version 2.0
-
 run_mandb () {
-    db_get man-db/auto-update
-    if [ "$RET" != true ]; then
+    if [ ! -e /var/lib/man-db/auto-update ]; then
 	echo "Not building database; man-db/auto-update is not 'true'." >&2
 	return 0
     fi
@@ -24,6 +20,9 @@ if [ "$1" = triggered ]; then
     run_mandb "" -pq
     exit 0
 fi
+
+. /usr/share/debconf/confmodule
+db_version 2.0
 
 [ "$1" = configure ] || exit 0
 
@@ -63,6 +62,17 @@ fi
 if [ ! -d $catdir ]; then
     # Make sure the cat directory exists.
     install -d -o man -g root -m 02755 $catdir
+fi
+
+# debconf forms the interface used to suppress man-db updates during
+# automatic package builds (see https://bugs.debian.org/554914), but we
+# cache that value in the file system to avoid having to use debconf when
+# processing triggers.
+db_get man-db/auto-update
+if [ "$RET" = true ]; then
+    touch /var/lib/man-db/auto-update
+else
+    rm -f /var/lib/man-db/auto-update
 fi
 
 build_db=0
