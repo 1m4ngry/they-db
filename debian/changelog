@@ -1,4 +1,4 @@
-man-db (2.7.0-1) UNRELEASED; urgency=medium
+man-db (2.7.0-1) unstable; urgency=medium
 
   * New upstream release:
     - Add systemd tmpfiles snippet to clean up old cat files after a week.
@@ -25,7 +25,7 @@ man-db (2.7.0-1) UNRELEASED; urgency=medium
   * Rebuild the database on upgrade to this version, since the format has
     changed.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 16 Sep 2014 23:21:17 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon, 22 Sep 2014 19:43:40 +0100
 
 man-db (2.6.7.1-1) unstable; urgency=medium
 
