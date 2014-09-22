@@ -80,6 +80,9 @@ build_db=0
 if [ ! -f $catdir/index.db ]; then
     # Build the database from scratch on fresh installs.
     build_db=1
+elif dpkg --compare-versions "$2" lt 2.7.0; then
+    # At 2.7.0, the database version number changed to 2.7.0.
+    build_db=1
 fi
 
 if [ $build_db -eq 1 ]; then

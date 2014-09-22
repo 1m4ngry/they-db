@@ -22,6 +22,8 @@ man-db (2.7.0-1) UNRELEASED; urgency=medium
     /var/cache/man.
   * Adjust cron.daily to skip cat file cleanup if running under systemd,
     since the upstream-provided tmpfiles snippet now handles that.
+  * Rebuild the database on upgrade to this version, since the format has
+    changed.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 16 Sep 2014 23:21:17 +0100
 
