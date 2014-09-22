@@ -2,7 +2,7 @@
 # Copyright (C) 2005, 2007, 2009, 2010, 2011 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 #
-# Jakub Bogusz <qboosh@pld-linux.org>, 2007-2011.
+# Jakub Bogusz <qboosh@pld-linux.org>, 2007-2014.
 # based on translation for GNU Mailutils by:
 # Sergey Poznyakoff <gray@gnu.org>, 2003,2004,2005.
 # corrections: Wojciech Polak <polak@gnu.org>, 2003 
@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2014-04-10 03:34+0100\n"
-"PO-Revision-Date: 2011-08-22 12:41+0200\n"
+"POT-Creation-Date: 2014-09-22 19:25+0100\n"
+"PO-Revision-Date: 2014-07-17 18:00+0200\n"
 "Last-Translator: Jakub Bogusz <qboosh@pld-linux.org>\n"
 "Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
 "Language: pl\n"
@@ -794,10 +794,10 @@ msgstr "pamięć wyczerpana"
 #~ msgstr "nie można sformatować wyjścia"
 
 #~ msgid "invalid %s%s argument `%s'"
-#~ msgstr "błędny argument %s%s opcji `%s'"
+#~ msgstr "błędny argument opcji %s%s `%s'"
 
 #~ msgid "invalid suffix in %s%s argument `%s'"
-#~ msgstr "błędny przyrostek argumentu %s%s opcji `%s'"
+#~ msgstr "błędny przyrostek argumentu opcji %s%s `%s'"
 
 #~ msgid "%s%s argument `%s' too large"
-#~ msgstr "argument %s%s `%s' zbyt duży"
+#~ msgstr "argument opcji %s%s `%s' zbyt duży"

@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "timespec.h"
 #include "xvasprintf.h"
 
 #include "gettext.h"
@@ -89,7 +90,7 @@ static int replace_if_necessary (struct mandata *newdata,
 	 * exists should always take precedence.
 	 */
 	if (compare_ids (newdata->id, olddata->id, 1) <= 0 &&
-	    newdata->_st_mtime > olddata->_st_mtime) {
+	    timespec_cmp (newdata->mtime, olddata->mtime) > 0) {
 		debug ("replace_if_necessary(): newer mtime; replacing\n");
 		if (MYDBM_REPLACE (dbf, newkey, newcont))
 			gripe_replace_key (MYDBM_DPTR (newkey));
@@ -118,6 +119,46 @@ static int replace_if_necessary (struct mandata *newdata,
 	return 0;
 }
 
+/* The complement of split_content */
+static datum make_content (struct mandata *in)
+{
+	datum cont;
+	static const char dash[] = "-";
+
+	memset (&cont, 0, sizeof cont);
+
+	if (!in->pointer)
+		in->pointer = dash;
+	if (!in->filter)
+		in->filter = dash;
+	if (!in->comp)
+		in->comp = dash;
+	if (!in->whatis)
+		in->whatis = dash + 1;
+
+	MYDBM_SET (cont, xasprintf (
+		"%s\t%s\t%s\t%ld\t%ld\t%c\t%s\t%s\t%s\t%s",
+		dash_if_unset (in->name),
+		in->ext,
+		in->sec,
+		(long) in->mtime.tv_sec,
+		in->mtime.tv_nsec,
+		in->id,
+		in->pointer,
+		in->filter,
+		in->comp,
+		in->whatis));
+
+#ifdef NDBM
+	/* limit of 4096 bytes of data using ndbm */
+	if (MYDBM_DSIZE (cont) > 4095) {
+		MYDBM_DPTR (cont)[4095] = '\0';
+		MYDBM_DSIZE (cont) = 4096;
+	}
+#endif
+	return cont;
+}
+
 /*
  Any one of three situations can occur when storing some data.
 
@@ -138,7 +179,7 @@ static int replace_if_necessary (struct mandata *newdata,
 
  If we have two ULT_MAN pages competing for the same key, we must have
  more than one of foo.sec, foo.sec.comp1, foo.sec.comp2. OR we have a
- replacement page. If the st_mtimes differ, throw out the old struct and
+ replacement page. If the mtimes differ, throw out the old struct and
  replace it with the new, if the comp exts differ, oops, this is bad,
  keep one and return appropriate error code.
 
@@ -148,7 +189,6 @@ static int replace_if_necessary (struct mandata *newdata,
 
  return errorcode or 0 on success.
 */
-#ifndef FAST_BTREE
 int dbstore (struct mandata *in, const char *base)
 {
 	datum oldkey, oldcont;
@@ -325,4 +365,3 @@ int dbstore (struct mandata *in, const char *base)
 	free (MYDBM_DPTR (oldkey));
 	return 0;
 }
-#endif /* !FAST_BTREE */

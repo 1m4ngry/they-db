@@ -1,7 +1,7 @@
 /*
- * convert_name.h: headers for pathname conversion
+ * orderfiles.h: interface to ordering file accesses to optimise disk load
  *
- * Copyright (C) 1994, 1995 Graeme W. Wilford. (Wilf.)
+ * Copyright (C) 2014 Colin Watson.
  *
  * This file is part of man-db.
  *
@@ -18,8 +18,6 @@
  * You should have received a copy of the GNU General Public License
  * along with man-db; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Mon May  2 11:14:28 BST 1994 Wilf. (G.Wilford@ee.surrey.ac.uk)
  */
 
-extern char *convert_name (const char *name, int fsstnd);
+void order_files (const char *dir, char **basenames, size_t n_basenames);

@@ -42,6 +42,9 @@
 
 #include <unistd.h>
 
+#include "stat-time.h"
+#include "timespec.h"
+
 #include "manconfig.h"
 
 #include "error.h"
@@ -58,18 +61,6 @@ struct hashtable *loop_check_hash;
    lock is shared. A file cannot have both locks at once, and the non
    blocking method is used ": Try again". This adopts GNU dbm's approach. */
 
-#ifdef FAST_BTREE
-#define B_FLAGS		R_DUP 	/* R_DUP: allow duplicates in tree */
-
-void test_insert (int line, const datum key, const datum cont)
-{
-	debug ("(%d) key: \"%s\", cont: \"%.40s\"\n",
-	       line, MYDBM_DPTR (key), MYDBM_DPTR (cont));
-}
-#else /* !FAST_BTREE */
-#define B_FLAGS		0	/* do not allow any duplicate keys */
-#endif /* FAST_BTREE */
-
 /* release the lock and close the database */
 int btree_close (DB *db)
 {
@@ -85,7 +76,7 @@ DB *btree_flopen (char *filename, int flags, int mode)
 	int lock_op;
 	int lock_failed;
 
-	b.flags = B_FLAGS;
+	b.flags = 0;		/* do not allow any duplicate keys */
 
 	b.cachesize = 0;	/* default size */
 	b.maxkeypage = 0;	/* default */
@@ -156,12 +147,7 @@ DB *btree_flopen (char *filename, int flags, int mode)
    old entry */
 int btree_replace (DB *db, datum key, datum cont)
 {
-#ifdef FAST_BTREE
-	test_insert (__LINE__, key, cont);
-	return (db->put) (db, (DBT *) &key, (DBT *) &cont, R_CURSOR);
-#else /* normal BTREE */
 	return (db->put) (db, (DBT *) &key, (DBT *) &cont, 0);
-#endif /* FAST_BTREE */
 }
 
 int btree_insert (DB *db, datum key, datum cont)
@@ -260,135 +246,26 @@ int btree_nextkeydata (DB *db, datum *key, datum *cont)
 	return 0;
 }
 
-#ifdef FAST_BTREE
-
-/* EXTREMELY experimental and broken code, leave well alone for the time
-   being */
-
-#define free(x)
-
-void gripe_get (int lineno)
+struct timespec btree_get_time (DB *db)
 {
-	error (0, 0, "Oops, bad fetch, line %d ", lineno);
-}
+	struct stat st;
 
-/* the simplified storage routine */
-int dbstore (struct mandata *in, char *base)
-{
-	datum key, cont;
-	int status;
-
-	memset (&key, 0, sizeof key);
-	memset (&cont, 0, sizeof cont);
-
-	MYDBM_SET (key, base);
- 	if (!*base) {
-		dbprintf (in);
- 		return 2;
- 	}
-
-	/* initialise the cursor to (possibly) our key/cont */
-	status = (dbf->seq) (dbf, (DBT *) &key, (DBT *) &cont, R_CURSOR);
-
-	if (status == -1)
-		gripe_get (__LINE__);
-
-	/* either nothing was found or the key was not an exact match */
-	else if (status == 1 || !STREQ (MYDBM_DPTR (key), base)) {
-		cont = make_content (in);
-		MYDBM_SET (key, base);
-		test_insert (__LINE__, key, cont);
-		status = (dbf->put) (dbf, (DBT *) &key, (DBT *) &cont, 0);
-		free (MYDBM_DPTR (cont));
-
-	/* There is already a key with this name */
-	} else {
-		/* find an exact match and see if it needs replacing or put
-		   our new key in */
-		while (1) {
-			struct mandata old;
-
-			/* TODO: what if cont is unset? */
-			cont = copy_datum (cont);
-			split_content (MYDBM_DPTR (cont), &old);
-			if (STREQ (in->ext, old.ext)) {
-				cont = make_content (in);
-				status = replace_if_necessary (in, &old,
-							       key, cont);
-				free (MYDBM_DPTR (cont));
-				free_mandata_elements (&old);
-				break;
-			}
-			free_mandata_elements (&old);
-			status = (dbf->seq) (dbf, (DBT *) &key, (DBT *) &cont,
-					     R_NEXT);
-			if (!STREQ (MYDBM_DPTR (key), base)) {
-				MYDBM_SET (key, base);
-				cont = make_content (in);
-				test_insert (__LINE__, key, cont);
-				status = (dbf->put) (dbf, (DBT *) &key,
-						     (DBT *) &cont, 0);
-				free (MYDBM_DPTR (cont));
-				break;
-			}
-		}
+	if (fstat ((db->fd) (db), &st) < 0) {
+		struct timespec t;
+		t.tv_sec = -1;
+		t.tv_nsec = -1;
+		return t;
 	}
-
-	return status;
+	return get_stat_mtime (&st);
 }
 
-/* FIXME: I'm broken as I don't return properly */
-static struct mandata *dblookup (char *page, char *section, int flags)
+void btree_set_time (DB *db, const struct timespec time)
 {
-	struct mandata *info, *ret = NULL, **null_me;
-	datum key, cont;
-	int status;
+	struct timespec times[2];
 
-	memset (&key, 0, sizeof key);
-	memset (&cont, 0, sizeof cont);
-
-	MYDBM_SET (key, page);
-
-	/* initialise the cursor to (possibly) our key/cont */
-	status = (dbf->seq) (dbf, (DBT *) &key, (DBT *) &cont, R_CURSOR);
-
-	/* either nothing was found or the key was not an exact match */
-	if (status == 1 || !STREQ (page, MYDBM_DPTR (key)))
-		return NULL;
-	if (status == -1)
-		gripe_get (__LINE__);
-
-	ret = info = infoalloc ();
-	null_me = &(info->next);
-
-	do {
-		/* TODO: what if cont is unset? */
-		cont = copy_datum (cont);
-		split_content (MYDBM_DPTR (cont), info);
-
-		if (!(section == NULL ||
-		    STRNEQ (section, info->ext,
-		    	    flags & EXACT ? strlen (info->ext)
-					  : strlen (section)))) {
-			free_mandata_elements (info);
-		} else {
-			null_me = &(info->next);
-			info = info->next = infoalloc ();
-		}
-
-		/* get next in the db */
-		status = (dbf->seq) (dbf, (DBT *) &key, (DBT *) &cont, R_NEXT);
-
-		if (status == -1)
-			gripe_get (__LINE__);
-
-		/* run out of identical keys */
-	} while (!(status == 1 || !STREQ (page, MYDBM_DPTR (key))));
-
-	free (info);
-	*null_me = NULL;
-	return ret;
+	times[0] = time;
+	times[1] = time;
+	futimens ((db->fd) (db), times);
 }
 
-#endif /* FAST_BTREE */
 #endif /* BTREE */

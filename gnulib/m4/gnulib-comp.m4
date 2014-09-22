@@ -51,6 +51,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module canonicalize-lgpl:
   # Code from module chdir:
   # Code from module chdir-long:
+  # Code from module clock-time:
   # Code from module cloexec:
   # Code from module close:
   # Code from module closedir:
@@ -86,6 +87,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module fnmatch-gnu:
   # Code from module fstat:
   # Code from module fstatat:
+  # Code from module futimens:
   # Code from module getcwd:
   # Code from module getcwd-lgpl:
   # Code from module getdelim:
@@ -96,6 +98,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module getopt-posix:
   # Code from module gettext:
   # Code from module gettext-h:
+  # Code from module gettime:
   # Code from module gettimeofday:
   # Code from module gitlog-to-changelog:
   # Code from module glob:
@@ -108,6 +111,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module idpriv-droptemp:
   # Code from module include_next:
   # Code from module intprops:
+  # Code from module ioctl:
   # Code from module langinfo:
   # Code from module largefile:
   AC_REQUIRE([AC_SYS_LARGEFILE])
@@ -135,6 +139,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module multiarch:
   # Code from module nl_langinfo:
   # Code from module nocrash:
+  # Code from module nonblocking:
   # Code from module open:
   # Code from module openat:
   # Code from module openat-die:
@@ -165,8 +170,10 @@ AC_DEFUN([gl_EARLY],
   # Code from module snippet/arg-nonnull:
   # Code from module snippet/c++defs:
   # Code from module snippet/warn-on-use:
+  # Code from module socklen:
   # Code from module ssize_t:
   # Code from module stat:
+  # Code from module stat-time:
   # Code from module stdalign:
   # Code from module stdarg:
   dnl Some compilers (e.g., AIX 5.3 cc) need to be in c99 mode
@@ -192,17 +199,22 @@ AC_DEFUN([gl_EARLY],
   # Code from module strnlen1:
   # Code from module strsep:
   # Code from module sys_file:
+  # Code from module sys_ioctl:
+  # Code from module sys_socket:
   # Code from module sys_stat:
   # Code from module sys_time:
   # Code from module sys_types:
+  # Code from module sys_uio:
   # Code from module sysexits:
   # Code from module tempname:
   # Code from module threadlib:
   gl_THREADLIB_EARLY
   # Code from module time:
+  # Code from module timespec:
   # Code from module unistd:
   # Code from module unistd-safer:
   # Code from module unsetenv:
+  # Code from module utimens:
   # Code from module vasnprintf:
   # Code from module vasprintf:
   # Code from module verify:
@@ -267,6 +279,7 @@ AC_SUBST([LTALLOCA])
     AC_LIBOBJ([chdir-long])
     gl_PREREQ_CHDIR_LONG
   fi
+  gl_CLOCK_TIME
   gl_MODULE_INDICATOR_FOR_TESTS([cloexec])
   gl_FUNC_CLOSE
   if test $REPLACE_CLOSE = 1; then
@@ -365,6 +378,11 @@ AC_SUBST([LTALLOCA])
     AC_LIBOBJ([fstatat])
   fi
   gl_SYS_STAT_MODULE_INDICATOR([fstatat])
+  gl_FUNC_FUTIMENS
+  if test $HAVE_FUTIMENS = 0 || test $REPLACE_FUTIMENS = 1; then
+    AC_LIBOBJ([futimens])
+  fi
+  gl_SYS_STAT_MODULE_INDICATOR([futimens])
   gl_FUNC_GETCWD
   if test $REPLACE_GETCWD = 1; then
     AC_LIBOBJ([getcwd])
@@ -424,6 +442,7 @@ AC_SUBST([LTALLOCA])
   AM_GNU_GETTEXT_VERSION([0.18.1])
   AC_SUBST([LIBINTL])
   AC_SUBST([LTLIBINTL])
+  gl_GETTIME
   gl_FUNC_GETTIMEOFDAY
   if test $HAVE_GETTIMEOFDAY = 0 || test $REPLACE_GETTIMEOFDAY = 1; then
     AC_LIBOBJ([gettimeofday])
@@ -437,6 +456,11 @@ AC_SUBST([LTALLOCA])
   fi
   gl_IDPRIV
   gl_IDPRIV
+  gl_FUNC_IOCTL
+  if test $HAVE_IOCTL = 0 || test $REPLACE_IOCTL = 1; then
+    AC_LIBOBJ([ioctl])
+  fi
+  gl_SYS_IOCTL_MODULE_INDICATOR([ioctl])
   gl_LANGINFO_H
   AC_REQUIRE([gl_LARGEFILE])
   gl_IGNORE_UNUSED_LIBRARIES
@@ -539,6 +563,17 @@ AC_SUBST([LTALLOCA])
     AC_LIBOBJ([nl_langinfo])
   fi
   gl_LANGINFO_MODULE_INDICATOR([nl_langinfo])
+  gl_NONBLOCKING_IO
+  gl_FCNTL_MODULE_INDICATOR([nonblocking])
+  dnl Define the C macro GNULIB_NONBLOCKING to 1.
+  gl_MODULE_INDICATOR([nonblocking])
+  dnl Define the substituted variable GNULIB_STDIO_H_NONBLOCKING to 1.
+  AC_REQUIRE([gl_STDIO_H_DEFAULTS])
+  AC_REQUIRE([gl_ASM_SYMBOL_PREFIX])
+  GNULIB_STDIO_H_NONBLOCKING=1
+  dnl Define the substituted variable GNULIB_UNISTD_H_NONBLOCKING to 1.
+  AC_REQUIRE([gl_UNISTD_H_DEFAULTS])
+  GNULIB_UNISTD_H_NONBLOCKING=1
   gl_FUNC_OPEN
   if test $REPLACE_OPEN = 1; then
     AC_LIBOBJ([open])
@@ -638,6 +673,7 @@ AC_SUBST([LTALLOCA])
     AC_LIBOBJ([sleep])
   fi
   gl_UNISTD_MODULE_INDICATOR([sleep])
+  gl_TYPE_SOCKLEN_T
   gt_TYPE_SSIZE_T
   gl_FUNC_STAT
   if test $REPLACE_STAT = 1; then
@@ -645,6 +681,8 @@ AC_SUBST([LTALLOCA])
     gl_PREREQ_STAT
   fi
   gl_SYS_STAT_MODULE_INDICATOR([stat])
+  gl_STAT_TIME
+  gl_STAT_BIRTHTIME
   gl_STDALIGN_H
   gl_STDARG_H
   AM_STDBOOL_H
@@ -706,16 +744,23 @@ AC_SUBST([LTALLOCA])
   gl_STRING_MODULE_INDICATOR([strsep])
   gl_HEADER_SYS_FILE_H
   AC_PROG_MKDIR_P
+  gl_SYS_IOCTL_H
+  AC_PROG_MKDIR_P
+  gl_HEADER_SYS_SOCKET
+  AC_PROG_MKDIR_P
   gl_HEADER_SYS_STAT_H
   AC_PROG_MKDIR_P
   gl_HEADER_SYS_TIME_H
   AC_PROG_MKDIR_P
   gl_SYS_TYPES_H
   AC_PROG_MKDIR_P
+  gl_HEADER_SYS_UIO
+  AC_PROG_MKDIR_P
   gl_SYSEXITS
   gl_FUNC_GEN_TEMPNAME
   gl_THREADLIB
   gl_HEADER_TIME_H
+  gl_TIMESPEC
   gl_UNISTD_H
   gl_UNISTD_SAFER
   gl_FUNC_UNSETENV
@@ -724,6 +769,7 @@ AC_SUBST([LTALLOCA])
     gl_PREREQ_UNSETENV
   fi
   gl_STDLIB_MODULE_INDICATOR([unsetenv])
+  gl_UTIMENS
   gl_FUNC_VASNPRINTF
   gl_FUNC_VASPRINTF
   gl_STDIO_MODULE_INDICATOR([vasprintf])
@@ -961,6 +1007,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/fnmatch_loop.c
   lib/fstat.c
   lib/fstatat.c
+  lib/futimens.c
   lib/getcwd-lgpl.c
   lib/getcwd.c
   lib/getdelim.c
@@ -972,6 +1019,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/getopt1.c
   lib/getopt_int.h
   lib/gettext.h
+  lib/gettime.c
   lib/gettimeofday.c
   lib/glob-libc.h
   lib/glob.c
@@ -989,6 +1037,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/idpriv-droptemp.c
   lib/idpriv.h
   lib/intprops.h
+  lib/ioctl.c
   lib/itold.c
   lib/langinfo.in.h
   lib/localcharset.c
@@ -1019,6 +1068,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/msvc-nothrow.c
   lib/msvc-nothrow.h
   lib/nl_langinfo.c
+  lib/nonblocking.c
+  lib/nonblocking.h
   lib/open.c
   lib/openat-die.c
   lib/openat-priv.h
@@ -1063,12 +1114,16 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/sigprocmask.c
   lib/size_max.h
   lib/sleep.c
+  lib/stat-time.c
+  lib/stat-time.h
   lib/stat.c
   lib/stdalign.in.h
   lib/stdarg.in.h
   lib/stdbool.in.h
   lib/stddef.in.h
   lib/stdint.in.h
+  lib/stdio-read.c
+  lib/stdio-write.c
   lib/stdio.in.h
   lib/stdlib.in.h
   lib/strcasecmp.c
@@ -1089,23 +1144,32 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/strnlen1.h
   lib/strsep.c
   lib/sys_file.in.h
+  lib/sys_ioctl.in.h
+  lib/sys_socket.c
+  lib/sys_socket.in.h
   lib/sys_stat.in.h
   lib/sys_time.in.h
   lib/sys_types.in.h
+  lib/sys_uio.in.h
   lib/sysexits.in.h
   lib/tempname.c
   lib/tempname.h
   lib/time.in.h
+  lib/timespec.c
+  lib/timespec.h
   lib/unistd--.h
   lib/unistd-safer.h
   lib/unistd.c
   lib/unistd.in.h
   lib/unsetenv.c
+  lib/utimens.c
+  lib/utimens.h
   lib/vasnprintf.c
   lib/vasnprintf.h
   lib/vasprintf.c
   lib/verify.h
   lib/vsnprintf.c
+  lib/w32sock.h
   lib/wchar.in.h
   lib/wcrtomb.c
   lib/wctype-h.c
@@ -1127,9 +1191,11 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/absolute-header.m4
   m4/alloca.m4
   m4/argp.m4
+  m4/asm-underscore.m4
   m4/btowc.m4
   m4/canonicalize.m4
   m4/chdir-long.m4
+  m4/clock_time.m4
   m4/close.m4
   m4/closedir.m4
   m4/codeset.m4
@@ -1160,6 +1226,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/fnmatch.m4
   m4/fstat.m4
   m4/fstatat.m4
+  m4/futimens.m4
   m4/getcwd-abort-bug.m4
   m4/getcwd-path-max.m4
   m4/getcwd.m4
@@ -1169,6 +1236,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/getlogin_r.m4
   m4/getopt.m4
   m4/gettext.m4
+  m4/gettime.m4
   m4/gettimeofday.m4
   m4/glibc2.m4
   m4/glibc21.m4
@@ -1185,6 +1253,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/intmax_t.m4
   m4/inttypes-pri.m4
   m4/inttypes_h.m4
+  m4/ioctl.m4
   m4/langinfo_h.m4
   m4/largefile.m4
   m4/lcmessage.m4
@@ -1223,6 +1292,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/nl_langinfo.m4
   m4/nls.m4
   m4/nocrash.m4
+  m4/nonblocking.m4
   m4/off_t.m4
   m4/onceonly.m4
   m4/open.m4
@@ -1251,7 +1321,10 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/signalblocking.m4
   m4/size_max.m4
   m4/sleep.m4
+  m4/socklen.m4
+  m4/sockpfaf.m4
   m4/ssize_t.m4
+  m4/stat-time.m4
   m4/stat.m4
   m4/stdalign.m4
   m4/stdarg.m4
@@ -1271,17 +1344,23 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/strnlen.m4
   m4/strsep.m4
   m4/sys_file_h.m4
+  m4/sys_ioctl_h.m4
   m4/sys_socket_h.m4
   m4/sys_stat_h.m4
   m4/sys_time_h.m4
   m4/sys_types_h.m4
+  m4/sys_uio_h.m4
   m4/sysexits.m4
   m4/tempname.m4
   m4/threadlib.m4
   m4/time_h.m4
+  m4/timespec.m4
   m4/uintmax_t.m4
   m4/unistd-safer.m4
   m4/unistd_h.m4
+  m4/utimbuf.m4
+  m4/utimens.m4
+  m4/utimes.m4
   m4/vasnprintf.m4
   m4/vasprintf.m4
   m4/visibility.m4

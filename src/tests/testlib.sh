@@ -61,10 +61,11 @@ EOF
 accessdb_filter () {
 	# e.g. 'test -> "- 1 1 1250702063 A - - gz simple mandb test"'
 	run $ACCESSDB "$1" | grep -v '^\$' | \
-		sed 's/\(-> "[^ ][^ ]* [^ ][^ ]* [^ ][^ ]* \)[^ ][^ ]* /\1MTIME /'
+		sed 's/\(-> "[^ ][^ ]* [^ ][^ ]* [^ ][^ ]* \)[^ ][^ ]* [^ ][^ ]* /\1MTIME /'
 }
 
 next_second () {
+	[ "$STAT_HAS_NSEC" != yes ] || return
 	startdate="$(date +%s)"
 	while :; do
 		sleep 1
