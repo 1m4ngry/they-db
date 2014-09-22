@@ -20,7 +20,7 @@
 ## along with man-db; if not, write to the Free Software Foundation,
 ## Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-SUBDIRS = docs gnulib/lib gnulib/po lib libdb src man manual po tools
+SUBDIRS = docs gnulib/lib gnulib/po init lib libdb src man manual po tools
 
 dist_noinst_DATA = FAQ NEWS README include/README
 
@@ -47,6 +47,11 @@ EXTRA_DIST += \
 	gnulib/m4/printf-posix.m4 \
 	gnulib/m4/uintmax_t.m4 \
 	gnulib/m4/visibility.m4
+
+# The default for systemdtmpfilesdir is intentionally not prefix-sensitive,
+# but we need to adjust it in order for distcheck to pass.
+AM_DISTCHECK_CONFIGURE_FLAGS = \
+	--with-systemdtmpfilesdir=\$${prefix}/lib/tmpfiles.d
 
 # We deliberately leave the configuration file in place on uninstall, since
 # it may contain local customisations.

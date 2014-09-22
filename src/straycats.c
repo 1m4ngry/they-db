@@ -36,21 +36,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-
-#ifdef HAVE_DIRENT_H
-#  include <dirent.h>
-#else /* not HAVE_DIRENT_H */
-#  define dirent direct
-#  ifdef HAVE_SYS_NDIR_H
-#    include <sys/ndir.h>
-#  endif /* HAVE_SYS_NDIR_H */
-#  ifdef HAVE_SYS_DIR_H
-#    include <sys/dir.h>
-#  endif /* HAVE_SYS_DIR_H */
-#  ifdef HAVE_NDIR_H
-#    include <ndir.h>
-#  endif /* HAVE_NDIR_H */
-#endif /* HAVE_DIRENT_H  */
+#include <dirent.h>
 
 #include "canonicalize.h"
 #include "dirname.h"
@@ -64,6 +50,7 @@
 #include "pipeline.h"
 #include "decompress.h"
 #include "encodings.h"
+#include "orderfiles.h"
 #include "security.h"
 
 #include "mydbm.h"
@@ -80,6 +67,8 @@ static int check_for_stray (void)
 {
 	DIR *cdir;
 	struct dirent *catlist;
+	char **names;
+	size_t names_len, names_max, i;
 	size_t lenman, lencat;
 	int strays = 0;
 
@@ -89,12 +78,30 @@ static int check_for_stray (void)
 		return 0;
 	}
 
+	names_len = 0;
+	names_max = 1024;
+	names = XNMALLOC (names_max, char *);
+
+	while ((catlist = readdir (cdir)) != NULL) {
+		if (*catlist->d_name == '.' && 
+		    strlen (catlist->d_name) < (size_t) 3)
+			continue;
+		if (names_len >= names_max) {
+			names_max *= 2;
+			names = xnrealloc (names, names_max, sizeof (char *));
+		}
+		names[names_len++] = xstrdup (catlist->d_name);
+	}
+	closedir (cdir);
+
+	order_files (catdir, names, names_len);
+
 	mandir = appendstr (mandir, "/", NULL);
 	catdir = appendstr (catdir, "/", NULL);
 	lenman = strlen (mandir);
 	lencat = strlen (catdir);
 
-	while ((catlist = readdir (cdir))) {
+	for (i = 0; i < names_len; ++i) {
 		struct mandata info;
 		char *ext, *section;
 		short found;
@@ -105,13 +112,9 @@ static int check_for_stray (void)
 
 		memset (&info, 0, sizeof (struct mandata));
 
-		if (*catlist->d_name == '.' && 
-		    strlen (catlist->d_name) < (size_t) 3)
-			continue;
-
 		*(mandir + lenman) = *(catdir + lencat) = '\0';
-		mandir = appendstr (mandir, catlist->d_name, NULL);
-		catdir = appendstr (catdir, catlist->d_name, NULL);
+		mandir = appendstr (mandir, names[i], NULL);
+		catdir = appendstr (catdir, names[i], NULL);
 
 		ext = strrchr (mandir, '.');
 		if (!ext) {
@@ -120,7 +123,7 @@ static int check_for_stray (void)
 				       _("warning: %s: "
 					 "ignoring bogus filename"),
 				       catdir);
-			continue;
+			goto next_name;
 
 #if defined(COMP_SRC) || defined(COMP_CAT)
 
@@ -207,7 +210,8 @@ static int check_for_stray (void)
 			info.id = STRAY_CAT;
 			info.pointer = NULL;
 			info.filter = "-";
-			info._st_mtime = 0L;
+			info.mtime.tv_sec = 0;
+			info.mtime.tv_nsec = 0;
 
 			drop_effective_privs ();
 			decomp = decompress_open (catdir);
@@ -286,8 +290,10 @@ next_exists:
 		}
 next_section:
 		free (section);
+next_name:
+		free (names[i]);
 	}
-	closedir (cdir);
+	free (names);
 	return strays;
 }
 

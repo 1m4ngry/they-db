@@ -46,6 +46,8 @@ libman_la_SOURCES = \
 	linelength.h \
 	lower.c \
 	lower.h \
+	orderfiles.c \
+	orderfiles.h \
 	pathsearch.c \
 	pathsearch.h \
 	security.c \
@@ -62,4 +64,5 @@ libman_la_LIBADD = ../gnulib/lib/libgnu.la $(LTLIBOBJS) \
 
 libman_la_LDFLAGS = \
 	-avoid-version -release $(VERSION) -rpath $(pkglibdir) \
+	-no-undefined \
 	$(libpipeline_LIBS)

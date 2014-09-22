@@ -43,9 +43,9 @@
 #define STRAY_CAT	'D'
 #define WHATIS_CAT	'E'
 
-#define FIELDS  9       /* No of fields in each database page `content' */
+#define FIELDS  10      /* No of fields in each database page `content' */
 
-#include "sys/time.h"	/* for time_t */
+#include "timespec.h"
 
 #include "xalloc.h"
 
@@ -68,7 +68,7 @@ struct mandata {
 	const char *comp;		/* Compression extension */
 	const char *filter;		/* filters needed for the page */
 	const char *whatis;		/* whatis description for page */
-	time_t _st_mtime;		/* mod time for file */
+	struct timespec mtime;		/* mod time for file */
 }; 
 
 /* used by the world */
@@ -96,11 +96,8 @@ extern datum make_multi_key (const char *page, const char *ext);
 #define infoalloc() XZALLOC (struct mandata)
 
 extern char *name_to_key (const char *name);
-extern char **split_data (char *content, char *start[]);
-extern datum make_content (struct mandata *in);
 extern int list_extensions (char *data, char ***names, char ***ext);
 extern void gripe_replace_key (const char *data);
-extern char *copy_if_set (const char *str);
 extern const char *dash_if_unset (const char *str);
 
 #endif

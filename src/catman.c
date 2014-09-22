@@ -139,9 +139,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 				sections = NULL;
 				for (sec = strtok (mansect, ":"); sec;
 				     sec = strtok (NULL, ":")) {
-					sections = xrealloc (sections,
-							     (i + 2) *
-							     sizeof *sections);
+					sections = xnrealloc
+						(sections, i + 2,
+						 sizeof *sections);
 					sections[i++] = sec;
 				}
 				if (sections)
@@ -241,7 +241,7 @@ static int parse_for_sec (const char *manpath, const char *section)
 	if (rdopen_db () || dbver_rd (dbf))
 		return 1;
 
-	basecmd = pipecmd_new ("man");
+	basecmd = pipecmd_new (MAN);
 	pipecmd_clearenv (basecmd);
 
 	/* As we supply a NULL environment to save precious execve() space,
@@ -255,7 +255,7 @@ static int parse_for_sec (const char *manpath, const char *section)
 	pipecmd_args (basecmd, "-caM", manpath, NULL);	/* manpath */
 	pipecmd_args (basecmd, "-S", section, NULL);	/* section */
 
-	initial_bit += sizeof "man" + sizeof "-caM" +
+	initial_bit += sizeof MAN + sizeof "-caM" +
 		       strlen (manpath) + strlen (section) + 2;
 
 	cmd = pipecmd_dup (basecmd);

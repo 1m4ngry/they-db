@@ -1,5 +1,18 @@
-man-db (2.6.7.1-2) UNRELEASED; urgency=medium
+man-db (2.7.0-1) UNRELEASED; urgency=medium
 
+  * New upstream release:
+    - Add systemd tmpfiles snippet to clean up old cat files after a week.
+    - Run "col -b -p -x" over cat pages if possible before parsing them
+      (closes: #751934).
+    - Move database mtime out of the database into file metadata, making the
+      database reproducible between installations (closes: #760895).
+    - Use high-precision timestamps.
+    - Order files by first physical extent before reading (closes: #574410).
+    - Prioritise COLUMNS above TIOCGWINSZ (LP: #1315282).
+    - Formatting improvements to man(1) (closes: #726266).
+    - Don't use pointed-to name as title for database-located pages (closes:
+      #709405).
+    - Move zsoelim to /usr/lib/man-db/.
   * Remove unnecessary entries from debian/dirs.
   * Cache the value of man-db/auto-update in the file system, so that we
     don't have to talk to debconf when processing triggers (closes:

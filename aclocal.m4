@@ -180,6 +180,61 @@ else
 fi[]dnl
 ])# PKG_CHECK_MODULES
 
+
+# PKG_INSTALLDIR(DIRECTORY)
+# -------------------------
+# Substitutes the variable pkgconfigdir as the location where a module
+# should install pkg-config .pc files. By default the directory is
+# $libdir/pkgconfig, but the default can be changed by passing
+# DIRECTORY. The user can override through the --with-pkgconfigdir
+# parameter.
+AC_DEFUN([PKG_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${libdir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([pkgconfigdir],
+    [AS_HELP_STRING([--with-pkgconfigdir], pkg_description)],,
+    [with_pkgconfigdir=]pkg_default)
+AC_SUBST([pkgconfigdir], [$with_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+]) dnl PKG_INSTALLDIR
+
+
+# PKG_NOARCH_INSTALLDIR(DIRECTORY)
+# -------------------------
+# Substitutes the variable noarch_pkgconfigdir as the location where a
+# module should install arch-independent pkg-config .pc files. By
+# default the directory is $datadir/pkgconfig, but the default can be
+# changed by passing DIRECTORY. The user can override through the
+# --with-noarch-pkgconfigdir parameter.
+AC_DEFUN([PKG_NOARCH_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${datadir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config arch-independent installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([noarch-pkgconfigdir],
+    [AS_HELP_STRING([--with-noarch-pkgconfigdir], pkg_description)],,
+    [with_noarch_pkgconfigdir=]pkg_default)
+AC_SUBST([noarch_pkgconfigdir], [$with_noarch_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+]) dnl PKG_NOARCH_INSTALLDIR
+
+
+# PKG_CHECK_VAR(VARIABLE, MODULE, CONFIG-VARIABLE,
+# [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+# -------------------------------------------
+# Retrieves the value of the pkg-config variable for the given module.
+AC_DEFUN([PKG_CHECK_VAR],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+AC_ARG_VAR([$1], [value of $3 for $2, overriding pkg-config])dnl
+
+_PKG_CONFIG([$1], [variable="][$3]["], [$2])
+AS_VAR_COPY([$1], [pkg_cv_][$1])
+
+AS_VAR_IF([$1], [""], [$5], [$4])dnl
+])# PKG_CHECK_VAR
+
 # Copyright (C) 2002-2013 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
@@ -1404,6 +1459,18 @@ AC_SUBST([am__tar])
 AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
+m4_include([m4/man-arg-automatic-create.m4])
+m4_include([m4/man-arg-automatic-update.m4])
+m4_include([m4/man-arg-cats.m4])
+m4_include([m4/man-arg-config-file.m4])
+m4_include([m4/man-arg-db.m4])
+m4_include([m4/man-arg-device.m4])
+m4_include([m4/man-arg-mandirs.m4])
+m4_include([m4/man-arg-override-dir.m4])
+m4_include([m4/man-arg-sections.m4])
+m4_include([m4/man-arg-setuid.m4])
+m4_include([m4/man-arg-systemdtmpfilesdir.m4])
+m4_include([m4/man-arg-undoc.m4])
 m4_include([m4/man-bdb.m4])
 m4_include([m4/man-check-progs.m4])
 m4_include([m4/man-compress-lib.m4])
@@ -1416,9 +1483,11 @@ m4_include([gnulib/m4/00gnulib.m4])
 m4_include([gnulib/m4/absolute-header.m4])
 m4_include([gnulib/m4/alloca.m4])
 m4_include([gnulib/m4/argp.m4])
+m4_include([gnulib/m4/asm-underscore.m4])
 m4_include([gnulib/m4/btowc.m4])
 m4_include([gnulib/m4/canonicalize.m4])
 m4_include([gnulib/m4/chdir-long.m4])
+m4_include([gnulib/m4/clock_time.m4])
 m4_include([gnulib/m4/close.m4])
 m4_include([gnulib/m4/closedir.m4])
 m4_include([gnulib/m4/codeset.m4])
@@ -1449,6 +1518,7 @@ m4_include([gnulib/m4/flock.m4])
 m4_include([gnulib/m4/fnmatch.m4])
 m4_include([gnulib/m4/fstat.m4])
 m4_include([gnulib/m4/fstatat.m4])
+m4_include([gnulib/m4/futimens.m4])
 m4_include([gnulib/m4/getcwd-abort-bug.m4])
 m4_include([gnulib/m4/getcwd-path-max.m4])
 m4_include([gnulib/m4/getcwd.m4])
@@ -1458,6 +1528,7 @@ m4_include([gnulib/m4/getline.m4])
 m4_include([gnulib/m4/getlogin_r.m4])
 m4_include([gnulib/m4/getopt.m4])
 m4_include([gnulib/m4/gettext.m4])
+m4_include([gnulib/m4/gettime.m4])
 m4_include([gnulib/m4/gettimeofday.m4])
 m4_include([gnulib/m4/glibc21.m4])
 m4_include([gnulib/m4/glob.m4])
@@ -1469,6 +1540,7 @@ m4_include([gnulib/m4/include_next.m4])
 m4_include([gnulib/m4/intlmacosx.m4])
 m4_include([gnulib/m4/intmax_t.m4])
 m4_include([gnulib/m4/inttypes_h.m4])
+m4_include([gnulib/m4/ioctl.m4])
 m4_include([gnulib/m4/langinfo_h.m4])
 m4_include([gnulib/m4/largefile.m4])
 m4_include([gnulib/m4/lib-ignore.m4])
@@ -1510,6 +1582,7 @@ m4_include([gnulib/m4/multiarch.m4])
 m4_include([gnulib/m4/nl_langinfo.m4])
 m4_include([gnulib/m4/nls.m4])
 m4_include([gnulib/m4/nocrash.m4])
+m4_include([gnulib/m4/nonblocking.m4])
 m4_include([gnulib/m4/off_t.m4])
 m4_include([gnulib/m4/onceonly.m4])
 m4_include([gnulib/m4/open.m4])
@@ -1537,7 +1610,9 @@ m4_include([gnulib/m4/signal_h.m4])
 m4_include([gnulib/m4/signalblocking.m4])
 m4_include([gnulib/m4/size_max.m4])
 m4_include([gnulib/m4/sleep.m4])
+m4_include([gnulib/m4/socklen.m4])
 m4_include([gnulib/m4/ssize_t.m4])
+m4_include([gnulib/m4/stat-time.m4])
 m4_include([gnulib/m4/stat.m4])
 m4_include([gnulib/m4/stdalign.m4])
 m4_include([gnulib/m4/stdarg.m4])
@@ -1557,16 +1632,22 @@ m4_include([gnulib/m4/strndup.m4])
 m4_include([gnulib/m4/strnlen.m4])
 m4_include([gnulib/m4/strsep.m4])
 m4_include([gnulib/m4/sys_file_h.m4])
+m4_include([gnulib/m4/sys_ioctl_h.m4])
 m4_include([gnulib/m4/sys_socket_h.m4])
 m4_include([gnulib/m4/sys_stat_h.m4])
 m4_include([gnulib/m4/sys_time_h.m4])
 m4_include([gnulib/m4/sys_types_h.m4])
+m4_include([gnulib/m4/sys_uio_h.m4])
 m4_include([gnulib/m4/sysexits.m4])
 m4_include([gnulib/m4/tempname.m4])
 m4_include([gnulib/m4/threadlib.m4])
 m4_include([gnulib/m4/time_h.m4])
+m4_include([gnulib/m4/timespec.m4])
 m4_include([gnulib/m4/unistd-safer.m4])
 m4_include([gnulib/m4/unistd_h.m4])
+m4_include([gnulib/m4/utimbuf.m4])
+m4_include([gnulib/m4/utimens.m4])
+m4_include([gnulib/m4/utimes.m4])
 m4_include([gnulib/m4/vasnprintf.m4])
 m4_include([gnulib/m4/vasprintf.m4])
 m4_include([gnulib/m4/vsnprintf.m4])
