@@ -19,7 +19,7 @@ if ! [ -d /var/cache/man ]; then
 fi
 
 # expunge old catman pages which have not been read in a week
-if [ -d /var/cache/man ]; then
+if [ ! -d /run/systemd/system ] && [ -d /var/cache/man ]; then
   cd /
   if ! dpkg-statoverride --list /var/cache/man >/dev/null 2>&1; then
     find /var/cache/man -ignore_readdir_race ! -user man -print0 | \

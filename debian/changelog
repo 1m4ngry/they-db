@@ -20,6 +20,8 @@ man-db (2.7.0-1) UNRELEASED; urgency=medium
   * Add MIME handlers (thanks, Kevin Ryde; closes: #725157).
   * Override the long-standing Lintian warning for non-standard-dir-perm on
     /var/cache/man.
+  * Adjust cron.daily to skip cat file cleanup if running under systemd,
+    since the upstream-provided tmpfiles snippet now handles that.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 16 Sep 2014 23:21:17 +0100
 
