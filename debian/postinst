@@ -36,9 +36,7 @@ db_version 2.0
 
 [ "$1" = configure ] || exit 0
 
-oldcatdir=/var/catman
 maybesetuid='man mandb'
-conffile=/etc/manpath.config
 
 db_get man-db/install-setuid
 
