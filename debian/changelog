@@ -1,4 +1,4 @@
-man-db (2.7.0.1-1) UNRELEASED; urgency=medium
+man-db (2.7.0.1-1) unstable; urgency=medium
 
   * New upstream release:
     - Fix test suite in the case where the system supports high-precision
@@ -6,7 +6,7 @@ man-db (2.7.0.1-1) UNRELEASED; urgency=medium
       not.
   * Ensure that /var/cache/man exists when triggered (LP: #1351795).
 
- -- Colin Watson <cjwatson@debian.org>  Wed, 24 Sep 2014 01:57:05 +0100
+ -- Colin Watson <cjwatson@debian.org>  Wed, 24 Sep 2014 02:23:08 +0100
 
 man-db (2.7.0-1) unstable; urgency=medium
 
