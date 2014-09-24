@@ -153,6 +153,7 @@ gnulib/lib/msvc-inval.c
 gnulib/lib/msvc-inval.h
 gnulib/lib/msvc-nothrow.c
 gnulib/lib/msvc-nothrow.h
+gnulib/lib/nanosleep.c
 gnulib/lib/nl_langinfo.c
 gnulib/lib/nonblocking.c
 gnulib/lib/nonblocking.h
@@ -192,6 +193,7 @@ gnulib/lib/same.h
 gnulib/lib/save-cwd.c
 gnulib/lib/save-cwd.h
 gnulib/lib/secure_getenv.c
+gnulib/lib/select.c
 gnulib/lib/setenv.c
 gnulib/lib/sig-handler.c
 gnulib/lib/sig-handler.h
@@ -200,6 +202,8 @@ gnulib/lib/signal.in.h
 gnulib/lib/sigprocmask.c
 gnulib/lib/size_max.h
 gnulib/lib/sleep.c
+gnulib/lib/sockets.c
+gnulib/lib/sockets.h
 gnulib/lib/stat-time.c
 gnulib/lib/stat-time.h
 gnulib/lib/stat.c
@@ -231,6 +235,7 @@ gnulib/lib/strnlen1.h
 gnulib/lib/strsep.c
 gnulib/lib/sys_file.in.h
 gnulib/lib/sys_ioctl.in.h
+gnulib/lib/sys_select.in.h
 gnulib/lib/sys_socket.c
 gnulib/lib/sys_socket.in.h
 gnulib/lib/sys_stat.in.h

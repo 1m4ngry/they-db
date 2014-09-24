@@ -1,3 +1,26 @@
+2014-09-24  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.7.0.1.
+
+	* Makefile.am (EXTRA_DIST): Add gnulib/m4/sockpfaf.m4.
+
+2014-09-24  Colin Watson  <cjwatson@debian.org>
+
+	Fix tests when build fs does not support high-precision timestamps
+
+	* gnulib: Import nanosleep module.
+	* configure.ac: Remove STAT_HAS_NSEC substitution.
+	* src/tests/Makefile.am (TESTS_ENVIRONMENT): Stop exporting
+	STAT_HAS_NSEC.
+	(AM_CPPFLAGS, AM_CFLAGS, check_PROGRAMS, fspause_SOURCES,
+	fspause_LDADD): Add.
+	* src/tests/fspause.c: New file.
+	* src/tests/mandb-2, src/tests/mandb-3, src/tests/mandb-4,
+	src/tests/mandb-5: Call ./fspause rather than next_second.
+	* src/tests/testlib.sh (next_second): Remove.
+	* .gitignore: Add src/tests/.deps and src/tests/fspause.
+	* NEWS: Document this.
+
 2014-09-22  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.7.0.
