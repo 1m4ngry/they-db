@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.7.0], [cjwatson@debian.org])
+AC_INIT([man-db], [2.7.0.1], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -21,7 +21,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2014-09-22
+date=2014-09-24
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -349,17 +349,6 @@ AC_C_INLINE
 AC_TYPE_PID_T
 AC_TYPE_UID_T
 AC_TYPE_SIZE_T
-
-# Do we have any kind of high-precision file timestamps?
-if test "x$ac_cv_member_struct_stat_st_atim_tv_nsec" = xyes || \
-   test "x$ac_cv_member_struct_stat_st_atimespec_tv_nsec" = xyes || \
-   test "x$ac_cv_member_struct_stat_st_atimensec" = xyes || \
-   test "x$ac_cv_member_struct_stat_st_atim_st__tim_tv_nsec" = xyes; then
-	STAT_HAS_NSEC=yes
-else
-	STAT_HAS_NSEC=no
-fi
-AC_SUBST([STAT_HAS_NSEC])
 
 # Check for pipeline library.
 PKG_CHECK_MODULES([libpipeline], [libpipeline >= 1.3.0])
