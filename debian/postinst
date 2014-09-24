@@ -1,6 +1,15 @@
 #!/bin/sh
 set -e
 
+catdir=/var/cache/man
+
+ensure_catdir () {
+    if [ ! -d $catdir ]; then
+	# Make sure the cat directory exists.
+	install -d -o man -g root -m 02755 $catdir
+    fi
+}
+
 run_mandb () {
     if [ ! -e /var/lib/man-db/auto-update ]; then
 	echo "Not building database; man-db/auto-update is not 'true'." >&2
@@ -15,6 +24,7 @@ run_mandb () {
 }
 
 if [ "$1" = triggered ]; then
+    ensure_catdir
     # We don't print a status message here, as dpkg already said
     # "Processing triggers for man-db ...".
     run_mandb "" -pq
@@ -27,7 +37,6 @@ db_version 2.0
 [ "$1" = configure ] || exit 0
 
 oldcatdir=/var/catman
-catdir=/var/cache/man
 maybesetuid='man mandb'
 conffile=/etc/manpath.config
 
@@ -59,10 +68,7 @@ if [ -e /etc/cron.weekly/catman.moved-by-preinst ]; then
     rm /etc/cron.weekly/catman.moved-by-preinst
 fi
 
-if [ ! -d $catdir ]; then
-    # Make sure the cat directory exists.
-    install -d -o man -g root -m 02755 $catdir
-fi
+ensure_catdir
 
 # debconf forms the interface used to suppress man-db updates during
 # automatic package builds (see https://bugs.debian.org/554914), but we
