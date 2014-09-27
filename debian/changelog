@@ -1,4 +1,4 @@
-man-db (2.7.0.2-1) UNRELEASED; urgency=medium
+man-db (2.7.0.2-1) unstable; urgency=medium
 
   * New upstream release:
     - Be more careful to avoid using or double-closing closed database
@@ -9,7 +9,7 @@ man-db (2.7.0.2-1) UNRELEASED; urgency=medium
     symlinks are shipped in the package nowadays (thanks, Sven Joachim;
     closes: #762704).
 
- -- Colin Watson <cjwatson@debian.org>  Wed, 24 Sep 2014 17:18:47 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sun, 28 Sep 2014 00:37:40 +0100
 
 man-db (2.7.0.1-1) unstable; urgency=medium
 
