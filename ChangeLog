@@ -1,3 +1,31 @@
+2014-09-28  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.7.0.2.
+
+2014-09-28  Colin Watson  <cjwatson@debian.org>
+
+	Work around lack of UTIME_* on GNU/Hurd
+
+	* gnulib/fdutimens-hurd.patch: New file.
+	* autogen.sh: Apply gnulib/fdutimens-hurd.patch.
+	* NEWS: Document this.
+
+2014-09-27  Colin Watson  <cjwatson@debian.org>
+
+	Avoid using or double-closing closed database handles
+
+	Thanks to Andreas Radke and Bruce Dubbs for reporting, and to
+	Andreas Radke for testing.
+
+	* src/check_mandirs.c (testmandirs): Close dbf if necessary before
+	(re-)opening it.  Zero out dbf after closing it.
+	(update_db_time, purge_missing): Zero out dbf after closing it.
+	* src/man.c (dbdelete_wrapper, try_db): Likewise.
+	* src/mandb.c (update_one_file): Likewise.
+	* src/straycats.c (straycats): Likewise.
+	* src/whatis.c (search): Likewise.
+	* NEWS: Document this.
+
 2014-09-24  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.7.0.1.
