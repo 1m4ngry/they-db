@@ -15,6 +15,7 @@ case $1 in
 	    echo "  Removing catpages as well as $catdir hierarchy."
 	    rm -rf $catdir 2>/dev/null || true
 	fi
+	rm -f /var/lib/man-db/auto-update
 	;;
 
     abort-install|abort-upgrade)
