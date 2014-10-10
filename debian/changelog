@@ -1,8 +1,8 @@
-man-db (2.7.0.2-2) UNRELEASED; urgency=medium
+man-db (2.7.0.2-2) unstable; urgency=medium
 
   * Remove /var/lib/man-db/auto-update on purge.
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 10 Oct 2014 14:08:47 +0100
+ -- Colin Watson <cjwatson@debian.org>  Fri, 10 Oct 2014 14:09:07 +0100
 
 man-db (2.7.0.2-1) unstable; urgency=medium
 
