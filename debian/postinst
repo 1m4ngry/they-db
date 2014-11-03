@@ -52,8 +52,7 @@ fi
 
 for x in $maybesetuid; do
     # No statoverrides available or none exist for us ...
-    if [ ! -x /usr/sbin/dpkg-statoverride ] || \
-	    ! dpkg-statoverride --list /usr/bin/$x >/dev/null; then
+    if ! dpkg-statoverride --list /usr/bin/$x >/dev/null; then
 	chown $owner /usr/bin/$x || true
 	chmod $mode  /usr/bin/$x
     fi
