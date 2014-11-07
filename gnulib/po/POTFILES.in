@@ -216,7 +216,9 @@ gnulib/lib/stdio-read.c
 gnulib/lib/stdio-write.c
 gnulib/lib/stdio.in.h
 gnulib/lib/stdlib.in.h
+gnulib/lib/str-two-way.h
 gnulib/lib/strcasecmp.c
+gnulib/lib/strcasestr.c
 gnulib/lib/strchrnul.c
 gnulib/lib/strchrnul.valgrind
 gnulib/lib/strdup.c

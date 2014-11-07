@@ -1,3 +1,11 @@
+man-db (2.7.1-1) UNRELEASED; urgency=medium
+
+  * New upstream release:
+    - Make man run correctly from a deleted directory (closes: #764384).
+    - Send 'man -a' prompts to /dev/tty (closes: #766113).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 07 Nov 2014 16:46:43 +0000
+
 man-db (2.7.0.2-3) unstable; urgency=medium
 
   * Policy version 3.9.6: no changes required.

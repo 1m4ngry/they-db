@@ -1,3 +1,70 @@
+2014-11-07  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.7.1.
+
+2014-10-27  Colin Watson  <cjwatson@debian.org>
+
+	Send 'man -a' prompts to /dev/tty
+
+	Fixes Debian bug #766113.
+
+	* src/man.c (locale_macros): Write prompts to and read replies from
+	/dev/tty, rather than stderr and stdin respectively.
+	* NEWS: Document this.
+
+2014-10-27  Colin Watson  <cjwatson@debian.org>
+
+	Make man run correctly from a deleted directory
+
+	Fixes Debian bug #764384.
+
+	* gnulib: Import save-cwd module.
+	* src/man.c (make_display_command): Use pipecmd_fchdir rather than
+	pipecmd_chdir if the working directory was saved using a file
+	descriptor.
+	(format_display, main): Save current working directory using
+	save_cwd rather than xgetcwd.
+	(format_display, local_man_loop, main): Restore previous working
+	directory using restore_cwd rather than chdir.
+	* src/tests/man-10: New file.
+	* src/tests/Makefile.am (TESTS_ENVIRONMENT): Insert the parent
+	directory into $PATH using an absolute path rather than a relative
+	one.  Export abs_top_builddir rather than top_builddir.
+	(ALL_TESTS): Add man-10.
+	* src/tests/testlib.sh (init): Set abstmpdir.  Adjust tests to use
+	this where applicable.
+	(run): Call libtool using an absolute path.
+	(skip): Remove abstmpdir.
+	(finish): Remove abstmpdir rather than tmpdir.
+	* configure.ac: Require libpipeline >= 1.4.0.
+	* NEWS: Document this.
+
+2014-10-23  Colin Watson  <cjwatson@debian.org>
+
+	NEWS: Document recent Solaris portability changes
+
+2014-10-23  Colin Watson  <cjwatson@debian.org>
+
+	Fix linking of fspause on Solaris
+
+	* src/tests/fspause.c (main): Set program_name.  Patch by Peter Bray.
+
+2014-10-23  Colin Watson  <cjwatson@debian.org>
+
+	autogen.sh: Avoid "export VARIABLE=value" syntax
+
+	Older Solaris shells do not support this.  Patch by Peter Bray.
+
+2014-10-23  Colin Watson  <cjwatson@debian.org>
+
+	gnulib: Import strcasestr module.
+
+	Suggested by Peter Bray.
+
+2014-10-05  Joe Hansen  <joedalton2@yahoo.dk>
+
+	* man/po4a/po/da.po: Update from Translation Project.
+
 2014-09-28  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.7.0.2.
