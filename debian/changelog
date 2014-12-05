@@ -1,3 +1,10 @@
+man-db (2.7.0.2-4) UNRELEASED; urgency=medium
+
+  * Backport Danish and French translation updates from upstream (closes:
+    #771367).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 05 Dec 2014 16:20:22 +0000
+
 man-db (2.7.0.2-3) unstable; urgency=medium
 
   * Policy version 3.9.6: no changes required.
