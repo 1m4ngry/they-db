@@ -1,9 +1,9 @@
-man-db (2.7.0.2-4) UNRELEASED; urgency=medium
+man-db (2.7.0.2-4) unstable; urgency=medium
 
   * Backport Danish and French translation updates from upstream (closes:
     #771367).
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 05 Dec 2014 16:20:22 +0000
+ -- Colin Watson <cjwatson@debian.org>  Fri, 05 Dec 2014 16:23:07 +0000
 
 man-db (2.7.0.2-3) unstable; urgency=medium
 
