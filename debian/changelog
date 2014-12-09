@@ -1,3 +1,10 @@
+man-db (2.7.0.2-5) UNRELEASED; urgency=medium
+
+  * Drop real IDs before effective IDs, for non-Linux compatibility (closes:
+    #772597).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 09 Dec 2014 10:14:24 +0000
+
 man-db (2.7.0.2-4) unstable; urgency=medium
 
   * Backport Danish and French translation updates from upstream (closes:
