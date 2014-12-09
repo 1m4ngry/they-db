@@ -19,7 +19,7 @@ run_mandb () {
     shift
     [ "$message" ] && echo "$message" >&2
     # start-stop-daemon isn't available when running from debootstrap.
-    perl -e '@pwd = getpwnam("man"); $( = $) = $pwd[3]; $< = $> = $pwd[2];
+    perl -e '@pwd = getpwnam("man"); $) = $( = $pwd[3]; $> = $< = $pwd[2];
 	     exec "/usr/bin/mandb", @ARGV' -- "$@" || true
 }
 
