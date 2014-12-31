@@ -1,9 +1,9 @@
-man-db (2.7.1-2) UNRELEASED; urgency=medium
+man-db (2.7.1-2) experimental; urgency=medium
 
   * Drop real IDs before effective IDs, for non-Linux compatibility (closes:
     #772597).
 
- -- Colin Watson <cjwatson@debian.org>  Wed, 31 Dec 2014 16:58:11 +0000
+ -- Colin Watson <cjwatson@debian.org>  Wed, 31 Dec 2014 16:59:31 +0000
 
 man-db (2.7.1-1) experimental; urgency=medium
 
