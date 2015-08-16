@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.7.1], [cjwatson@debian.org])
+AC_INIT([man-db], [2.7.2], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -13,15 +13,11 @@ AC_GNU_SOURCE
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT([disable-static])
 
-if test ! -f "$srcdir/gnulib/po/Makefile.in.in"; then
-	AC_MSG_ERROR([you must run ./autogen.sh before ./configure when building from revision control])
-fi
-
 AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2014-11-07
+date=2015-08-16
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -399,7 +395,20 @@ then
 		    AC_SUBST([DBTYPE], [ndbm])]
 		   db=yes, db=no)
       test "$db" = "yes" && break
+    done], db=no)
+  if test "$db" = no
+  then
+    AC_CHECK_HEADER([gdbm-ndbm.h], [
+      for lib in gdbm_compat c dbm
+      do
+	AC_CHECK_LIB([$lib], [dbm_fetch],
+		     test "$lib" = "c" || DBLIBS="-l$lib"
+		     [AC_DEFINE([NDBM], [1], [Define if you have, and want to use, ndbm interface routines.])
+		      AC_SUBST([DBTYPE], [ndbm])]
+		     db=yes, db=no)
+	test "$db" = "yes" && break
       done], db=no)
+  fi
 fi 
 
 if test "$db" != "yes"
@@ -438,9 +447,11 @@ MAN_TRANS_SUBST([zsoelim])
 # If we're cross-compiling, tests won't work.
 AM_CONDITIONAL([CROSS_COMPILING], [test "x$cross_compiling" = xyes])
 
+# Are Gnulib translations available?
+AM_CONDITIONAL([HAVE_GNULIB_PO], [test -f "$srcdir/gnulib/po/POTFILES.in"])
+
 AC_CONFIG_FILES([Makefile
 	gnulib/lib/Makefile
-	gnulib/po/Makefile.in
 	init/Makefile
 	init/systemd/Makefile
 	lib/Makefile
@@ -468,4 +479,7 @@ AC_CONFIG_FILES([Makefile
 	include/comp_src.h
 	include/manconfig.h
 	po/Makefile.in])
+if test -f "$srcdir/gnulib/po/Makefile.in.in"; then
+	AC_CONFIG_FILES([gnulib/po/Makefile.in])
+fi
 AC_OUTPUT

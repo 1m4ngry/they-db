@@ -266,8 +266,8 @@ int list_extensions (char *data, char ***names, char ***ext)
  2) One data item exists. Item is returned as first in set of structures.
  3) Many items exist. They are all returned, in a multiple structure set.
  */
-static struct mandata *dblookup (const char *page, const char *section,
-				 int flags)
+static struct mandata *dblookup (MYDBM_FILE dbf, const char *page,
+				 const char *section, int flags)
 {
 	struct mandata *info = NULL;
 	datum key, cont;
@@ -277,7 +277,7 @@ static struct mandata *dblookup (const char *page, const char *section,
 
 	MYDBM_SET (key, name_to_key (page));
 	cont = MYDBM_FETCH (dbf, key);
-	free (MYDBM_DPTR (key));
+	MYDBM_FREE_DPTR (key);
 
 	if (MYDBM_DPTR (cont) == NULL) {	/* No entries at all */
 		return info;			/* indicate no entries */
@@ -345,7 +345,7 @@ static struct mandata *dblookup (const char *page, const char *section,
 				       MYDBM_DPTR (key));
 				gripe_corrupt_data ();
 			}
-			free (MYDBM_DPTR (key));
+			MYDBM_FREE_DPTR (key);
 
 			/* allocate info struct, fill it in and
 			   point info to the next in the list */
@@ -360,26 +360,28 @@ static struct mandata *dblookup (const char *page, const char *section,
 
 		free (names);
 		free (ext);
-		MYDBM_FREE (MYDBM_DPTR (cont));
+		MYDBM_FREE_DPTR (cont);
 		return ret;
 	}
 }
 
-struct mandata *dblookup_all (const char *page, const char *section,
-			      int match_case)
+struct mandata *dblookup_all (MYDBM_FILE dbf, const char *page,
+			      const char *section, int match_case)
 {
-	return dblookup (page, section, ALL | (match_case ? MATCH_CASE : 0));
+	return dblookup (dbf, page, section,
+			 ALL | (match_case ? MATCH_CASE : 0));
 }
 
-struct mandata *dblookup_exact (const char *page, const char *section,
-				int match_case)
+struct mandata *dblookup_exact (MYDBM_FILE dbf, const char *page,
+				const char *section, int match_case)
 {
-	return dblookup (page, section, EXACT | (match_case ? MATCH_CASE : 0));
+	return dblookup (dbf, page, section,
+			 EXACT | (match_case ? MATCH_CASE : 0));
 }
 
-struct mandata *dblookup_pattern (const char *pattern, const char *section,
-				  int match_case, int pattern_regex,
-				  int try_descriptions)
+struct mandata *dblookup_pattern (MYDBM_FILE dbf, const char *pattern,
+				  const char *section, int match_case,
+				  int pattern_regex, int try_descriptions)
 {
 	struct mandata *ret = NULL, *tail = NULL;
 	datum key, cont;
@@ -473,12 +475,12 @@ nextpage_tab:
 nextpage:
 #ifndef BTREE
 		nextkey = MYDBM_NEXTKEY (dbf, key);
-		MYDBM_FREE (MYDBM_DPTR (cont));
-		MYDBM_FREE (MYDBM_DPTR (key));
+		MYDBM_FREE_DPTR (cont);
+		MYDBM_FREE_DPTR (key);
 		key = nextkey;
 #else /* BTREE */
-		MYDBM_FREE (MYDBM_DPTR (cont));
-		MYDBM_FREE (MYDBM_DPTR (key));
+		MYDBM_FREE_DPTR (cont);
+		MYDBM_FREE_DPTR (key);
 		end = btree_nextkeydata (dbf, &key, &cont);
 #endif /* !BTREE */
 		info.addr = NULL;

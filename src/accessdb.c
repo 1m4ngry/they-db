@@ -51,7 +51,6 @@ const char *cat_root;
 
 /* for db_storage.c */
 char *database;
-MYDBM_FILE dbf;
 
 const char *argp_program_version = "accessdb " PACKAGE_VERSION;
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
@@ -105,6 +104,7 @@ static struct argp argp = { options, parse_opt, args_doc, doc, 0,
 
 int main (int argc, char *argv[])
 {
+	MYDBM_FILE dbf;
 	datum key;
 	int ret = OK;
 
@@ -148,10 +148,10 @@ int main (int argc, char *argv[])
 			*t = ' ';
 		printf ("%s -> \"%s\"\n", nicekey, MYDBM_DPTR (content));
 		free (nicekey); 
-		MYDBM_FREE (MYDBM_DPTR (content));
+		MYDBM_FREE_DPTR (content);
 next:
 		nextkey = MYDBM_NEXTKEY (dbf, key);
-		MYDBM_FREE (MYDBM_DPTR (key));
+		MYDBM_FREE_DPTR (key);
 		key = nextkey;
 	}
 

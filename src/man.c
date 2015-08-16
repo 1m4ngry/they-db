@@ -190,7 +190,6 @@ static char *manpathlist[MAXDIRS];
 int quiet = 1;
 char *program_name;
 char *database = NULL;
-MYDBM_FILE dbf; 
 extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
 extern int disable_cache;
@@ -613,6 +612,48 @@ static void gripe_no_name (const char *sect)
 	exit (FAIL);
 }
 
+/* In case we're set-id, double-check that our standard file descriptors are
+ * open in a standard way.  See:
+ *
+ *   http://austingroupbugs.net/view.php?id=173
+ */
+static void check_standard_fds (void)
+{
+	int flags, mode;
+
+	/* We can't even write an error message in this case, so check it
+	 * first.
+	 */
+	flags = fcntl (2, F_GETFL);
+	if (flags < 0)
+		exit (FATAL);
+	mode = flags & O_ACCMODE;
+	if (mode != O_WRONLY && mode != O_RDWR)
+		exit (FATAL);
+
+	flags = fcntl (0, F_GETFL);
+	if (flags < 0) {
+		fprintf (stderr, "stdin not open!\n");
+		exit (FATAL);
+	}
+	mode = flags & O_ACCMODE;
+	if (mode != O_RDONLY && mode != O_RDWR) {
+		fprintf (stderr, "stdin not open for reading!\n");
+		exit (FATAL);
+	}
+
+	flags = fcntl (1, F_GETFL);
+	if (flags < 0) {
+		fprintf (stderr, "stdout not open!\n");
+		exit (FATAL);
+	}
+	mode = flags & O_ACCMODE;
+	if (mode != O_WRONLY && mode != O_RDWR) {
+		fprintf (stderr, "stdout not open for reading!\n");
+		exit (FATAL);
+	}
+}
+
 static struct termios tms;
 static int tms_set = 0;
 
@@ -747,6 +788,8 @@ static void do_extern (int argc, char *argv[])
 	/* Please keep these in the same order as they are in whatis.c. */
 	if (debug_level)
 		pipecmd_arg (cmd, "-d");
+	if (local_man_file)  /* actually apropos/whatis --long */
+		pipecmd_arg (cmd, "-l");
 	if (colon_sep_section_list)
 		pipecmd_args (cmd, "-s", colon_sep_section_list, NULL);
 	if (alt_system_name)
@@ -3030,12 +3073,13 @@ out:
 static void dbdelete_wrapper (const char *page, struct mandata *info)
 {
 	if (!catman) {
+		MYDBM_FILE dbf;
+
 		dbf = MYDBM_RWOPEN (database);
 		if (dbf) {
-			if (dbdelete (page, info) == 1)
+			if (dbdelete (dbf, page, info) == 1)
 				debug ("%s(%s) not in db!\n", page, info->ext);
 			MYDBM_CLOSE (dbf);
-			dbf = NULL;
 		}
 	}
 }
@@ -3263,6 +3307,8 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 	data = hashtable_lookup (db_hash, manpath, strlen (manpath));
 
 	if (!data) {
+		MYDBM_FILE dbf;
+
 		dbf = MYDBM_RDOPEN (database);
 		if (dbf && dbver_rd (dbf)) {
 			MYDBM_CLOSE (dbf);
@@ -3275,10 +3321,10 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 			   otherwise NULL retrieves all available */
 			if (regex_opt || wildcard)
 				data = dblookup_pattern
-					(name, section, match_case,
+					(dbf, name, section, match_case,
 					 regex_opt, !names_only);
 			else
-				data = dblookup_all (name, section,
+				data = dblookup_all (dbf, name, section,
 						     match_case);
 			hashtable_install (db_hash, manpath, strlen (manpath),
 					   data);
@@ -3806,6 +3852,8 @@ int main (int argc, char *argv[])
 
 	program_name = base_name (argv[0]);
 
+	check_standard_fds ();
+
 	init_debug ();
 	pipeline_install_post_fork (pop_all_cleanups);
 
@@ -3824,19 +3872,6 @@ int main (int argc, char *argv[])
 #if defined _AIX || defined __sgi
 	global_argv = argv;
 #endif
-
-	{ /* opens base streams in case someone like "info" closed them */
-		struct stat buf;
-		if (STDIN_FILENO < 0 ||
-		    ((fstat (STDIN_FILENO, &buf) < 0) && (errno == EBADF))) 
-			freopen ("/dev/null", "r", stdin);
-		if (STDOUT_FILENO < 0 ||
-		    ((fstat (STDOUT_FILENO, &buf) < 0) && (errno == EBADF)))
-			freopen ("/dev/null", "w", stdout);
-		if (STDERR_FILENO < 0 ||
-		    ((fstat (STDERR_FILENO, &buf) < 0) && (errno == EBADF)))
-			freopen ("/dev/null", "w", stderr);
-	}
 
 	/* This will enable us to do some profiling and know where gmon.out
 	 * will end up.  Must restore_cwd (&cwd) before we return.
