@@ -1,3 +1,10 @@
+man-db (2.7.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release:
+    - Stop storing the database handle in a global variable (LP: #1304261).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 16 Aug 2015 12:51:30 +0100
+
 man-db (2.7.1-2) experimental; urgency=medium
 
   * Drop real IDs before effective IDs, for non-Linux compatibility (closes:

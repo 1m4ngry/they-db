@@ -79,7 +79,8 @@ int compare_ids (char a, char b, int promote_links)
  * be replaced with some new contents. Check that names and section
  * extensions match before calling this.
  */
-static int replace_if_necessary (struct mandata *newdata,
+static int replace_if_necessary (MYDBM_FILE dbf,
+				 struct mandata *newdata,
 				 struct mandata *olddata,
 				 datum newkey, datum newcont)
 {
@@ -189,7 +190,7 @@ static datum make_content (struct mandata *in)
 
  return errorcode or 0 on success.
 */
-int dbstore (struct mandata *in, const char *base)
+int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 {
 	datum oldkey, oldcont;
 
@@ -221,7 +222,7 @@ int dbstore (struct mandata *in, const char *base)
 		oldcont = make_content (in);
 		if (MYDBM_REPLACE (dbf, oldkey, oldcont))
 			gripe_replace_key (MYDBM_DPTR (oldkey));
-		free (MYDBM_DPTR (oldcont));
+		MYDBM_FREE_DPTR (oldcont);
 		free (in->name);
 		in->name = NULL;
 	} else if (*MYDBM_DPTR (oldcont) == '\t') { 	/* situation (2) */
@@ -240,16 +241,16 @@ int dbstore (struct mandata *in, const char *base)
 			struct mandata info;
 			int ret;
 
-			MYDBM_FREE (MYDBM_DPTR (oldcont));
+			MYDBM_FREE_DPTR (oldcont);
 			cont = MYDBM_FETCH (dbf, newkey);
 			split_content (MYDBM_DPTR (cont), &info);
-			ret = replace_if_necessary (in, &info,
+			ret = replace_if_necessary (dbf, in, &info,
 						    newkey, newcont);
-			/* MYDBM_FREE (MYDBM_DPTR (cont)); */
+			/* MYDBM_FREE_DPTR (cont); */
 			free_mandata_elements (&info);
-			free (MYDBM_DPTR (newkey));
-			free (MYDBM_DPTR (newcont));
-			free (MYDBM_DPTR (oldkey));
+			MYDBM_FREE_DPTR (newkey);
+			MYDBM_FREE_DPTR (newcont);
+			MYDBM_FREE_DPTR (oldkey);
 
 			return ret;
 		}
@@ -259,19 +260,19 @@ int dbstore (struct mandata *in, const char *base)
 		/* This next bit needs to be done first as we'll wipe out
 		   MYDBM_DPTR (oldcont) otherwise (for NDBM only!) */
 
-		free (MYDBM_DPTR (newkey));
-		free (MYDBM_DPTR (newcont));
+		MYDBM_FREE_DPTR (newkey);
+		MYDBM_FREE_DPTR (newcont);
 
 		MYDBM_SET (newcont, xasprintf (
 			"%s\t%s\t%s", MYDBM_DPTR (oldcont), base, in->ext));
-		MYDBM_FREE (MYDBM_DPTR (oldcont));
+		MYDBM_FREE_DPTR (oldcont);
 
 		/* Try to replace the old simple data with the new stuff */
 
 		if (MYDBM_REPLACE (dbf, oldkey, newcont))
 			gripe_replace_key (MYDBM_DPTR (oldkey));
 
-		free (MYDBM_DPTR (newcont));
+		MYDBM_FREE_DPTR (newcont);
 	} else { 				/* situation (3) */
 		datum newkey, newcont, lastkey, lastcont;
 		struct mandata old;
@@ -305,12 +306,13 @@ int dbstore (struct mandata *in, const char *base)
 			if (!STREQ (base, MYDBM_DPTR (oldkey)))
 				in->name = xstrdup (base);
 			newcont = make_content (in);
-			ret = replace_if_necessary (in, &old, oldkey, newcont);
-			/* MYDBM_FREE (MYDBM_DPTR (oldcont)); */
+			ret = replace_if_necessary (dbf, in, &old,
+						    oldkey, newcont);
+			/* MYDBM_FREE_DPTR (oldcont); */
 			free_mandata_elements (&old);
-			free (MYDBM_DPTR (newcont));
-			free (MYDBM_DPTR (lastkey));
-			free (MYDBM_DPTR (oldkey));
+			MYDBM_FREE_DPTR (newcont);
+			MYDBM_FREE_DPTR (lastkey);
+			MYDBM_FREE_DPTR (oldkey);
 			free (old_name);
 			free (in->name);
 			in->name = NULL;
@@ -336,8 +338,8 @@ int dbstore (struct mandata *in, const char *base)
 		if (MYDBM_REPLACE (dbf, lastkey, lastcont))
 			gripe_replace_key (MYDBM_DPTR (lastkey));
 
-		free (MYDBM_DPTR (lastkey));
-		free (MYDBM_DPTR (lastcont));
+		MYDBM_FREE_DPTR (lastkey);
+		MYDBM_FREE_DPTR (lastcont);
 
 		newkey = make_multi_key (base, in->ext);
 		newcont = make_content (in);
@@ -345,8 +347,8 @@ int dbstore (struct mandata *in, const char *base)
 		if (MYDBM_REPLACE (dbf, newkey, newcont))
 			gripe_replace_key (MYDBM_DPTR (newkey));
 
-		free (MYDBM_DPTR (newkey));
-		free (MYDBM_DPTR (newcont));
+		MYDBM_FREE_DPTR (newkey);
+		MYDBM_FREE_DPTR (newcont);
 
 		/* Now build a simple reference to the above two items */
 
@@ -356,12 +358,12 @@ int dbstore (struct mandata *in, const char *base)
 		if (MYDBM_REPLACE (dbf, oldkey, newcont))
 			gripe_replace_key (MYDBM_DPTR (oldkey));
 
-		/* MYDBM_FREE (MYDBM_DPTR (oldcont)); */
+		/* MYDBM_FREE_DPTR (oldcont); */
 		free_mandata_elements (&old);
-		free (MYDBM_DPTR (newcont));
+		MYDBM_FREE_DPTR (newcont);
 		free (old_name);
 	}
 
-	free (MYDBM_DPTR (oldkey));
+	MYDBM_FREE_DPTR (oldkey);
 	return 0;
 }
