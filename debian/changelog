@@ -20,6 +20,20 @@ man-db (2.7.1-1) experimental; urgency=medium
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 07 Nov 2014 16:47:46 +0000
 
+man-db (2.7.0.2-5) unstable; urgency=medium
+
+  * Drop real IDs before effective IDs, for non-Linux compatibility (closes:
+    #772597).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 31 Dec 2014 16:40:13 +0000
+
+man-db (2.7.0.2-4) unstable; urgency=medium
+
+  * Backport Danish and French translation updates from upstream (closes:
+    #771367).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 05 Dec 2014 16:23:07 +0000
+
 man-db (2.7.0.2-3) unstable; urgency=medium
 
   * Policy version 3.9.6: no changes required.
