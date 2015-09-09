@@ -1,3 +1,14 @@
+man-db (2.7.3-1) UNRELEASED; urgency=medium
+
+  * New upstream release:
+    - Rewrite CACHEDIR.TAG and databases if they cannot be read (closes:
+      #797019).
+    - Squeeze blank lines internally instead of pager -s (closes: #796584).
+    - Restore the ability to use 'man -a' noninteractively (closes:
+      #798094).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 09 Sep 2015 16:54:16 +0100
+
 man-db (2.7.2-1) unstable; urgency=medium
 
   * New upstream release:

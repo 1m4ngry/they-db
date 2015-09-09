@@ -1510,6 +1510,52 @@ static void add_output_iconv (pipeline *p,
 	}
 }
 
+/* Pipeline command to squeeze multiple blank lines into one.
+ *
+ */
+static void squeeze_blank_lines (void *data ATTRIBUTE_UNUSED)
+{
+	char *line = NULL;
+	size_t len = 0;
+
+	while (getline (&line, &len, stdin) != -1) {
+		int in_blank_line  = 1;
+		int got_blank_line = 0;
+
+		while (in_blank_line) {
+			char *p;
+			for (p = line; *p; ++p) {
+				if (!CTYPE (isspace, *p)) {
+					in_blank_line = 0;
+					break;
+				}
+			}
+
+			if (in_blank_line) {
+				got_blank_line = 1;
+				free (line);
+				line = NULL;
+				len  = 0;
+				if (getline (&line, &len, stdin) == -1)
+					break;
+			}
+		}
+
+		if (got_blank_line && putchar ('\n') < 0)
+			break;
+
+		if (!in_blank_line && fputs (line, stdout) < 0)
+			break;
+
+		free (line);
+		line = NULL;
+		len  = 0;
+	}
+
+	free (line);
+	return;
+}
+
 /* Return pipeline to display file provided on stdin.
  *
  * TODO: htmlout case is pretty weird now. I'd like the intelligence to be
@@ -1537,6 +1583,14 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 			add_col (p, locale_charset, "-b", "-p", "-x", NULL);
 	}
 
+	/* emulate pager -s, the sed code is just for information */
+	{
+		pipecmd *cmd;
+		const char *name = "sed -e '/^[[:space:]]*$/{ N; /^[[:space:]]*\\n[[:space:]]*$/D; }'";
+		cmd = pipecmd_new_function (name, &squeeze_blank_lines, NULL, NULL);
+		pipeline_command (p, cmd);
+	}
+
 	if (isatty (STDOUT_FILENO)) {
 		if (ascii) {
 			pipeline_command_argstr
@@ -1551,10 +1605,12 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 	}
 
 	if (pager_cmd) {
-		if (cwd.desc >= 0)
-			pipecmd_fchdir (pager_cmd, cwd.desc);
-		else
-			pipecmd_chdir (pager_cmd, cwd.name);
+		if (have_cwd) {
+			if (cwd.desc >= 0)
+				pipecmd_fchdir (pager_cmd, cwd.desc);
+			else
+				pipecmd_chdir (pager_cmd, cwd.name);
+		}
 		setenv_less (pager_cmd, title);
 		pipeline_command (p, pager_cmd);
 	}
@@ -2015,6 +2071,8 @@ static inline int do_prompt (const char *name)
 	FILE *tty = NULL;
 
 	skip = 0;
+	if (!isatty (STDOUT_FILENO) || !isatty (STDIN_FILENO))
+		return 0; /* noninteractive */
 	tty = fopen ("/dev/tty", "r+");
 	if (!tty)
 		return 0;
@@ -2471,7 +2529,7 @@ static char *find_cat_file (const char *path, const char *original,
 	cat_file = convert_name (original, 1);
 	if (cat_file) {
 		status = is_changed (original, cat_file);
-		if (status != -2 && !(status & 1) == 1) {
+		if (status != -2 && (!(status & 1)) == 1) {
 			debug ("found valid FSSTND cat file %s\n", cat_file);
 			return cat_file;
 		}
