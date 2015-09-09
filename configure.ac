@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.7.2], [cjwatson@debian.org])
+AC_INIT([man-db], [2.7.3], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -17,7 +17,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2015-08-16
+date=2015-09-09
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -73,7 +73,6 @@ test -n "$browser" && browser="exec $browser"
 AC_CHECK_PROGS([tr], [tr])
 AC_CHECK_PROGS([grep], [grep])
 MAN_CHECK_PROGS([pager], [PAGER], [use PAGER as default pager], [pager less more])
-test -n "$pager" && pager="$pager -s"
 
 # Define below (in list of preference) *roff macros to check for.
 macros="andoc an doc"
