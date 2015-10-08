@@ -1,10 +1,10 @@
-man-db (2.7.4-1) UNRELEASED; urgency=medium
+man-db (2.7.4-1) unstable; urgency=medium
 
   * New upstream release:
     - man: Exit 3 if formatter exits non-zero (closes: #801261).
     - man: Honour MANWIDTH in conjunction with -Z (closes: #801241).
 
- -- Colin Watson <cjwatson@debian.org>  Thu, 08 Oct 2015 02:38:15 +0100
+ -- Colin Watson <cjwatson@debian.org>  Thu, 08 Oct 2015 02:42:14 +0100
 
 man-db (2.7.3-1) unstable; urgency=medium
 
