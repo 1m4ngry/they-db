@@ -1,3 +1,65 @@
+2015-10-08  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.7.4.
+
+2015-10-08  Colin Watson  <cjwatson@debian.org>
+
+	man: Honour MANWIDTH in conjunction with -Z
+
+	* src/man.c (get_roff_line_length): Also consider line_length if
+	ditroff is set.
+	(make_roff_command): Try add_roff_line_length regardless of troff.
+	The line length is passed to the macro package, not to the output
+	device, although get_roff_line_length will still sometimes not use
+	it (e.g. if using the "ps" device).  Fixes Debian bug #801241.
+	* NEWS: Document this.
+
+2015-10-08  Colin Watson  <cjwatson@debian.org>
+
+	man: Exit 3 if formatter exits non-zero
+
+	* src/man.c (format_display): Keep track of exit statuses from both
+	format_cmd and disp_cmd, and exit CHILD_FAIL if either is non-zero
+	and non-SIGPIPE.  Fixes Debian bug #801261.
+	* NEWS: Document this.
+
+2015-09-22  Colin Watson  <cjwatson@debian.org>
+
+	Fix replace.sed prerequisite syntax
+
+	Suffix rules may not have prerequisites.  Thanks to Nikola Forró; fixes
+	Fedora bug #1263930.
+
+	* man/Rules.man: Declare dependency of $(MANS) on replace.sed
+	separately rather than trying to do so in suffix rules.
+	* NEWS: Document this.
+
+2015-09-22  Colin Watson  <cjwatson@debian.org>
+
+	Fix crash in manpath deduplication
+
+	* src/manp.c (create_pathlist): Handle NULL return from
+	canonicalize_file_name.
+	* NEWS: Document this.
+
+2015-09-22  Colin Watson  <cjwatson@debian.org>
+
+	Upgrade config.guess/config.sub
+
+	* build-aux/config.guess, build-aux/config.sub: Upgrade to
+	2015-08-20.
+
+2015-09-21  Nikola Forró  <nforro@redhat.com>
+
+	Fix typos in italian manpath man page
+
+2015-09-16  zwpwjwtz  <zwpwjwtz@126.com>
+
+	Update Simplified Chinese manual page translation
+
+	* man/po4a/po/zh_CN.po: Update from Translation Project.
+	* man/THANKS: Add translator credit.
+
 2015-09-09  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.7.3.
