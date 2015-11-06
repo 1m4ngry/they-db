@@ -695,6 +695,7 @@ static void heirloom_line_length (void *data)
 	printf (".ll %sn\n", (const char *) data);
 	/* TODO: This fails to do anything useful.  Why? */
 	printf (".lt %sn\n", (const char *) data);
+	printf (".lf 1\n");
 }
 #endif /* HEIRLOOM_NROFF */
 
@@ -2024,14 +2025,16 @@ static void disable_hyphenation (void *data ATTRIBUTE_UNUSED)
 {
 	fputs (".nh\n"
 	       ".de hy\n"
-	       "..\n", stdout);
+	       "..\n"
+	       ".lf 1\n", stdout);
 }
 
 static void disable_justification (void *data ATTRIBUTE_UNUSED)
 {
 	fputs (".na\n"
 	       ".de ad\n"
-	       "..\n", stdout);
+	       "..\n"
+	       ".lf 1\n", stdout);
 }
 
 #ifdef TROFF_IS_GROFF
@@ -2060,7 +2063,8 @@ static void locale_macros (void *data)
 		/* set the hyphenation language anyway, to make sure groff
 		 * only hyphenates languages it knows about
 		 */
-		".hla %s\n", macro_lang, hyphen_lang);
+		".hla %s\n"
+		".lf 1\n", macro_lang, hyphen_lang);
 }
 #endif /* TROFF_IS_GROFF */
 
@@ -2144,7 +2148,7 @@ static int display (const char *dir, const char *man_file,
 		else
 			decomp = decompress_fdopen (dup (STDIN_FILENO));
 
-		if (no_hyphenation) {
+		if (!recode && no_hyphenation) {
 			pipecmd *hcmd = pipecmd_new_function (
 				"echo .nh && echo .de hy && echo ..",
 				disable_hyphenation, NULL, NULL);
@@ -2152,7 +2156,7 @@ static int display (const char *dir, const char *man_file,
 			++seq_ncmds;
 		}
 
-		if (no_justification) {
+		if (!recode && no_justification) {
 			pipecmd *jcmd = pipecmd_new_function (
 				"echo .na && echo .de ad && echo ..",
 				disable_justification, NULL, NULL);
@@ -2164,7 +2168,7 @@ static int display (const char *dir, const char *man_file,
 		/* This only works with preconv, since the per-locale macros
 		 * may change the assumed input encoding.
 		 */
-		if (*man_file && get_groff_preconv ()) {
+		if (!recode && *man_file && get_groff_preconv ()) {
 			char *page_lang = lang_dir (man_file);
 
 			if (page_lang && *page_lang &&
