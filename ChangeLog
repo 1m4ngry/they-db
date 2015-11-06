@@ -1,3 +1,50 @@
+2015-11-06  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.7.5.
+
+	* NEWS: Document changes since 2.7.4.
+
+2015-11-06  Colin Watson  <cjwatson@debian.org>
+
+	Build text manual with LC_ALL=C
+
+	nroff's UTF-8 output is a bit wonky in this case, but ASCII will do
+	fine.
+
+	* manual/Makefile.am (.pp.cat): Set LC_ALL=C.
+
+2015-11-05  Colin Watson  <cjwatson@debian.org>
+
+	Disable roff input insertion with --recode
+
+	Reported by Bjarni Ingi Gislason.  Fixes Debian bug #751795.
+
+	* src/man.c (display): Don't insert roff input for --no-hyphenation,
+	--no-justification, or locale macros when the --recode option is used.
+
+2015-11-05  Colin Watson  <cjwatson@debian.org>
+
+	Adjust line number when inserting extra roff input
+
+	Reported by Bjarni Ingi Gislason.  Fixes Debian bug #789219.
+
+	* src/man.c (heirloom_line_length, disable_hyphenation,
+	disable_justification, locale_macros): Emit ".lf 1" after inserted roff
+	input.
+	* src/zsoelim.l: Accept .lf without a file name argument.
+
+2015-10-19  Colin Watson  <cjwatson@debian.org>
+
+	Make a mandb error message clearer
+
+	* src/mandb.c (xcopy): Say which file name we failed to fopen.
+
+2015-10-08  Colin Watson  <cjwatson@debian.org>
+
+	Fix Plural-Forms header in Catalan translation
+
+	* po/ca.po (Plural-Forms): Add missing semicolon.
+
 2015-10-08  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.7.4.
