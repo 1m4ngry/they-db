@@ -1,11 +1,11 @@
-man-db (2.7.5-1) UNRELEASED; urgency=medium
+man-db (2.7.5-1) unstable; urgency=medium
 
   * New upstream release:
     - Adjust line number when inserting extra roff input (closes: #789219).
     - Disable roff input insertion with --recode (closes: #751795).
     - Build text manual with LC_ALL=C, to help reproducible builds.
 
- -- Colin Watson <cjwatson@debian.org>  Fri, 06 Nov 2015 15:55:29 +0000
+ -- Colin Watson <cjwatson@debian.org>  Fri, 06 Nov 2015 15:56:41 +0000
 
 man-db (2.7.4-1) unstable; urgency=medium
 
