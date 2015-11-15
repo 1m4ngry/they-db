@@ -6,7 +6,7 @@ Standards-Version: 3.9.6
 Build-Depends: dpkg (>= 1.16.1~), debhelper (>= 9~), flex, groff, libgdbm-dev, po4a, zlib1g-dev, libpipeline-dev (>= 1.4.0), pkg-config, dh-autoreconf, autopoint
 Homepage: http://man-db.nongnu.org/
 Vcs-Git: git://anonscm.debian.org/pkg-man-db/man-db.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-man-db/man-db.git
+Vcs-Browser: https://anonscm.debian.org/cgit/pkg-man-db/man-db.git
 
 Package: man-db
 Architecture: any
