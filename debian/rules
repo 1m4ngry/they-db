@@ -26,7 +26,7 @@ override_dh_auto_configure:
 	            --with-col=col --with-vgrind=vgrind --with-grap=grap \
 	            --with-compress=compress --with-bzip2=bzip2 \
 		    --with-xz=xz --with-lzip=lzip --with-lzma=lzma \
-		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 5 4 9 6 7'
+		    --with-sections='1 n l 8 3 2 3posix 3pm 3perl 3am 5 4 9 6 7'
 
 override_dh_auto_test:
 	VERBOSE=1 dh_auto_test

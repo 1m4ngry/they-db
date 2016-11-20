@@ -2,6 +2,7 @@ man-db (2.7.5-2) UNRELEASED; urgency=medium
 
   * Update Vcs-Browser URL for alioth cgit.
   * Use HTTPS for Vcs-Git URL.
+  * Display pages from section 3am after section 2 (closes: #838759).
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 15 Nov 2015 11:01:53 +0000
 
