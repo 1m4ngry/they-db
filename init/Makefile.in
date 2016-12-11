@@ -90,6 +90,7 @@ subdir = init
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/m4/man-arg-automatic-update.m4 \
+	$(top_srcdir)/m4/man-arg-cache-owner.m4 \
 	$(top_srcdir)/m4/man-arg-cats.m4 \
 	$(top_srcdir)/m4/man-arg-config-file.m4 \
 	$(top_srcdir)/m4/man-arg-db.m4 \
@@ -994,6 +995,7 @@ LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
 LTLIBOBJS = @LTLIBOBJS@
 LTLIBPTH = @LTLIBPTH@
 LTLIBTHREAD = @LTLIBTHREAD@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANDIR_LAYOUT = @MANDIR_LAYOUT@

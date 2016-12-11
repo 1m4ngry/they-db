@@ -160,7 +160,7 @@ struct candidate {
 #define CANDIDATE_FILESYSTEM 0
 #define CANDIDATE_DATABASE   1
 
-static inline void gripe_system (pipeline *p, int status)
+static void gripe_system (pipeline *p, int status)
 {
 	error (CHILD_FAIL, 0, _("command exited with status %d: %s"),
 	       status, pipeline_tostring (p));
@@ -748,7 +748,7 @@ static pipecmd *add_roff_line_length (pipecmd *cmd, int *save_cat_p)
 }
 #endif /* TROFF_IS_GROFF || HEIRLOOM_NROFF */
 
-static inline void gripe_no_man (const char *name, const char *sec)
+static void gripe_no_man (const char *name, const char *sec)
 {
 	/* On AIX and IRIX, fall back to the vendor supplied browser. */
 #if defined _AIX || defined __sgi
@@ -810,7 +810,7 @@ static void do_extern (int argc, char *argv[])
 }
 
 /* lookup $MANOPT and if available, put in *argv[] format for argp */
-static inline char **manopt_to_env (int *argc)
+static char **manopt_to_env (int *argc)
 {
 	char *manopt, *manopt_copy, *opt_start, **argv;
 
@@ -860,7 +860,7 @@ static inline char **manopt_to_env (int *argc)
 }
 
 /* Return char array with 'less' special chars escaped. Uses static storage. */
-static inline const char *escape_less (const char *string)
+static const char *escape_less (const char *string)
 {
 	static char *escaped_string; 
 	char *ptr;
@@ -957,7 +957,7 @@ static char *locale_manpath (const char *manpath)
  * The list of sections in config.h simply allows us to specify oddly
  * named directories like .../man3f.  Yuk.
  */
-static inline const char *is_section (const char *name)
+static const char *is_section (const char *name)
 {
 	const char **vs;
 
@@ -1667,7 +1667,8 @@ static int commit_tmp_cat (const char *cat_file, const char *tmp_cat,
 			status = 0;
 		} else {
 			struct passwd *man_owner = get_man_owner ();
-			status = chown (tmp_cat, man_owner->pw_uid, -1);
+			status = chown (tmp_cat, man_owner->pw_uid,
+					man_owner->pw_gid);
 			if (status)
 				error (0, errno, _("can't chown %s"), tmp_cat);
 		}
@@ -1807,7 +1808,7 @@ static int close_cat_stream (pipeline *cat_p, const char *cat_file,
 		status |= commit_tmp_cat (cat_file, tmp_cat_file,
 					  delete || status);
 		if (!debug_level)
-			pop_cleanup ();
+			pop_cleanup ((cleanup_fun) unlink, tmp_cat_file);
 	}
 	free (tmp_cat_file);
 	return status;
@@ -1925,7 +1926,8 @@ static void format_display (pipeline *decomp,
 				error (0, errno,
 				       _("can't restore previous working "
 					 "directory"));
-				chdir ("/");
+				/* last resort */
+				if (chdir ("/")) { /* ignore errors */ }
 			}
 			free_cwd (&old_cwd);
 			if (remove_directory (htmldir, 0) == -1)
@@ -1961,7 +1963,8 @@ static void format_display (pipeline *decomp,
 		if (have_old_cwd && restore_cwd (&old_cwd) < 0) {
 			error (0, errno,
 			       _("can't restore previous working directory"));
-			chdir ("/");
+			/* last resort */
+			if (chdir ("/")) { /* ignore errors */ }
 		}
 		free_cwd (&old_cwd);
 		if (remove_directory (htmldir, 0) == -1)
@@ -2017,7 +2020,7 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 
 	close (tmp_cat_fd);
 	commit_tmp_cat (cat_file, tmpcat, status);
-	pop_cleanup();
+	pop_cleanup ((cleanup_fun) unlink, tmpcat);
 	free (tmpcat);
 }
 
@@ -2072,7 +2075,7 @@ static void locale_macros (void *data)
    return 1 to skip
    return 0 to view
  */
-static inline int do_prompt (const char *name)
+static int do_prompt (const char *name)
 {
 	int ch;
 	FILE *tty = NULL;
@@ -2445,8 +2448,8 @@ static int display (const char *dir, const char *man_file,
 	return found;
 }
 
-static inline void gripe_converting_name (const char *name) ATTRIBUTE_NORETURN;
-static inline void gripe_converting_name (const char *name)
+static void gripe_converting_name (const char *name) ATTRIBUTE_NORETURN;
+static void gripe_converting_name (const char *name)
 {
 	error (FATAL, 0, _("Can't convert %s to cat name"), name);
 	abort (); /* error should have exited; help compilers prove noreturn */
@@ -3810,6 +3813,39 @@ executable_out:
 }
 
 /*
+ * Splits a "name[.section]" into { "name", "section" }.
+ * Section would be NULL if not present.
+ * The caller is responsible for freeing *ret_name and *ret_section.
+ * */
+static void split_page_name (const char *page_name,
+			     char **ret_name,
+			     char **ret_section)
+{
+	char *dot;
+
+	dot = strrchr (page_name, '.');
+
+	if (dot && is_section (dot + 1)) {
+		*ret_name = xstrndup (page_name, dot - page_name);
+		*ret_section = xstrdup (dot + 1);
+	} else {
+		*ret_name = xstrdup (page_name);
+		*ret_section = NULL;
+	}
+}
+
+static void locate_page_in_manpath (const char *page_section,
+				    const char *page_name,
+				    struct candidate **candidates,
+				    int *found)
+{
+	char **mp;
+
+	for (mp = manpathlist; *mp; mp++)
+		*found += locate_page (*mp, page_section, page_name, candidates);
+}
+
+/*
  * Search for manual pages.
  *
  * If preformatted manual pages are supported, look for the formatted
@@ -3825,6 +3861,7 @@ executable_out:
  */
 static int man (const char *name, int *found)
 {
+	char *page_name, *page_section;
 	struct candidate *candidates = NULL, *cand, *candnext;
 
 	*found = 0;
@@ -3837,22 +3874,24 @@ static int man (const char *name, int *found)
 		return status;
 	}
 
-	if (section) {
-		char **mp;
-
-		for (mp = manpathlist; *mp; mp++)
-			*found += locate_page (*mp, section, name, &candidates);
-	} else {
+	if (section)
+		locate_page_in_manpath (section, name, &candidates, found);
+	else {
 		const char **sp;
 
 		for (sp = section_list; *sp; sp++) {
-			char **mp;
-
-			for (mp = manpathlist; *mp; mp++)
-				*found += locate_page (*mp, *sp, name,
-						       &candidates);
+			locate_page_in_manpath (*sp, name, &candidates, found);
 		}
 	}
+
+	split_page_name (name, &page_name, &page_section);
+
+	if (!*found && page_section)
+		locate_page_in_manpath (page_section, page_name, &candidates,
+					found);
+
+	free (page_name);
+	free (page_section);
 
 	sort_candidates (&candidates);
 

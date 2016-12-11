@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.7.5], [cjwatson@debian.org])
+AC_INIT([man-db], [2.7.6], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -17,7 +17,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2015-11-06
+date=2016-12-11
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -25,6 +25,7 @@ AC_SUBST([roff_version])dnl
 # We have to be a bit naughty here and supply options.
 # The autoconf literature states that only features that can be separately
 # 'built' should use --enable and friends. Oh well...
+MAN_ARG_CACHE_OWNER
 MAN_ARG_SETUID
 MAN_ARG_UNDOC
 MAN_ARG_DEVICE
@@ -328,7 +329,7 @@ dnl AC_PROG_LEX calls AC_TRY_LINK: must come after above 3
 AC_PROG_LEX
 gl_INIT
 AC_CHECK_HEADERS([fcntl.h sys/file.h linux/fiemap.h])
-AC_CHECK_FUNCS([posix_fadvise])
+AC_CHECK_FUNCS([lchown posix_fadvise])
 
 # Internationalization support.
 AM_GNU_GETTEXT([external])
@@ -470,6 +471,7 @@ AC_CONFIG_FILES([Makefile
 	man/nl/Makefile
 	man/pl/Makefile
 	man/ru/Makefile
+	man/sv/Makefile
 	man/zh_CN/Makefile
 	manual/Makefile
 	libdb/Makefile

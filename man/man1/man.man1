@@ -62,7 +62,7 @@
 .RI [\| dpi \|]\|]
 .RB [\| \-Z \|]
 .RI [\|[\| section \|]
-.IR page \ .\|.\|.\|]\ .\|.\|.\&
+.IR page [.\| section \|]\ \|.\|.\|.\|]\ \.\|.\|.\&
 .\" The apropos command line
 .br
 .B %man%
@@ -79,7 +79,7 @@
 .RB [\| \-S
 .IR list \|]
 .RB [\| \-i \||\| \-I \|]
-.RI [\| \-\-regex \|]
+.RB [\| \-\-regex \|]
 .RI [\| section \|]
 .IR term \ .\|.\|.\&
 .\" The whatis command line
@@ -284,6 +284,11 @@ Display the manual page for the
 .I item
 (program)
 .IR ls .
+.TP
+\fB%man% \fIman\fR.\fI7
+Display the manual page for macro package
+.I man
+from section \fI7\fR.
 .TP
 .BI %man%\ \-a \ intro
 Display, in succession, all of the available
@@ -614,6 +619,12 @@ Search terms may be simple strings (the default), or regular expressions if
 the
 .B \-\-regex
 option is used.
+.IP
+Note that this searches the
+.I sources
+of the manual pages, not the rendered text, and so may include false
+positives due to things like comments in source files.
+Searching the rendered text would be much slower.
 .TP
 .if !'po4a'hide' .BR \-l ", " \-\-local\-file
 Activate `local' mode.
