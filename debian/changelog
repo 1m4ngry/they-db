@@ -5,6 +5,8 @@ man-db (2.7.6-1) UNRELEASED; urgency=medium
     - SECURITY: Eliminate dangerous setgid-root directories.
     - man now understands the <page>.<section> form on its command line, so
       for example 'man chmod.2' is now the same as 'man 2 chmod'.
+  * Adjust various bits of packaging to account for changed ownership and
+    permissions of /usr/bin/man, /usr/bin/mandb, and /var/cache/man.
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 11 Dec 2016 16:13:51 +0000
 

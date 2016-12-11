@@ -6,7 +6,7 @@ catdir=/var/cache/man
 ensure_catdir () {
     if [ ! -d $catdir ]; then
 	# Make sure the cat directory exists.
-	install -d -o man -g root -m 02755 $catdir
+	install -d -o man -g man -m 0755 $catdir
     fi
 }
 
@@ -42,8 +42,8 @@ db_get man-db/install-setuid
 
 if [ "$RET" = true ]; then
     # man and mandb are to be installed setuid man.
-    owner=man:root
-    mode=4755
+    owner=man:man
+    mode=6755
 else
     # man and mandb are not to be installed setuid.
     owner=root:root
