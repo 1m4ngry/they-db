@@ -7,10 +7,10 @@ man-db (2.7.6-1) unstable; urgency=medium
       for example 'man chmod.2' is now the same as 'man 2 chmod'.
   * Adjust various bits of packaging to account for changed ownership and
     permissions of /usr/bin/man, /usr/bin/mandb, and /var/cache/man.
-  * SECURITY: Remove recursive chown of /var/cache/man from cron.daily job,
-    which introduced a vulnerability and is no longer needed now that man-db
-    is more careful about ensuring appropriate ownership of its cache files
-    (closes: #840357, LP: #1482786).
+  * CVE-2015-1336: Remove recursive chown of /var/cache/man from cron.daily
+    job, which introduced a vulnerability and is no longer needed now that
+    man-db is more careful about ensuring appropriate ownership of its cache
+    files (closes: #840357, LP: #1482786).
 
  -- Colin Watson <cjwatson@debian.org>  Sun, 11 Dec 2016 16:27:19 +0000
 
