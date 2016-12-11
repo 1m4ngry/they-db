@@ -1,3 +1,13 @@
+man-db (2.7.6-1) UNRELEASED; urgency=medium
+
+  * New upstream release:
+    - Note that "man -K" searches page source (closes: #813665).
+    - SECURITY: Eliminate dangerous setgid-root directories.
+    - man now understands the <page>.<section> form on its command line, so
+      for example 'man chmod.2' is now the same as 'man 2 chmod'.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 11 Dec 2016 16:13:51 +0000
+
 man-db (2.7.5-2) unstable; urgency=medium
 
   * Update Vcs-Browser URL for alioth cgit.

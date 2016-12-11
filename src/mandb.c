@@ -177,20 +177,22 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 
 static struct argp argp = { options, parse_opt, args_doc };
 
+struct dbpaths {
 #ifdef NDBM
 #  ifdef BERKELEY_DB
-static char *dbfile;
-static char *tmpdbfile;
+	char *dbfile;
+	char *tmpdbfile;
 #  else /* !BERKELEY_DB NDBM */
-static char *dirfile;
-static char *pagfile;
-static char *tmpdirfile;
-static char *tmppagfile;
+	char *dirfile;
+	char *pagfile;
+	char *tmpdirfile;
+	char *tmppagfile;
 #  endif /* BERKELEY_DB */
 #else /* !NDBM */
-static char *xfile;
-static const char *xtmpfile;
+	char *xfile;
+	char *xtmpfile;
 #endif /* NDBM */
+};
 
 #ifdef SECURE_MAN_UID
 extern uid_t ruid;
@@ -202,27 +204,27 @@ static char *manpathlist[MAXDIRS];
 extern int pages;
 
 /* remove() with error checking */
-static inline void xremove (const char *path)
+static void check_remove (const char *path)
 {
 	if (remove (path) == -1 && errno != ENOENT)
 		error (0, errno, _("can't remove %s"), path);
 }
 
 /* rename() with error checking */
-static inline void xrename (const char *from, const char *to)
+static void check_rename (const char *from, const char *to)
 {
 	if (rename (from, to) == -1 && errno != ENOENT) {
 		error (0, errno, _("can't rename %s to %s"), from, to);
-		xremove (from);
+		check_remove (from);
 	}
 }
 
 /* chmod() with error checking */
-static inline void xchmod (const char *path, mode_t mode)
+static void check_chmod (const char *path, mode_t mode)
 {
 	if (chmod (path, mode) == -1) {
 		error (0, errno, _("can't chmod %s"), path);
-		xremove (path);
+		check_remove (path);
 	}
 }
 
@@ -284,9 +286,9 @@ static int xcopy (const char *from, const char *to)
 	fclose (ofp);
 
 	if (ret < 0)
-		xremove (to);
+		check_remove (to);
 	else {
-		xchmod (to, DBMODE);
+		check_chmod (to, DBMODE);
 		utimens (to, times);
 	}
 
@@ -294,53 +296,44 @@ static int xcopy (const char *from, const char *to)
 }
 
 /* rename and chmod the database */
-static inline void finish_up (void)
+static void finish_up (struct dbpaths *dbpaths)
 {
 #ifdef NDBM
 #  ifdef BERKELEY_DB
-	xrename (tmpdbfile, dbfile);
-	xchmod (dbfile, DBMODE);
-	free (tmpdbfile);
-	tmpdbfile = NULL;
+	check_rename (dbpaths->tmpdbfile, dbpaths->dbfile);
+	check_chmod (dbpaths->dbfile, DBMODE);
+	free (dbpaths->tmpdbfile);
+	dbpaths->tmpdbfile = NULL;
 #  else /* not BERKELEY_DB */
-	xrename (tmpdirfile, dirfile);
-	xchmod (dirfile, DBMODE);
-	xrename (tmppagfile, pagfile);
-	xchmod (pagfile, DBMODE);
-	free (tmpdirfile);
-	free (tmppagfile);
-	tmpdirfile = tmppagfile = NULL;
+	check_rename (dbpaths->tmpdirfile, dbpaths->dirfile);
+	check_chmod (dbpaths->dirfile, DBMODE);
+	check_rename (dbpaths->tmppagfile, dbpaths->pagfile);
+	check_chmod (dbpaths->pagfile, DBMODE);
+	free (dbpaths->tmpdirfile);
+	free (dbpaths->tmppagfile);
+	dbpaths->tmpdirfile = dbpaths->tmppagfile = NULL;
 #  endif /* BERKELEY_DB */
 #else /* not NDBM */
-	xrename (xtmpfile, xfile);
-	xchmod (xfile, DBMODE);
-	/* xtmpfile == database, so freed elsewhere */
-	xtmpfile = NULL;
+	check_rename (dbpaths->xtmpfile, dbpaths->xfile);
+	check_chmod (dbpaths->xfile, DBMODE);
+	free (dbpaths->xtmpfile);
+	dbpaths->xtmpfile = NULL;
 #endif /* NDBM */
 }
 
 #ifdef SECURE_MAN_UID
-/* chown() with error checking */
-static inline void xchown (const char *path, uid_t owner, uid_t group)
-{
-	if (chown (path, owner, group) == -1) {
-		error (0, errno, _("can't chown %s"), path);
-		xremove (path);
-	}
-}
-
 /* change the owner of global man databases */
-static inline void do_chown (uid_t uid)
+static void do_chown (struct dbpaths *dbpaths)
 {
 #  ifdef NDBM
 #    ifdef BERKELEY_DB
-	xchown (dbfile, uid, -1);
+	chown_if_possible (dbpaths->dbfile);
 #    else /* not BERKELEY_DB */
-	xchown (dirfile, uid, -1);
-	xchown (pagfile, uid, -1);
+	chown_if_possible (dbpaths->dirfile);
+	chown_if_possible (dbpaths->pagfile);
 #    endif /* BERKELEY_DB */
 #  else /* not NDBM */
-	xchown (xfile, uid, -1);
+	chown_if_possible (dbpaths->xfile);
 #  endif /* NDBM */
 }
 #endif /* SECURE_MAN_UID */
@@ -372,7 +365,7 @@ static int update_one_file (const char *manpath, const char *filename)
 }
 
 /* dont actually create any dbs, just do an update */
-static inline int update_db_wrapper (const char *manpath, const char *catpath)
+static int update_db_wrapper (const char *manpath, const char *catpath)
 {
 	int amount;
 
@@ -387,51 +380,50 @@ static inline int update_db_wrapper (const char *manpath, const char *catpath)
 }
 
 /* remove incomplete databases */
-static void cleanup_sigsafe (void *dummy ATTRIBUTE_UNUSED)
+static void cleanup_sigsafe (void *arg)
 {
+	struct dbpaths *dbpaths = arg;
+
 #ifdef NDBM
 #  ifdef BERKELEY_DB
-	if (tmpdbfile)
-		unlink (tmpdbfile);
+	if (dbpaths->tmpdbfile)
+		unlink (dbpaths->tmpdbfile);
 #  else /* !BERKELEY_DB NDBM */
-	if (tmpdirfile)
-		unlink (tmpdirfile);
-	if (tmppagfile)
-		unlink (tmppagfile);
+	if (dbpaths->tmpdirfile)
+		unlink (dbpaths->tmpdirfile);
+	if (dbpaths->tmppagfile)
+		unlink (dbpaths->tmppagfile);
 #  endif /* BERKELEY_DB NDBM */
 #else /* !NDBM */
-	if (xtmpfile)
-		unlink (xtmpfile);
+	if (dbpaths->xtmpfile)
+		unlink (dbpaths->xtmpfile);
 #endif /* NDBM */
 }
 
-/* remove incomplete databases */
-static void cleanup (void *dummy ATTRIBUTE_UNUSED)
+/* free database names */
+static void cleanup (void *arg)
 {
+	struct dbpaths *dbpaths = arg;
+
 #ifdef NDBM
 #  ifdef BERKELEY_DB
-	if (tmpdbfile) {
-		free (tmpdbfile);
-		tmpdbfile = NULL;
-	}
+	free (dbpaths->dbfile);
+	free (dbpaths->tmpdbfile);
+	dbpaths->dbfile = dbpaths->tmpdbfile = NULL;
 #  else /* !BERKELEY_DB NDBM */
-	if (tmpdirfile) {
-		free (tmpdirfile);
-		tmpdirfile = NULL;
-	}
-	if (tmppagfile) {
-		free (tmppagfile);
-		tmppagfile = NULL;
-	}
+	free (dbpaths->dirfile);
+	free (dbpaths->pagfile);
+	free (dbpaths->tmpdirfile);
+	free (dbpaths->tmppagfile);
+	dbpaths->dirfile = dbpaths->pagfile = NULL;
+	dbpaths->tmpdirfile = dbpaths->tmppagfile = NULL;
 #  endif /* BERKELEY_DB NDBM */
 #else /* !NDBM */
-	if (xtmpfile) {
-		/* xtmpfile == database, so freed elsewhere */
-		xtmpfile = NULL;
-	}
-	free (xfile);
-	xfile = NULL;
+	free (dbpaths->xfile);
+	free (dbpaths->xtmpfile);
+	dbpaths->xfile = dbpaths->xtmpfile = NULL;
 #endif /* NDBM */
+	free (dbpaths);
 }
 
 #define CACHEDIR_TAG \
@@ -441,7 +433,8 @@ static void cleanup (void *dummy ATTRIBUTE_UNUSED)
 	"#\thttp://www.brynosaurus.com/cachedir/\n"
 
 /* sort out the database names */
-static int mandb (const char *catpath, const char *manpath, int global_manpath)
+static int mandb (struct dbpaths *dbpaths,
+		  const char *catpath, const char *manpath, int global_manpath)
 {
 	int ret, amount;
 	char *dbname;
@@ -463,20 +456,17 @@ static int mandb (const char *catpath, const char *manpath, int global_manpath)
 			FILE *cachedir_tag_file;
 
 			if (errno != ENOENT)
-				xremove (cachedir_tag);
+				check_remove (cachedir_tag);
 			cachedir_tag_file = fopen (cachedir_tag, "w");
 			if (cachedir_tag_file) {
 				fputs (CACHEDIR_TAG, cachedir_tag_file);
 				fclose (cachedir_tag_file);
-#ifdef SECURE_MAN_UID
-				if (global_manpath && euid == 0)
-					xchown (cachedir_tag,
-						man_owner->pw_uid, -1);
-#endif
-				xchmod (cachedir_tag, DBMODE);
 			}
 		} else
 			close (fd);
+		if (global_manpath)
+			chown_if_possible (cachedir_tag);
+		check_chmod (cachedir_tag, DBMODE);
 		free (cachedir_tag);
 	}
 
@@ -484,15 +474,15 @@ static int mandb (const char *catpath, const char *manpath, int global_manpath)
 
 #ifdef NDBM
 #  ifdef BERKELEY_DB
-	dbfile = xasprintf ("%s.db", dbname);
+	dbpaths->dbfile = xasprintf ("%s.db", dbname);
 	free (dbname);
-	tmpdbfile = xasprintf ("%s.db", database);
+	dbpaths->tmpdbfile = xasprintf ("%s.db", database);
 	if (!should_create) {
-		if (xcopy (dbfile, tmpdbfile) < 0)
+		if (xcopy (dbpaths->dbfile, dbpaths->tmpdbfile) < 0)
 			should_create = 1;
 	}
 	if (should_create) {
-		xremove (tmpdbfile);
+		check_remove (dbpaths->tmpdbfile);
 		ret = create_db (manpath, catpath);
 		if (ret < 0)
 			return ret;
@@ -504,19 +494,19 @@ static int mandb (const char *catpath, const char *manpath, int global_manpath)
 		amount = ret;
 	}
 #  else /* !BERKELEY_DB NDBM */
-	dirfile = xasprintf ("%s.dir", dbname);
-	pagfile = xasprintf ("%s.pag", dbname);
+	dbpaths->dirfile = xasprintf ("%s.dir", dbname);
+	dbpaths->pagfile = xasprintf ("%s.pag", dbname);
 	free (dbname);
-	tmpdirfile = xasprintf ("%s.dir", database);
-	tmppagfile = xasprintf ("%s.pag", database);
+	dbpaths->tmpdirfile = xasprintf ("%s.dir", database);
+	dbpaths->tmppagfile = xasprintf ("%s.pag", database);
 	if (!should_create) {
-		if (xcopy (dirfile, tmpdirfile) < 0 ||
-		    xcopy (pagfile, tmppagfile) < 0)
+		if (xcopy (dbpaths->dirfile, dbpaths->tmpdirfile) < 0 ||
+		    xcopy (dbpaths->pagfile, dbpaths->tmppagfile) < 0)
 			should_create = 1;
 	}
 	if (should_create) {
-		xremove (tmpdirfile);
-		xremove (tmppagfile);
+		check_remove (dbpaths->tmpdirfile);
+		check_remove (dbpaths->tmppagfile);
 		ret = create_db (manpath, catpath);
 		if (ret < 0)
 			return ret;
@@ -529,14 +519,14 @@ static int mandb (const char *catpath, const char *manpath, int global_manpath)
 	}
 #  endif /* BERKELEY_DB NDBM */
 #else /* !NDBM */
-	xfile = dbname; /* steal memory */
-	xtmpfile = database;
+	dbpaths->xfile = dbname; /* steal memory */
+	dbpaths->xtmpfile = xstrdup (database);
 	if (!should_create) {
-		if (xcopy (xfile, xtmpfile) < 0)
+		if (xcopy (dbpaths->xfile, dbpaths->xtmpfile) < 0)
 			should_create = 1;
 	}
 	if (should_create) {
-		xremove (xtmpfile);
+		check_remove (dbpaths->xtmpfile);
 		ret = create_db (manpath, catpath);
 		if (ret < 0)
 			return ret;
@@ -559,6 +549,7 @@ static int process_manpath (const char *manpath, int global_manpath,
 	struct tried_catdirs_entry *tried;
 	struct stat st;
 	int run_mandb = 0;
+	struct dbpaths *dbpaths;
 	int amount = 0;
 
 	if (global_manpath) { 	/* system db */
@@ -598,10 +589,11 @@ static int process_manpath (const char *manpath, int global_manpath,
 		database = NULL;
 	}
 
-	push_cleanup (cleanup, NULL, 0);
-	push_cleanup (cleanup_sigsafe, NULL, 1);
+	dbpaths = XZALLOC (struct dbpaths);
+	push_cleanup (cleanup, dbpaths, 0);
+	push_cleanup (cleanup_sigsafe, dbpaths, 1);
 	if (run_mandb) {
-		int ret = mandb (catpath, manpath, global_manpath);
+		int ret = mandb (dbpaths, catpath, manpath, global_manpath);
 		if (ret < 0) {
 			amount = ret;
 			goto out;
@@ -609,19 +601,18 @@ static int process_manpath (const char *manpath, int global_manpath,
 		amount += ret;
 	}
 
-	if (!opt_test && amount) {
-		finish_up ();
+	if (!opt_test && amount)
+		finish_up (dbpaths);
 #ifdef SECURE_MAN_UID
-		if (global_manpath && euid == 0)
-			do_chown (man_owner->pw_uid);
+	if (global_manpath)
+		do_chown (dbpaths);
 #endif /* SECURE_MAN_UID */
-	}
 
 out:
-	cleanup_sigsafe (NULL);
-	pop_cleanup ();
-	cleanup (NULL);
-	pop_cleanup ();
+	cleanup_sigsafe (dbpaths);
+	pop_cleanup (cleanup_sigsafe, dbpaths);
+	cleanup (dbpaths);
+	pop_cleanup (cleanup, dbpaths);
 	free (database);
 	database = NULL;
 
