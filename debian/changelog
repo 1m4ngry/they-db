@@ -1,4 +1,4 @@
-man-db (2.7.6-1) UNRELEASED; urgency=medium
+man-db (2.7.6-1) unstable; urgency=medium
 
   * New upstream release:
     - Note that "man -K" searches page source (closes: #813665).
@@ -12,7 +12,7 @@ man-db (2.7.6-1) UNRELEASED; urgency=medium
     is more careful about ensuring appropriate ownership of its cache files
     (closes: #840357, LP: #1482786).
 
- -- Colin Watson <cjwatson@debian.org>  Sun, 11 Dec 2016 16:13:51 +0000
+ -- Colin Watson <cjwatson@debian.org>  Sun, 11 Dec 2016 16:27:19 +0000
 
 man-db (2.7.5-2) unstable; urgency=medium
 
