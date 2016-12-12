@@ -1,3 +1,27 @@
+2016-12-12  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.7.6.1.
+
+2016-12-12  Colin Watson  <cjwatson@debian.org>
+
+	Correct installation of Swedish manual pages
+
+	* man/sv/Makefile.am (LINGUA): Set to sv, not nl.
+	* NEWS: Document this.
+
+2016-12-12  Colin Watson  <cjwatson@debian.org>
+
+	* NEWS: Document previous change.
+
+2016-12-12  Colin Watson  <cjwatson@debian.org>
+
+	Don't chmod CACHEDIR.TAG if it doesn't exist
+
+	The containing directory might reasonably not exist.  Fixes Debian
+	bug #847810.
+
+	* src/mandb.c (mandb): Only chown/chmod CACHEDIR.TAG if it exists.
+
 2016-12-11  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.7.6.
