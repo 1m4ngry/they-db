@@ -1,9 +1,9 @@
-man-db (2.7.6.1-1) UNRELEASED; urgency=medium
+man-db (2.7.6.1-1) unstable; urgency=medium
 
   * New upstream release:
     - Don't chmod CACHEDIR.TAG if it doesn't exist (closes: #847810).
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 12 Dec 2016 12:51:24 +0000
+ -- Colin Watson <cjwatson@debian.org>  Mon, 12 Dec 2016 12:51:57 +0000
 
 man-db (2.7.6-1) unstable; urgency=medium
 
