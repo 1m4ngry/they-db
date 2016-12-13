@@ -1,8 +1,8 @@
-man-db (2.7.6.1-2) UNRELEASED; urgency=medium
+man-db (2.7.6.1-2) unstable; urgency=medium
 
   * Fix locale macro loading for Chinese.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 13 Dec 2016 13:09:52 +0000
+ -- Colin Watson <cjwatson@debian.org>  Tue, 13 Dec 2016 13:10:25 +0000
 
 man-db (2.7.6.1-1) unstable; urgency=medium
 
