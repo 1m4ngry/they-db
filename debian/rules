@@ -35,6 +35,10 @@ override_dh_auto_install:
 	dh_auto_install
 	rm -f $(dtmp)/usr/lib/man-db/*.la
 
+override_dh_install:
+	dh_install
+	dh_apparmor --profile-name=usr.bin.man
+
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 override_dh_installman:
 	PATH="$(CURDIR)/$(dtmp)/usr/bin:$$PATH" \
