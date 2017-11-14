@@ -12,17 +12,22 @@
   /usr/bin/eqn rmCx -> groff,
   /usr/bin/grap rmCx -> groff,
   /usr/bin/pic rmCx -> groff,
+  /usr/bin/preconv rmCx -> groff,
   /usr/bin/refer rmCx -> groff,
   /usr/bin/tbl rmCx -> groff,
   /usr/bin/troff rmCx -> groff,
   /usr/bin/vgrind rmCx -> groff,
 
-  # Similarly, use a special profile when man calls decompressors.
-  /bin/bzip2 rmCx -> decompressor,
-  /bin/gzip rmCx -> decompressor,
-  /usr/bin/compress rmCx -> decompressor,
-  /usr/bin/lzip.lzip rmCx -> decompressor,
-  /usr/bin/xz rmCx -> decompressor,
+  # Similarly, use a special profile when man calls decompressors and other
+  # simple filters.
+  /bin/bzip2 rmCx -> filter,
+  /bin/gzip rmCx -> filter,
+  /usr/bin/col rmCx -> filter,
+  /usr/bin/compress rmCx -> filter,
+  /usr/bin/iconv rmCx -> filter,
+  /usr/bin/lzip.lzip rmCx -> filter,
+  /usr/bin/tr rmCx -> filter,
+  /usr/bin/xz rmCx -> filter,
 
   # Allow basically anything in terms of file system access, subject to DAC.
   # The purpose of this profile isn't to confine man itself (that might be
@@ -41,6 +46,7 @@
     /usr/bin/eqn rm,
     /usr/bin/grap rm,
     /usr/bin/pic rm,
+    /usr/bin/preconv rm,
     /usr/bin/refer rm,
     /usr/bin/tbl rm,
     /usr/bin/troff rm,
@@ -51,13 +57,16 @@
     /usr/share/groff/** r,
   }
 
-  profile decompressor {
+  profile filter {
     #include <abstractions/base>
 
     /bin/bzip2 rm,
     /bin/gzip rm,
+    /usr/bin/col rm,
     /usr/bin/compress rm,
+    /usr/bin/iconv rm,
     /usr/bin/lzip.lzip rm,
+    /usr/bin/tr rm,
     /usr/bin/xz rm,
   }
 

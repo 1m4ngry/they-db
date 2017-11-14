@@ -1,7 +1,7 @@
 man-db (2.7.6.1-3) UNRELEASED; urgency=medium
 
-  * Add a simple AppArmor profile to confine groff-related programs and
-    decompressors when run from man.
+  * Add a simple AppArmor profile to confine groff-related programs,
+    decompressors, and other filters when run from man.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 13 Nov 2017 15:31:37 +0000
 
