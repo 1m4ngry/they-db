@@ -12,7 +12,7 @@ Package: man-db
 Architecture: any
 Pre-Depends: dpkg (>= 1.16.1~)
 Depends: groff-base (>= 1.18.1.1-15), bsdmainutils, debconf (>= 1.2.0) | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
-Suggests: groff, less, www-browser
+Suggests: groff, less, www-browser, apparmor
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
 Breaks: manpages-zh (<< 1.5.2-1.1)
