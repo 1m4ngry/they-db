@@ -33,7 +33,7 @@
   # The purpose of this profile isn't to confine man itself (that might be
   # nice in the future, but is tricky since it's quite configurable), but to
   # confine the processes it calls that parse untrusted data.
-  /** mrixwl,
+  /** mrixwlk,
 
   capability setuid,
   capability setgid,
