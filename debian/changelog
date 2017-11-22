@@ -1,6 +1,10 @@
 man-db (2.7.6.1-4) UNRELEASED; urgency=medium
 
   * Add missing AppArmor lock access.
+  * Recent kernels revalidate open FDs, and there are often some still open
+    on TTYs.  Temporarily add <abstractions/consoles> to AppArmor groff and
+    filter child profiles until we have a chance to teach man to close
+    irrelevant open FDs before execve (closes: #882405).
 
  -- Colin Watson <cjwatson@debian.org>  Wed, 22 Nov 2017 12:37:07 +0000
 

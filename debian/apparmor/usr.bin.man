@@ -40,6 +40,10 @@
 
   profile groff {
     #include <abstractions/base>
+    # Recent kernels revalidate open FDs, and there are often some still
+    # open on TTYs.  This is temporary until man learns to close irrelevant
+    # open FDs before execve.
+    #include <abstractions/consoles>
     # man always runs its groff pipeline with the input file open on stdin,
     # so we can skip <abstractions/user-manpages>.
 
@@ -59,6 +63,10 @@
 
   profile filter {
     #include <abstractions/base>
+    # Recent kernels revalidate open FDs, and there are often some still
+    # open on TTYs.  This is temporary until man learns to close irrelevant
+    # open FDs before execve.
+    #include <abstractions/consoles>
 
     /bin/bzip2 rm,
     /bin/gzip rm,
