@@ -5,8 +5,8 @@ Maintainer: Colin Watson <cjwatson@debian.org>
 Standards-Version: 3.9.8
 Build-Depends: dpkg (>= 1.16.1~), debhelper (>= 9~), flex, groff, libgdbm-dev, po4a, zlib1g-dev, libpipeline-dev (>= 1.4.0), pkg-config, dh-autoreconf, autopoint, dh-apparmor
 Homepage: http://man-db.nongnu.org/
-Vcs-Git: https://anonscm.debian.org/git/pkg-man-db/man-db.git
-Vcs-Browser: https://anonscm.debian.org/cgit/pkg-man-db/man-db.git
+Vcs-Git: https://salsa.debian.org/debian/man-db
+Vcs-Browser: https://salsa.debian.org/debian/man-db
 
 Package: man-db
 Architecture: any
