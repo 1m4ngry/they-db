@@ -1,7 +1,7 @@
 # Danish translation of man-db-manpages.
-# Copyright (C) 2014 man-db-manpages.
+# Copyright (C) 2018 man-db-manpages.
 # This file is distributed under the same license as the man-db package.
-# Joe Hansen <joedalton2@yahoo.dk>, 2012, 2014.
+# Joe Hansen <joedalton2@yahoo.dk>, 2012, 2014, 2016, 2018.
 #
 # bogus - falsk
 # cat -> katalog
@@ -17,47 +17,21 @@
 #
 # <device> -> <enhed>
 # <item> -> <punkt> (er kun i en tekststreng her og ikke i selve programfilen).
+# I<name> -> I<navn>
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: man-db-manpages 2.7.0-pre1\n"
-"POT-Creation-Date: 2016-12-11 13:52+0000\n"
-"PO-Revision-Date: 2014-10-05 07:50+0200\n"
+"Project-Id-Version: man-db-manpages 2.8.0-pre2\n"
+"POT-Creation-Date: 2018-01-22 10:13+0000\n"
+"PO-Revision-Date: 2018-01-26 07:50+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
-"Language: \n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#. type: TH
-#: ../../man/man1/apropos.man1:12
-#, no-wrap
-msgid "%thapropos%"
-msgstr "%thapropos%"
-
-#. type: TH
-#: ../../man/man1/apropos.man1:12 ../../man/man1/lexgrog.man1:9
-#: ../../man/man1/man.man1:15 ../../man/man1/manconv.man1:9
-#: ../../man/man1/manpath.man1:12 ../../man/man1/whatis.man1:12
-#: ../../man/man1/zsoelim.man1:12 ../../man/man5/manpath.man5:13
-#: ../../man/man8/accessdb.man8:12 ../../man/man8/catman.man8:12
-#: ../../man/man8/mandb.man8:13
-#, no-wrap
-msgid "%date%"
-msgstr "%date%"
-
-#. type: TH
-#: ../../man/man1/apropos.man1:12 ../../man/man1/lexgrog.man1:9
-#: ../../man/man1/man.man1:15 ../../man/man1/manconv.man1:9
-#: ../../man/man1/manpath.man1:12 ../../man/man1/whatis.man1:12
-#: ../../man/man1/zsoelim.man1:12 ../../man/man5/manpath.man5:13
-#: ../../man/man8/accessdb.man8:12 ../../man/man8/catman.man8:12
-#: ../../man/man8/mandb.man8:13
-#, no-wrap
-msgid "%version%"
-msgstr "%version%"
 
 #. type: TH
 #: ../../man/man1/apropos.man1:12 ../../man/man1/lexgrog.man1:9
@@ -207,6 +181,11 @@ msgid ""
 "expanded keyword matches an entire description or page name.  Otherwise the "
 "keyword is also allowed to match on word boundaries in the description."
 msgstr ""
+"Fortolk hvert nøgleord som et mønster indeholdende jokertegn i skalstil. "
+"Hvert nøgleord vil blive matchet mod sidenavnene og beskrivelserne "
+"uafhængigt. Hvis B<--exact> også anvendes, så vil et match kun blive fundet "
+"hvis et udvidet nøgleord matcher en hel beskrivelse eller sidenavn. Ellers "
+"kan nøgleordet også matche på ordgrænser i beskrivelsen."
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:92
@@ -315,6 +294,11 @@ msgid ""
 "manpath based on your $B<PATH> environment variable.  This option overrides "
 "the contents of $B<MANPATH>."
 msgstr ""
+"Angiv et alternativt sæt af kolonafgrænsede manualsidehierarkier at søge i. "
+"Som standard bruger B<%program%>  miljøvariablen $B<MANPATH>, med mindre at "
+"den er tom eller uangivet, i hvilket tilfælde den vil bestemme en passende "
+"manualsti baseret på din miljøvariabel $B<PATH>. Dette tilvalg tilsidesætter "
+"indholdet af $B<MANPATH>."
 
 #. type: TP
 #: ../../man/man1/apropos.man1:162 ../../man/man1/man.man1:671
@@ -361,7 +345,7 @@ msgstr "Brug denne brugerkonfigurationsfil frem for standarden I<~/.manpath>."
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:186 ../../man/man1/lexgrog.man1:89
-#: ../../man/man1/man.man1:1174 ../../man/man1/manconv.man1:69
+#: ../../man/man1/man.man1:1179 ../../man/man1/manconv.man1:69
 #: ../../man/man1/manpath.man1:92 ../../man/man1/whatis.man1:190
 #: ../../man/man1/zsoelim.man1:67 ../../man/man8/accessdb.man8:36
 #: ../../man/man8/catman.man8:71
@@ -370,7 +354,7 @@ msgstr "Vis en hjælpebesked og afslut."
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:189 ../../man/man1/lexgrog.man1:92
-#: ../../man/man1/man.man1:1177 ../../man/man1/manpath.man1:95
+#: ../../man/man1/man.man1:1182 ../../man/man1/manpath.man1:95
 #: ../../man/man1/whatis.man1:193 ../../man/man8/accessdb.man8:39
 #: ../../man/man8/catman.man8:74 ../../man/man8/mandb.man8:141
 msgid "Print a short usage message and exit."
@@ -378,7 +362,7 @@ msgstr "Vis en kort hjælpebesked og afslut."
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:192 ../../man/man1/lexgrog.man1:95
-#: ../../man/man1/man.man1:1180 ../../man/man1/manconv.man1:72
+#: ../../man/man1/man.man1:1185 ../../man/man1/manconv.man1:72
 #: ../../man/man1/manpath.man1:98 ../../man/man1/whatis.man1:196
 #: ../../man/man1/zsoelim.man1:70 ../../man/man8/accessdb.man8:42
 #: ../../man/man8/catman.man8:77
@@ -387,7 +371,7 @@ msgstr "Vis versionsinformation."
 
 #. type: SH
 #: ../../man/man1/apropos.man1:192 ../../man/man1/lexgrog.man1:95
-#: ../../man/man1/man.man1:1180 ../../man/man1/whatis.man1:196
+#: ../../man/man1/man.man1:1185 ../../man/man1/whatis.man1:196
 #: ../../man/man8/mandb.man8:144
 #, no-wrap
 msgid "EXIT STATUS"
@@ -395,19 +379,19 @@ msgstr "AFSLUT-STATUS"
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:196 ../../man/man1/lexgrog.man1:99
-#: ../../man/man1/man.man1:1184 ../../man/man1/whatis.man1:200
+#: ../../man/man1/man.man1:1189 ../../man/man1/whatis.man1:200
 #: ../../man/man8/mandb.man8:148
 msgid "Successful program execution."
 msgstr "Programkørsel endt uden fejl."
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:199 ../../man/man1/man.man1:1187
+#: ../../man/man1/apropos.man1:199 ../../man/man1/man.man1:1192
 #: ../../man/man1/whatis.man1:203
 msgid "Usage, syntax or configuration file error."
 msgstr "Brugs-, syntaks- eller konfigurationsfilfejl."
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:202 ../../man/man1/man.man1:1190
+#: ../../man/man1/apropos.man1:202 ../../man/man1/man.man1:1195
 #: ../../man/man1/whatis.man1:206 ../../man/man8/mandb.man8:154
 msgid "Operational error."
 msgstr "Operationel fejl."
@@ -418,7 +402,7 @@ msgid "Nothing was found that matched the criteria specified."
 msgstr "Intet blev fundet som matchede de angivne kriterier."
 
 #. type: SH
-#: ../../man/man1/apropos.man1:205 ../../man/man1/man.man1:1196
+#: ../../man/man1/apropos.man1:205 ../../man/man1/man.man1:1201
 #: ../../man/man1/manpath.man1:98 ../../man/man1/whatis.man1:209
 #: ../../man/man8/catman.man8:77
 #, no-wrap
@@ -426,7 +410,7 @@ msgid "ENVIRONMENT"
 msgstr "MILJØ"
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:214 ../../man/man1/man.man1:1293
+#: ../../man/man1/apropos.man1:214 ../../man/man1/man.man1:1302
 #: ../../man/man1/manpath.man1:124 ../../man/man1/whatis.man1:218
 msgid ""
 "If $B<SYSTEM> is set, it will have the same effect as if it had been "
@@ -442,6 +426,8 @@ msgid ""
 "If $B<MANPATH> is set, its value is interpreted as the colon-delimited "
 "manual page hierarchy search path to use."
 msgstr ""
+"Hvis $B<MANPATH> er angivet, dets værdi er fortolket som den kolonafgrænsede "
+"manualsides hierarkisøgesti at anvende."
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:232 ../../man/man1/whatis.man1:236
@@ -451,6 +437,10 @@ msgid ""
 "using the value of $B<COLUMNS>, an B<ioctl>(2)  if available, or falling "
 "back to 80 characters if all else fails."
 msgstr ""
+"Hvis $B<MANWIDTH> er angivet, dets værdi bruges som terminalbredden (se "
+"tilvalget B<--long>). Hvis ikke angivet, vil terminalbredden blive beregnet "
+"via brug af værdien fra $B<COLUMNS>, en B<ioctl>(2) hvis tilgængelig, ellers "
+"bruges reserven 80 tegn, hvis alt andet fejler."
 
 #. type: Plain text
 #: ../../man/man1/apropos.man1:241
@@ -459,9 +449,12 @@ msgid ""
 "%> search will be as an extended regex (B<-r>).  Nowadays, this is the "
 "default behaviour anyway."
 msgstr ""
+"Hvis $B<POSIXLY_CORRECT> er angivet, selv som en nul-værdi, vil "
+"standardsøgningen B<%apropos%> være som et udvidet regulært udtryk (B<-r>). "
+"Nutildags er dette alligevel standardopførslen."
 
 #. type: SH
-#: ../../man/man1/apropos.man1:241 ../../man/man1/man.man1:1358
+#: ../../man/man1/apropos.man1:241 ../../man/man1/man.man1:1367
 #: ../../man/man1/manpath.man1:124 ../../man/man1/whatis.man1:236
 #: ../../man/man8/catman.man8:94 ../../man/man8/mandb.man8:191
 #, no-wrap
@@ -469,14 +462,14 @@ msgid "FILES"
 msgstr "FILER"
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:247 ../../man/man1/man.man1:1370
+#: ../../man/man1/apropos.man1:247 ../../man/man1/man.man1:1379
 #: ../../man/man1/whatis.man1:242 ../../man/man8/catman.man8:103
 #: ../../man/man8/mandb.man8:207
 msgid "A traditional global I<index> database cache."
 msgstr "Et traditionelt globalt I<index>-databasemellemlager."
 
 #. type: Plain text
-#: ../../man/man1/apropos.man1:253 ../../man/man1/man.man1:1376
+#: ../../man/man1/apropos.man1:253 ../../man/man1/man.man1:1385
 #: ../../man/man1/whatis.man1:248 ../../man/man8/mandb.man8:200
 msgid "An FHS compliant global I<index> database cache."
 msgstr "Et FHS-overholdende globalt I<index>-databasemellemlager."
@@ -488,7 +481,7 @@ msgstr "En traditionel B<whatis>-tekstdatabase."
 
 #. type: SH
 #: ../../man/man1/apropos.man1:258 ../../man/man1/lexgrog.man1:197
-#: ../../man/man1/man.man1:1376 ../../man/man1/manconv.man1:72
+#: ../../man/man1/man.man1:1385 ../../man/man1/manconv.man1:72
 #: ../../man/man1/manpath.man1:128 ../../man/man1/whatis.man1:253
 #: ../../man/man1/zsoelim.man1:70 ../../man/man8/catman.man8:109
 #: ../../man/man8/mandb.man8:213
@@ -505,12 +498,6 @@ msgstr "SE OGSÅ"
 #, no-wrap
 msgid "AUTHOR"
 msgstr "FORFATTER"
-
-#. type: TH
-#: ../../man/man1/lexgrog.man1:9
-#, no-wrap
-msgid "LEXGROG"
-msgstr "LEXGROG"
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:12
@@ -536,6 +523,12 @@ msgid ""
 "preprocessing filters required by the man page before it is passed to "
 "B<nroff> or B<troff>, or both."
 msgstr ""
+"B<lexgrog> er en implementering af det traditionelle \\(lqgroff guess\\(rq-"
+"redskab i B<lex>. Det læser listen med filer på kommandolinjen som enten "
+"manualsidekildefiler eller præformaterede \\(lqcat\\(rq-sider, og viser "
+"deres navn og beskrivelse som brugt af B<apropos> og B<whatis>, listen med "
+"forhåndsbehandlede filtre krævet af manualsiden før den sendes til B<nroff> "
+"eller B<troff>, eller begge."
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:45
@@ -546,6 +539,11 @@ msgid ""
 "read from standard input; if any input file is compressed, a decompressed "
 "version will be read automatically."
 msgstr ""
+"Hvis inddata er dårligt formateret vil B<lexgrog> vise \\(lqparse failed"
+"\\(rq; dette kan være nyttigt for eksterne programmer, som skal kontrollere "
+"manualsider for korrekthed. Hvis en af B<lexgrog>'s inddatafiler er \\(lq-"
+"\\(rq, så vil det læse fra standardinddata; hvis nogle af inddatafilerne er "
+"komprimeret, så vil en udpakket version blive læst automatisk."
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:57
@@ -553,6 +551,8 @@ msgid ""
 "Parse input as man page source files.  This is the default if neither B<--"
 "man> nor B<--cat> is given."
 msgstr ""
+"Fortolk inddata som kildefiler for manualsider. Dette er standarden hvis "
+"hverken B<--man> eller B<--cat> er angivet."
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:64
@@ -637,7 +637,7 @@ msgstr ""
 #: ../../man/man1/lexgrog.man1:117
 #, no-wrap
 msgid "WHATIS PARSING"
-msgstr ""
+msgstr "WHATIS-FORTOLKNING"
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:128
@@ -648,6 +648,11 @@ msgid ""
 "has to cope with a number of different forms that have historically been "
 "used, it may sometimes fail to extract the required information."
 msgstr ""
+"B<%mandb%> (som bruger den samme kode som B<lexgrog>) fortolker afsnittet "
+"B<NAME> øverst for hver manualside på udkig efter navne og beskrivelser for "
+"funktionerne dokumenteret i hver. Selvom fortolkeren er ret så tolerant, da "
+"den skal håndtere et antal forskellige formularer, som historik er blevet "
+"anvendt, så kan den fejle i sit udtræk af den krævede information."
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:134
@@ -655,6 +660,8 @@ msgid ""
 "When using the traditional I<man> macro set, a correct B<NAME> section looks "
 "something like this:"
 msgstr ""
+"Når det traditionelle makrosæt I<man> anvendes, så ser et korrekt B<NAME>-"
+"afsnit cirka sådan her ud:"
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:140
@@ -663,6 +670,8 @@ msgid ""
 "CW<\\&.SH NAME\n"
 "foo \\e- program to do something>\n"
 msgstr ""
+"CW<\\&.SH NAME\n"
+"foo \\e- program til udførsel>\n"
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:148
@@ -671,6 +680,9 @@ msgid ""
 "%mandb%> is more tolerant, but for compatibility with other systems it is "
 "nevertheless a good idea to retain the backslash."
 msgstr ""
+"Nogle manualsøgere kræver at \\(oq\\e-\\(cq to er præcis som vist; B<%mandb"
+"%> er mere tolerant, men af kompatibilitetsårsager er det alligevel en god "
+"ide at bevare skråstregen."
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:158
@@ -682,6 +694,12 @@ msgid ""
 "different descriptions are being documented in the same manual page, the "
 "following form is therefore used:"
 msgstr ""
+"På den venstre side, kan der være flere navne, adskilt af kommaer. Navne "
+"indeholdende mellemrum vil blive ignoreret for at undgå patologisk opførsel "
+"på bestemet forkert udformet B<NAME>-sektioner. Teksten på den højre side er "
+"fri, og kan spredes over flere linjer. Hvis flere funktioner med forskellige "
+"beskrivelser bliver dokumenteret på den samme manualside, så bruges den "
+"følgende form:"
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:166
@@ -692,6 +710,10 @@ msgid ""
 "\\&.br\n"
 "baz \\e- program to do nothing>\n"
 msgstr ""
+"CW<\\&.SH NAME\n"
+"foo, bar \\e- programmer til at gøre noget\n"
+"\\&.br\n"
+"baz \\e- program til ikke at gøre noget>\n"
 
 #. type: Plain text
 #: ../../man/man1/lexgrog.man1:172
@@ -771,12 +793,6 @@ msgstr ""
 "Colin Watson skrev den aktuelle inkarnation af kommandolinjebrugerfladen, "
 "samt denne manualside."
 
-#. type: TH
-#: ../../man/man1/man.man1:15
-#, no-wrap
-msgid "%thman%"
-msgstr "%thman%"
-
 #. type: Plain text
 #: ../../man/man1/man.man1:18
 msgid "%man% - an interface to the on-line reference manuals"
@@ -786,19 +802,6 @@ msgstr "%man% - en grænseflade til referencemanualerne på nettet"
 #.  The apropos command line
 #. type: Plain text
 #: ../../man/man1/man.man1:67
-#, fuzzy
-#| msgid ""
-#| "B<%man%> [\\|B<-C> I<file>\\|] [\\|B<-d>\\|] [\\|B<-D>\\|] [\\|B<--"
-#| "warnings>\\|[\\|=I<warnings>\\|]\\|] [\\|B<-R> I<encoding>\\|] [\\|B<-L> "
-#| "I<locale>\\|] [\\|B<-m> I<system>\\|[\\|,.\\|.\\|.\\|]\\|] [\\|B<-M> "
-#| "I<path>\\|] [\\|B<-S> I<list>\\|] [\\|B<-e> I<extension>\\|] [\\|B<-i>\\||"
-#| "\\|B<-I>\\|] [\\|B<--regex>\\||\\|B<--wildcard>\\|] [\\|B<--names-only>"
-#| "\\|] [\\|B<-a>\\|] [\\|B<-u>\\|] [\\|B<--no-subpages>\\|] [\\|B<-P> "
-#| "I<pager>\\|] [\\|B<-r> I<prompt>\\|] [\\|B<-7>\\|] [\\|B<-E> I<encoding>"
-#| "\\|] [\\|B<--no-hyphenation>\\|] [\\|B<--no-justification>\\|] [\\|B<-p> "
-#| "I<string>\\|] [\\|B<-t>\\|] [\\|B<-T>\\|[\\|I<device>\\|]\\|] [\\|B<-H>\\|"
-#| "[\\|I<browser>\\|]\\|] [\\|B<-X>\\|[\\|I<dpi>\\|]\\|] [\\|B<-Z>\\|] [\\|"
-#| "[\\|I<section>\\|] I<page>\\ .\\|.\\|.\\|]\\ .\\|.\\|.\\&"
 msgid ""
 "B<%man%> [\\|B<-C> I<file>\\|] [\\|B<-d>\\|] [\\|B<-D>\\|] [\\|B<--warnings>"
 "\\|[\\|=I<warnings>\\|]\\|] [\\|B<-R> I<encoding>\\|] [\\|B<-L> I<locale>"
@@ -812,17 +815,17 @@ msgid ""
 "I<dpi>\\|]\\|] [\\|B<-Z>\\|] [\\|[\\|I<section>\\|] I<page>[.\\|I<section>"
 "\\|]\\ \\|.\\|.\\|.\\|]\\ .\\|.\\|.\\&"
 msgstr ""
-"B<%man%> [\\|B<-C> I<fil>\\|] [\\|B<-d>\\|] [\\|B<-D>\\|] [\\|B<--warnings>"
+"B<%man%> [\\|B<-C> I<file>\\|] [\\|B<-d>\\|] [\\|B<-D>\\|] [\\|B<--warnings>"
 "\\|[\\|=I<advarsler>\\|]\\|] [\\|B<-R> I<kodning>\\|] [\\|B<-L> I<sprog>\\|] "
 "[\\|B<-m> I<system>\\|[\\|,.\\|.\\|.\\|]\\|] [\\|B<-M> I<sti>\\|] [\\|B<-S> "
-"I<liste>\\|] [\\|B<-e> I<udvidelse>\\|] [\\|B<-i>\\||\\|B<-I>\\|] [\\|B<--"
+"I<vis>\\|] [\\|B<-e> I<udvidelse>\\|] [\\|B<-i>\\||\\|B<-I>\\|] [\\|B<--"
 "regex>\\||\\|B<--wildcard>\\|] [\\|B<--names-only>\\|] [\\|B<-a>\\|] [\\|B<-"
 "u>\\|] [\\|B<--no-subpages>\\|] [\\|B<-P> I<tekstviser>\\|] [\\|B<-r> "
 "I<prompt>\\|] [\\|B<-7>\\|] [\\|B<-E> I<kodning>\\|] [\\|B<--no-hyphenation>"
 "\\|] [\\|B<--no-justification>\\|] [\\|B<-p> I<streng>\\|] [\\|B<-t>\\|] [\\|"
 "B<-T>\\|[\\|I<enhed>\\|]\\|] [\\|B<-H>\\|[\\|I<browser>\\|]\\|] [\\|B<-X>\\|"
-"[\\|I<dpi>\\|]\\|] [\\|B<-Z>\\|] [\\|[\\|I<afsnit>\\|] I<side>\\ .\\|.\\|."
-"\\|]\\ .\\|.\\|.\\&"
+"[\\|I<dpi>\\|]\\|] [\\|B<-Z>\\|] [\\|[\\|I<afsnit>\\|] I<side>[.\\|I<afsnit>"
+"\\|]\\ \\|.\\|.\\|.\\|]\\ .\\|.\\|.\\&"
 
 #.  The --global-apropos command line
 #. type: Plain text
@@ -837,7 +840,7 @@ msgid ""
 "B<%man%> B<-K> [\\|B<-w>\\||\\|B<-W>\\|] [\\|B<-S> I<list>\\|] [\\|B<-i>\\||"
 "\\|B<-I>\\|] [\\|B<--regex>\\|] [\\|I<section>\\|] I<term>\\ .\\|.\\|.\\&"
 msgstr ""
-"B<%man%> B<-K> [\\|B<-w>\\||\\|B<-W>\\|] [\\|B<-S> I<liste>\\|] [\\|B<-i>\\||"
+"B<%man%> B<-K> [\\|B<-w>\\||\\|B<-W>\\|] [\\|B<-S> I<vis>\\|] [\\|B<-i>\\||"
 "\\|B<-I>\\|] [\\|B<--regex>\\|] [\\|I<afsnit>\\|] I<term>\\ .\\|.\\|.\\&"
 
 #.  The --local command line
@@ -1111,17 +1114,14 @@ msgstr "Vis manualsiden for I<punkt> (program) I<ls>."
 
 #. type: TP
 #: ../../man/man1/man.man1:287
-#, fuzzy, no-wrap
-#| msgid "B<%man%\\ -f>I<\\ smail>"
+#, no-wrap
 msgid "B<%man% >I<man>.I<7>"
-msgstr "B<%man%\\ -f>I<\\ smail>"
+msgstr "B<%man% >I<man>.I<7>"
 
 #. type: Plain text
 #: ../../man/man1/man.man1:292
-#, fuzzy
-#| msgid "Display the manual page for the I<item> (program)  I<ls>."
 msgid "Display the manual page for macro package I<man> from section I<7>."
-msgstr "Vis manualsiden for I<punkt> (program) I<ls>."
+msgstr "Vis manualsiden for makropakken I<man> fra afsnit I<7>."
 
 #. type: TP
 #: ../../man/man1/man.man1:292
@@ -1208,7 +1208,7 @@ msgstr ""
 #: ../../man/man1/man.man1:346
 #, no-wrap
 msgid "OVERVIEW"
-msgstr ""
+msgstr "OVERBLIK"
 
 #. type: Plain text
 #: ../../man/man1/man.man1:352
@@ -1217,6 +1217,10 @@ msgid ""
 "as possible to the user.  Changes can be made to the search path, section "
 "order, output processor, and other behaviours and operations detailed below."
 msgstr ""
+"Mange tilvalg er tilgængelige for B<%man%> for at give så meget "
+"fleksibilitet som muligt for slutbrugeren. Ændringer kan ske for søgestien, "
+"afsnitrækkefølge, uddataprocessor og anden opførsel og operationer "
+"detaljeret nedenfor."
 
 #. type: Plain text
 #: ../../man/man1/man.man1:374
@@ -1232,6 +1236,17 @@ msgid ""
 "will allow %man% to `forget' about the options specified in $B<MANOPT> "
 "although they must still have been valid."
 msgstr ""
+"Hvis angivet, bliver diverse miljøvariabler forhandlet for at bestemme "
+"operationen af B<%man%>. Det er muligt at angive variablen »catch all« "
+"$B<MANOPT> til enhver streng i kommandolinjeformat med den undtagelse at "
+"eventuelle mellemrum brugt som del af et tilvalgs argument skal have "
+"undvigesekvens (forudstillet med en skråstreg). B<%man%> vil fortolke "
+"$B<MANOPT> før fortolkning af sin egen kommandolinje. Disse tilvalg der "
+"kræver et argument vil blive overskrevet af de samme tilvalg fundet på "
+"kommandolinjen. For at nulstille hele tilvalgssættet i $B<MANOPT>, B<-D> kan "
+"specificeres som opstartsindstilling for kommandolinjen. Dette vil tillade "
+"%man% at »glemme« tilvalgene specificeret i $B<MANOPT> selvom de stadig må "
+"have været gyldige.."
 
 #. type: Plain text
 #: ../../man/man1/man.man1:395
@@ -1299,6 +1314,8 @@ msgid ""
 "E<lt>I<language>E<gt>[\\|B<_>E<lt>I<territory>E<gt>\\|[\\|B<."
 ">E<lt>I<character-set>E<gt>\\|[\\|B<,>E<lt>I<version>E<gt>\\|]\\|]\\|]"
 msgstr ""
+"E<lt>I<language>E<gt>[\\|B<_>E<lt>I<territory>E<gt>\\|[\\|B<."
+">E<lt>I<tegnsæt>E<gt>\\|[\\|B<,>E<lt>I<version>E<gt>\\|]\\|]\\|]"
 
 #. type: Plain text
 #: ../../man/man1/man.man1:466
@@ -1325,12 +1342,14 @@ msgid ""
 "For information regarding other features and extensions available with this "
 "manual pager, please read the documents supplied with the package."
 msgstr ""
+"For information om andre funktioner og udvidelser tilgængelige med denne "
+"manualtekstviser, så læs venligst dokumenterne leveret med denne pakke."
 
 #. type: SH
 #: ../../man/man1/man.man1:476
 #, no-wrap
 msgid "DEFAULTS"
-msgstr ""
+msgstr "STANDARDER"
 
 #. type: Plain text
 #: ../../man/man1/man.man1:496
@@ -1377,11 +1396,16 @@ msgid ""
 "line of the nroff file is parsed for a preprocessor string.  To contain a "
 "valid preprocessor string, the first line must resemble"
 msgstr ""
+"Filtrene tydes vis et antal metoder. Først tydes kommandolinjetilvalget B<-"
+"p> eller miljøvariablen $B<MANROFFSEQ>. Hvis B<-p> ikke blev brugt og "
+"miljøvariablen ikke var angivet, så fortolkes opstartslinjen for nroff-filen "
+"for en forbrænderstrenge. For at indeholde en gyldig forbrænderstreng, så "
+"skal den første linje ligne"
 
 #. type: Plain text
 #: ../../man/man1/man.man1:528
 msgid "B<'\\e\"> E<lt>B<string>E<gt>"
-msgstr ""
+msgstr "B<'\\e\"> E<lt>B<string>E<gt>"
 
 #. type: Plain text
 #: ../../man/man1/man.man1:534
@@ -1389,6 +1413,8 @@ msgid ""
 "where B<string> can be any combination of letters described by option B<-p> "
 "below."
 msgstr ""
+"Hvor B<streng> kan være enhver kombination af bogstaver beskrevet af "
+"tilvalget B<-p> nedenfor."
 
 #. type: Plain text
 #: ../../man/man1/man.man1:537
@@ -1396,6 +1422,8 @@ msgid ""
 "If none of the above methods provide any filter information, a default set "
 "is used."
 msgstr ""
+"Hvis ingen af de ovenstående metoder giver filterinformation, så bruges et "
+"standardsæt."
 
 #.  ********************************************************************
 #. type: Plain text
@@ -1416,6 +1444,9 @@ msgid ""
 "$B<MANOPT>, or both, are not harmful.  For options that require an argument, "
 "each duplication will override the previous argument value."
 msgstr ""
+"Tilvalg uden argumenter som dublikeres enten på kommandolinjen, i "
+"$B<MANOPT>, eller begge, er ikke skadelige. For tilvalg som kræver et "
+"argument, vil hver dublikering tilsidesætte den tidligere argumentværdi."
 
 #. type: SS
 #: ../../man/man1/man.man1:564
@@ -1431,6 +1462,10 @@ msgid ""
 "have been set in $B<MANOPT>.  Any options that follow B<-D> will have their "
 "usual effect."
 msgstr ""
+"Dette tilvalg udstedes normalt som det første tilvalg og nulstiller B<%man"
+"%'s> opførsel til standarden. Dets brug er at nulstille disse tilvalg, som "
+"måske er angivet i $B<MANOPT>. Ethvert tilvalg som følger B<-D> vil have "
+"deres normale effekt."
 
 #. type: TP
 #: ../../man/man1/man.man1:582
@@ -1681,6 +1716,8 @@ msgid ""
 "If the B<--regex> or B<--wildcard> option is used, match only page names, "
 "not page descriptions, as with B<whatis>(1).  Otherwise, no effect."
 msgstr ""
+"Hvis enten tilvalget B<--regex> eller B<--wildcard> bruges, match kun "
+"sidenavne, ikke sidebeskrivelser, som med B<whatis>(1). Ellers, ingen effekt."
 
 #. type: Plain text
 #: ../../man/man1/man.man1:833
@@ -1701,6 +1738,10 @@ msgid ""
 "the filesystem.  It will only have a useful effect if B<%man%> is installed "
 "with the setuid bit set."
 msgstr ""
+"Dette tilvalg får B<%man%> til at udføre en »inode level«-konsistenskontrol "
+"på dets databasemellemlager for at sikre at de er en præcis repræsentation "
+"af filsystemet. Det vil kun have en nyttig effekt hvis B<%man%> er "
+"installeret med setuid-bitsættet."
 
 #. type: Plain text
 #: ../../man/man1/man.man1:854
@@ -1731,16 +1772,17 @@ msgid "B<-P\\ >I<pager>,\\ B<--pager=>I<pager>"
 msgstr "B<-P\\ >I<tekstviser>,\\ B<--pager=>I<tekstviser>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:887
+#: ../../man/man1/man.man1:892
 msgid ""
-"Specify which output pager to use.  By default, B<%man%> uses B<%pager%>.  "
+"Specify which output pager to use.  By default, B<%man%> uses B<%pager%>, "
+"falling back to B<%cat%> if B<%pager%> is not found or is not executable.  "
 "This option overrides the $B<MANPAGER> environment variable, which in turn "
 "overrides the $B<PAGER> environment variable.  It is not used in conjunction "
 "with B<-f> or B<-k>."
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:893 ../../man/man1/man.man1:1250
+#: ../../man/man1/man.man1:898 ../../man/man1/man.man1:1259
 msgid ""
 "The value may be a simple command name or a command with arguments, and may "
 "use shell quoting (backslashes, single quotes, or double quotes).  It may "
@@ -1750,41 +1792,47 @@ msgid ""
 msgstr ""
 
 #. type: TP
-#: ../../man/man1/man.man1:893
+#: ../../man/man1/man.man1:898
 #, no-wrap
 msgid "B<-r\\ >I<prompt>,\\ B<--prompt=>I<prompt>"
-msgstr ""
+msgstr "B<-r\\ >I<prompt>,\\ B<--prompt=>I<prompt>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:901
+#: ../../man/man1/man.man1:906
 msgid ""
 "If a recent version of B<less> is used as the pager, B<%man%> will attempt "
 "to set its prompt and some sensible options.  The default prompt looks like"
 msgstr ""
+"Hvis en nylig version af B<less> bruges som tekstsøger, så vil B<%man%> "
+"forsøge at angive den på sin prompt og vælge nogle fornuftige tilvalg. "
+"Standardprompten ser således ud"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:905
+#: ../../man/man1/man.man1:910
 msgid "B<\\ Manual page>I<\\ name>B<(>I<sec>B<)>B<\\ line>I<\\ x>"
-msgstr ""
+msgstr "B<\\ Manualside>I<\\ navn>B<(>I<sec>B<)>B<\\ line>I<\\ x>"
 
 #. The default options are
 #. .BR \-six8 .
 #. The actual default will depend on your chosen
 #. .BR locale .
 #. type: Plain text
-#: ../../man/man1/man.man1:920
+#: ../../man/man1/man.man1:925
 msgid ""
 "where I<name> denotes the manual page name, I<sec> denotes the section it "
 "was found under and I<x> the current line number.  This is achieved by using "
 "the $B<LESS> environment variable."
 msgstr ""
+"hvor I<navn> benvæner manualsidenavnet, I<sektion> benævner sektionen den "
+"blev fundet under og I<x> det nuværende linjenummer. Dette opnås ved at "
+"bruge miljøvariablen $B<LESS>."
 
 #. You may need to do this if your
 #. version of
 #. .B less
 #. rejects the default options or if you prefer a different prompt.
 #. type: Plain text
-#: ../../man/man1/man.man1:933
+#: ../../man/man1/man.man1:938
 msgid ""
 "Supplying B<-r> with a string will override this default.  The string may "
 "contain the text B<$MAN_PN> which will be expanded to the name of the "
@@ -1793,22 +1841,22 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:935
+#: ../../man/man1/man.man1:940
 msgid "B<\\e\\ Manual\\e\\ page\\e\\ \\e$MAN_PN\\e\\ ?ltline\\e\\ %lt?L/%L.:>"
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:937
+#: ../../man/man1/man.man1:942
 msgid "B<byte\\e\\ %bB?s/%s..?\\e\\ (END):?pB\\e\\ %pB\\e\\e%..>"
 msgstr "B<byte\\e\\ %bB?s/%s..?\\e\\ (END):?pB\\e\\ %pB\\e\\e%..>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:939
+#: ../../man/man1/man.man1:944
 msgid "B<(press h for help or q to quit)>"
 msgstr "B<(tryk h for hjælp eller q for afslut)>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:954
+#: ../../man/man1/man.man1:959
 msgid ""
 "It is broken into three lines here for the sake of readability only.  For "
 "its meaning see the B<less>(1)  manual page.  The prompt string is first "
@@ -1819,14 +1867,14 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:959
+#: ../../man/man1/man.man1:964
 msgid ""
 "The $B<MANLESS> environment variable described below may be used to set a "
 "default prompt string if none is supplied on the command line."
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:985
+#: ../../man/man1/man.man1:990
 msgid ""
 "When viewing a pure I<ascii>(7)  manual page on a 7 bit terminal or terminal "
 "emulator, some characters may not display correctly when using the "
@@ -1838,43 +1886,43 @@ msgid ""
 msgstr ""
 
 #. type: tbl table
-#: ../../man/man1/man.man1:994
+#: ../../man/man1/man.man1:999
 #, no-wrap
 msgid "Description"
 msgstr "Beskrivelse"
 
 #. type: tbl table
-#: ../../man/man1/man.man1:994
+#: ../../man/man1/man.man1:999
 #, no-wrap
 msgid "Octal"
 msgstr "Oktal"
 
 #. type: tbl table
-#: ../../man/man1/man.man1:998
+#: ../../man/man1/man.man1:1003
 #, no-wrap
 msgid "continuation hyphen"
 msgstr ""
 
 #. type: tbl table
-#: ../../man/man1/man.man1:1001
+#: ../../man/man1/man.man1:1006
 #, no-wrap
 msgid "bullet (middle dot)"
 msgstr ""
 
 #. type: tbl table
-#: ../../man/man1/man.man1:1004
+#: ../../man/man1/man.man1:1009
 #, no-wrap
 msgid "acute accent"
 msgstr ""
 
 #. type: tbl table
-#: ../../man/man1/man.man1:1007
+#: ../../man/man1/man.man1:1012
 #, no-wrap
 msgid "multiplication sign"
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1029
+#: ../../man/man1/man.man1:1034
 msgid ""
 "If the I<latin1> column displays correctly, your terminal may be set up for "
 "I<latin1> characters and this option is not necessary.  If the I<latin1> and "
@@ -1885,20 +1933,20 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1040
+#: ../../man/man1/man.man1:1045
 msgid ""
 "This option is ignored when using options B<-t>, B<-H>, B<-T>, or B<-Z> and "
 "may be useless for B<nroff> other than B<GNU's>."
 msgstr ""
 
 #. type: TP
-#: ../../man/man1/man.man1:1040
+#: ../../man/man1/man.man1:1045
 #, no-wrap
 msgid "B<-E\\ >I<encoding>,\\ B<--encoding>=I<encoding>"
 msgstr "B<-E\\ >I<kodning>,\\ B<--encoding>=I<kodning>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1051
+#: ../../man/man1/man.man1:1056
 msgid ""
 "Generate output for a character encoding other than the default.  For "
 "backward compatibility, I<encoding> may be an B<nroff> device such as "
@@ -1907,7 +1955,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1060
+#: ../../man/man1/man.man1:1065
 msgid ""
 "Normally, B<nroff> will automatically hyphenate text at line breaks even in "
 "words that do not contain hyphens, if it is necessary to do so to lay out "
@@ -1917,7 +1965,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1069
+#: ../../man/man1/man.man1:1074
 msgid ""
 "If you are writing a manual page and simply want to prevent B<nroff> from "
 "hyphenating a word at an inappropriate point, do not use this option, but "
@@ -1927,7 +1975,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1076
+#: ../../man/man1/man.man1:1081
 msgid ""
 "Normally, B<nroff> will automatically justify text to both margins.  This "
 "option disables full justification, leaving justified only to the left "
@@ -1935,7 +1983,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1083
+#: ../../man/man1/man.man1:1088
 msgid ""
 "If you are writing a manual page and simply want to prevent B<nroff> from "
 "justifying certain paragraphs, do not use this option, but consult the "
@@ -1945,13 +1993,13 @@ msgid ""
 msgstr ""
 
 #. type: TP
-#: ../../man/man1/man.man1:1083
+#: ../../man/man1/man.man1:1088
 #, no-wrap
 msgid "B<-p\\ >I<string>,\\ B<--preprocessor=>I<string>"
 msgstr "B<-p\\ >I<streng>,\\ B<--preprocessor=>I<streng>"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1102
+#: ../../man/man1/man.man1:1107
 msgid ""
 "Specify the sequence of preprocessors to run before B<nroff> or B<troff>/"
 "B<groff>.  Not all installations will have a full set of preprocessors.  "
@@ -1962,7 +2010,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1112
+#: ../../man/man1/man.man1:1117
 msgid ""
 "Use I<%troff%> to format the manual page to stdout.  This option is not "
 "required in conjunction with B<-H>, B<-T>, or B<-Z>."
@@ -1971,13 +2019,13 @@ msgstr ""
 "ikke krævet sammen med B<-H>, B<-T> eller B<-Z>."
 
 #. type: TP
-#: ../../man/man1/man.man1:1112
+#: ../../man/man1/man.man1:1117
 #, no-wrap
 msgid "B<-T>[I<device\\/>], B<--troff-device>[=I<device\\/>]"
 msgstr "B<-T>[I<enhed\\/>], B<--troff-device>[=I<enhed\\/>]"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1124
+#: ../../man/man1/man.man1:1129
 msgid ""
 "This option is used to change B<groff> (or possibly B<troff's>)  output to "
 "be suitable for a device other than the default.  It implies B<-t>.  "
@@ -1990,13 +2038,13 @@ msgstr ""
 "B<latin1>, B<ps>, B<utf8>, B<X75> og B<X100>."
 
 #. type: TP
-#: ../../man/man1/man.man1:1124
+#: ../../man/man1/man.man1:1129
 #, no-wrap
 msgid "B<-H>[I<browser\\/>], B<--html>[=I<browser\\/>]"
 msgstr "B<-H>[I<browser\\/>], B<--html>[=I<browser\\/>]"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1140
+#: ../../man/man1/man.man1:1145
 msgid ""
 "This option will cause B<groff> to produce HTML output, and will display "
 "that output in a web browser.  The choice of browser is determined by the "
@@ -2007,13 +2055,13 @@ msgid ""
 msgstr ""
 
 #. type: TP
-#: ../../man/man1/man.man1:1140
+#: ../../man/man1/man.man1:1145
 #, no-wrap
 msgid "B<-X>[I<dpi\\/>], B<--gxditview>[=I<dpi\\/>]"
 msgstr "B<-X>[I<dpi\\/>], B<--gxditview>[=I<dpi\\/>]"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1154
+#: ../../man/man1/man.man1:1159
 msgid ""
 "This option displays the output of B<groff> in a graphical window using the "
 "B<gxditview> program.  The I<dpi> (dots per inch) may be 75, 75-12, 100, or "
@@ -2023,7 +2071,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1170
+#: ../../man/man1/man.man1:1175
 msgid ""
 "B<groff> will run B<troff> and then use an appropriate post-processor to "
 "produce output suitable for the chosen device.  If I<%troff%> is B<groff>, "
@@ -2036,18 +2084,18 @@ msgstr ""
 "af en efterbrænder. B<-t> er underforstået."
 
 #. type: SS
-#: ../../man/man1/man.man1:1170
+#: ../../man/man1/man.man1:1175
 #, no-wrap
 msgid "Getting help"
 msgstr "Få hjælp"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1193
+#: ../../man/man1/man.man1:1198
 msgid "A child process returned a non-zero exit status."
 msgstr "En underproces returnerede en afslutningsstatus forskellig fra nul."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1196
+#: ../../man/man1/man.man1:1201
 msgid ""
 "At least one of the pages/files/keywords didn't exist or wasn't matched."
 msgstr ""
@@ -2055,21 +2103,21 @@ msgstr ""
 "matchet."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1203
+#: ../../man/man1/man.man1:1208
 msgid ""
 "If $B<MANPATH> is set, its value is used as the path to search for manual "
 "pages."
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1214
+#: ../../man/man1/man.man1:1219
 msgid ""
 "The contents of $B<MANROFFOPT> are added to the command line every time "
 "B<man> invokes the formatter (B<nroff>, B<troff>, or B<groff>)."
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1221
+#: ../../man/man1/man.man1:1226
 msgid ""
 "If $B<MANROFFSEQ> is set, its value is used to determine the set of "
 "preprocessors to pass each manual page through.  The default preprocessor "
@@ -2077,7 +2125,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1231 ../../man/man8/catman.man8:88
+#: ../../man/man1/man.man1:1236 ../../man/man8/catman.man8:88
 msgid ""
 "If $B<MANSECT> is set, its value is a colon-delimited list of sections and "
 "it is used to determine which manual sections to search and in what order.  "
@@ -2086,15 +2134,16 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1244
+#: ../../man/man1/man.man1:1253
 msgid ""
 "If $B<MANPAGER> or $B<PAGER> is set ($B<MANPAGER> is used in preference), "
 "its value is used as the name of the program used to display the manual "
-"page.  By default, B<%pager%> is used."
+"page.  By default, B<%pager%> is used, falling back to B<%cat%> if B<%pager"
+"%> is not found or is not executable."
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1269
+#: ../../man/man1/man.man1:1278
 msgid ""
 "If $B<MANLESS> is set, its value will be used as the default prompt string "
 "for the B<less> pager, as if it had been passed using the B<-r> option (so "
@@ -2105,7 +2154,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1285
+#: ../../man/man1/man.man1:1294
 msgid ""
 "If $B<BROWSER> is set, its value is a colon-delimited list of commands, each "
 "of which in turn is used to try to start a web browser for B<man> B<--"
@@ -2115,7 +2164,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1308
+#: ../../man/man1/man.man1:1317
 msgid ""
 "If $B<MANOPT> is set, it will be parsed prior to B<%man%'s> command line and "
 "is expected to be in a similar format.  As all of the other B<%man%> "
@@ -2126,7 +2175,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1322
+#: ../../man/man1/man.man1:1331
 msgid ""
 "If $B<MANWIDTH> is set, its value is used as the line length for which "
 "manual pages should be formatted.  If it is not set, manual pages will be "
@@ -2138,7 +2187,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1333
+#: ../../man/man1/man.man1:1342
 msgid ""
 "Normally, when output is not being directed to a terminal (such as to a file "
 "or a pipe), formatting characters are discarded to make it easier to read "
@@ -2149,7 +2198,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1346
+#: ../../man/man1/man.man1:1355
 msgid ""
 "Normally, when output is being directed to a terminal (usually to a pager), "
 "any error output from the command used to produce formatted versions of "
@@ -2162,7 +2211,7 @@ msgid ""
 msgstr ""
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1358
+#: ../../man/man1/man.man1:1367
 msgid ""
 "Depending on system and implementation, either or both of $B<LANG> and "
 "$B<LC_MESSAGES> will be interrogated for the current message locale.  B<%man"
@@ -2175,36 +2224,36 @@ msgstr ""
 "for mere udførlige detaljer."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1362 ../../man/man1/manpath.man1:128
+#: ../../man/man1/man.man1:1371 ../../man/man1/manpath.man1:128
 #: ../../man/man8/catman.man8:98 ../../man/man8/mandb.man8:195
 msgid "man-db configuration file."
 msgstr "konfigurationsfil for man-db."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1365
+#: ../../man/man1/man.man1:1374
 msgid "A global manual page hierarchy."
 msgstr "Et globalt manualsidehierarki."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1394
+#: ../../man/man1/man.man1:1403
 msgid "the man-db package manual, B<FSSTND>"
 msgstr "Manual for pakken man-db, B<FSSTND>"
 
 #. type: SH
-#: ../../man/man1/man.man1:1394
+#: ../../man/man1/man.man1:1403
 #, no-wrap
 msgid "HISTORY"
 msgstr "HISTORIK"
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1396
+#: ../../man/man1/man.man1:1405
 msgid ""
 "1990, 1991 \\(en Originally written by John W.\\& Eaton (jwe@che.utexas.edu)."
 msgstr ""
 "1990, 1991 \\(en oprindelig skrevet af John W.\\& Eaton (jwe@che.utexas.edu)."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1399
+#: ../../man/man1/man.man1:1408
 msgid ""
 "Dec 23 1992: Rik Faith (faith@cs.unc.edu) applied bug fixes supplied by "
 "Willem Kasdorp (wkasdo@nikhefk.nikef.nl)."
@@ -2213,7 +2262,7 @@ msgstr ""
 "Kasdorp (wkasdo@nikhefk.nikef.nl)."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1403
+#: ../../man/man1/man.man1:1412
 msgid ""
 "30th April 1994 \\(en 23rd February 2000: Wilf. (G.Wilford@ee.surrey.ac.uk)  "
 "has been developing and maintaining this package with the help of a few "
@@ -2224,7 +2273,7 @@ msgstr ""
 "personer."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1407
+#: ../../man/man1/man.man1:1416
 msgid ""
 "30th October 1996 \\(en 30th March 2001: Fabrizio Polacco "
 "E<lt>fpolacco@debian.orgE<gt> maintained and enhanced this package for the "
@@ -2235,19 +2284,13 @@ msgstr ""
 "hjælp fra hele fællesskabet."
 
 #. type: Plain text
-#: ../../man/man1/man.man1:1409
+#: ../../man/man1/man.man1:1418
 msgid ""
 "31st March 2001 \\(en present day: Colin Watson E<lt>cjwatson@debian."
 "orgE<gt> is now developing and maintaining man-db."
 msgstr ""
 "31. marts 2001 \\(en til i dag: Colin Watson E<lt>cjwatson@debian.orgE<gt> "
 "udvikler og vedligeholder nu man-db."
-
-#. type: TH
-#: ../../man/man1/manconv.man1:9
-#, no-wrap
-msgid "%thmanconv%"
-msgstr "%thmanconv%"
 
 #. type: Plain text
 #: ../../man/man1/manconv.man1:12
@@ -2317,12 +2360,6 @@ msgstr "Konverter manualsiden til I<kodning>."
 #: ../../man/man1/manconv.man1:63
 msgid "Do not issue error messages when the page cannot be converted."
 msgstr "Vis ikke fejlbeskeder når siden ikke kan konverteres."
-
-#. type: TH
-#: ../../man/man1/manpath.man1:12
-#, no-wrap
-msgid "%thmanpath%"
-msgstr "%thmanpath%"
 
 #. type: Plain text
 #: ../../man/man1/manpath.man1:15
@@ -2415,12 +2452,6 @@ msgid ""
 "two colons."
 msgstr ""
 
-#. type: TH
-#: ../../man/man1/whatis.man1:12
-#, no-wrap
-msgid "%thwhatis%"
-msgstr ""
-
 #. type: Plain text
 #: ../../man/man1/whatis.man1:15
 msgid "%whatis% - display one-line manual page descriptions"
@@ -2444,6 +2475,9 @@ msgid ""
 "searches the manual page names and displays the manual page descriptions of "
 "any I<name> matched."
 msgstr ""
+"Hver manualside her en kort beskrivelse tilgængelig i sig. B<%whatis%> søger "
+"i manualsidenavnene og viser manualsidebeskrivelserne for alle matchede "
+"I<navn>."
 
 #. type: Plain text
 #: ../../man/man1/whatis.man1:49
@@ -2452,6 +2486,10 @@ msgid ""
 "Using these options, it may be necessary to quote the I<name> or escape "
 "(\\e) the special characters to stop the shell from interpreting them."
 msgstr ""
+"I<navn> kan indeholder jokertegn (B<-w>) eller være et regulært udtryk (B<-"
+"r>). Ved brug af disse tilvalg kan det være nødvendig at placere I<navn> i "
+"citattegn eller undvige (\\e) de specielle tegn for at forhindre at skallen "
+"fortolker dem."
 
 #. type: Plain text
 #: ../../man/man1/whatis.man1:61
@@ -2467,11 +2505,12 @@ msgstr ""
 #: ../../man/man1/whatis.man1:66
 msgid "B<%whatis% -M> I<manpath> B<-w '*' | sort E<gt>> I<manpath/whatis>"
 msgstr ""
+"B<%whatis% -M> I<manualside> B<-w '*' | sort E<gt>> I<manualside/whatis>"
 
 #. type: Plain text
 #: ../../man/man1/whatis.man1:71
 msgid "where I<manpath> is a manual page hierarchy such as I</usr/man>."
-msgstr ""
+msgstr "hvor I<manualside> er et manualsidehierarki såsom I</usr/man>."
 
 #. type: Plain text
 #: ../../man/man1/whatis.man1:89
@@ -2480,6 +2519,9 @@ msgid ""
 "part of a page name, a match will be made.  This option causes B<%whatis%> "
 "to be somewhat slower due to the nature of database searches."
 msgstr ""
+"Fortolk hvert I<navn> som et regulært udtryk. Hvis et I<navn> matcher en del "
+"af et sidenavn, så vil et match bliver udført. Dette tilvalg gør at B<%whatis"
+"%> er lidt langsommere på grund af naturen i databasesøgninger."
 
 #. type: Plain text
 #: ../../man/man1/whatis.man1:100
@@ -2507,21 +2549,15 @@ msgid ""
 "option will override the $B<SYSTEM> environment variable."
 msgstr ""
 
-#. type: TH
-#: ../../man/man1/zsoelim.man1:12
-#, no-wrap
-msgid "%thzsoelim%"
-msgstr ""
-
 #. type: Plain text
 #: ../../man/man1/zsoelim.man1:15
 msgid "%zsoelim% - satisfy .so requests in roff input"
-msgstr ""
+msgstr "%zsoelim% - tilfredsstiller .so-forespørgsler i roff-inddata"
 
 #. type: Plain text
 #: ../../man/man1/zsoelim.man1:20
 msgid "B<%zsoelim%> [\\|B<-CVh>\\|] [\\|I<file> \\&.\\|.\\|.\\|]"
-msgstr ""
+msgstr "B<%zsoelim%> [\\|B<-CVh>\\|] [\\|I<fil> \\&.\\|.\\|.\\|]"
 
 #. type: Plain text
 #: ../../man/man1/zsoelim.man1:26
@@ -2529,11 +2565,13 @@ msgid ""
 "B<%zsoelim%> parses I<file> arguments, or if none are specified, its "
 "standard input for lines of the form:"
 msgstr ""
+"B<%zsoelim%> fortolker I<fil>-argumenter, eller hvis ingen er angivet, dets "
+"standardinddata for linjer i formen:"
 
 #. type: Plain text
 #: ../../man/man1/zsoelim.man1:29
 msgid "B<.so> E<lt>\\|I<filename>\\|E<gt>"
-msgstr ""
+msgstr "B<.so> E<lt>\\|I<filnavn>\\|E<gt>"
 
 #. type: Plain text
 #: ../../man/man1/zsoelim.man1:48
@@ -2563,22 +2601,10 @@ msgid ""
 "As this is already the default behaviour, it is ignored."
 msgstr ""
 
-#. type: TH
-#: ../../man/man5/manpath.man5:13
-#, no-wrap
-msgid "MANPATH"
-msgstr ""
-
-#. type: TH
-#: ../../man/man5/manpath.man5:13
-#, no-wrap
-msgid "%manpath_config_file%"
-msgstr ""
-
 #. type: Plain text
 #: ../../man/man5/manpath.man5:16
 msgid "manpath - format of the %manpath_config_file% file"
-msgstr ""
+msgstr "manpath - format for filen %manpath_config_file%"
 
 #. type: Plain text
 #: ../../man/man5/manpath.man5:21
@@ -2626,7 +2652,7 @@ msgstr ""
 #: ../../man/man5/manpath.man5:33
 #, no-wrap
 msgid "B<MANDATORY_MANPATH>I<\\ manpath_element>"
-msgstr ""
+msgstr "B<MANDATORY_MANPATH>I<\\ manualstielement>"
 
 #. type: Plain text
 #: ../../man/man5/manpath.man5:40
@@ -2639,7 +2665,7 @@ msgstr ""
 #: ../../man/man5/manpath.man5:40
 #, no-wrap
 msgid "B<MANPATH_MAP>I<\\ path_element\\ manpath_element>"
-msgstr ""
+msgstr "B<MANPATH_MAP>I<\\ stielement\\ manualstielement>"
 
 #. type: Plain text
 #: ../../man/man5/manpath.man5:54
@@ -2672,6 +2698,8 @@ msgid ""
 "The system manual page hierarchies are usually those stored under I</usr> "
 "such as I</usr/man>, I</usr/local/man> and I</usr/X11R6/man>."
 msgstr ""
+"Systemets manualsidehierarkier er normalt dem, der lagres under I</usr> "
+"såsom I</usr/man>, I</usr/local/man> og I</usr/X11R6/man>."
 
 #. type: Plain text
 #: ../../man/man5/manpath.man5:78
@@ -2802,6 +2830,10 @@ msgid ""
 "used.  This should generally be within the range set by B<MINCATWIDTH> and "
 "B<MAXCATWIDTH>."
 msgstr ""
+"Hvis I<width> er forskellig fra nul, så vil cat-sider altid blive formateret "
+"for en terminal med en fast bredde, uanset bredden for den terminal der "
+"faktisk anvendes. Dette bør normalt være indenfor intervallet angivet af "
+"B<MINCATWIDTH> og B<MAXCATWIDTH>."
 
 #. type: Plain text
 #: ../../man/man5/manpath.man5:170
@@ -2823,12 +2855,6 @@ msgid ""
 msgstr ""
 "Hvis reglerne anført ovenfor ikke følges præcist, vil redskaberne for "
 "manualtekstviseren ikke fungere som ønsket. Reglerne er alt for kompliceret."
-
-#. type: TH
-#: ../../man/man8/accessdb.man8:12
-#, no-wrap
-msgid "ACCESSDB"
-msgstr "ACCESSDB"
 
 #. type: Plain text
 #: ../../man/man8/accessdb.man8:16
@@ -2859,16 +2885,10 @@ msgstr ""
 msgid "Supplying an argument to accessdb will override this default."
 msgstr "Angivelse af et argument til accessdb vil overskrive denne standard."
 
-#. type: TH
-#: ../../man/man8/catman.man8:12
-#, no-wrap
-msgid "%thcatman%"
-msgstr ""
-
 #. type: Plain text
 #: ../../man/man8/catman.man8:15
 msgid "%catman% - create or update the pre-formatted manual pages"
-msgstr ""
+msgstr "%catman% - opret eller opdater de på forhånd formaterede manualsider"
 
 #. type: Plain text
 #: ../../man/man8/catman.man8:24
@@ -2920,17 +2940,13 @@ msgstr ""
 #: ../../man/man8/catman.man8:109 ../../man/man8/mandb.man8:213
 msgid "An alternate or FSSTND compliant global I<index> database cache."
 msgstr ""
-
-#. type: TH
-#: ../../man/man8/mandb.man8:13
-#, no-wrap
-msgid "%thmandb%"
-msgstr ""
+"Et alternativt eller FSSTND-overholdende globalt I<index>-"
+"databasemellemlager."
 
 #. type: Plain text
 #: ../../man/man8/mandb.man8:16
 msgid "%mandb% - create or update the manual page index caches"
-msgstr ""
+msgstr "%mandb% - opret eller opdater manualsidernes indeksmellemlagre"
 
 #. type: Plain text
 #: ../../man/man8/mandb.man8:22
@@ -2978,7 +2994,7 @@ msgstr ""
 #: ../../man/man8/mandb.man8:52
 #, no-wrap
 msgid "DATABASE CACHES"
-msgstr ""
+msgstr "DATABASE-MELLEMLAGRE"
 
 #. type: Plain text
 #: ../../man/man8/mandb.man8:55
@@ -3005,7 +3021,7 @@ msgstr "Type"
 #: ../../man/man8/mandb.man8:59
 #, no-wrap
 msgid "Async"
-msgstr ""
+msgstr "Asynk."
 
 #. type: tbl table
 #: ../../man/man8/mandb.man8:59
@@ -3017,7 +3033,7 @@ msgstr "Filnavn"
 #: ../../man/man8/mandb.man8:61
 #, no-wrap
 msgid "Berkeley db"
-msgstr ""
+msgstr "Berkeley db"
 
 #. type: tbl table
 #: ../../man/man8/mandb.man8:63
@@ -3035,7 +3051,7 @@ msgstr "Ja"
 #: ../../man/man8/mandb.man8:63
 #, no-wrap
 msgid "I<index.bt>"
-msgstr ""
+msgstr "I<index.bt>"
 
 #. type: tbl table
 #: ../../man/man8/mandb.man8:64
@@ -3047,13 +3063,13 @@ msgstr "GNU gdbm"
 #: ../../man/man8/mandb.man8:66 ../../man/man8/mandb.man8:69
 #, no-wrap
 msgid "Hashed"
-msgstr ""
+msgstr "Hashet"
 
 #. type: tbl table
 #: ../../man/man8/mandb.man8:66
 #, no-wrap
 msgid "I<index.db>"
-msgstr ""
+msgstr "I<index.db>"
 
 #. type: tbl table
 #: ../../man/man8/mandb.man8:67
@@ -3108,6 +3124,8 @@ msgid ""
 "Do not spend time checking for deleted manual pages and purging them from "
 "the databases."
 msgstr ""
+"Brug ikke tid på at kontrollere for slettede manualsider og fjerne dem fra "
+"databaserne."
 
 #. type: Plain text
 #: ../../man/man8/mandb.man8:107
@@ -3182,7 +3200,7 @@ msgstr ""
 #: ../../man/man8/mandb.man8:159
 #, no-wrap
 msgid "B<E<lt>filenameE<gt>: whatis parse for page(sec) failed>"
-msgstr ""
+msgstr "B<E<lt>filenameE<gt>: whatis-fortolkning for page(sec) mislykkedes>"
 
 #. type: Plain text
 #: ../../man/man8/mandb.man8:170
@@ -3212,7 +3230,7 @@ msgstr ""
 #: ../../man/man8/mandb.man8:175
 #, no-wrap
 msgid "B<E<lt>filenameE<gt>: bad symlink or ROFF `.so' request>"
-msgstr ""
+msgstr "B<E<lt>filenameE<gt>: ugyldig symbolsk henvisning eller ROFF ».so«-forespørgsel>"
 
 #. type: Plain text
 #: ../../man/man8/mandb.man8:179
@@ -3220,6 +3238,8 @@ msgid ""
 "E<lt>filenameE<gt> is either a symbolic link to, or contains a ROFF include "
 "request to, a non existent file."
 msgstr ""
+"E<lt>filenameE<gt> er enten en symbolsk henvisning til, eller indeholder en "
+"ROFF include-forespørgsel til, en ikkeeksisterende fil."
 
 #. type: TP
 #: ../../man/man8/mandb.man8:179
@@ -3263,3 +3283,35 @@ msgid ""
 "The B<WHATIS PARSING> section formerly in this manual page is now part of "
 "B<lexgrog>(1)."
 msgstr ""
+"B<WHATIS PARSING>-afsnittet tidligere på denne manualside er nu en del af "
+"B<lexgrog>(1)."
+
+#~ msgid "%thapropos%"
+#~ msgstr "%thapropos%"
+
+#~ msgid "%date%"
+#~ msgstr "%date%"
+
+#~ msgid "%version%"
+#~ msgstr "%version%"
+
+#~ msgid "LEXGROG"
+#~ msgstr "LEXGROG"
+
+#~ msgid "%thman%"
+#~ msgstr "%thman%"
+
+#~ msgid "%thmanconv%"
+#~ msgstr "%thmanconv%"
+
+#~ msgid "%thmanpath%"
+#~ msgstr "%thmanpath%"
+
+#~ msgid "ACCESSDB"
+#~ msgstr "ACCESSDB"
+
+#~ msgid "%thcatman%"
+#~ msgstr "%thcatman%"
+
+#~ msgid "%thmandb%"
+#~ msgstr "%thmandb%"

@@ -97,6 +97,7 @@ int have_cwd;
 #include "security.h"
 #include "encodings.h"
 #include "orderfiles.h"
+#include "sandbox.h"
 
 #include "mydbm.h"
 #include "db_storage.h"
@@ -108,10 +109,10 @@ int have_cwd;
 #include "zsoelim.h"
 #include "manconv_client.h"
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 extern uid_t ruid;
 extern uid_t euid;
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 /* the default preprocessor sequence */
 #ifndef DEFAULT_MANROFFSEQ
@@ -194,6 +195,7 @@ extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
 extern int disable_cache;
 extern int min_cat_width, max_cat_width, cat_width;
+man_sandbox *sandbox;
 
 /* locals */
 static const char *alt_system_name;
@@ -345,6 +347,13 @@ static struct argp_option options[] = {
 	{ 0 }
 };
 
+static void init_html_pager (void)
+{
+	html_pager = getenv ("BROWSER");
+	if (!html_pager)
+		html_pager = WEB_BROWSER;
+}
+
 static error_t parse_opt (int key, char *arg, struct argp_state *state)
 {
 	static int apropos, whatis; /* retain values between calls */
@@ -369,7 +378,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			ditroff = 0;
 			gxditview = NULL;
 			htmlout = 0;
-			html_pager = NULL;
+			init_html_pager ();
 #endif
 			roff_device = want_encoding = extension = pager =
 				locale = alt_system_name = external =
@@ -582,6 +591,7 @@ static char *help_filter (int key, const char *text,
 # ifdef TROFF_IS_GROFF
 		case 'H':
 			browser = html_pager;
+			assert (browser);
 			if (STRNEQ (browser, "exec ", 5))
 				browser += 5;
 			return xasprintf (text, browser);
@@ -656,10 +666,11 @@ static void check_standard_fds (void)
 
 static struct termios tms;
 static int tms_set = 0;
+static pid_t tms_pid = 0;
 
 static void set_term (void)
 {
-	if (tms_set)
+	if (tms_set && getpid () == tms_pid)
 		tcsetattr (STDIN_FILENO, TCSANOW, &tms);
 }
 
@@ -668,8 +679,18 @@ static void get_term (void)
 	if (isatty (STDOUT_FILENO)) {
 		debug ("is a tty\n");
 		tcgetattr (STDIN_FILENO, &tms);
-		if (!tms_set++)
+		if (!tms_set++) {
+			/* Work around pipecmd_exec calling exit(3) rather
+			 * than _exit(2), which means our atexit-registered
+			 * functions are called at the end of each child
+			 * process created using pipecmd_new_function and
+			 * friends.  It would probably be good to fix this
+			 * in libpipeline at some point, but it would
+			 * require care to avoid breaking compatibility.
+			 */
+			tms_pid = getpid ();
 			atexit (set_term);
+		}
 	}
 }
 
@@ -974,15 +995,54 @@ static const char *is_section (const char *name)
 }
 
 /* Snarf pre-processors from file, return string or NULL on failure */
-static char *get_preprocessors_from_file (pipeline *decomp)
+static char *get_preprocessors_from_file (pipeline *decomp, int prefixes)
 {
 #ifdef PP_COOKIE
-	const char *line;
+	const size_t block = 4096;
+	int i;
+	char *line = NULL;
+	size_t previous_len = 0;
 
 	if (!decomp)
 		return NULL;
 
-	line = pipeline_peekline (decomp);
+	/* Prefixes are inserted into the stream by man itself, and we must
+	 * skip over them to find any preprocessors line that exists.  Each
+	 * one ends with an .lf macro.
+	 */
+	for (i = 0; ; ++i) {
+		size_t len = block * (i + 1);
+		const char *buffer, *scan, *end;
+		int j;
+
+		scan = buffer = pipeline_peek (decomp, &len);
+		if (!buffer || len == 0)
+			return NULL;
+
+		for (j = 0; j < prefixes; ++j) {
+			scan = memmem (scan, len - (scan - buffer),
+				       "\n.lf ", strlen ("\n.lf "));
+			if (!scan)
+				break;
+			++scan;
+			scan = memchr (scan, '\n', len - (scan - buffer));
+			if (!scan)
+				break;
+			++scan;
+		}
+		if (!scan)
+			continue;
+
+		end = memchr (scan, '\n', len - (scan - buffer));
+		if (!end && len == previous_len)
+			/* end of file, no newline found */
+			end = buffer + len - 1;
+		if (end) {
+			line = xstrndup (scan, end - scan + 1);
+			break;
+		}
+		previous_len = len;
+	}
 	if (!line)
 		return NULL;
 
@@ -999,7 +1059,8 @@ static char *get_preprocessors_from_file (pipeline *decomp)
 
 
 /* Determine pre-processors, set save_cat and return string */
-static char *get_preprocessors (pipeline *decomp, const char *dbfilters)
+static char *get_preprocessors (pipeline *decomp, const char *dbfilters,
+				int prefixes)
 {
 	char *pp_string;
 	const char *pp_source;
@@ -1015,7 +1076,8 @@ static char *get_preprocessors (pipeline *decomp, const char *dbfilters)
 		pp_string = xstrdup (preprocessors);
 		pp_source = "command line";
 		save_cat = 0;
-	} else if ((pp_string = get_preprocessors_from_file (decomp))) {
+	} else if ((pp_string = get_preprocessors_from_file (decomp,
+							     prefixes))) {
 		pp_source = "file";
 		save_cat = 1;
 	} else if ((env = getenv ("MANROFFSEQ"))) {
@@ -1054,6 +1116,7 @@ static void add_col (pipeline *p, const char *locale_charset, ...)
 	va_start (argv, locale_charset);
 	pipecmd_argv (cmd, argv);
 	va_end (argv);
+	sandbox_attach (sandbox, cmd);
 
 	if (locale_charset)
 		col_locale = find_charset_locale (locale_charset);
@@ -1067,10 +1130,9 @@ static void add_col (pipeline *p, const char *locale_charset, ...)
 
 /* Return pipeline to format file to stdout. */
 static pipeline *make_roff_command (const char *dir, const char *file,
-				    pipeline *decomp, const char *dbfilters,
+				    pipeline *decomp, const char *pp_string,
 				    char **result_encoding)
 {
-	char *raw_pp_string, *pp_string;
 	const char *roff_opt;
 	char *fmt_prog;
 	pipeline *p = pipeline_new ();
@@ -1080,8 +1142,6 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	const char *locale_charset = NULL;
 
 	*result_encoding = xstrdup ("UTF-8"); /* optimistic default */
-
-	pp_string = raw_pp_string = get_preprocessors (decomp, dbfilters);
 
 	roff_opt = getenv ("MANROFFOPT");
 	if (!roff_opt)
@@ -1139,6 +1199,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			cmd = pipecmd_new_function (ZSOELIM, &zsoelim_stdin,
 						    zsoelim_stdin_data_free,
 						    zsoelim_data);
+			sandbox_attach (sandbox, cmd);
 			pipeline_command (p, cmd);
 		}
 
@@ -1206,9 +1267,12 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 		if (recode)
 			add_manconv (p, page_encoding, recode);
 		else if (groff_preconv) {
+			pipecmd *preconv_cmd;
 			add_manconv (p, page_encoding, "UTF-8");
-			pipeline_command_args
-				(p, groff_preconv, "-e", "UTF-8", NULL);
+			preconv_cmd = pipecmd_new_args
+				(groff_preconv, "-e", "UTF-8", NULL);
+			sandbox_attach (sandbox, preconv_cmd);
+			pipeline_command (p, preconv_cmd);
 		} else if (roff_encoding)
 			add_manconv (p, page_encoding, roff_encoding);
 		else
@@ -1367,6 +1431,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 					pipecmd_arg (cmd, "-P-g");
 			}
 
+			sandbox_attach_permissive (sandbox, cmd);
 			pipeline_command (p, cmd);
 
 			if (*pp_string == ' ' || *pp_string == '-')
@@ -1397,7 +1462,6 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	}
 
 	free (page_encoding);
-	free (raw_pp_string);
 	return p;
 }
 
@@ -1504,9 +1568,12 @@ static void add_output_iconv (pipeline *p,
 	debug ("add_output_iconv: source %s, target %s\n", source, target);
 	if (source && target && !STREQ (source, target)) {
 		char *target_translit = xasprintf ("%s//TRANSLIT", target);
-		pipeline_command_args (p, "iconv", "-c",
-				       "-f", source, "-t", target_translit,
-				       NULL);
+		pipecmd *iconv_cmd;
+		iconv_cmd = pipecmd_new_args
+			("iconv", "-c", "-f", source, "-t", target_translit,
+			 NULL);
+		sandbox_attach (sandbox, iconv_cmd);
+		pipeline_command (p, iconv_cmd);
 		free (target_translit);
 	}
 }
@@ -1594,8 +1661,11 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 
 	if (isatty (STDOUT_FILENO)) {
 		if (ascii) {
-			pipeline_command_argstr
-				(p, get_def_user ("tr", TR TR_SET1 TR_SET2));
+			pipecmd *tr_cmd;
+			tr_cmd = pipecmd_new_argstr
+				(get_def_user ("tr", TR TR_SET1 TR_SET2));
+			sandbox_attach (sandbox, tr_cmd);
+			pipeline_command (p, tr_cmd);
 			pager_cmd = pipecmd_new_argstr (pager);
 		} else
 #ifdef TROFF_IS_GROFF
@@ -1660,7 +1730,7 @@ static int commit_tmp_cat (const char *cat_file, const char *tmp_cat,
 {
 	int status = 0;
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	if (!delete && global_manpath && euid == 0) {
 		if (debug_level) {
 			debug ("fixing temporary cat's ownership\n");
@@ -1673,7 +1743,7 @@ static int commit_tmp_cat (const char *cat_file, const char *tmp_cat,
 				error (0, errno, _("can't chown %s"), tmp_cat);
 		}
 	}
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 	if (!delete && !status) {
 		if (debug_level) {
@@ -1783,6 +1853,7 @@ static pipeline *open_cat_stream (const char *cat_file, const char *encoding)
 	/* fork the compressor */
 	comp_cmd = pipecmd_new_argstr (get_def ("compressor", COMPRESSOR));
 	pipecmd_nice (comp_cmd, 10);
+	sandbox_attach (sandbox, comp_cmd);
 	pipeline_command (cat_p, comp_cmd);
 #  endif
 	/* pipeline_start will close tmp_cat_fd */
@@ -1990,13 +2061,17 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 			    pipeline *format_cmd, const char *encoding)
 {
 	char *tmpcat = tmp_cat_filename (cat_file);
+#ifdef COMP_CAT
+	pipecmd *comp_cmd;
+#endif /* COMP_CAT */
 	int status;
 
 	add_output_iconv (format_cmd, encoding, "UTF-8");
 
 #ifdef COMP_CAT
-	pipeline_command_argstr (format_cmd,
-				 get_def ("compressor", COMPRESSOR));
+	comp_cmd = pipecmd_new_argstr (get_def ("compressor", COMPRESSOR));
+	sandbox_attach (sandbox, comp_cmd);
+	pipeline_command (format_cmd, comp_cmd);
 #endif /* COMP_CAT */
 
 	maybe_discard_stderr (format_cmd);
@@ -2125,6 +2200,7 @@ static int display (const char *dir, const char *man_file,
 {
 	int found;
 	static int prompt;
+	int prefixes = 0;
 	pipeline *format_cmd;	/* command to format man_file to stdout */
 	char *formatted_encoding = NULL;
 	int display_to_stdout;
@@ -2144,7 +2220,6 @@ static int display (const char *dir, const char *man_file,
 	/* define format_cmd */
 	if (man_file) {
 		pipecmd *seq = pipecmd_new_sequence ("decompressor", NULL);
-		int seq_ncmds = 0;
 
 		if (*man_file)
 			decomp = decompress_open (man_file);
@@ -2156,7 +2231,7 @@ static int display (const char *dir, const char *man_file,
 				"echo .nh && echo .de hy && echo ..",
 				disable_hyphenation, NULL, NULL);
 			pipecmd_sequence_command (seq, hcmd);
-			++seq_ncmds;
+			++prefixes;
 		}
 
 		if (!recode && no_justification) {
@@ -2164,7 +2239,7 @@ static int display (const char *dir, const char *man_file,
 				"echo .na && echo .de ad && echo ..",
 				disable_justification, NULL, NULL);
 			pipecmd_sequence_command (seq, jcmd);
-			++seq_ncmds;
+			++prefixes;
 		}
 
 #ifdef TROFF_IS_GROFF
@@ -2187,7 +2262,7 @@ static int display (const char *dir, const char *man_file,
 					name, locale_macros, free,
 					xstrdup (bits.language));
 				pipecmd_sequence_command (seq, lcmd);
-				++seq_ncmds;
+				++prefixes;
 				free (name);
 				free_locale_bits (&bits);
 			}
@@ -2195,7 +2270,7 @@ static int display (const char *dir, const char *man_file,
 		}
 #endif /* TROFF_IS_GROFF */
 
-		if (seq_ncmds) {
+		if (prefixes) {
 			assert (pipeline_get_ncommands (decomp) <= 1);
 			if (pipeline_get_ncommands (decomp)) {
 				pipecmd_sequence_command
@@ -2212,11 +2287,15 @@ static int display (const char *dir, const char *man_file,
 	}
 
 	if (decomp) {
+		char *pp_string;
+
 		pipeline_start (decomp);
+		pp_string = get_preprocessors (decomp, dbfilters, prefixes);
 		format_cmd = make_roff_command (dir, man_file, decomp,
-						dbfilters,
+						pp_string,
 						&formatted_encoding);
 		debug ("formatted_encoding = %s\n", formatted_encoding);
+		free (pp_string);
 	} else {
 		format_cmd = NULL;
 		decomp_errno = errno;
@@ -3949,6 +4028,75 @@ static const char **get_section_list (void)
 	}
 }
 
+/*
+ * Returns the first token of a libpipeline/sh-style command. See SUSv4TC2:
+ * 2.2 Shell Command Language: Quoting.
+ *
+ * Free the returned value.
+ *
+ * Examples:
+ * sh_lang_first_word ("echo 3") returns "echo"
+ * sh_lang_first_word ("'e ho' 3") returns "e ho"
+ * sh_lang_first_word ("e\\cho 3") returns "echo"
+ * sh_lang_first_word ("e\\\ncho 3") returns "echo"
+ * sh_lang_first_word ("\"echo t\" 3") returns "echo t"
+ * sh_lang_first_word ("\"ech\\o t\" 3") returns "ech\\o t"
+ * sh_lang_first_word ("\"ech\\\\o t\" 3") returns "ech\\o t"
+ * sh_lang_first_word ("\"ech\\\no t\" 3") returns "echo t"
+ * sh_lang_first_word ("\"ech\\$ t\" 3") returns "ech$ t"
+ * sh_lang_first_word ("\"ech\\` t\" 3") returns "ech` t"
+ * sh_lang_first_word ("e\"ch\"o 3") returns "echo"
+ * sh_lang_first_word ("e'ch'o 3") returns "echo"
+ */
+static char *sh_lang_first_word (const char *cmd)
+{
+	int i, o = 0;
+	char *ret = xmalloc (strlen (cmd) + 1);
+
+	for (i = 0; cmd[i] != '\0'; i++) {
+		if (cmd[i] == '\\') {
+			/* Escape Character (Backslash) */
+			i++;
+			if (cmd[i] == '\0')
+				break;
+			if (cmd[i] != '\n')
+				ret[o++] = cmd[i];
+		} else if (cmd[i] == '\'') {
+			/* Single-Quotes */
+			i++;
+			while (cmd[i] != '\0' && cmd[i] != '\'')
+				ret[o++] = cmd[i++];
+		} else if (cmd[i] == '"') {
+			/* Double-Quotes */
+			i++;
+			while (cmd[i] != '\0' && cmd[i] != '"') {
+				if (cmd[i] == '\\') {
+					if (cmd[i + 1] == '$' ||
+					    cmd[i + 1] == '`' ||
+					    cmd[i + 1] == '"' ||
+					    cmd[i + 1] == '\\')
+						ret[o++] = cmd[++i];
+					else if (cmd[i + 1] == '\n')
+						i++;
+					else
+						ret[o++] = cmd[i];
+				} else
+					ret[o++] = cmd[i];
+
+				i++;
+			}
+		} else if (cmd[i] == '\t' || cmd[i] == ' ' || cmd[i] == '\n' ||
+			   cmd[i] == '#')
+			break;
+		else
+			ret[o++] = cmd[i];
+	}
+
+	ret[o] = '\0';
+
+	return ret;
+}
+
 int main (int argc, char *argv[])
 {
 	int argc_env, exit_status = OK;
@@ -3961,6 +4109,7 @@ int main (int argc, char *argv[])
 
 	init_debug ();
 	pipeline_install_post_fork (pop_all_cleanups);
+	sandbox = sandbox_init ();
 
 	umask (022);
 	init_locale ();
@@ -3986,11 +4135,8 @@ int main (int argc, char *argv[])
 
 #ifdef TROFF_IS_GROFF
 	/* used in --help, so initialise early */
-	if (!html_pager) {
-		html_pager = getenv ("BROWSER");
-		if (!html_pager)
-			html_pager = WEB_BROWSER;
-	}
+	if (!html_pager)
+		init_html_pager ();
 #endif /* TROFF_IS_GROFF */
 
 	/* First of all, find out if $MANOPT is set. If so, put it in 
@@ -4004,10 +4150,10 @@ int main (int argc, char *argv[])
 	if (argp_parse (&argp, argc, argv, ARGP_NO_ARGS, &first_arg, 0))
 		exit (FAIL);
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	/* record who we are and drop effective privs for later use */
 	init_security ();
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 	read_config_file (local_man_file || user_config_file);
 
@@ -4016,9 +4162,9 @@ int main (int argc, char *argv[])
 		do_extern (argc, argv);
 
 	get_term (); /* stores terminal settings */
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	debug ("real user = %d; effective user = %d\n", ruid, euid);
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 	/* close this locale and reinitialise if a new locale was 
 	   issued as an argument or in $MANOPT */
@@ -4043,13 +4189,20 @@ int main (int argc, char *argv[])
 	if (htmlout)
 		pager = html_pager;
 #endif /* TROFF_IS_GROFF */
-	if (pager == NULL) {
+
+	if (pager == NULL)
 		pager = getenv ("MANPAGER");
-		if (pager == NULL) {
-			pager = getenv ("PAGER");
-			if (pager == NULL)
-				pager = get_def_user ("pager", PAGER);
-		}
+	if (pager == NULL)
+		pager = getenv ("PAGER");
+	if (pager == NULL)
+		pager = get_def_user ("pager", NULL);
+	if (pager == NULL) {
+		char *pager_program = sh_lang_first_word (PAGER);
+		if (pathsearch_executable (pager_program))
+			pager = PAGER;
+		else
+			pager = "";
+		free (pager_program);
 	}
 	if (*pager == '\0')
 		pager = get_def_user ("cat", CAT);
@@ -4079,13 +4232,6 @@ int main (int argc, char *argv[])
 	debug ("\nusing %s as pager\n", pager);
 
 	if (first_arg == argc) {
-		/* http://twitter.com/#!/marnanel/status/132280557190119424 */
-		time_t now = time (NULL);
-		struct tm *localnow = localtime (&now);
-		if (localnow &&
-		    localnow->tm_hour == 0 && localnow->tm_min == 30)
-			fprintf (stderr, "gimme gimme gimme\n");
-
 		if (print_where) {
 			manp = get_manpath ("");
 			printf ("%s\n", manp);

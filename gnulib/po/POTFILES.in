@@ -144,6 +144,7 @@ gnulib/lib/mbtowc-impl.h
 gnulib/lib/mbtowc.c
 gnulib/lib/memchr.c
 gnulib/lib/memchr.valgrind
+gnulib/lib/memmem.c
 gnulib/lib/mempcpy.c
 gnulib/lib/memrchr.c
 gnulib/lib/minmax.h

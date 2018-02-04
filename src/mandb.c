@@ -42,9 +42,9 @@
 #include <unistd.h>
 #include <signal.h>
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 #  include <pwd.h>
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 #include "argp.h"
 #include "dirname.h"
@@ -64,6 +64,7 @@
 #include "cleanup.h"
 #include "hashtable.h"
 #include "pipeline.h"
+#include "sandbox.h"
 #include "security.h"
 
 #include "mydbm.h"
@@ -81,9 +82,11 @@ extern char *extension;		/* for globbing.c */
 extern int force_rescan;	/* for check_mandirs.c */
 static char *single_filename = NULL;
 extern char *user_config_file;	/* for manp.c */
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 struct passwd *man_owner;
 #endif
+man_sandbox *sandbox;
+
 static int purged = 0;
 static int strays = 0;
 
@@ -194,10 +197,10 @@ struct dbpaths {
 #endif /* NDBM */
 };
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 extern uid_t ruid;
 extern uid_t euid;
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 static char *manpathlist[MAXDIRS];
 
@@ -321,7 +324,7 @@ static void finish_up (struct dbpaths *dbpaths)
 #endif /* NDBM */
 }
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 /* change the owner of global man databases */
 static void do_chown (struct dbpaths *dbpaths)
 {
@@ -336,7 +339,7 @@ static void do_chown (struct dbpaths *dbpaths)
 	chown_if_possible (dbpaths->xfile);
 #  endif /* NDBM */
 }
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 /* Update a single file in an existing database. */
 static int update_one_file (const char *manpath, const char *filename)
@@ -609,10 +612,10 @@ static int process_manpath (const char *manpath, int global_manpath,
 
 	if (!opt_test && amount)
 		finish_up (dbpaths);
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	if (global_manpath)
 		do_chown (dbpaths);
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 out:
 	cleanup_sigsafe (dbpaths);
@@ -783,6 +786,7 @@ int main (int argc, char *argv[])
 
 	init_debug ();
 	pipeline_install_post_fork (pop_all_cleanups);
+	sandbox = sandbox_init ();
 	init_locale ();
 
 #ifdef SIGPIPE
@@ -809,12 +813,12 @@ int main (int argc, char *argv[])
 	}
 #endif /* __profile__ */
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	/* record who we are and drop effective privs for later use */
 	init_security ();
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	man_owner = getpwnam (MAN_OWNER);
 	if (man_owner == NULL)
 		error (FAIL, 0,
@@ -822,7 +826,7 @@ int main (int argc, char *argv[])
 		       MAN_OWNER);
 	if (!user && euid != 0 && euid != man_owner->pw_uid)
 		user = 1;
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 	read_config_file (user);
 

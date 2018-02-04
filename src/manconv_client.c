@@ -34,14 +34,17 @@
 
 #include "pipeline.h"
 #include "decompress.h"
+#include "sandbox.h"
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 #  include "idpriv.h"
 #  include "security.h"
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 #include "manconv.h"
 #include "manconv_client.h"
+
+extern man_sandbox *sandbox;
 
 struct manconv_codes {
 	char **from;
@@ -53,7 +56,7 @@ static void manconv_stdin (void *data)
 	struct manconv_codes *codes = data;
 	pipeline *p;
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	/* iconv_open may not work correctly in setuid processes; in GNU
 	 * libc, gconv modules may be linked against other gconv modules and
 	 * rely on RPATH $ORIGIN to load those modules from the correct
@@ -86,7 +89,7 @@ static void manconv_stdin (void *data)
 		pipecmd_exec (cmd);
 		/* never returns */
 	}
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 	p = decompress_fdopen (dup (STDIN_FILENO));
 	pipeline_start (p);
@@ -139,5 +142,6 @@ void add_manconv (pipeline *p, const char *source, const char *target)
 	cmd = pipecmd_new_function (name, &manconv_stdin, &free_manconv_codes,
 				    codes);
 	free (name);
+	sandbox_attach (sandbox, cmd);
 	pipeline_command (p, cmd);
 }

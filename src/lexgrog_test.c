@@ -44,6 +44,7 @@
 #include "cleanup.h"
 #include "error.h"
 #include "pipeline.h"
+#include "sandbox.h"
 #include "security.h"
 
 #include "descriptions.h"
@@ -51,6 +52,7 @@
 
 char *program_name;
 int quiet = 1;
+man_sandbox *sandbox;
 
 static int parse_man = 0, parse_cat = 0, show_whatis = 0, show_filters = 0;
 static const char *encoding = NULL;
@@ -138,17 +140,18 @@ int main (int argc, char **argv)
 
 	init_debug ();
 	pipeline_install_post_fork (pop_all_cleanups);
+	sandbox = sandbox_init ();
 	init_locale ();
 
 	if (argp_parse (&argp, argc, argv, 0, 0, 0))
 		exit (FAIL);
 
-#ifdef SECURE_MAN_UID
+#ifdef MAN_OWNER
 	/* We aren't setuid, but this allows generic code in lexgrog.l to
 	 * use drop_effective_privs/regain_effective_privs.
 	 */
 	init_security ();
-#endif /* SECURE_MAN_UID */
+#endif /* MAN_OWNER */
 
 	if (parse_man)
 		type = 0;
