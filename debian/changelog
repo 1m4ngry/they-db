@@ -1,4 +1,4 @@
-man-db (2.8.0-1) UNRELEASED; urgency=medium
+man-db (2.8.0-1) unstable; urgency=medium
 
   [ Colin Watson ]
   * New upstream release:
@@ -12,7 +12,7 @@ man-db (2.8.0-1) UNRELEASED; urgency=medium
   [ Benjamin Drung ]
   * Fix malformed debian/changelog entry (closes: #886649).
 
- -- Benjamin Drung <benjamin.drung@profitbricks.com>  Mon, 08 Jan 2018 13:37:40 +0000
+ -- Colin Watson <cjwatson@debian.org>  Sun, 04 Feb 2018 17:25:58 +0000
 
 man-db (2.7.6.1-4) unstable; urgency=medium
 
