@@ -4,6 +4,8 @@ man-db (2.8.0-3) UNRELEASED; urgency=medium
   * Use stacked profiles for subprocesses so that AppArmor realises that
     they constitute a reduction in privileges and allows the transition even
     after a seccomp filter has been installed.
+  * Build with seccomp again, now that it works in conjunction with
+    AppArmor.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 05 Feb 2018 14:47:31 +0000
 
