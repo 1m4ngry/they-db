@@ -1,0 +1,29 @@
+From a1f1fe045f54ed6884c8a9f9d95c69196aaa2024 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Mon, 5 Feb 2018 10:41:10 +0000
+Subject: Fix seccomp sandbox build on Linux/POWER
+
+* lib/sandbox.c [HAVE_LIBSECCOMP]: Include <termios.h>, since some
+architectures need this for TCGETS as well as <sys/ioctl.h>.
+
+Origin: upstream, https://git.savannah.gnu.org/cgit/man-db.git/commit/?id=13d37b21fe591b84558cd84701a6930b158b5904
+Bug-Debian: https://bugs.debian.org/889626
+Last-Update: 2018-02-05
+
+Patch-Name: seccomp-power.patch
+---
+ lib/sandbox.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/sandbox.c b/lib/sandbox.c
+index a0825543..1dbd2ea1 100644
+--- a/lib/sandbox.c
++++ b/lib/sandbox.c
+@@ -53,6 +53,7 @@
+ #ifdef HAVE_LIBSECCOMP
+ #  include <sys/ioctl.h>
+ #  include <sys/prctl.h>
++#  include <termios.h>
+ #  include <seccomp.h>
+ #endif /* HAVE_LIBSECCOMP */
+ 
