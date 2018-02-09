@@ -36,7 +36,7 @@
  * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with systemd; If not, see <http://www.gnu.org/licenses/>.
+ * along with systemd; If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -53,10 +53,9 @@
 #ifdef HAVE_LIBSECCOMP
 #  include <sys/ioctl.h>
 #  include <sys/prctl.h>
+#  include <termios.h>
 #  include <seccomp.h>
 #endif /* HAVE_LIBSECCOMP */
-
-#include "pipeline.h"
 
 #include "manconfig.h"
 
@@ -434,6 +433,7 @@ scmp_filter_ctx make_seccomp_filter (int permissive)
 	else
 		SC_ALLOW_ARG_1 ("ioctl", SCMP_A1 (SCMP_CMP_EQ, TCGETS));
 	SC_ALLOW ("mprotect");
+	SC_ALLOW ("mremap");
 	SC_ALLOW ("sync_file_range2");
 	SC_ALLOW ("sysinfo");
 	SC_ALLOW ("uname");
@@ -465,41 +465,17 @@ man_sandbox *sandbox_init (void)
 	return sandbox;
 }
 
-typedef struct man_sandbox_op {
-	man_sandbox *sandbox;
-	int permissive;
-} man_sandbox_op;
-
-/* Attach a sandbox to a pipeline command. */
-void sandbox_attach (man_sandbox *sandbox, pipecmd *cmd) {
-	man_sandbox_op *sandbox_op = XZALLOC (man_sandbox_op);
-	sandbox_op->sandbox = sandbox;
-	sandbox_op->permissive = 0;
-	pipecmd_pre_exec (cmd, sandbox_load, sandbox_free, sandbox_op);
-}
-
-/* Attach a sandbox to a pipeline command, allowing limited file creation. */
-void sandbox_attach_permissive (man_sandbox *sandbox, pipecmd *cmd) {
-	man_sandbox_op *sandbox_op = XZALLOC (man_sandbox_op);
-	sandbox_op->sandbox = sandbox;
-	sandbox_op->permissive = 1;
-	pipecmd_pre_exec (cmd, sandbox_load, sandbox_free, sandbox_op);
-}
-
-/* Enter a sandbox for processing untrusted data. */
-void sandbox_load (void *data) {
-	man_sandbox_op *sandbox_op = data;
-
+void _sandbox_load (man_sandbox *sandbox, int permissive) {
 #ifdef HAVE_LIBSECCOMP
 	if (can_load_seccomp ()) {
 		scmp_filter_ctx ctx;
 
 		debug ("loading seccomp filter (permissive: %d)\n",
-		       sandbox_op->permissive);
-		if (sandbox_op->permissive)
-			ctx = sandbox_op->sandbox->permissive_ctx;
+		       permissive);
+		if (permissive)
+			ctx = sandbox->permissive_ctx;
 		else
-			ctx = sandbox_op->sandbox->ctx;
+			ctx = sandbox->ctx;
 		if (seccomp_load (ctx) < 0) {
 			if (errno == EINVAL) {
 				/* The kernel doesn't give us particularly
@@ -519,14 +495,31 @@ void sandbox_load (void *data) {
 #endif /* HAVE_LIBSECCOMP */
 }
 
+/* Enter a sandbox for processing untrusted data. */
+void sandbox_load (void *data)
+{
+	man_sandbox *sandbox = data;
+
+	_sandbox_load (sandbox, 0);
+}
+
+/* Enter a sandbox for processing untrusted data, allowing limited file
+ * creation.
+ */
+void sandbox_load_permissive (void *data)
+{
+	man_sandbox *sandbox = data;
+
+	_sandbox_load (sandbox, 1);
+}
+
 /* Free a sandbox for processing untrusted data. */
 void sandbox_free (void *data) {
-	man_sandbox_op *sandbox_op = data;
+	man_sandbox *sandbox = data;
 
 #ifdef HAVE_LIBSECCOMP
-	seccomp_release (sandbox_op->sandbox->ctx);
+	seccomp_release (sandbox->ctx);
 #endif /* HAVE_LIBSECCOMP */
 
-	free (sandbox_op->sandbox);
-	free (sandbox_op);
+	free (sandbox);
 }

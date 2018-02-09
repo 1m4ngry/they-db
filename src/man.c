@@ -1116,7 +1116,7 @@ static void add_col (pipeline *p, const char *locale_charset, ...)
 	va_start (argv, locale_charset);
 	pipecmd_argv (cmd, argv);
 	va_end (argv);
-	sandbox_attach (sandbox, cmd);
+	pipecmd_pre_exec (cmd, sandbox_load, sandbox_free, sandbox);
 
 	if (locale_charset)
 		col_locale = find_charset_locale (locale_charset);
@@ -1199,7 +1199,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			cmd = pipecmd_new_function (ZSOELIM, &zsoelim_stdin,
 						    zsoelim_stdin_data_free,
 						    zsoelim_data);
-			sandbox_attach (sandbox, cmd);
+			pipecmd_pre_exec (cmd, sandbox_load, sandbox_free,
+					  sandbox);
 			pipeline_command (p, cmd);
 		}
 
@@ -1271,7 +1272,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			add_manconv (p, page_encoding, "UTF-8");
 			preconv_cmd = pipecmd_new_args
 				(groff_preconv, "-e", "UTF-8", NULL);
-			sandbox_attach (sandbox, preconv_cmd);
+			pipecmd_pre_exec (preconv_cmd, sandbox_load,
+					  sandbox_free, sandbox);
 			pipeline_command (p, preconv_cmd);
 		} else if (roff_encoding)
 			add_manconv (p, page_encoding, roff_encoding);
@@ -1431,7 +1433,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 					pipecmd_arg (cmd, "-P-g");
 			}
 
-			sandbox_attach_permissive (sandbox, cmd);
+			pipecmd_pre_exec (cmd, sandbox_load_permissive,
+					  sandbox_free, sandbox);
 			pipeline_command (p, cmd);
 
 			if (*pp_string == ' ' || *pp_string == '-')
@@ -1470,7 +1473,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
  * http://www.tuxedo.org/~esr/BROWSER/.
  *
  * (Actually, I really implement
- * http://www.dwheeler.com/browse/secure_browser.html, but it's
+ * https://www.dwheeler.com/browse/secure_browser.html, but it's
  * backward-compatible.)
  *
  * TODO: Is there any way to use the pipeline library better here?
@@ -1478,6 +1481,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 static pipeline *make_browser (const char *pattern, const char *file)
 {
 	pipeline *p;
+	pipecmd *cmd;
 	char *browser = xmalloc (1);
 	int found_percent_s = 0;
 	char *percent;
@@ -1523,7 +1527,9 @@ static pipeline *make_browser (const char *pattern, const char *file)
 		free (esc_file);
 	}
 
-	p = pipeline_new_command_args ("/bin/sh", "-c", browser, NULL);
+	cmd = pipecmd_new_args ("/bin/sh", "-c", browser, NULL);
+	pipecmd_pre_exec (cmd, drop_privs, NULL, NULL);
+	p = pipeline_new_commands (cmd, NULL);
 	pipeline_ignore_signals (p, 1);
 	free (browser);
 
@@ -1572,7 +1578,8 @@ static void add_output_iconv (pipeline *p,
 		iconv_cmd = pipecmd_new_args
 			("iconv", "-c", "-f", source, "-t", target_translit,
 			 NULL);
-		sandbox_attach (sandbox, iconv_cmd);
+		pipecmd_pre_exec (iconv_cmd, sandbox_load, sandbox_free,
+				  sandbox);
 		pipeline_command (p, iconv_cmd);
 		free (target_translit);
 	}
@@ -1664,7 +1671,8 @@ static pipeline *make_display_command (const char *encoding, const char *title)
 			pipecmd *tr_cmd;
 			tr_cmd = pipecmd_new_argstr
 				(get_def_user ("tr", TR TR_SET1 TR_SET2));
-			sandbox_attach (sandbox, tr_cmd);
+			pipecmd_pre_exec (tr_cmd, sandbox_load, sandbox_free,
+					  sandbox);
 			pipeline_command (p, tr_cmd);
 			pager_cmd = pipecmd_new_argstr (pager);
 		} else
@@ -1853,7 +1861,7 @@ static pipeline *open_cat_stream (const char *cat_file, const char *encoding)
 	/* fork the compressor */
 	comp_cmd = pipecmd_new_argstr (get_def ("compressor", COMPRESSOR));
 	pipecmd_nice (comp_cmd, 10);
-	sandbox_attach (sandbox, comp_cmd);
+	pipecmd_pre_exec (comp_cmd, sandbox_load, sandbox_free, sandbox);
 	pipeline_command (cat_p, comp_cmd);
 #  endif
 	/* pipeline_start will close tmp_cat_fd */
@@ -2016,7 +2024,7 @@ static void format_display (pipeline *decomp,
 			pipeline *browser;
 			debug ("Trying browser: %s\n", candidate);
 			browser = make_browser (candidate, htmlfile);
-			disp_status = do_system_drop_privs (browser);
+			disp_status = pipeline_run (browser);
 			if (!disp_status)
 				break;
 		}
@@ -2070,7 +2078,7 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 
 #ifdef COMP_CAT
 	comp_cmd = pipecmd_new_argstr (get_def ("compressor", COMPRESSOR));
-	sandbox_attach (sandbox, comp_cmd);
+	pipecmd_pre_exec (comp_cmd, sandbox_load, sandbox_free, sandbox);
 	pipeline_command (format_cmd, comp_cmd);
 #endif /* COMP_CAT */
 
@@ -4150,10 +4158,8 @@ int main (int argc, char *argv[])
 	if (argp_parse (&argp, argc, argv, ARGP_NO_ARGS, &first_arg, 0))
 		exit (FAIL);
 
-#ifdef MAN_OWNER
 	/* record who we are and drop effective privs for later use */
 	init_security ();
-#endif /* MAN_OWNER */
 
 	read_config_file (local_man_file || user_config_file);
 

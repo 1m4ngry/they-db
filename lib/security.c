@@ -54,6 +54,7 @@
     * they live in are writeable by this user.
     */
 
+#  include <pwd.h>
 #  include <unistd.h>
 
 #  include "idpriv.h"
@@ -77,8 +78,11 @@ static void gripe_set_euid (void)
 	error (FATAL, errno, _("can't set effective uid"));
 }
 
+#endif /* MAN_OWNER */
+
 void init_security (void)
 {
+#ifdef MAN_OWNER
 	ruid = getuid ();
 	uid = euid = geteuid ();
 	debug ("ruid=%d, euid=%d\n", (int) ruid, (int) euid);
@@ -87,13 +91,19 @@ void init_security (void)
 	debug ("rgid=%d, egid=%d\n", (int) rgid, (int) egid);
 	priv_drop_count = 0;
 	drop_effective_privs ();
+#endif /* MAN_OWNER */
 }
 
 int running_setuid (void)
 {
+#ifdef MAN_OWNER
 	return ruid != euid;
+#else /* !MAN_OWNER */
+	return 0;
+#endif
 }
 
+#ifdef MAN_OWNER
 /* Return a pointer to the password entry structure for MAN_OWNER. This
  * structure will be statically stored.
  */
@@ -109,7 +119,6 @@ struct passwd *get_man_owner (void)
 	assert (man_owner);
 	return man_owner;
 }
-
 #endif /* MAN_OWNER */
 
 /* 
@@ -158,42 +167,11 @@ void regain_effective_privs (void)
 #endif /* MAN_OWNER */
 }
 
-#ifdef MAN_OWNER
-void do_system_drop_privs_child (void *data)
+/* Pipeline command pre-exec hook to permanently drop privileges. */
+void drop_privs (void *data ATTRIBUTE_UNUSED)
 {
-	pipeline *p = data;
-
+#ifdef MAN_OWNER
 	if (idpriv_drop ())
 		gripe_set_euid ();
-	exit (pipeline_run (p));
-}
-#endif /* MAN_OWNER */
-
-/* The safest way to execute a pipeline with no effective privileges is to
- * fork, permanently drop privileges in the child, run the pipeline from the
- * child, and wait for it to die.
- *
- * It is possible to use saved IDs to avoid the fork, since effective IDs
- * are copied to saved IDs on execve; we used to do this.  However, forking
- * is not expensive enough to justify the extra code.
- *
- * Note that this frees the supplied pipeline.
- */
-int do_system_drop_privs (pipeline *p)
-{
-#ifdef MAN_OWNER
-	pipecmd *child_cmd;
-	pipeline *child;
-	int status;
-
-	child_cmd = pipecmd_new_function ("unprivileged child",
-					  do_system_drop_privs_child, NULL, p);
-	child = pipeline_new_commands (child_cmd, NULL);
-	status = pipeline_run (child);
-
-	pipeline_free (p);
-	return status;
-#else  /* !MAN_OWNER */
-	return pipeline_run (p);
 #endif /* MAN_OWNER */
 }

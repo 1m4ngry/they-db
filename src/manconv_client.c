@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "idpriv.h"
 #include "xvasprintf.h"
 
 #include "manconfig.h"
@@ -35,11 +36,7 @@
 #include "pipeline.h"
 #include "decompress.h"
 #include "sandbox.h"
-
-#ifdef MAN_OWNER
-#  include "idpriv.h"
-#  include "security.h"
-#endif /* MAN_OWNER */
+#include "security.h"
 
 #include "manconv.h"
 #include "manconv_client.h"
@@ -56,46 +53,20 @@ static void manconv_stdin (void *data)
 	struct manconv_codes *codes = data;
 	pipeline *p;
 
-#ifdef MAN_OWNER
-	/* iconv_open may not work correctly in setuid processes; in GNU
-	 * libc, gconv modules may be linked against other gconv modules and
-	 * rely on RPATH $ORIGIN to load those modules from the correct
-	 * path, but $ORIGIN is disabled in setuid processes.  It is
-	 * impossible to reset libc's idea of setuidness without creating a
-	 * whole new process image.  Therefore, if the calling process is
-	 * setuid, we must drop privileges and execute manconv.
-	 *
-	 * If dropping privileges fails, fall through to the in-process
-	 * code, as in some situations it may actually manage to work.
-	 */
-	if (running_setuid () && !idpriv_drop ()) {
-		char **from_code;
-		char *sources = NULL;
-		pipecmd *cmd;
-
-		for (from_code = codes->from; *from_code; ++from_code) {
-			sources = appendstr (sources, *from_code, NULL);
-			if (*(from_code + 1))
-				sources = appendstr (sources, ":", NULL);
-		}
-
-		cmd = pipecmd_new_args (MANCONV, "-f", sources,
-					"-t", codes->to, NULL);
-		free (sources);
-
-		if (quiet >= 2)
-			pipecmd_arg (cmd, "-q");
-
-		pipecmd_exec (cmd);
-		/* never returns */
-	}
-#endif /* MAN_OWNER */
-
 	p = decompress_fdopen (dup (STDIN_FILENO));
 	pipeline_start (p);
 	manconv (p, codes->from, codes->to);
 	pipeline_wait (p);
 	pipeline_free (p);
+}
+
+static void manconv_pre_exec (void *data)
+{
+	/* We must drop privileges before loading the sandbox, since our
+	 * seccomp filter doesn't allow setresuid and friends.
+	 */
+	drop_privs (NULL);
+	sandbox_load (data);
 }
 
 static void free_manconv_codes (void *data)
@@ -139,9 +110,38 @@ void add_manconv (pipeline *p, const char *source, const char *target)
 	name = appendstr (name, " -t ", codes->to, NULL);
 	if (quiet >= 2)
 		name = appendstr (name, " -q", NULL);
-	cmd = pipecmd_new_function (name, &manconv_stdin, &free_manconv_codes,
-				    codes);
+
+	/* iconv_open may not work correctly in setuid processes; in GNU
+	 * libc, gconv modules may be linked against other gconv modules and
+	 * rely on RPATH $ORIGIN to load those modules from the correct
+	 * path, but $ORIGIN is disabled in setuid processes.  It is
+	 * impossible to reset libc's idea of setuidness without creating a
+	 * whole new process image.  Therefore, if the calling process is
+	 * setuid, we must drop privileges and execute manconv.
+	 */
+	if (running_setuid ()) {
+		char **from_code;
+		char *sources = NULL;
+
+		cmd = pipecmd_new_args (MANCONV, "-f", NULL);
+		for (from_code = codes->from; *from_code; ++from_code) {
+			sources = appendstr (sources, *from_code, NULL);
+			if (*(from_code + 1))
+				sources = appendstr (sources, ":", NULL);
+		}
+		pipecmd_arg (cmd, sources);
+		free (sources);
+		pipecmd_args (cmd, "-t", codes->to, NULL);
+		if (quiet >= 2)
+			pipecmd_arg (cmd, "-q");
+		pipecmd_pre_exec (cmd, manconv_pre_exec, sandbox_free,
+				  sandbox);
+		free_manconv_codes (codes);
+	} else {
+		cmd = pipecmd_new_function (name, &manconv_stdin,
+					    &free_manconv_codes, codes);
+		pipecmd_pre_exec (cmd, sandbox_load, sandbox_free, sandbox);
+	}
 	free (name);
-	sandbox_attach (sandbox, cmd);
 	pipeline_command (p, cmd);
 }
