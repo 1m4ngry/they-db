@@ -3,7 +3,19 @@ Section: doc
 Priority: important
 Maintainer: Colin Watson <cjwatson@debian.org>
 Standards-Version: 3.9.8
-Build-Depends: dpkg (>= 1.16.1~), debhelper (>= 9~), flex, groff, libgdbm-dev, po4a, zlib1g-dev, libpipeline-dev (>= 1.5.0), libseccomp-dev [amd64 arm64 armel armhf hppa i386 mips mips64el mipsel powerpc powerpcspe ppc64 ppc64el s390x x32], pkg-config, dh-autoreconf, autopoint, dh-apparmor
+Build-Depends: autopoint,
+               debhelper (>= 9~),
+               dh-apparmor,
+               dh-autoreconf,
+               dpkg (>= 1.16.1~),
+               flex,
+               groff,
+               libgdbm-dev,
+               libpipeline-dev (>= 1.5.0),
+               libseccomp-dev [amd64 arm64 armel armhf hppa i386 mips mips64el mipsel powerpc powerpcspe ppc64 ppc64el s390x x32],
+               pkg-config,
+               po4a,
+               zlib1g-dev,
 Homepage: http://man-db.nongnu.org/
 Vcs-Git: https://salsa.debian.org/debian/man-db
 Vcs-Browser: https://salsa.debian.org/debian/man-db
@@ -11,12 +23,16 @@ Vcs-Browser: https://salsa.debian.org/debian/man-db
 Package: man-db
 Architecture: any
 Pre-Depends: dpkg (>= 1.16.1~)
-Depends: groff-base (>= 1.18.1.1-15), bsdmainutils, debconf (>= 1.2.0) | debconf-2.0, ${shlibs:Depends}, ${misc:Depends}
-Suggests: groff, less, www-browser, apparmor
+Depends: bsdmainutils,
+         debconf (>= 1.2.0) | debconf-2.0,
+         groff-base (>= 1.18.1.1-15),
+         ${misc:Depends},
+         ${shlibs:Depends},
+Suggests: apparmor, groff, less, www-browser
 Provides: man, man-browser
 Conflicts: man, suidmanager (<< 0.50)
 Breaks: manpages-zh (<< 1.5.2-1.1)
-Replaces: man, nlsutils, manpages-de (<< 0.5-4), manpages-zh (<< 1.5.2-1.1)
+Replaces: man, manpages-de (<< 0.5-4), manpages-zh (<< 1.5.2-1.1), nlsutils
 Multi-Arch: foreign
 Description: on-line manual pager
  This package provides the man command, the primary way of examining the
