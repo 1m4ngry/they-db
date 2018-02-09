@@ -1,8 +1,8 @@
-man-db (2.8.0-3) UNRELEASED; urgency=medium
+man-db (2.8.1-1) UNRELEASED; urgency=medium
 
-  * Fix seccomp sandbox build on Linux/POWER.
+  * New upstream release.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 05 Feb 2018 14:47:31 +0000
+ -- Colin Watson <cjwatson@debian.org>  Fri, 09 Feb 2018 12:33:12 +0000
 
 man-db (2.8.0-2) unstable; urgency=medium
 
