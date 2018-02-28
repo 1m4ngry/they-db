@@ -1,4 +1,4 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: man-db
 Upstream-Contact: Colin Watson <cjwatson@debian.org>
 Source: http://man-db.nongnu.org/
