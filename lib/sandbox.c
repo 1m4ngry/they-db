@@ -49,10 +49,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #ifdef HAVE_LIBSECCOMP
 #  include <sys/ioctl.h>
+#  include <sys/ipc.h>
+#  include <sys/mman.h>
 #  include <sys/prctl.h>
+#  include <sys/shm.h>
+#  include <sys/socket.h>
 #  include <termios.h>
 #  include <seccomp.h>
 #endif /* HAVE_LIBSECCOMP */
@@ -81,6 +86,43 @@ static void gripe_seccomp_filter_unavailable (void)
 	       "CONFIG_SECCOMP_FILTER\n");
 }
 
+static int search_ld_preload (const char *needle)
+{
+	const char *ld_preload_env;
+	static char *ld_preload_file = NULL;
+
+	ld_preload_env = getenv ("LD_PRELOAD");
+	if (ld_preload_env && strstr (ld_preload_env, needle) != NULL)
+		return 1;
+
+	if (!ld_preload_file) {
+		int fd;
+		struct stat st;
+		char *mapped = NULL;
+
+		fd = open ("/etc/ld.so.preload", O_RDONLY);
+		if (fd >= 0 && fstat (fd, &st) >= 0 && st.st_size)
+			mapped = mmap (NULL, st.st_size, PROT_READ,
+				       MAP_PRIVATE | MAP_FILE, fd, 0);
+		if (mapped) {
+			ld_preload_file = xstrndup (mapped, st.st_size);
+			munmap (mapped, st.st_size);
+		} else
+			ld_preload_file = xstrdup ("");
+		if (fd >= 0)
+			close (fd);
+	}
+	/* This isn't very accurate: /etc/ld.so.preload may contain
+	 * comments.  On the other hand, glibc says "it should only be used
+	 * for emergencies and testing".  File a bug if this is a problem
+	 * for you.
+	 */
+	if (strstr (ld_preload_file, needle) != NULL)
+		return 1;
+
+	return 0;
+}
+
 /* Can we load a seccomp filter into this process?
  *
  * This guard allows us to call sandbox_load in code paths that may
@@ -88,7 +130,7 @@ static void gripe_seccomp_filter_unavailable (void)
  */
 static int can_load_seccomp (void)
 {
-	const char *man_disable_seccomp, *ld_preload;
+	const char *man_disable_seccomp;
 	int seccomp_status;
 
 	if (seccomp_filter_unavailable) {
@@ -113,8 +155,7 @@ static int can_load_seccomp (void)
 	 * file.  Since the goal of this is only to disable the seccomp
 	 * filter under Valgrind, this will do for now.
 	 */
-	ld_preload = getenv ("LD_PRELOAD");
-	if (ld_preload && strstr (ld_preload, "/vgpreload") != NULL) {
+	if (search_ld_preload ("/vgpreload")) {
 		debug ("seccomp filter disabled while running under "
 		       "Valgrind\n");
 		return 0;
@@ -141,29 +182,6 @@ static int can_load_seccomp (void)
 #endif /* HAVE_LIBSECCOMP */
 
 #ifdef HAVE_LIBSECCOMP
-/* Create a seccomp filter.
- *
- * If permissive is true, then the returned filter will allow limited file
- * creation (although not making executable files).  This obviously
- * constitutes less effective confinement, but it's necessary for some
- * subprocesses (such as groff) that need the ability to write to temporary
- * files.  Confining these further requires additional tools that can do
- * path-based filtering or similar, such as AppArmor.
- */
-scmp_filter_ctx make_seccomp_filter (int permissive)
-{
-	scmp_filter_ctx ctx;
-	mode_t mode_mask = S_ISUID | S_ISGID | S_IXUSR | S_IXGRP | S_IXOTH;
-	int create_mask = O_CREAT
-#ifdef O_TMPFILE
-		| O_TMPFILE
-#endif /* O_TMPFILE */
-		;
-
-	debug ("initialising seccomp filter (permissive: %d)\n", permissive);
-	ctx = seccomp_init (SCMP_ACT_TRAP);
-	if (!ctx)
-		error (FATAL, errno, "can't initialise seccomp filter");
 
 #define SC_ALLOW(name) \
 	do { \
@@ -192,6 +210,30 @@ scmp_filter_ctx make_seccomp_filter (int permissive)
 				      2, cmp1, cmp2) < 0) \
 			error (FATAL, errno, "can't add seccomp rule"); \
 	} while (0)
+
+/* Create a seccomp filter.
+ *
+ * If permissive is true, then the returned filter will allow limited file
+ * creation (although not making executable files).  This obviously
+ * constitutes less effective confinement, but it's necessary for some
+ * subprocesses (such as groff) that need the ability to write to temporary
+ * files.  Confining these further requires additional tools that can do
+ * path-based filtering or similar, such as AppArmor.
+ */
+scmp_filter_ctx make_seccomp_filter (int permissive)
+{
+	scmp_filter_ctx ctx;
+	mode_t mode_mask = S_ISUID | S_ISGID | S_IXUSR | S_IXGRP | S_IXOTH;
+	int create_mask = O_CREAT
+#ifdef O_TMPFILE
+		| O_TMPFILE
+#endif /* O_TMPFILE */
+		;
+
+	debug ("initialising seccomp filter (permissive: %d)\n", permissive);
+	ctx = seccomp_init (SCMP_ACT_TRAP);
+	if (!ctx)
+		error (FATAL, errno, "can't initialise seccomp filter");
 
 	/* This sandbox is intended to allow operations that might
 	 * reasonably be needed in simple data-transforming pipes: it should
@@ -430,20 +472,72 @@ scmp_filter_ctx make_seccomp_filter (int permissive)
 	SC_ALLOW ("fadvise64_64");
 	if (permissive)
 		SC_ALLOW ("ioctl");
-	else
+	else {
 		SC_ALLOW_ARG_1 ("ioctl", SCMP_A1 (SCMP_CMP_EQ, TCGETS));
+		SC_ALLOW_ARG_1 ("ioctl", SCMP_A1 (SCMP_CMP_EQ, TIOCGWINSZ));
+	}
 	SC_ALLOW ("mprotect");
 	SC_ALLOW ("mremap");
 	SC_ALLOW ("sync_file_range2");
 	SC_ALLOW ("sysinfo");
 	SC_ALLOW ("uname");
 
+	/* Some antivirus programs use an LD_PRELOAD wrapper that wants to
+	 * talk to a private daemon using a Unix-domain socket.  We really
+	 * don't want to allow these syscalls in general, but if such a
+	 * thing is in use we probably have no choice.
+	 *
+	 * snoopy is an execve monitoring tool that may log messages to
+	 * /dev/log.
+	 */
+	if (search_ld_preload ("libesets_pac.so") ||
+	    search_ld_preload ("libsnoopy.so")) {
+		SC_ALLOW ("connect");
+		SC_ALLOW ("recvmsg");
+		SC_ALLOW ("sendto");
+		SC_ALLOW ("setsockopt");
+		SC_ALLOW_ARG_1 ("socket", SCMP_A0 (SCMP_CMP_EQ, AF_UNIX));
+	}
+	/* ESET also appears to do some additional fiddling with shared
+	 * memory, and checks for the existence of its daemon process.  We
+	 * try to constrain this as much as we can.
+	 */
+	if (search_ld_preload ("libesets_pac.so")) {
+		SC_ALLOW_ARG_1 ("shmat", SCMP_A2 (SCMP_CMP_EQ, SHM_RDONLY));
+		SC_ALLOW_ARG_1 ("shmctl", SCMP_A1 (SCMP_CMP_EQ, IPC_STAT));
+		SC_ALLOW ("shmdt");
+		SC_ALLOW_ARG_1 ("shmget", SCMP_A2 (SCMP_CMP_EQ, 0));
+		SC_ALLOW_ARG_1 ("kill", SCMP_A1 (SCMP_CMP_EQ, 0));
+	}
+
+	return ctx;
+}
+
+/* Adjust an existing seccomp filter for the current process.
+ *
+ * This is playing with fire: seccomp_rule_add allocates memory, so is
+ * formally unsafe in a pre-exec hook.  On the other hand, seccomp_load
+ * allocates memory too.  To fix this, we need to export the seccomp filter
+ * to a fixed memory structure first and then fill in the gaps here.  We may
+ * need to stop using libseccomp, since it doesn't really provide this kind
+ * of facility.
+ */
+void adjust_seccomp_filter (scmp_filter_ctx ctx)
+{
+	pid_t pid;
+
+	/* Allow sending signals, but only to the current process or to
+	 * threads in the current thread group.
+	 */
+	pid = getpid ();
+	SC_ALLOW_ARG_1 ("kill", SCMP_A0 (SCMP_CMP_EQ, pid));
+	SC_ALLOW_ARG_1 ("tgkill", SCMP_A0 (SCMP_CMP_EQ, pid));
+}
+
 #undef SC_ALLOW_ARG_2
 #undef SC_ALLOW_ARG_1
 #undef SC_ALLOW
 
-	return ctx;
-}
 #endif /* HAVE_LIBSECCOMP */
 
 /* Create a sandbox for processing untrusted data.
@@ -476,13 +570,18 @@ void _sandbox_load (man_sandbox *sandbox, int permissive) {
 			ctx = sandbox->permissive_ctx;
 		else
 			ctx = sandbox->ctx;
+		adjust_seccomp_filter (ctx);
 		if (seccomp_load (ctx) < 0) {
-			if (errno == EINVAL) {
+			if (errno == EINVAL || errno == EFAULT) {
 				/* The kernel doesn't give us particularly
-				 * fine-grained errors.  This could in
+				 * fine-grained errors.  EINVAL could in
 				 * theory be an invalid BPF program, but
 				 * it's much more likely that the running
 				 * kernel doesn't support seccomp filtering.
+				 * EFAULT normally means a programming
+				 * error, but it could also be returned here
+				 * by some versions of qemu-user
+				 * (https://bugs.launchpad.net/bugs/1726394).
 				 */
 				gripe_seccomp_filter_unavailable ();
 				/* Don't try this again. */
