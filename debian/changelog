@@ -1,3 +1,9 @@
+man-db (2.8.2-2) UNRELEASED; urgency=medium
+
+  * Switch debian/watch to HTTPS.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 Mar 2018 10:58:12 +0000
+
 man-db (2.8.2-1) unstable; urgency=medium
 
   * New upstream release:
