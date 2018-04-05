@@ -220,7 +220,7 @@ static int can_load_seccomp (void)
  * files.  Confining these further requires additional tools that can do
  * path-based filtering or similar, such as AppArmor.
  */
-scmp_filter_ctx make_seccomp_filter (int permissive)
+static scmp_filter_ctx make_seccomp_filter (int permissive)
 {
 	scmp_filter_ctx ctx;
 	mode_t mode_mask = S_ISUID | S_ISGID | S_IXUSR | S_IXGRP | S_IXOTH;
@@ -234,6 +234,24 @@ scmp_filter_ctx make_seccomp_filter (int permissive)
 	ctx = seccomp_init (SCMP_ACT_TRAP);
 	if (!ctx)
 		error (FATAL, errno, "can't initialise seccomp filter");
+
+	/* Allow sibling architectures for x86, since people sometimes mix
+	 * and match architectures there for performance reasons.
+	 */
+	switch (seccomp_arch_native ()) {
+		case SCMP_ARCH_X86:
+			seccomp_arch_add (ctx, SCMP_ARCH_X86_64);
+			seccomp_arch_add (ctx, SCMP_ARCH_X32);
+			break;
+		case SCMP_ARCH_X86_64:
+			seccomp_arch_add (ctx, SCMP_ARCH_X86);
+			seccomp_arch_add (ctx, SCMP_ARCH_X32);
+			break;
+		case SCMP_ARCH_X32:
+			seccomp_arch_add (ctx, SCMP_ARCH_X86);
+			seccomp_arch_add (ctx, SCMP_ARCH_X86_64);
+			break;
+	}
 
 	/* This sandbox is intended to allow operations that might
 	 * reasonably be needed in simple data-transforming pipes: it should
@@ -476,11 +494,20 @@ scmp_filter_ctx make_seccomp_filter (int permissive)
 		SC_ALLOW_ARG_1 ("ioctl", SCMP_A1 (SCMP_CMP_EQ, TCGETS));
 		SC_ALLOW_ARG_1 ("ioctl", SCMP_A1 (SCMP_CMP_EQ, TIOCGWINSZ));
 	}
+	SC_ALLOW ("madvise");
 	SC_ALLOW ("mprotect");
 	SC_ALLOW ("mremap");
 	SC_ALLOW ("sync_file_range2");
 	SC_ALLOW ("sysinfo");
 	SC_ALLOW ("uname");
+
+	/* Allow killing processes and threads.  This is unfortunate but
+	 * unavoidable: groff uses kill to explicitly pass on SIGPIPE to its
+	 * child processes, and we can't do any more sophisticated filtering
+	 * in seccomp.
+	 */
+	SC_ALLOW ("kill");
+	SC_ALLOW ("tgkill");
 
 	/* Some antivirus programs use an LD_PRELOAD wrapper that wants to
 	 * talk to a private daemon using a Unix-domain socket.  We really
@@ -507,31 +534,9 @@ scmp_filter_ctx make_seccomp_filter (int permissive)
 		SC_ALLOW_ARG_1 ("shmctl", SCMP_A1 (SCMP_CMP_EQ, IPC_STAT));
 		SC_ALLOW ("shmdt");
 		SC_ALLOW_ARG_1 ("shmget", SCMP_A2 (SCMP_CMP_EQ, 0));
-		SC_ALLOW_ARG_1 ("kill", SCMP_A1 (SCMP_CMP_EQ, 0));
 	}
 
 	return ctx;
-}
-
-/* Adjust an existing seccomp filter for the current process.
- *
- * This is playing with fire: seccomp_rule_add allocates memory, so is
- * formally unsafe in a pre-exec hook.  On the other hand, seccomp_load
- * allocates memory too.  To fix this, we need to export the seccomp filter
- * to a fixed memory structure first and then fill in the gaps here.  We may
- * need to stop using libseccomp, since it doesn't really provide this kind
- * of facility.
- */
-void adjust_seccomp_filter (scmp_filter_ctx ctx)
-{
-	pid_t pid;
-
-	/* Allow sending signals, but only to the current process or to
-	 * threads in the current thread group.
-	 */
-	pid = getpid ();
-	SC_ALLOW_ARG_1 ("kill", SCMP_A0 (SCMP_CMP_EQ, pid));
-	SC_ALLOW_ARG_1 ("tgkill", SCMP_A0 (SCMP_CMP_EQ, pid));
 }
 
 #undef SC_ALLOW_ARG_2
@@ -559,7 +564,7 @@ man_sandbox *sandbox_init (void)
 	return sandbox;
 }
 
-void _sandbox_load (man_sandbox *sandbox, int permissive) {
+static void _sandbox_load (man_sandbox *sandbox, int permissive) {
 #ifdef HAVE_LIBSECCOMP
 	if (can_load_seccomp ()) {
 		scmp_filter_ctx ctx;
@@ -570,7 +575,6 @@ void _sandbox_load (man_sandbox *sandbox, int permissive) {
 			ctx = sandbox->permissive_ctx;
 		else
 			ctx = sandbox->ctx;
-		adjust_seccomp_filter (ctx);
 		if (seccomp_load (ctx) < 0) {
 			if (errno == EINVAL || errno == EFAULT) {
 				/* The kernel doesn't give us particularly
