@@ -1,4 +1,4 @@
-man-db (2.8.3-1) UNRELEASED; urgency=medium
+man-db (2.8.3-1) unstable; urgency=medium
 
   * New upstream release:
     - sandbox: Allow kill and tgkill unconditionally (closes: #892309).
@@ -7,7 +7,7 @@ man-db (2.8.3-1) UNRELEASED; urgency=medium
     - man: Only change directory in child processes (closes: #894792).
   * Switch debian/watch to HTTPS.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 05 Mar 2018 10:58:12 +0000
+ -- Colin Watson <cjwatson@debian.org>  Thu, 05 Apr 2018 13:09:43 +0100
 
 man-db (2.8.2-1) unstable; urgency=medium
 
