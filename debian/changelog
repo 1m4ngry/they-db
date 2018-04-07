@@ -1,11 +1,11 @@
-man-db (2.8.3-2) UNRELEASED; urgency=medium
+man-db (2.8.3-2) unstable; urgency=medium
 
   * AppArmor: Allow man_filter to read from anywhere, since there are no
     real restrictions on where manual page files may be, and the worst this
     can do is feed data to the invoking man process.
   * AppArmor: Allow man and its related profiles to exchange signals.
 
- -- Colin Watson <cjwatson@debian.org>  Sat, 07 Apr 2018 11:42:49 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sat, 07 Apr 2018 12:15:33 +0100
 
 man-db (2.8.3-1) unstable; urgency=medium
 
