@@ -80,4 +80,9 @@ profile man_filter {
   /usr/bin/lzip.lzip rm,
   /usr/bin/tr rm,
   /usr/bin/xz rm,
+
+  # Manual pages can be more or less anywhere, especially with "man -l", and
+  # there's no harm in allowing wide read access here since the worst it can
+  # do is feed data to the invoking man process.
+  /** r,
 }
