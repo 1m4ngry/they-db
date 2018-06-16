@@ -17,7 +17,7 @@ Build-Depends: autopoint,
                po4a,
                zlib1g-dev,
 Homepage: http://man-db.nongnu.org/
-Vcs-Git: https://salsa.debian.org/debian/man-db
+Vcs-Git: https://salsa.debian.org/debian/man-db.git
 Vcs-Browser: https://salsa.debian.org/debian/man-db
 
 Package: man-db
