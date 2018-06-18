@@ -1,3 +1,9 @@
+man-db (2.8.3-3) UNRELEASED; urgency=medium
+
+  * Remove long-obsolete Conflicts on suidmanager.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 18 Jun 2018 13:07:52 +0100
+
 man-db (2.8.3-2) unstable; urgency=medium
 
   * AppArmor: Allow man_filter to read from anywhere, since there are no
