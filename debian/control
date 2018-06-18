@@ -19,6 +19,7 @@ Build-Depends: autopoint,
 Homepage: http://man-db.nongnu.org/
 Vcs-Git: https://salsa.debian.org/debian/man-db.git
 Vcs-Browser: https://salsa.debian.org/debian/man-db
+Rules-Requires-Root: binary-targets
 
 Package: man-db
 Architecture: any

@@ -2,6 +2,8 @@ man-db (2.8.3-3) UNRELEASED; urgency=medium
 
   * Remove long-obsolete Conflicts on suidmanager.
   * Adjust git-dpm tagging configuration.
+  * Explicitly declare "Rules-Requires-Root: binary-targets" (due to
+    installing /var/cache/man with ownership man:man).
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 18 Jun 2018 13:07:52 +0100
 
