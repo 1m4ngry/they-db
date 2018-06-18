@@ -7,4 +7,3 @@ build:
     expire_in: 1 day
   script:
     - cp ../*.deb .  # copy it into place to be saved as an artifact
-    - autopkgtest ../*.changes -- null
