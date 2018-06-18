@@ -4,6 +4,9 @@ man-db (2.8.3-3) UNRELEASED; urgency=medium
   * Adjust git-dpm tagging configuration.
   * Explicitly declare "Rules-Requires-Root: binary-targets" (due to
     installing /var/cache/man with ownership man:man).
+  * Remove syntax-error-in-debian-changelog Lintian override;
+    Parse::DebianChangelog seems to have got smarter about detecting old
+    changelog formats since I added that.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 18 Jun 2018 13:07:52 +0100
 
