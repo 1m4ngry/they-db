@@ -2640,7 +2640,7 @@ man-db (2.3.10-69s) unstable; urgency=low
   * added symlinks for /usr/doc (in postinst and prerm).
   * changed installation of japanes manpages to dir "ja".
   * Corrected incomplete apply of HURD patch. Closes: #48052.
-  * Changed configure.in and libdb/mydbm.h to force inclusion 
+  * Changed configure.in and libdb/mydbm.h to force inclusion
     of correct db_185.h header. Thanx to Marcus Brinkmann.
   * Corrected use of setlocale in files other that man.c;
     closes: #48128, thanx to "David Huggins-Daines".
@@ -2654,7 +2654,7 @@ man-db (2.3.10-69r) unstable; urgency=low
   * Reduced verbosity of mandb when -q option is used; thanx to
     Francesco Potorti` <F.Potorti@cnuce.cnr.it>; closes: #28819.
   * corrected location of manual in menu and use of doc-base.
-    Thanx to "J.H.M. Dassen \(Ray\)" <jdassen@wi.LeidenUniv.nl>                          
+    Thanx to "J.H.M. Dassen \(Ray\)" <jdassen@wi.LeidenUniv.nl>
     closes: #47434.
   * applied patch for locale setting (also to manpath and whatis), and
     for inclusion of locale dirs in path. Thanx to Michael Sobolev
@@ -2681,7 +2681,7 @@ man-db (2.3.10-69o) unstable; urgency=low
 
   * re-established correct behaviour for -t option, thanx to Roland
     Rosenfeld <roland@spinnaker.de>, closes: #46592.
-  * this part was in 69n, but I forgot the ':'  
+  * this part was in 69n, but I forgot the ':'
   * all manpage locations doubled because of a slash :-)
     thanx to Lazarus Long and Wichert Akkerman.
     Closes: #46448, #46497.
@@ -2721,7 +2721,7 @@ man-db (2.3.10-69j) unstable; urgency=low
   * changed the copyright file to point out that the author has passed
     maintainership. Also changed location of his ftp site.
     closes #41737, #30153.
-  * found (and fixed) nasty bug in reading config file that 
+  * found (and fixed) nasty bug in reading config file that
     segfaulted on too large files. Now stops reading and procede.
   * Added japanese support. Thanx to Taketoshi
     Sano <sano@debian.org> and Fumitoshi UKAI <ukai@debian.or.jp>.
@@ -2730,7 +2730,7 @@ man-db (2.3.10-69j) unstable; urgency=low
     not found, limiting it only when the argument is a pathname
     containing the character '/'.
     closes: #41205, #41715, #45979.
-  * created perl script /usr/lib/man-db/chconfig that scans the 
+  * created perl script /usr/lib/man-db/chconfig that scans the
     file in argument (the man confile) and upgrade it to FHS.
     Its call from postinst is checked also against perl presence.
   * removed /etc/manpath.config from conffiles;
@@ -2740,12 +2740,12 @@ man-db (2.3.10-69j) unstable; urgency=low
     insertion of keyword NOFHS in /etc/manpath.config to avoid its
     update.
   * added list of md5sums from previous conffiles, to help detect
-    unmodified ones. Added to rules file the automatic adding of 
-    a new md5 if a new conffile is created. 
+    unmodified ones. Added to rules file the automatic adding of
+    a new md5 if a new conffile is created.
     (so maintainers don't have to maintain it)
   * added Japanese message catalog, curtesy of
     Fumitoshi UKAI <ukai@debian.or.jp>; closes: bug#43845.
-  * added corrected translations in Italian, thanx to 
+  * added corrected translations in Italian, thanx to
     Giovanni Bortolozzo <borto@dei.unipd.it>
   * changed tests in configure.in to detect new libdb installed from
     glibc. Closes: bug#39646
@@ -2753,15 +2753,15 @@ man-db (2.3.10-69j) unstable; urgency=low
     <dark@xs4all.nl>, closes: bug#39687
   * corrected use of LANG in locale.
     thanx to ypwong@debian.org, closes: bug#39281.
-  * added patch for HURD for canonicalize_file_name thanx to 
+  * added patch for HURD for canonicalize_file_name thanx to
     Marcus Brinkmann (brinkmd@debian.org), closes: bug#39039.
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Wed,  9 Jun 1999 10:37:29 +0300
 
 man-db (2.3.10-69i) unstable; urgency=low
 
-  * In man-db -69i:	
-  * In man-db -69FIX.1:	
+  * In man-db -69i:
+  * In man-db -69FIX.1:
    * Added unlink of temporary file between call to tempnam and open to
      reduce (without completely avoiding it) the possibility that a
      malicious user puts a dangling symlink to let man leave a file
@@ -2776,7 +2776,7 @@ man-db (2.3.10-69i) unstable; urgency=low
 
 man-db (2.3.10-69h) unstable; urgency=low
 
-  * In man-db -69h:	
+  * In man-db -69h:
    * Corrected problem that did not permit finding local manpages as
      default (without -l , as added in version -69g) if the pathname was
      not an absolute pathname. (found by me :-)
@@ -2814,8 +2814,8 @@ man-db (2.3.10-69g) unstable; urgency=low
      reproduce it, I'm not able to test its fix :-)
    * corrected typo in mandb.8 (/omitted/emitted/) (I remember having
      fixed it already ... maybe I'm getting too old?)
-   * added message catalog in czech translated last year by 
-     Vladimir.Michl@upol.cz and added using the wrong format and 
+   * added message catalog in czech translated last year by
+     Vladimir.Michl@upol.cz and added using the wrong format and
      later forgot. How can I be forgiven?
   * In man-db -69e:
    * Corrected typo in german messages file, thanx to Christian Hammers
@@ -2846,7 +2846,7 @@ man-db (2.3.10-69g) unstable; urgency=low
    * found a bug in postinst that didn't rebuild the index.
   * In man-db -69b:
    * corrected lintian's error in menu file.
-   * modifyed cron.daily 
+   * modifyed cron.daily
    * moved configuration file to /etc/menu/
      created list of sections in /etc/menu/sections.list
      The idea is to have mandb create it when scanning manpages.
@@ -2880,11 +2880,11 @@ man-db (2.3.10-69g) unstable; urgency=low
      Thanx to Ian Jackson who posted the suggestion eons ago.
      (should fix: #3788 )
   * TODO:
-   * To fix bug #5360 (which is not a bug in man-db) I want to create 
-     a manpage installer program that checks all the common errors 
+   * To fix bug #5360 (which is not a bug in man-db) I want to create
+     a manpage installer program that checks all the common errors
      in manpages like broken symlinks, wrong section, wrong location,
-     missing of preprocessor directive in the first line and missing 
-     of .SH NAME section.  
+     missing of preprocessor directive in the first line and missing
+     of .SH NAME section.
      This installer should also execute mandb to update the database (as
      when man -u is issued), as the automatic detection of new manpages
      doesn't work in case of multiple pages with the same name in
@@ -2932,7 +2932,7 @@ man-db (2.3.10-67) unstable; urgency=low
   * Added forcing of umask to avoid uncorrect settings of catdirs.
   * Added code to check for each single subcatdir, but, due to major
     load, conditioned code only to mandb. That is to say that catdirs
-    are automagically created only by mandb. 
+    are automagically created only by mandb.
   * Removed "access" check in mandb which use the real user, making the
     setuid binary a non-sense.
 
@@ -2994,7 +2994,7 @@ man-db (2.3.10-62) unstable; urgency=low
 
   * added check in configure that bsdmainutils is installed, so check
     for col won't fail. closes: #18661, #18665. We absolutely need
-    source-depends, otherways autobuild won't work. 
+    source-depends, otherways autobuild won't work.
     Version for libc5 was correctly built, so -59bo61 is OK.
   * oops, wrong put of update-alternatives in postrm instead than prerm.
 
@@ -3057,7 +3057,7 @@ man-db (2.3.10-57) unstable; urgency=high
 
   * changed Standards-version to 2.3.0.1
   * un-debstd-ized rules, postinst and postrm.
-  * Moved suidmanager call _before_ mandb run (should fix #14996), 
+  * Moved suidmanager call _before_ mandb run (should fix #14996),
      but debstd still add his stuff at the end: need to stop it.
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Tue, 18 Nov 1997 20:52:44 +0200
@@ -3089,8 +3089,8 @@ man-db (2.3.10-55) unstable; urgency=low
   * Added check of libdb (1 or 2) in configure.in with set of BTREE
      to 1 or 2, changes in CFLAGS. Conditioned inclusion of db/db.h or
      db_185.h to value in BTREE.
-  * Added open of stdin/stdout/stderr in man.c in case someone like 
-     "info" closed them before exec-ing man. This corrupted the 
+  * Added open of stdin/stdout/stderr in man.c in case someone like
+     "info" closed them before exec-ing man. This corrupted the
      database files, and later segfault in the db library.
      (fixes bug#11278, #11469, #11471, #14181)
   * Added /opt hierarchy in src/man_db.config (etc/manpath.config)
@@ -3098,9 +3098,9 @@ man-db (2.3.10-55) unstable; urgency=low
   * Added option -S (safety mode) to pic in configure.in
   * Changed default pager from more to "pager" in configure.in
      (fixes#14254, thanks to Scott K. Ellis)
-  * Added resetting of pristine terminal setting when exiting 
+  * Added resetting of pristine terminal setting when exiting
      (#14174, thanks to Herbert Xu)
-  * Corrected error in the changelog for version 52, 53, 54 
+  * Corrected error in the changelog for version 52, 53, 54
      about linking against libdb2 (it was libdb from glibc2).
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Thu, 30 Oct 1997 00:24:55 +0200
@@ -3168,7 +3168,7 @@ man-db (2.3.10-40) unstable; urgency=low
   * (Italian version) Minori correzioni a mandb.m da parte di Borto.
   * several corrections to it's => its typos in manpages [man(1), manpath(1),
      zsoelim(1), mandb(8)] Fixes Bug#11440 thanx to David Damerell.
-  * Restore correct NAMN swedish parse for whatis (bug introduced by me 
+  * Restore correct NAMN swedish parse for whatis (bug introduced by me
      fixing #6497 on version -34) Thanx to John F. Bunch. (fixes bug#12069)
   * Fixed segfault using an empty arg to -S option (Bug#12074, Thx Herbert Thielen)
   * Fixed wrong manpath behaviour (Bug#10377, Thanx to Michael Lachmann)
@@ -3246,7 +3246,7 @@ man-db (2.3.10-34) unstable; urgency=low
  -- Fabrizio Polacco <fpolacco@debian.org>  Tue, 1 Apr 1997 10:11:16 +0300
 
 man-db (2.3.10-33) unstable; urgency=low
- 
+
     * This will replace man package in Debian 1.3
     * Corrected typo in control file
     * Added dwww index entry
@@ -3254,19 +3254,19 @@ man-db (2.3.10-33) unstable; urgency=low
     * Moved dependency on bsdmainutils from Depends to Suggests.
     * Removed failure of installation if removal of catpages failed.
     * Added italian manpages and message catalogs
-       (Thanx to Giovanni Bortolozzo <borto@dei.unipd.it>) 
+       (Thanx to Giovanni Bortolozzo <borto@dei.unipd.it>)
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Tue, 4 Mar 1997 17:47:13 +0200
 
 man-db (2.3.10-32) unstable; urgency=high
- 
+
     * Due to paranoia version -31 doesn't upgrade from -30 (Oops)
     * in chmanconfig remove old lines instead that commenting them out.
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Wed, 26 Feb 1997 18:31:45 +0200
 
 man-db (2.3.10-31) unstable; urgency=low
- 
+
     * Corrected location of message catalogs (#7491, thanx Scott K.Ellis)
        from /usr/lib/locale to /usr/share/locale .
 
@@ -3341,14 +3341,14 @@ man (2.3.10-16) frozen unstable; urgency=low
     * warning message for the absence of whatis fallback database
         downgraded to debug info because gdbm is used in this version.
     * setlocale continues not to work  :-(
-    * compiled using libc5 5.4.13-1 
+    * compiled using libc5 5.4.13-1
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Fri, 6 Dec 1996 04:05:59 +0200
 
 man (2.3.10-15) frozen unstable; urgency=low
 
     * fixed bug#5534 (man fails if env var SYSTEM is defined)
-    * compiled using libc5 5.4.7-7 
+    * compiled using libc5 5.4.7-7
     * due to a bug in libc5 5.4.7-7 setlocale doesn't work.
 
  -- Fabrizio Polacco <fpolacco@debian.org>  Fri, 22 Nov 1996 00:04:12 +0200
@@ -3405,9 +3405,9 @@ Thu Jan 11 20:51:01 GMT 1996 Alvar Bray <alvar@meiko.co.uk>
 
 Tue Jan  9 20:46:44 GMT 1996  Alvar Bray <alvar@meiko.co.uk>
 	* Added interpreter lines (#!/bin/sh) to cron job files.
-	  (#2106). 
+	  (#2106).
 	* Changed find time args (#2057) in cron.daily.
-	* 2.3.10-6 -> 2.3.10-7 (fixes dpkg dependency problem 
+	* 2.3.10-6 -> 2.3.10-7 (fixes dpkg dependency problem
 	  from libgdbm1.)
 
 Sat Dec 16 21:06:56 GMT 1995  Alvar Bray <alvar@meiko.co.uk>
