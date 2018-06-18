@@ -6,3 +6,6 @@ fa4049521ed3d323d78661188d7d900a3320c94c
 man-db_2.8.3.orig.tar.xz
 366648c03aebd953aeb361da0abb7afaccec9757
 1624280
+debianTag="debian/%V"
+patchedTag="patched/%V"
+upstreamTag="upstream/%U"
