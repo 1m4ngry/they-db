@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.8.3], [cjwatson@debian.org])
+AC_INIT([man-db], [2.8.4], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -10,14 +10,12 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PREREQ([2.59])
 AC_CONFIG_SRCDIR([src/man.c])
 AC_GNU_SOURCE
-m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
-LT_INIT([disable-static])
 
 AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2018-04-05
+date=2018-07-27
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -72,6 +70,8 @@ then
 fi
 AC_PROG_INSTALL
 AC_PROG_LN_S
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+LT_INIT([disable-static])
 AC_CHECK_PROGS([cat], [cat])
 MAN_CHECK_PROGS([browser], [BROWSER], [use BROWSER as default web browser], [www-browser lynx elinks w3m])
 test -n "$browser" && browser="exec $browser"
@@ -337,7 +337,7 @@ AC_CHECK_FUNCS([lchown posix_fadvise])
 
 # Internationalization support.
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT_VERSION([0.18.3])
 AC_SUBST([LINGUAS])
 AM_ICONV
 MAN_PO4A
@@ -455,10 +455,10 @@ MAN_TRANS_SUBST([zsoelim])
 AM_CONDITIONAL([CROSS_COMPILING], [test "x$cross_compiling" = xyes])
 
 # Are Gnulib translations available?
-AM_CONDITIONAL([HAVE_GNULIB_PO], [test -f "$srcdir/gnulib/po/POTFILES.in"])
+AM_CONDITIONAL([HAVE_GNULIB_PO], [test -f "$srcdir/gl/po/POTFILES.in"])
 
 AC_CONFIG_FILES([Makefile
-	gnulib/lib/Makefile
+	gl/lib/Makefile
 	init/Makefile
 	init/systemd/Makefile
 	lib/Makefile
@@ -490,7 +490,7 @@ AC_CONFIG_FILES([Makefile
 	include/comp_src.h
 	include/manconfig.h
 	po/Makefile.in])
-if test -f "$srcdir/gnulib/po/Makefile.in.in"; then
-	AC_CONFIG_FILES([gnulib/po/Makefile.in])
+if test -f "$srcdir/gl/po/Makefile.in.in"; then
+	AC_CONFIG_FILES([gl/po/Makefile.in])
 fi
 AC_OUTPUT

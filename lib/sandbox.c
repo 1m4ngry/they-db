@@ -497,6 +497,7 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 	SC_ALLOW ("madvise");
 	SC_ALLOW ("mprotect");
 	SC_ALLOW ("mremap");
+	SC_ALLOW ("sched_getaffinity");
 	SC_ALLOW ("sync_file_range2");
 	SC_ALLOW ("sysinfo");
 	SC_ALLOW ("uname");
@@ -508,6 +509,16 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 	 */
 	SC_ALLOW ("kill");
 	SC_ALLOW ("tgkill");
+
+	/* Allow some relatively harmless System V shared memory operations.
+	 * These seem to be popular among the sort of program that wants to
+	 * install itself in /etc/ld.so.preload or similar (e.g. antivirus
+	 * programs and VPNs).
+	 */
+	SC_ALLOW_ARG_1 ("shmat", SCMP_A2 (SCMP_CMP_EQ, SHM_RDONLY));
+	SC_ALLOW_ARG_1 ("shmctl", SCMP_A1 (SCMP_CMP_EQ, IPC_STAT));
+	SC_ALLOW ("shmdt");
+	SC_ALLOW ("shmget");
 
 	/* Some antivirus programs use an LD_PRELOAD wrapper that wants to
 	 * talk to a private daemon using a Unix-domain socket.  We really
@@ -525,15 +536,10 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 		SC_ALLOW ("setsockopt");
 		SC_ALLOW_ARG_1 ("socket", SCMP_A0 (SCMP_CMP_EQ, AF_UNIX));
 	}
-	/* ESET also appears to do some additional fiddling with shared
-	 * memory, and checks for the existence of its daemon process.  We
-	 * try to constrain this as much as we can.
-	 */
+	/* ESET sends messages to a System V message queue. */
 	if (search_ld_preload ("libesets_pac.so")) {
-		SC_ALLOW_ARG_1 ("shmat", SCMP_A2 (SCMP_CMP_EQ, SHM_RDONLY));
-		SC_ALLOW_ARG_1 ("shmctl", SCMP_A1 (SCMP_CMP_EQ, IPC_STAT));
-		SC_ALLOW ("shmdt");
-		SC_ALLOW_ARG_1 ("shmget", SCMP_A2 (SCMP_CMP_EQ, 0));
+		SC_ALLOW_ARG_1 ("msgget", SCMP_A1 (SCMP_CMP_EQ, 0));
+		SC_ALLOW ("msgsnd");
 	}
 
 	return ctx;

@@ -22,7 +22,6 @@ TESTS_ENVIRONMENT = PATH=$(abs_builddir)/..:$$PATH; export PATH; \
 		    DBTYPE=$(DBTYPE); export DBTYPE; \
 		    MANDIR_LAYOUT=$(MANDIR_LAYOUT); export MANDIR_LAYOUT; \
 		    abs_top_builddir=$(abs_top_builddir); export abs_top_builddir; \
-		    @LOCALCHARSET_TESTS_ENVIRONMENT@; export CHARSETALIASDIR; \
 		    OVERRIDE_DIR="$(override_dir)"; export OVERRIDE_DIR;
 # Each test must use the configure-detected shell, not necessarily /bin/sh.
 AM_LOG_FLAGS = $(SHELL)
@@ -39,13 +38,13 @@ endif
 
 AM_CPPFLAGS = \
 	-I$(top_builddir)/include \
-	-I$(top_builddir)/gnulib/lib \
-	-I$(top_srcdir)/gnulib/lib
+	-I$(top_builddir)/gl/lib \
+	-I$(top_srcdir)/gl/lib
 AM_CFLAGS = $(WARN_CFLAGS)
 check_PROGRAMS = fspause
 fspause_SOURCES = fspause.c
 fspause_LDADD = \
-	$(top_builddir)/gnulib/lib/libgnu.la \
+	$(top_builddir)/gl/lib/libgnu.la \
 	$(LIB_NANOSLEEP)
 
 dist_check_SCRIPTS = testlib.sh $(ALL_TESTS)

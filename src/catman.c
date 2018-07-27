@@ -61,7 +61,7 @@
 #endif /* !ARG_MAX */
 
 #include "argp.h"
-#include "dirname.h"
+#include "progname.h"
 
 #include "gettext.h"
 #include <locale.h>
@@ -81,7 +81,6 @@
 #include "manp.h"
 
 /* globals */
-char *program_name;
 int quiet = 1;
 MYDBM_FILE dbf_close_post_fork;
 char *manp;
@@ -343,7 +342,7 @@ static int parse_for_sec (const char *manpath, const char *section)
 
 static int check_access (const char *directory)
 {
-	if (access (directory, W_OK)) {
+	if (!CAN_ACCESS (directory, W_OK)) {
 		error (0, errno, _("cannot write within %s"), directory);
 		return 1;
 	}
@@ -357,7 +356,7 @@ int main (int argc, char *argv[])
 	char **mp;
 	const char **sp;
 
-	program_name = base_name (argv[0]);
+	set_program_name (argv[0]);
 
 	init_debug ();
 	pipeline_install_post_fork (post_fork);
@@ -431,6 +430,5 @@ int main (int argc, char *argv[])
 
 	free_pathlist (manpathlist);
 	free (locale);
-	free (program_name);
 	exit (OK);
 }
