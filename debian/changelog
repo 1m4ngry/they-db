@@ -1,4 +1,4 @@
-man-db (2.8.4-1) UNRELEASED; urgency=medium
+man-db (2.8.4-1) unstable; urgency=medium
 
   * New upstream release:
     - Check for mandb_nfmt and mandb_tfmt in the manual page hierarchy as
@@ -11,7 +11,7 @@ man-db (2.8.4-1) UNRELEASED; urgency=medium
     Parse::DebianChangelog seems to have got smarter about detecting old
     changelog formats since I added that.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 18 Jun 2018 13:07:52 +0100
+ -- Colin Watson <cjwatson@debian.org>  Fri, 27 Jul 2018 12:31:12 +0100
 
 man-db (2.8.3-2) unstable; urgency=medium
 
