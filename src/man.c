@@ -69,6 +69,7 @@
 #include "argp.h"
 #include "dirname.h"
 #include "minmax.h"
+#include "progname.h"
 #include "regex.h"
 #include "stat-time.h"
 #include "utimens.h"
@@ -132,8 +133,8 @@ extern uid_t euid;
 char *lang;
 
 /* external formatter programs, one for use without -t, and one with -t */
-#define NFMT_PROG "./mandb_nfmt"
-#define TFMT_PROG "./mandb_tfmt"
+#define NFMT_PROG "mandb_nfmt"
+#define TFMT_PROG "mandb_tfmt"
 #undef ALT_EXT_FORMAT	/* allow external formatters located in cat hierarchy */
 
 static int global_manpath = -1;	/* global or user manual page hierarchy? */
@@ -185,7 +186,6 @@ static char *manpathlist[MAXDIRS];
 
 /* globals */
 int quiet = 1;
-char *program_name;
 char *database = NULL;
 extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
@@ -840,7 +840,7 @@ static char **manopt_to_env (int *argc)
 	/* allocate space for the program name */
 	*argc = 0;
 	argv = XNMALLOC (*argc + 3, char *);
-	argv[(*argc)++] = program_name;
+	argv[(*argc)++] = base_name (program_name);
 	
 	/* for each [ \t]+ delimited string, allocate an array space and fill
 	   it in. An escaped space is treated specially */	
@@ -1130,7 +1130,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				    char **result_encoding)
 {
 	const char *roff_opt;
-	char *fmt_prog;
+	char *fmt_prog = NULL;
 	pipeline *p = pipeline_new ();
 	pipecmd *cmd;
 	char *page_encoding = NULL;
@@ -1143,42 +1143,40 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 	if (!roff_opt)
 		roff_opt = "";
 
-#ifdef ALT_EXT_FORMAT
-	/* Check both external formatter locations */
 	if (dir && !recode) {
+#ifdef ALT_EXT_FORMAT
 		char *catpath = get_catpath
 			(dir, global_manpath ? SYSTEM_CAT : USER_CAT);
 
-		/* If we have an alternate catpath */
+		/* If we have an alternate catpath, look for an external
+		 * formatter there.
+		 */
 		if (catpath) {
 			fmt_prog = appendstr (catpath, "/",
 					      troff ? TFMT_PROG : NFMT_PROG, 
 					      NULL);
-			if (access (fmt_prog, X_OK)) {
-				free (fmt_prog);
-				fmt_prog = xstrdup (troff ? TFMT_PROG :
-							    NFMT_PROG);
-				if (access (fmt_prog, X_OK)) {
-					free (fmt_prog);
-					fmt_prog = NULL;
-				}
-			}
-		/* If we don't */
-		} else {
-#endif /* ALT_EXT_FORMAT */
-
-			fmt_prog = xstrdup (troff ? TFMT_PROG : NFMT_PROG);
-			if (access (fmt_prog, X_OK)) {
+			if (!CAN_ACCESS (fmt_prog, X_OK)) {
 				free (fmt_prog);
 				fmt_prog = NULL;
 			}
-
-#ifdef ALT_EXT_FORMAT
 		}
-	} else
-		fmt_prog = NULL;
 #endif /* ALT_EXT_FORMAT */
-	
+
+		/* If the page is in a proper manual page hierarchy (as
+		 * opposed to being read using --local-file or similar),
+		 * look for an external formatter there.
+		 */
+		if (!fmt_prog) {
+			fmt_prog = appendstr (NULL, dir, "/",
+					      troff ? TFMT_PROG : NFMT_PROG,
+					      NULL);
+			if (!CAN_ACCESS (fmt_prog, X_OK)) {
+				free (fmt_prog);
+				fmt_prog = NULL;
+			}
+		}
+	}
+
 	if (fmt_prog)
 		debug ("External formatter %s\n", fmt_prog);
 				
@@ -2315,7 +2313,7 @@ static int display (const char *dir, const char *man_file,
 		if (*man_file == '\0')
 			found = 1;
 		else
-			found = !access (man_file, R_OK);
+			found = CAN_ACCESS (man_file, R_OK);
 		if (found) {
 			int status;
 			if (prompt && do_prompt (title)) {
@@ -2404,7 +2402,8 @@ static int display (const char *dir, const char *man_file,
 		if (format == 1 && *man_file == '\0')
 			found = 1;
 		else
-			found = !access (format ? man_file : cat_file, R_OK);
+			found = CAN_ACCESS
+				(format ? man_file : cat_file, R_OK);
 
 		debug ("format: %d, save_cat: %d, found: %d\n",
 		       format, save_cat, found);
@@ -3187,8 +3186,7 @@ static int display_filesystem (struct candidate *candp)
 
 		cat_file = find_cat_file (candp->path, filename, man_file);
 		found = display (candp->path, man_file, cat_file, title, NULL);
-		if (cat_file)
-			free (cat_file);
+		free (cat_file);
 		free (lang);
 		lang = NULL;
 	}
@@ -3268,8 +3266,7 @@ static int display_database (struct candidate *candp)
 			cat_file = find_cat_file (candp->path, file, man_file);
 			found += display (candp->path, man_file, cat_file,
 					  title, in->filter);
-			if (cat_file)
-				free (cat_file);
+			free (cat_file);
 			free (lang);
 			lang = NULL;
 			free (file);
@@ -3316,8 +3313,7 @@ static int display_database (struct candidate *candp)
 					return found; /* zero */
 				}
 			} else {
-				if (catpath)
-					free (catpath);
+				free (catpath);
 				free (title);
 				return found; /* zero */
 			}
@@ -3994,8 +3990,7 @@ static const char **get_section_list (void)
 		sections[i] = NULL;
 		return sections;
 	} else {
-		if (sections)
-			free (sections);
+		free (sections);
 		return config_sections;
 	}
 }
@@ -4075,7 +4070,7 @@ int main (int argc, char *argv[])
 	char **argv_env;
 	const char *tmp;
 
-	program_name = base_name (argv[0]);
+	set_program_name (argv[0]);
 
 	check_standard_fds ();
 
@@ -4202,7 +4197,6 @@ int main (int argc, char *argv[])
 			exit (OK);
 		} else {
 			free (internal_locale);
-			free (program_name);
 			gripe_no_name (NULL);
 		}
 	}
@@ -4227,7 +4221,6 @@ int main (int argc, char *argv[])
 			++first_arg;
 		}
 		free (internal_locale);
-		free (program_name);
 		exit (exit_status);
 	}
 
@@ -4386,6 +4379,5 @@ int main (int argc, char *argv[])
 	free (database);
 	free_pathlist (manpathlist);
 	free (internal_locale);
-	free (program_name);
 	exit (exit_status);
 }

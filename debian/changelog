@@ -1,5 +1,8 @@
-man-db (2.8.3-3) UNRELEASED; urgency=medium
+man-db (2.8.4-1) UNRELEASED; urgency=medium
 
+  * New upstream release:
+    - Check for mandb_nfmt and mandb_tfmt in the manual page hierarchy as
+      documented, not in the current directory (closes: #901007).
   * Remove long-obsolete Conflicts on suidmanager.
   * Adjust git-dpm tagging configuration.
   * Explicitly declare "Rules-Requires-Root: binary-targets" (due to
