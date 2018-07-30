@@ -1,8 +1,9 @@
-man-db (2.8.4-2) UNRELEASED; urgency=medium
+man-db (2.8.4-2) unstable; urgency=medium
 
+  [ Dimitri John Ledkov ]
   * Adapt apparmor profile for usrmerge. LP: #1784023
 
- -- Dimitri John Ledkov <xnox@ubuntu.com>  Mon, 30 Jul 2018 14:23:24 +0100
+ -- Colin Watson <cjwatson@debian.org>  Mon, 30 Jul 2018 14:41:37 +0100
 
 man-db (2.8.4-1) unstable; urgency=medium
 
