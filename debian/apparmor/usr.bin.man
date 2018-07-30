@@ -20,8 +20,8 @@
 
   # Similarly, use a special profile when man calls decompressors and other
   # simple filters.
-  /bin/bzip2 rmCx -> &man_filter,
-  /bin/gzip rmCx -> &man_filter,
+  /{,usr/}bin/bzip2 rmCx -> &man_filter,
+  /{,usr/}bin/gzip rmCx -> &man_filter,
   /usr/bin/col rmCx -> &man_filter,
   /usr/bin/compress rmCx -> &man_filter,
   /usr/bin/iconv rmCx -> &man_filter,
@@ -77,8 +77,8 @@ profile man_filter {
   # open FDs before execve.
   #include <abstractions/consoles>
 
-  /bin/bzip2 rm,
-  /bin/gzip rm,
+  /{,usr/}bin/bzip2 rm,
+  /{,usr/}bin/gzip rm,
   /usr/bin/col rm,
   /usr/bin/compress rm,
   /usr/bin/iconv rm,
