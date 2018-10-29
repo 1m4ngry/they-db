@@ -53,6 +53,3 @@ override_dh_fixperms:
 # Our shared libraries are private.
 override_dh_makeshlibs:
 	:
-
-override_dh_builddeb:
-	dh_builddeb -- -Zxz

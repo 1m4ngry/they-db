@@ -1,3 +1,10 @@
+man-db (2.8.4-3) UNRELEASED; urgency=medium
+
+  * Remove dh_builddeb override to use xz compression; this has been the
+    default since dpkg 1.17.0.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 29 Oct 2018 09:22:30 +0000
+
 man-db (2.8.4-2) unstable; urgency=medium
 
   [ Dimitri John Ledkov ]
