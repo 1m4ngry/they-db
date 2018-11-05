@@ -4,6 +4,8 @@ man-db (2.8.4-3) UNRELEASED; urgency=medium
     default since dpkg 1.17.0.
   * Stop building with V=1; debhelper configures with --disable-silent-rules
     as of 9.20150501.
+  * AppArmor: Allow man to talk to Unix sockets, so that it can spawn
+    X-based subprocesses.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 29 Oct 2018 09:22:30 +0000
 
