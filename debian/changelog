@@ -1,4 +1,4 @@
-man-db (2.8.4-3) UNRELEASED; urgency=medium
+man-db (2.8.4-3) unstable; urgency=medium
 
   * Remove dh_builddeb override to use xz compression; this has been the
     default since dpkg 1.17.0.
@@ -10,7 +10,7 @@ man-db (2.8.4-3) UNRELEASED; urgency=medium
     - Fix syntax to allow sending signals to related profiles.
     - Allow sending signals to the same profile.
 
- -- Colin Watson <cjwatson@debian.org>  Mon, 29 Oct 2018 09:22:30 +0000
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 Nov 2018 14:01:42 +0000
 
 man-db (2.8.4-2) unstable; urgency=medium
 
