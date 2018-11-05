@@ -8,6 +8,7 @@ man-db (2.8.4-3) UNRELEASED; urgency=medium
     - Allow man to talk to Unix sockets, so that it can spawn X-based
       subprocesses.
     - Fix syntax to allow sending signals to related profiles.
+    - Allow sending signals to the same profile.
 
  -- Colin Watson <cjwatson@debian.org>  Mon, 29 Oct 2018 09:22:30 +0000
 

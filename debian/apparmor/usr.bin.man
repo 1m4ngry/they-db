@@ -39,6 +39,7 @@
   capability setuid,
   capability setgid,
 
+  signal peer=@{profile_name},
   signal peer=/usr/bin/man//&man_groff,
   signal peer=/usr/bin/man//&man_filter,
 
@@ -69,6 +70,8 @@ profile man_groff {
   /usr/share/groff/** r,
 
   signal peer=/usr/bin/man,
+  # @{profile_name} doesn't seem to work here.
+  signal peer=/usr/bin/man//&man_groff,
 }
 
 profile man_filter {
@@ -93,4 +96,6 @@ profile man_filter {
   /** r,
 
   signal peer=/usr/bin/man,
+  # @{profile_name} doesn't seem to work here.
+  signal peer=/usr/bin/man//&man_filter,
 }
