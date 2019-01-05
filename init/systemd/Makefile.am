@@ -18,11 +18,29 @@
 ## along with man-db; if not, write to the Free Software Foundation,
 ## Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-EXTRA_DIST = man-db.conf.in
+EXTRA_DIST = \
+	man-db.conf.in \
+	man-db.service.in
 
-CLEANFILES = man-db.conf
+CLEANFILES = \
+	man-db.conf \
+	man-db.service
 
-nodist_systemdtmpfiles_DATA = man-db.conf
+if INSTALL_SYSTEMD_TMPFILES
+systemdtmpfiles_DATA = man-db.conf
 
 man-db.conf: man-db.conf.in
 	sed -e "s,[@]cache_top_owner[@],$(cache_top_owner),g" $< > $@
+endif
+
+if INSTALL_SYSTEMD_TIMER
+dist_systemdsystemunit_DATA = man-db.timer
+systemdsystemunit_DATA = man-db.service
+
+man-db.service: man-db.service.in
+	sed -e "s,[@]bindir[@],$(bindir),g" \
+	    -e "s,[@]cache_top_owner[@],$(cache_top_owner),g" \
+	    $< > $@
+else
+EXTRA_DIST += man-db.timer
+endif

@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2018 Free Software Foundation, Inc.
+# Copyright (C) 2002-2019 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -92,6 +92,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module flock:
   # Code from module fnmatch:
   # Code from module fnmatch-gnu:
+  # Code from module fnmatch-h:
   # Code from module fstat:
   # Code from module fstatat:
   # Code from module futimens:
@@ -109,13 +110,13 @@ AC_DEFUN([gl_EARLY],
   # Code from module gettimeofday:
   # Code from module gitlog-to-changelog:
   # Code from module glob:
+  # Code from module glob-h:
   # Code from module gnupload:
   # Code from module hard-locale:
   # Code from module hash:
   # Code from module hash-pjw:
   # Code from module hash-triple:
   # Code from module havelib:
-  # Code from module host-cpu-c-abi:
   # Code from module idpriv-drop:
   # Code from module idpriv-droptemp:
   # Code from module include_next:
@@ -146,6 +147,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module mempcpy:
   # Code from module memrchr:
   # Code from module minmax:
+  # Code from module mkdir:
   # Code from module mkdtemp:
   # Code from module mkstemp:
   # Code from module msvc-inval:
@@ -197,9 +199,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module stdalign:
   # Code from module stdarg:
   dnl Some compilers (e.g., AIX 5.3 cc) need to be in c99 mode
-  dnl for the builtin va_copy to work.  With Autoconf 2.60 or later,
-  dnl gl_PROG_CC_C99 arranges for this.  With older Autoconf gl_PROG_CC_C99
-  dnl shouldn't hurt, though installers are on their own to set c99 mode.
+  dnl for the builtin va_copy to work.  gl_PROG_CC_C99 arranges for this.
   gl_PROG_CC_C99
   # Code from module stdbool:
   # Code from module stddef:
@@ -386,15 +386,18 @@ AC_SUBST([LTALLOCA])
   fi
   gl_HEADER_SYS_FILE_MODULE_INDICATOR([flock])
   gl_FUNC_FNMATCH_POSIX
-  if test -n "$FNMATCH_H"; then
+  if test $HAVE_FNMATCH = 0 || test $REPLACE_FNMATCH = 1; then
     AC_LIBOBJ([fnmatch])
     gl_PREREQ_FNMATCH
   fi
+  gl_FNMATCH_MODULE_INDICATOR([fnmatch])
   gl_FUNC_FNMATCH_GNU
-  if test -n "$FNMATCH_H"; then
+  if test $HAVE_FNMATCH = 0 || test $REPLACE_FNMATCH = 1; then
     AC_LIBOBJ([fnmatch])
     gl_PREREQ_FNMATCH
   fi
+  gl_MODULE_INDICATOR([fnmatch-gnu])
+  gl_FNMATCH_H
   gl_FUNC_FSTAT
   if test $REPLACE_FSTAT = 1; then
     AC_LIBOBJ([fstat])
@@ -476,13 +479,16 @@ AC_SUBST([LTALLOCA])
   fi
   gl_SYS_TIME_MODULE_INDICATOR([gettimeofday])
   gl_GLOB
-  if test $REPLACE_GLOB = 1; then
+  if test $HAVE_GLOB = 0 || test $REPLACE_GLOB = 1; then
     AC_LIBOBJ([glob])
-    AC_LIBOBJ([glob_pattern_p])
     AC_LIBOBJ([globfree])
     gl_PREREQ_GLOB
   fi
-  AC_REQUIRE([gl_HOST_CPU_C_ABI])
+  if test $HAVE_GLOB_PATTERN_P = 0 || test $REPLACE_GLOB_PATTERN_P = 1; then
+    AC_LIBOBJ([glob_pattern_p])
+  fi
+  gl_GLOB_MODULE_INDICATOR([glob])
+  gl_GLOB_H
   gl_IDPRIV
   gl_IDPRIV
   gl_FUNC_IOCTL
@@ -580,6 +586,10 @@ AC_SUBST([LTALLOCA])
   fi
   gl_STRING_MODULE_INDICATOR([memrchr])
   gl_MINMAX
+  gl_FUNC_MKDIR
+  if test $REPLACE_MKDIR = 1; then
+    AC_LIBOBJ([mkdir])
+  fi
   gl_FUNC_MKDTEMP
   if test $HAVE_MKDTEMP = 0; then
     AC_LIBOBJ([mkdtemp])
@@ -1162,6 +1172,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/mempcpy.c
   lib/memrchr.c
   lib/minmax.h
+  lib/mkdir.c
   lib/mkdtemp.c
   lib/mkstemp.c
   lib/msvc-inval.c
@@ -1339,6 +1350,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/float_h.m4
   m4/flock.m4
   m4/fnmatch.m4
+  m4/fnmatch_h.m4
   m4/fstat.m4
   m4/fstatat.m4
   m4/futimens.m4
@@ -1357,6 +1369,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/gettimeofday.m4
   m4/glibc21.m4
   m4/glob.m4
+  m4/glob_h.m4
   m4/gnulib-common.m4
   m4/host-cpu-c-abi.m4
   m4/idpriv.m4
@@ -1394,6 +1407,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/mempcpy.m4
   m4/memrchr.m4
   m4/minmax.m4
+  m4/mkdir.m4
   m4/mkdtemp.m4
   m4/mkstemp.m4
   m4/mmap-anon.m4
@@ -1406,7 +1420,6 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/nocrash.m4
   m4/nonblocking.m4
   m4/off_t.m4
-  m4/onceonly.m4
   m4/open-cloexec.m4
   m4/open.m4
   m4/openat.m4

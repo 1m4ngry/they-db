@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2018-07-18 14:23+0100\n"
+"POT-Creation-Date: 2019-01-05 11:52+0000\n"
 "PO-Revision-Date: 2011-08-22 19:16+0200\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -234,7 +234,7 @@ msgstr "För stort reguljärt uttryck"
 msgid "Unmatched ) or \\)"
 msgstr "Ensam ) eller \\)"
 
-#: gl/lib/regcomp.c:689
+#: gl/lib/regcomp.c:676
 msgid "No previous regular expression"
 msgstr "Inget föregående reguljärt uttryck"
 

@@ -1,3 +1,12 @@
+man-db (2.8.5-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+    - Fix handling of \- in RHS of NAME section (closes: #913351).
+    - Fix incorrect error message (closes: #913721).
+    - Ship a systemd timer for daily DB maintenance (closes: #858022).
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 05 Jan 2019 12:02:57 +0000
+
 man-db (2.8.4-3) unstable; urgency=medium
 
   * Remove dh_builddeb override to use xz compression; this has been the

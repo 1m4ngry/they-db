@@ -1,5 +1,5 @@
 ## DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2018 Free Software Foundation, Inc.
+# Copyright (C) 2002-2019 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -174,6 +174,7 @@ gl/lib/memmem.c
 gl/lib/mempcpy.c
 gl/lib/memrchr.c
 gl/lib/minmax.h
+gl/lib/mkdir.c
 gl/lib/mkdtemp.c
 gl/lib/mkstemp.c
 gl/lib/msvc-inval.c

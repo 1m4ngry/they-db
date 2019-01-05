@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: man-db 2.8.4\n"
+"Project-Id-Version: man-db 2.8.5\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2018-07-18 14:23+0100\n"
+"POT-Creation-Date: 2019-01-05 11:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -223,7 +223,7 @@ msgstr ""
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gl/lib/regcomp.c:689
+#: gl/lib/regcomp.c:676
 msgid "No previous regular expression"
 msgstr ""
 
