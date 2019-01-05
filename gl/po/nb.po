@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU textutils 2.0.20\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2018-07-18 14:23+0100\n"
+"POT-Creation-Date: 2019-01-05 11:52+0000\n"
 "PO-Revision-Date: 2002-01-27 21:35+0100\n"
 "Last-Translator: Eivind Tagseth <eivindt@multinet.no>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
@@ -236,7 +236,7 @@ msgstr "%s: ugyldig regulært uttrykk: %s"
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gl/lib/regcomp.c:689
+#: gl/lib/regcomp.c:676
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "feil i søk med regulært uttrykk"

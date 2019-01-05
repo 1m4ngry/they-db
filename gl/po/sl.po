@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2018-07-18 14:23+0100\n"
+"POT-Creation-Date: 2019-01-05 11:52+0000\n"
 "PO-Revision-Date: 2012-05-20 13:08+0200\n"
 "Last-Translator: Primož Peterlin <primozz.peterlin@gmail.com>\n"
 "Language-Team: Slovenian <translation-team-sl@lists.sourceforge.net>\n"
@@ -230,7 +230,7 @@ msgstr "Regularni izraz je preobsežen"
 msgid "Unmatched ) or \\)"
 msgstr "Zaklepaj ) ali \\) brez para"
 
-#: gl/lib/regcomp.c:689
+#: gl/lib/regcomp.c:676
 msgid "No previous regular expression"
 msgstr "Prejšnjega regularnega izraza ni"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2018-07-18 14:23+0100\n"
+"POT-Creation-Date: 2019-01-05 11:52+0000\n"
 "PO-Revision-Date: 2014-11-29 14:28-0000\n"
 "Last-Translator: Luís Oliveira <luismbo@gmail.com>\n"
 "Language-Team: Portuguese <translation-team-pt@lists.sourceforge.net>\n"
@@ -229,7 +229,7 @@ msgstr "Expressão regular muito grande"
 msgid "Unmatched ) or \\)"
 msgstr ") ou \\) não emparelhado"
 
-#: gl/lib/regcomp.c:689
+#: gl/lib/regcomp.c:676
 msgid "No previous regular expression"
 msgstr "Nenhuma expressão regular prévia"
 

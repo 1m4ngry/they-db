@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2018-07-18 14:23+0100\n"
+"POT-Creation-Date: 2019-01-05 11:52+0000\n"
 "PO-Revision-Date: 2011-12-10 19:05+0200\n"
 "Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
 "Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
@@ -229,7 +229,7 @@ msgstr "Säännöllinen lauseke on liian iso"
 msgid "Unmatched ) or \\)"
 msgstr "Pariton ) tai \\)"
 
-#: gl/lib/regcomp.c:689
+#: gl/lib/regcomp.c:676
 msgid "No previous regular expression"
 msgstr "Ei edellistä säännöllistä lauseketta"
 

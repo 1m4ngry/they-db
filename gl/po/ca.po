@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: mailutils 0.6.90\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2018-07-18 14:23+0100\n"
+"POT-Creation-Date: 2019-01-05 11:52+0000\n"
 "PO-Revision-Date: 2005-05-21 04:10+0200\n"
 "Last-Translator: Jordi Mallach <jordi@gnu.org>\n"
 "Language-Team: Catalan <ca@dodds.net>\n"
@@ -243,7 +243,7 @@ msgstr "%s: l'expressió regular no és vàlida: %s"
 msgid "Unmatched ) or \\)"
 msgstr ""
 
-#: gl/lib/regcomp.c:689
+#: gl/lib/regcomp.c:676
 #, fuzzy
 msgid "No previous regular expression"
 msgstr "error en la recerca de l'expressió regular"
