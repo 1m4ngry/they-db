@@ -22,7 +22,7 @@ if ! [ -d /var/cache/man ]; then
 fi
 
 # expunge old catman pages which have not been read in a week
-if [ ! -d /run/systemd/system ] && [ -d /var/cache/man ]; then
+if [ -d /var/cache/man ]; then
   cd /
   start-stop-daemon --start --pidfile /dev/null --startas /bin/sh \
 	--oknodo --chuid man $iosched_idle -- -c \
