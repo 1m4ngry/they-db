@@ -1,6 +1,7 @@
 man-db (2.8.5-2) UNRELEASED; urgency=medium
 
   * Remove redundant condition in cron.daily script (closes: #918967).
+  * Update Homepage and debian/copyright Source to use HTTPS.
 
  -- Colin Watson <cjwatson@debian.org>  Fri, 11 Jan 2019 09:49:00 +0000
 
