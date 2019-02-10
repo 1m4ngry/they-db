@@ -1,0 +1,32 @@
+From 67eada88c19228c53f0f4fc846c3ae71696a7ea3 Mon Sep 17 00:00:00 2001
+From: Colin Watson <cjwatson@debian.org>
+Date: Sun, 27 Jan 2019 18:59:46 +0000
+Subject: Add --quiet to systemd mandb invocation
+
+Fixes Debian bug #920628.
+
+* init/systemd/man-db.service.in (ExecStart): Run mandb with --quiet.
+* NEWS: Document this.
+
+Origin: upstream, https://git.savannah.gnu.org/cgit/man-db.git/commit/?id=a4206c27060357cc78219a54349624e0d0675aff
+Bug-Debian: https://bugs.debian.org/920628
+Last-Update: 2019-02-10
+
+Patch-Name: systemd-mandb-quiet.patch
+---
+ init/systemd/man-db.service.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init/systemd/man-db.service.in b/init/systemd/man-db.service.in
+index 25be57d9..b970913a 100644
+--- a/init/systemd/man-db.service.in
++++ b/init/systemd/man-db.service.in
+@@ -10,7 +10,7 @@ ExecStart=+/usr/bin/install -d -o @cache_top_owner@ -g @cache_top_owner@ -m 0755
+ # Expunge old catman pages which have not been read in a week.
+ ExecStart=/usr/bin/find /var/cache/man -type f -name *.gz -atime +6 -delete
+ # Regenerate man database.
+-ExecStart=@bindir@/mandb
++ExecStart=@bindir@/mandb --quiet
+ User=@cache_top_owner@
+ Nice=19
+ IOSchedulingClass=idle
