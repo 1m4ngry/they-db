@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU textutils 2.0.20\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2002-01-27 21:35+0100\n"
 "Last-Translator: Eivind Tagseth <eivindt@multinet.no>\n"
 "Language-Team: Norwegian <i18n-nb@lister.ping.uio.no>\n"
@@ -44,32 +44,32 @@ msgid ""
 msgstr ""
 "Obligatoriske argmenter til lange flagg er obligatoriske også for korte.\n"
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr ""
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr ""
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 #, fuzzy
 msgid " [OPTION...]"
 msgstr "Bruk: %s [FLAGG] [FIL]...\n"
 
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Prøv med «%s --help» for mer informasjon.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "\n"
 "Rapportér feil til <bug-textutils@gnu.org>."
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Ukjent systemfeil"
 
@@ -244,6 +244,11 @@ msgstr "feil i søk med regulært uttrykk"
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "virtuelt minne oppbrukt"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "ugyldig argument %s for %s"

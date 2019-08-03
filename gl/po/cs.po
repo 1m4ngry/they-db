@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2011-12-04 08:50+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
@@ -48,29 +48,29 @@ msgstr ""
 "Povinné či volitelné, argumenty pro dlouhé přepínače jsou povinné či "
 "volitelné, i pro případné odpovídající krátké přepínače."
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr "Použití:"
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr "  nebo:"
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr " [PŘEPÍNAČ…]"
 
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Více informací získáte příkazem „%s --help“ nebo „%s --usage“.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Chyby hlaste na %s.\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Neznámá chyba systému"
 
@@ -236,6 +236,11 @@ msgstr "Žádný předchozí regulární výraz"
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "paměť byla vyčerpána"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "argument %s je pro %s neplatný"

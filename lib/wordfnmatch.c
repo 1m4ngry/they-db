@@ -24,6 +24,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -31,19 +32,19 @@
 
 #include "manconfig.h"
 
-#include "lower.h"
 #include "wordfnmatch.h"
 
 /* TODO: How on earth do we allow multiple-word matches without
  * reimplementing fnmatch()?
  */
-int word_fnmatch (const char *lowpattern, const char *string)
+bool word_fnmatch (const char *pattern, const char *string)
 {
-	char *lowstring = lower (string);
-	char *begin = lowstring, *p;
+	char *dupstring = xstrdup (string);
+	const char *begin = dupstring;
+	char *p;
 
-	for (p = lowstring; *p; p++) {
-		if (CTYPE (islower, *p) || *p == '_')
+	for (p = dupstring; *p; p++) {
+		if (CTYPE (isalpha, *p) || *p == '_')
 			continue;
 
 		/* Check for multiple non-word characters in a row. */
@@ -51,14 +52,14 @@ int word_fnmatch (const char *lowpattern, const char *string)
 			begin++;
 		else {
 			*p = '\0';
-			if (fnmatch (lowpattern, begin, 0) == 0) {
-				free (lowstring);
-				return 1;
+			if (fnmatch (pattern, begin, FNM_CASEFOLD) == 0) {
+				free (dupstring);
+				return true;
 			}
 			begin = p + 1;
 		}
 	}
 
-	free (lowstring);
-	return 0;
+	free (dupstring);
+	return false;
 }

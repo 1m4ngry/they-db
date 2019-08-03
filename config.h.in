@@ -24,6 +24,19 @@
 /* Define if you have, and want to use, the Berkeley database library. */
 #undef BTREE
 
+/* Define to 1 if chown fails to change ctime when at least one argument was
+   not -1. */
+#undef CHOWN_CHANGE_TIME_BUG
+
+/* Define if chown is not POSIX compliant regarding IDs of -1. */
+#undef CHOWN_FAILS_TO_HONOR_ID_OF_NEGATIVE_ONE
+
+/* Define if chown modifies symlinks. */
+#undef CHOWN_MODIFIES_SYMLINK
+
+/* Define to 1 if chown mishandles trailing slash. */
+#undef CHOWN_TRAILING_SLASH_BUG
+
 /* Define if you have compressors and want to support compressed cat files. */
 #undef COMP_CAT
 
@@ -190,6 +203,9 @@
 /* Define to 1 when the gnulib module chdir should be tested. */
 #undef GNULIB_TEST_CHDIR
 
+/* Define to 1 when the gnulib module chown should be tested. */
+#undef GNULIB_TEST_CHOWN
+
 /* Define to 1 when the gnulib module cloexec should be tested. */
 #undef GNULIB_TEST_CLOEXEC
 
@@ -255,6 +271,9 @@
 
 /* Define to 1 when the gnulib module ioctl should be tested. */
 #undef GNULIB_TEST_IOCTL
+
+/* Define to 1 when the gnulib module lchown should be tested. */
+#undef GNULIB_TEST_LCHOWN
 
 /* Define to 1 when the gnulib module localeconv should be tested. */
 #undef GNULIB_TEST_LOCALECONV
@@ -433,6 +452,9 @@
 /* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
    the CoreFoundation framework. */
 #undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
+/* Define to 1 if you have the `chown' function. */
+#undef HAVE_CHOWN
 
 /* Define to 1 if you have the `clock_gettime' function. */
 #undef HAVE_CLOCK_GETTIME
@@ -653,11 +675,11 @@
 /* Define to 1 if you have the `fchdir' function. */
 #undef HAVE_FCHDIR
 
+/* Define to 1 if you have the `fchown' function. */
+#undef HAVE_FCHOWN
+
 /* Define to 1 if you have the `fcntl' function. */
 #undef HAVE_FCNTL
-
-/* Define to 1 if you have the <fcntl.h> header file. */
-#undef HAVE_FCNTL_H
 
 /* Define to 1 if you have the `fdopendir' function. */
 #undef HAVE_FDOPENDIR
@@ -801,6 +823,9 @@
 
 /* Define to 1 if you have the <langinfo.h> header file. */
 #undef HAVE_LANGINFO_H
+
+/* Define to 1 if you have the `lchmod' function. */
+#undef HAVE_LCHMOD
 
 /* Define to 1 if you have the `lchown' function. */
 #undef HAVE_LCHOWN

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2010-02-26 09:54+0800\n"
 "Last-Translator: Ji ZhengYu <zhengyuji@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -49,29 +49,29 @@ msgstr ""
 "选项完整形式所必须用的或是可选的参数，在使用选项缩写形式时也是必须的或是可选"
 "的。"
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr "用法："
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr "  或者： "
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr "[选项...]"
 
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "请尝试执行“%s --help”或“%s --usage”来获取更多信息。\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "请向 %s 报告错误。\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "未知的系统错误"
 
@@ -238,6 +238,11 @@ msgstr "没有前次正则表达式"
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "内存用尽"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "%2$s 的参数 %1$s 无效"

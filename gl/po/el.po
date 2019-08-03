@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2012-03-11 11:25+0100\n"
 "Last-Translator: Simos Xenitellis <simos.lists@googlemail.com>\n"
 "Language-Team: Greek <team@lists.gnome.gr>\n"
@@ -43,27 +43,27 @@ msgid ""
 "optional for any corresponding short options."
 msgstr ""
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr ""
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr ""
 
 #
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr " [ΕΠΙΛΟΓΗ...]"
 
 #
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Δοκιμάστε `%s --help' για περισσότερη βοήθεια.\n"
 
 #
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
@@ -71,7 +71,7 @@ msgstr ""
 "Αναφέρατε σφάλματα στο <%s>.\n"
 
 #
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Άγνωστο σφάλμα συστήματος"
 
@@ -267,6 +267,11 @@ msgstr "σφάλμα στην ανεύρεση μέσω κανονικής έκ�
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "η μνήμη εξαντλήθηκε"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #
 #~ msgid "invalid argument %s for %s"

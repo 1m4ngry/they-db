@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 1.1\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2007-07-20 12:24-0600\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -47,30 +47,30 @@ msgstr ""
 "Is riachtanach/roghnach le rogha ghearr aon argóint atá riachtanach/roghnach "
 "leis an rogha fhada."
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr "Úsáid:"
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr "  nó: "
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr " [ROGHA...]"
 
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr ""
 "Bain triail as `%s --help' nó `%s --usage' chun tuilleadh eolais a fháil.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Seol tuairiscí fabhtanna chuig %s.\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Earráid chórais anaithnid"
 
@@ -236,6 +236,11 @@ msgstr "Níl aon slonn ionadaíochta roimhe seo"
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "cuimhne ídithe"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "argóint neamhbhailí %s chun %s"

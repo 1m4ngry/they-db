@@ -1,26 +1,25 @@
 # Dutch translations for gnulib.
-# Copyright (C) 2011 Free Software Foundation, Inc.
+# Copyright (C) 2019 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 #
 # Erick Branderhorst <branderh@debian.org>, 1996.
 # Ivo Timmermans <ivo@o2w.nl>, 2000.
 # Freek de Kruijf <f.de.kruijf@hetnet.nl>, 2004, 2005.
 # Erwin Poeze <erwin.poeze@gmail.com>, 2009, 2010.
-# Benno Schulenberg <benno@vertaalt.nl>, 2007, 2008, 2010, 2011.
+# Benno Schulenberg <benno@vertaalt.nl>, 2007, 2008, 2010, 2011, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib-3.0.0.6062.a6b16\n"
+"Project-Id-Version: gnulib-4.0.0.2567\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
-"PO-Revision-Date: 2011-08-22 20:37+0200\n"
-"Last-Translator: Benno Schulenberg <benno@vertaalt.nl>\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
+"PO-Revision-Date: 2019-05-29 13:31+0200\n"
+"Last-Translator: Benno Schulenberg <vertaling@coevern.nl>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
-"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: gl/lib/argp-help.c:158
@@ -51,31 +50,31 @@ msgstr ""
 "Een argument dat verplicht of optioneel is voor een lange optie, is dat\n"
 "ook voor de overeenkomstige korte optie."
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr "Gebruik: "
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr "     of: "
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr " [OPTIE...]"
 
-#: gl/lib/argp-help.c:1668
-#, fuzzy, c-format
+#: gl/lib/argp-help.c:1670
+#, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Typ '%s --help' of '%s --usage' voor meer informatie.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "Rapporteer gebreken in het programma aan %s;\n"
 "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Onbekende systeemfout"
 
@@ -121,29 +120,29 @@ msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "**Interne programmafout**: optie had herkend moeten worden!?"
 
 #: gl/lib/getopt.c:278
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' is ambiguous\n"
-msgstr "%s: optie '-W %s' is niet eenduidig\n"
+msgstr "%s: optie '%s%s' is niet eenduidig\n"
 
 #: gl/lib/getopt.c:284
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' is ambiguous; possibilities:"
-msgstr "%s: optie '%s' is niet eenduidig; mogelijkheden zijn:"
+msgstr "%s: optie '%s%s' is niet eenduidig; mogelijkheden zijn:"
 
 #: gl/lib/getopt.c:319
-#, fuzzy, c-format
+#, c-format
 msgid "%s: unrecognized option '%s%s'\n"
-msgstr "%s: onbekende optie '%c%s'\n"
+msgstr "%s: onbekende optie '%s%s'\n"
 
 #: gl/lib/getopt.c:345
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' doesn't allow an argument\n"
-msgstr "%s: optie '%c%s' staat geen argument toe\n"
+msgstr "%s: optie '%s%s' staat geen argument toe\n"
 
 #: gl/lib/getopt.c:360
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' requires an argument\n"
-msgstr "%s: optie '--%s' vereist een argument\n"
+msgstr "%s: optie '%s%s' vereist een argument\n"
 
 #: gl/lib/getopt.c:621
 #, c-format
@@ -194,9 +193,8 @@ msgid "Invalid back reference"
 msgstr "Ongeldige terugverwijzing"
 
 #: gl/lib/regcomp.c:156
-#, fuzzy
 msgid "Unmatched [, [^, [:, [., or [="
-msgstr "Ongepaarde [ of [^"
+msgstr "Ongepaarde [, [^, [:, [., of [="
 
 #: gl/lib/regcomp.c:159
 msgid "Unmatched ( or \\("
@@ -242,6 +240,11 @@ msgstr "Geen eerdere reguliere expressie"
 msgid "memory exhausted"
 msgstr "onvoldoende geheugen beschikbaar"
 
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr "standaard bestandsdescriptors"
+
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "ongeldig argument %s van %s"
 
@@ -251,8 +254,51 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "Valid arguments are:"
 #~ msgstr "Geldige argumenten zijn:"
 
-#~ msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
-#~ msgstr "%.*s: Parameter in ARGP_HELP_FMT moet positief zijn"
+#~ msgid "%u bitset_allocs, %u freed (%.2f%%).\n"
+#~ msgstr "%u bitset_allocs, %u vrijgegeven (%.2f%%).\n"
+
+#~ msgid "%u bitset_sets, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset_sets, %u gecached (%.2f%%)\n"
+
+#~ msgid "%u bitset_resets, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset_resets, %u gecached (%.2f%%)\n"
+
+#~ msgid "%u bitset_tests, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset_tests, %u gecached (%.2f%%)\n"
+
+#~ msgid "%u bitset_lists\n"
+#~ msgstr "%u bitset_lists\n"
+
+#~ msgid "count log histogram\n"
+#~ msgstr "histogram van aantal gezette bits\n"
+
+#~ msgid "size log histogram\n"
+#~ msgstr "histogram van bitset-groottes\n"
+
+#~ msgid "density histogram\n"
+#~ msgstr "histogram van dichtheid aan gezette bits\n"
+
+#~ msgid ""
+#~ "Bitset statistics:\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Bitset-statistieken:\n"
+#~ "\n"
+
+#~ msgid "Accumulated runs = %u\n"
+#~ msgstr "Aantal uitvoeringen = %u\n"
+
+#~ msgid "cannot read stats file"
+#~ msgstr "kan statistiekenbestand niet lezen"
+
+#~ msgid "bad stats file size\n"
+#~ msgstr "statistiekenbestand heeft een verkeerde grootte\n"
+
+#~ msgid "cannot write stats file"
+#~ msgstr "kan statistiekenbestand niet schrijven"
+
+#~ msgid "cannot open stats file for writing"
+#~ msgstr "kan statistiekenbestand niet openen voor schrijven"
 
 #~ msgid "program error"
 #~ msgstr "programmafout"
@@ -281,29 +327,56 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "preserving permissions for %s"
 #~ msgstr "toegangsrechten van '%s' worden behouden"
 
-#~ msgid "error while opening \"%s\" for reading"
-#~ msgstr "fout bij openen van '%s' voor lezen"
+#~ msgid "error while opening %s for reading"
+#~ msgstr "fout bij openen van %s voor lezen"
 
-#~ msgid "cannot open backup file \"%s\" for writing"
-#~ msgstr "kan reservebestand '%s' niet openen voor schrijven"
+#~ msgid "cannot open backup file %s for writing"
+#~ msgstr "kan reservekopiebestand %s niet openen voor schrijven"
 
-#~ msgid "error reading \"%s\""
-#~ msgstr "fout bij lezen van '%s'"
+#~ msgid "error reading %s"
+#~ msgstr "fout bij lezen van %s"
 
-#~ msgid "error writing \"%s\""
-#~ msgstr "fout bij schrijven van '%s'"
+#~ msgid "error writing %s"
+#~ msgstr "fout bij schrijven van %s"
 
-#~ msgid "error after reading \"%s\""
-#~ msgstr "fout na lezen van '%s'"
+#~ msgid "error after reading %s"
+#~ msgstr "fout na lezen van %s"
 
 #~ msgid "fdopen() failed"
 #~ msgstr "fdopen() is mislukt"
 
-#~ msgid "C# compiler not found, try installing pnet"
-#~ msgstr "C#-compiler is niet gevonden; installeer 'pnet'"
+#~ msgid "C# compiler not found, try installing mono"
+#~ msgstr "C#-compiler is niet gevonden; installeer 'mono'"
 
-#~ msgid "C# virtual machine not found, try installing pnet"
-#~ msgstr "virtuele C#-machine is niet gevonden; installeer 'pnet'"
+#~ msgid "C# virtual machine not found, try installing mono"
+#~ msgstr "virtuele C#-machine is niet gevonden; installeer 'mono'"
+
+#~ msgid "unbalanced ["
+#~ msgstr "ongepaarde ["
+
+#~ msgid "invalid character class"
+#~ msgstr "ongeldige tekenklasse"
+
+#~ msgid "character class syntax is [[:space:]], not [:space:]"
+#~ msgstr "syntax van tekenklasse is [[:space:]], niet [:space:]"
+
+#~ msgid "unfinished \\ escape"
+#~ msgstr "onafgemaakte \\-stuurcode"
+
+#~ msgid "invalid content of \\{\\}"
+#~ msgstr "ongeldige inhoud van \\{\\}"
+
+#~ msgid "regular expression too big"
+#~ msgstr "reguliere expressie is te groot"
+
+#~ msgid "unbalanced ("
+#~ msgstr "ongepaarde ("
+
+#~ msgid "no syntax specified"
+#~ msgstr "geen syntax opgegeven"
+
+#~ msgid "unbalanced )"
+#~ msgstr "ongepaarde )"
 
 #~ msgid "%s subprocess failed"
 #~ msgstr "subproces %s is mislukt"
@@ -317,20 +390,8 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "directory"
 #~ msgstr "map"
 
-#~ msgid "block special file"
-#~ msgstr "blok-apparaat"
-
-#~ msgid "character special file"
-#~ msgstr "byte-apparaat"
-
-#~ msgid "fifo"
-#~ msgstr "fifo"
-
 #~ msgid "symbolic link"
 #~ msgstr "symbolische koppeling"
-
-#~ msgid "socket"
-#~ msgstr "socket"
 
 #~ msgid "message queue"
 #~ msgstr "berichtenwachtrij"
@@ -343,6 +404,51 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "typed memory object"
 #~ msgstr "zelfstandig geheugenobject"
+
+#~ msgid "block special file"
+#~ msgstr "blok-apparaat"
+
+#~ msgid "character special file"
+#~ msgstr "byte-apparaat"
+
+#~ msgid "contiguous data"
+#~ msgstr "aaneengesloten gegevens"
+
+#~ msgid "fifo"
+#~ msgstr "fifo"
+
+#~ msgid "door"
+#~ msgstr "door"
+
+#~ msgid "multiplexed block special file"
+#~ msgstr "gemultiplexed blok-apparaat"
+
+#~ msgid "multiplexed character special file"
+#~ msgstr "gemultiplexed byte-apparaat"
+
+#~ msgid "multiplexed file"
+#~ msgstr "gemultiplexed bestand"
+
+#~ msgid "named file"
+#~ msgstr "benoemd bestand"
+
+#~ msgid "network special file"
+#~ msgstr "netwerkapparaat"
+
+#~ msgid "migrated file with data"
+#~ msgstr "gemigreerd bestand met gegevens"
+
+#~ msgid "migrated file without data"
+#~ msgstr "gemigreerd bestand zonder gegevens"
+
+#~ msgid "port"
+#~ msgstr "poort"
+
+#~ msgid "socket"
+#~ msgstr "socket"
+
+#~ msgid "whiteout"
+#~ msgstr "whiteout"
 
 #~ msgid "weird file"
 #~ msgstr "merkwaardig bestand"
@@ -404,18 +510,6 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "Unknown error"
 #~ msgstr "Onbekende fout"
 
-#~ msgid "%s: option '--%s' doesn't allow an argument\n"
-#~ msgstr "%s: optie '--%s' staat geen argument toe\n"
-
-#~ msgid "%s: unrecognized option '--%s'\n"
-#~ msgstr "%s: onbekende optie '--%s'\n"
-
-#~ msgid "%s: option '-W %s' doesn't allow an argument\n"
-#~ msgstr "%s: optie '-W %s' staat geen argument toe\n"
-
-#~ msgid "%s: option '-W %s' requires an argument\n"
-#~ msgstr "%s: optie '-W %s' vereist een argument\n"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "ongeldige waarde voor 'source_version' in compile_java_class()"
 
@@ -437,6 +531,9 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "%s subprocess I/O error"
 #~ msgstr "In-/uitvoerfout in subproces %s"
+
+#~ msgid "cannot stat %s"
+#~ msgstr "kan status van '%s' niet opvragen"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "kan de toegangsrechten van %s niet veranderen"
@@ -470,9 +567,6 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "%s subprocess terminated with exit code %d"
 #~ msgstr "subproces %s is geëindigd met afsluitwaarde %d"
-
-#~ msgid "Franc,ois Pinard"
-#~ msgstr "François Pinard"
 
 #~ msgid "`"
 #~ msgstr "‘"
@@ -606,6 +700,18 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "Unknown signal %d"
 #~ msgstr "Onbekend signaal %d"
 
+#~ msgid "Execution times (seconds)"
+#~ msgstr "Uitvoeringstijden (in seconden)"
+
+#~ msgid "CPU user"
+#~ msgstr "CPU (gebruiker)"
+
+#~ msgid "CPU system"
+#~ msgstr "CPU (systeem)"
+
+#~ msgid "wall clock"
+#~ msgstr "kloktijd"
+
 #~ msgid "iconv function not usable"
 #~ msgstr "de functie iconv() is onbruikbaar"
 
@@ -643,19 +749,15 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgstr "©"
 
 #~ msgid ""
-#~ "\n"
-#~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-#~ "html>.\n"
+#~ "License GPLv3+: GNU GPL version 3 or later <%s>.\n"
 #~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
-#~ "\n"
 #~ msgstr ""
-#~ "\n"
 #~ "Dit is vrije software: u mag het vrijelijk wijzigen en verder "
 #~ "verspreiden.\n"
 #~ "De precieze licentie is GPL-3+: GNU General Public License versie 3 of "
 #~ "later.\n"
-#~ "Zie http://gnu.org/licenses/gpl.html voor de volledige (Engelse) tekst.\n"
+#~ "Zie <%s> voor de volledige (Engelse) tekst.\n"
 #~ "Deze software kent GEEN GARANTIE, voor zover de wet dit toestaat.\n"
 #~ "\n"
 
@@ -723,11 +825,8 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ "%s, %s, %s, %s,\n"
 #~ "%s, %s en anderen.\n"
 
-#~ msgid ""
-#~ "\n"
-#~ "Report bugs to: %s\n"
+#~ msgid "Report bugs to: %s\n"
 #~ msgstr ""
-#~ "\n"
 #~ "Rapporteer gebreken in het programma aan <%s>;\n"
 #~ "meld fouten in de vertaling aan <vertaling@vrijschrift.org>.\n"
 
@@ -739,13 +838,8 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "%s home page: <%s>\n"
 #~ msgstr "Webpagina van %s: <%s>\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
-#~ msgstr "Webpagina van %s: <http://www.gnu.org/software/%s/>\n"
-
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
-#~ msgstr ""
-#~ "Algemene hulp bij gebruik van GNU-software: <http://www.gnu.org/gethelp/"
-#~ ">\n"
+#~ msgid "General help using GNU software: <%s>\n"
+#~ msgstr "Algemene hulp bij gebruik van GNU-software: <%s>\n"
 
 #~ msgid "_open_osfhandle failed"
 #~ msgstr "_open_osfhandle() is mislukt"
@@ -758,6 +852,9 @@ msgstr "onvoldoende geheugen beschikbaar"
 
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "subproces %s ontving het fatale signaal %d"
+
+#~ msgid "failed to set file descriptor text/binary mode"
+#~ msgstr "kan modus van bestandsdescriptor niet instellen op tekst of binair"
 
 #~ msgid "stdin"
 #~ msgstr "standaardinvoer"
@@ -786,11 +883,32 @@ msgstr "onvoldoende geheugen beschikbaar"
 #~ msgid "cannot perform formatted output"
 #~ msgstr "kan geen opgemaakte uitvoer aanmaken"
 
-#~ msgid "invalid %s%s argument `%s'"
+#~ msgid "invalid %s%s argument '%s'"
 #~ msgstr "ongeldig argument '%3$s' van %1$s%2$s"
 
-#~ msgid "invalid suffix in %s%s argument `%s'"
+#~ msgid "invalid suffix in %s%s argument '%s'"
 #~ msgstr "ongeldig achtervoegsel in argument '%3$s' van %1$s%2$s"
 
-#~ msgid "%s%s argument `%s' too large"
+#~ msgid "%s%s argument '%s' too large"
 #~ msgstr "argument '%3$s' van %1$s%2$s is te groot"
+
+#~ msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
+#~ msgstr "%.*s: Parameter in ARGP_HELP_FMT moet positief zijn"
+
+#~ msgid "%s: option '--%s' doesn't allow an argument\n"
+#~ msgstr "%s: optie '--%s' staat geen argument toe\n"
+
+#~ msgid "%s: unrecognized option '--%s'\n"
+#~ msgstr "%s: onbekende optie '--%s'\n"
+
+#~ msgid "%s: option '-W %s' doesn't allow an argument\n"
+#~ msgstr "%s: optie '-W %s' staat geen argument toe\n"
+
+#~ msgid "%s: option '-W %s' requires an argument\n"
+#~ msgstr "%s: optie '-W %s' vereist een argument\n"
+
+#~ msgid "Franc,ois Pinard"
+#~ msgstr "François Pinard"
+
+#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
+#~ msgstr "Webpagina van %s: <http://www.gnu.org/software/%s/>\n"

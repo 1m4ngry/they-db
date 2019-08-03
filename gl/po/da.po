@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gnulib 2.0.0.3462.e9796\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2011-01-20 22:11+0100\n"
 "Last-Translator: Keld Simonsen <keld@keldix.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -52,31 +52,31 @@ msgstr ""
 "Obligatoriske eller valgfrie argumenter til lange flag er også obligatoriske "
 "eller valgfrie for tilsvarende korte flag."
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr "Brug:"
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr "   eller:  "
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr " [FLAG...]"
 
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Forsøg med '%s --help' eller '%s --usage' for mere information.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "Rapportér fejl til %s.\n"
 "Send synspunkter på oversættelsen til <dansk@dansk-gruppen.dk>\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Ukendt systemfejl"
 
@@ -242,6 +242,11 @@ msgstr "Intet foregående regulært udtryk"
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "hukommelsen opbrugt"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "Ugyldigt argument %s til %s"

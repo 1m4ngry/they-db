@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -35,13 +36,17 @@
 #include <dirent.h>
 
 #include "fnmatch.h"
+#include "gl_array_list.h"
+#include "gl_hash_map.h"
+#include "gl_xlist.h"
+#include "gl_xmap.h"
 #include "regex.h"
 #include "xvasprintf.h"
 
 #include "manconfig.h"
 
 #include "error.h"
-#include "hashtable.h"
+#include "glcontainers.h"
 #include "cleanup.h"
 #include "xregcomp.h"
 
@@ -109,23 +114,23 @@ static int parse_layout (const char *layout)
 	}
 }
 
-struct dirent_hashent {
+struct dirent_names {
 	char **names;
 	size_t names_len, names_max;
 };
 
-static void dirent_hashtable_free (void *defn)
+static void dirent_names_free (const void *value)
 {
-	struct dirent_hashent *hashent = defn;
+	struct dirent_names *cache = (struct dirent_names *) value;
 	size_t i;
 
-	for (i = 0; i < hashent->names_len; ++i)
-		free (hashent->names[i]);
-	free (hashent->names);
-	free (hashent);
+	for (i = 0; i < cache->names_len; ++i)
+		free (cache->names[i]);
+	free (cache->names);
+	free (cache);
 }
 
-static struct hashtable *dirent_hash = NULL;
+static gl_map_t dirent_map = NULL;
 
 static int cache_compare (const void *a, const void *b)
 {
@@ -134,17 +139,17 @@ static int cache_compare (const void *a, const void *b)
 	return strcasecmp (left, right);
 }
 
-static struct dirent_hashent *update_directory_cache (const char *path)
+static struct dirent_names *update_directory_cache (const char *path)
 {
-	struct dirent_hashent *cache;
+	struct dirent_names *cache;
 	DIR *dir;
 	struct dirent *entry;
 
-	if (!dirent_hash) {
-		dirent_hash = hashtable_create (&dirent_hashtable_free);
-		push_cleanup ((cleanup_fun) hashtable_free, dirent_hash, 0);
+	if (!dirent_map) {
+		dirent_map = new_string_map (GL_HASH_MAP, dirent_names_free);
+		push_cleanup ((cleanup_fun) gl_map_free, dirent_map, 0);
 	}
-	cache = hashtable_lookup (dirent_hash, path, strlen (path));
+	cache = (struct dirent_names *) gl_map_get (dirent_map, path);
 
 	/* Check whether we've got this one already. */
 	if (cache) {
@@ -160,7 +165,7 @@ static struct dirent_hashent *update_directory_cache (const char *path)
 		return NULL;
 	}
 
-	cache = XMALLOC (struct dirent_hashent);
+	cache = XMALLOC (struct dirent_names);
 	cache->names_len = 0;
 	cache->names_max = 1024;
 	cache->names = XNMALLOC (cache->names_max, char *);
@@ -179,7 +184,7 @@ static struct dirent_hashent *update_directory_cache (const char *path)
 	qsort (cache->names, cache->names_len, sizeof *cache->names,
 	       &cache_compare);
 
-	hashtable_install (dirent_hash, path, strlen (path), cache);
+	gl_map_put (dirent_map, xstrdup (path), cache);
 	closedir (dir);
 
 	return cache;
@@ -197,33 +202,15 @@ static int pattern_compare (const void *a, const void *b)
 	return strncasecmp (key->pattern, memb, key->len);
 }
 
-static void clear_glob (glob_t *pglob)
+static void match_in_directory (const char *path, const char *pattern,
+				int opts, gl_list_t matched)
 {
-	/* look_for_file declares this static, so it's zero-initialised.
-	 * globfree() can deal with checking it before freeing.
-	 */
-	globfree (pglob);
-
-	pglob->gl_pathc = 0;
-	pglob->gl_pathv = NULL;
-	pglob->gl_offs = 0;
-}
-
-static void match_in_directory (const char *path, const char *pattern, int opts,
-				glob_t *pglob, size_t *allocated)
-{
-	struct dirent_hashent *cache;
-	size_t my_allocated = 0;
+	struct dirent_names *cache;
 	int flags;
 	regex_t preg;
 	struct pattern_bsearch pattern_start = { NULL, -1 };
 	char **bsearched;
 	size_t i;
-
-	if (!allocated)
-		allocated = &my_allocated;
-	if (!*allocated)
-		clear_glob (pglob);
 
 	cache = update_directory_cache (path);
 	if (!cache) {
@@ -232,12 +219,6 @@ static void match_in_directory (const char *path, const char *pattern, int opts,
 	}
 
 	debug ("globbing pattern in %s: %s\n", path, pattern);
-
-	if (!*allocated) {
-		*allocated = 4;
-		pglob->gl_pathv = XNMALLOC (*allocated, char *);
-		pglob->gl_pathv[0] = NULL;
-	}
 
 	if (opts & LFF_REGEX)
 		flags = REG_EXTENDED | REG_NOSUB |
@@ -280,46 +261,25 @@ static void match_in_directory (const char *path, const char *pattern, int opts,
 
 		debug ("matched: %s/%s\n", path, cache->names[i]);
 
-		if (pglob->gl_pathc >= *allocated) {
-			*allocated *= 2;
-			pglob->gl_pathv = xnrealloc (
-				pglob->gl_pathv, *allocated, sizeof (char *));
-		}
-		pglob->gl_pathv[pglob->gl_pathc++] =
-			xasprintf ("%s/%s", path, cache->names[i]);
+		gl_list_add_last (matched,
+				  xasprintf ("%s/%s", path, cache->names[i]));
 	}
 
 	if (opts & LFF_REGEX)
 		regfree (&preg);
 	else
 		free (pattern_start.pattern);
-
-	if (pglob->gl_pathc >= *allocated) {
-		*allocated *= 2;
-		pglob->gl_pathv = xnrealloc (pglob->gl_pathv,
-					     *allocated, sizeof (char *));
-	}
-	pglob->gl_pathv[pglob->gl_pathc] = NULL;
-
-	return;
 }
 
-char **look_for_file (const char *hier, const char *sec,
-		      const char *unesc_name, int cat, int opts)
+gl_list_t look_for_file (const char *hier, const char *sec,
+			 const char *unesc_name, int cat, int opts)
 {
+	gl_list_t matched;
 	char *pattern, *path = NULL;
-	static glob_t gbuf;
-	static int cleanup_installed = 0;
 	static int layout = -1;
 	char *name;
 
-	if (!cleanup_installed) {
-		/* appease valgrind */
-		push_cleanup ((cleanup_fun) globfree, &gbuf, 0);
-		cleanup_installed = 1;
-	}
-
-	clear_glob (&gbuf);
+	matched = new_string_list (GL_ARRAY_LIST, false);
 
 	/* This routine only does a minimum amount of matching. It does not
 	   find cat files in the alternate cat directory. */
@@ -337,41 +297,39 @@ char **look_for_file (const char *hier, const char *sec,
 	/* allow lookups like "3x foo" to match "../man3/foo.3x" */
 
 	if (layout & LAYOUT_GNU) {
-		glob_t dirs;
-		size_t i;
-		size_t allocated = 0;
+		gl_list_t dirs;
+		const char *dir;
 
-		memset (&dirs, 0, sizeof (dirs));
+		dirs = new_string_list (GL_ARRAY_LIST, false);
 		pattern = xasprintf ("%s\t*", cat ? "cat" : "man");
 		*strrchr (pattern, '\t') = *sec;
-		match_in_directory (hier, pattern, LFF_MATCHCASE, &dirs, NULL);
+		match_in_directory (hier, pattern, LFF_MATCHCASE, dirs);
 		free (pattern);
 
 		pattern = make_pattern (name, sec, opts);
-		for (i = 0; i < dirs.gl_pathc; ++i) {
+		GL_LIST_FOREACH_START (dirs, dir) {
 			if (path)
 				*path = '\0';
-			match_in_directory (dirs.gl_pathv[i], pattern, opts,
-					    &gbuf, &allocated);
-		}
+			match_in_directory (dir, pattern, opts, matched);
+		} GL_LIST_FOREACH_END (dirs);
 		free (pattern);
-		globfree (&dirs);
+		gl_list_free (dirs);
 	}
 
 	/* Try HPUX style compressed man pages */
-	if ((layout & LAYOUT_HPUX) && gbuf.gl_pathc == 0) {
+	if ((layout & LAYOUT_HPUX) && gl_list_size (matched) == 0) {
 		if (path)
 			*path = '\0';
 		path = appendstr (path, hier, cat ? "/cat" : "/man",
 				  sec, ".Z", (void *) 0);
 		pattern = make_pattern (name, sec, opts);
 
-		match_in_directory (path, pattern, opts, &gbuf, NULL);
+		match_in_directory (path, pattern, opts, matched);
 		free (pattern);
 	}
 
 	/* Try man pages without the section extension --- IRIX man pages */
-	if ((layout & LAYOUT_IRIX) && gbuf.gl_pathc == 0) {
+	if ((layout & LAYOUT_IRIX) && gl_list_size (matched) == 0) {
 		if (path)
 			*path = '\0';
 		path = appendstr (path, hier, cat ? "/cat" : "/man", sec,
@@ -381,12 +339,12 @@ char **look_for_file (const char *hier, const char *sec,
 		else
 			pattern = xasprintf ("%s.*", name);
 
-		match_in_directory (path, pattern, opts, &gbuf, NULL);
+		match_in_directory (path, pattern, opts, matched);
 		free (pattern);
 	}
 
 	/* Try Solaris style man page directories */
-	if ((layout & LAYOUT_SOLARIS) && gbuf.gl_pathc == 0) {
+	if ((layout & LAYOUT_SOLARIS) && gl_list_size (matched) == 0) {
 		if (path)
 			*path = '\0';
 		/* TODO: This needs to be man/sec*, not just man/sec. */
@@ -394,12 +352,12 @@ char **look_for_file (const char *hier, const char *sec,
 				  (void *) 0);
 		pattern = make_pattern (name, sec, opts);
 
-		match_in_directory (path, pattern, opts, &gbuf, NULL);
+		match_in_directory (path, pattern, opts, matched);
 		free (pattern);
 	}
 
 	/* BSD cat pages take the extension .0 */
-	if ((layout & LAYOUT_BSD) && gbuf.gl_pathc == 0) {
+	if ((layout & LAYOUT_BSD) && gl_list_size (matched) == 0) {
 		if (path)
 			*path = '\0';
 		if (cat) {
@@ -412,40 +370,34 @@ char **look_for_file (const char *hier, const char *sec,
 			path = appendstr (path, hier, "/man", sec, (void *) 0);
 			pattern = make_pattern (name, sec, opts);
 		}
-		match_in_directory (path, pattern, opts, &gbuf, NULL);
+		match_in_directory (path, pattern, opts, matched);
 		free (pattern);
 	}
 
 	free (name);
 	free (path);
 
-	if (gbuf.gl_pathc == 0)
-		return NULL;
-	else
-		return gbuf.gl_pathv;
+	return matched;
 }
 
-char **expand_path (const char *path)
+gl_list_t expand_path (const char *path)
 {
 	int res = 0;
-	char **result = NULL;
+	gl_list_t result;
 	glob_t globbuf;
-	size_t i;
+
+	result = new_string_list (GL_ARRAY_LIST, false);
 
 	res = glob (path, GLOB_NOCHECK, NULL, &globbuf);
 	/* if glob failed, return the given path */
-	if (res != 0) {
-		result = XNMALLOC (2, char *);
-		result[0] = xstrdup (path);
-		result[1] = NULL;
-		return result;
+	if (res != 0)
+		gl_list_add_last (result, xstrdup (path));
+	else {
+		size_t i;
+		for (i = 0; i < globbuf.gl_pathc; ++i)
+			gl_list_add_last (result,
+					  xstrdup (globbuf.gl_pathv[i]));
 	}
-
-	result = XNMALLOC (globbuf.gl_pathc + 1, char *);
-	for (i = 0; i < globbuf.gl_pathc; i++) {
-		result[i] = xstrdup (globbuf.gl_pathv[i]);
-	}
-	result[globbuf.gl_pathc] = NULL;
 
 	globfree (&globbuf);
 

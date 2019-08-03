@@ -98,6 +98,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/m4/man-arg-db.m4 \
 	$(top_srcdir)/m4/man-arg-device.m4 \
 	$(top_srcdir)/m4/man-arg-mandirs.m4 \
+	$(top_srcdir)/m4/man-arg-manual.m4 \
 	$(top_srcdir)/m4/man-arg-override-dir.m4 \
 	$(top_srcdir)/m4/man-arg-sections.m4 \
 	$(top_srcdir)/m4/man-arg-setuid.m4 \
@@ -120,7 +121,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/btowc.m4 \
 	$(top_srcdir)/gl/m4/builtin-expect.m4 \
 	$(top_srcdir)/gl/m4/canonicalize.m4 \
-	$(top_srcdir)/gl/m4/chdir-long.m4 \
+	$(top_srcdir)/gl/m4/chdir-long.m4 $(top_srcdir)/gl/m4/chown.m4 \
 	$(top_srcdir)/gl/m4/clock_time.m4 $(top_srcdir)/gl/m4/close.m4 \
 	$(top_srcdir)/gl/m4/closedir.m4 $(top_srcdir)/gl/m4/codeset.m4 \
 	$(top_srcdir)/gl/m4/d-ino.m4 $(top_srcdir)/gl/m4/d-type.m4 \
@@ -164,7 +165,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/intmax_t.m4 \
 	$(top_srcdir)/gl/m4/inttypes_h.m4 $(top_srcdir)/gl/m4/ioctl.m4 \
 	$(top_srcdir)/gl/m4/langinfo_h.m4 \
-	$(top_srcdir)/gl/m4/largefile.m4 \
+	$(top_srcdir)/gl/m4/largefile.m4 $(top_srcdir)/gl/m4/lchown.m4 \
 	$(top_srcdir)/gl/m4/lib-ignore.m4 \
 	$(top_srcdir)/gl/m4/lib-ld.m4 $(top_srcdir)/gl/m4/lib-link.m4 \
 	$(top_srcdir)/gl/m4/lib-prefix.m4 \

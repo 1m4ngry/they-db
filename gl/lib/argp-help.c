@@ -1031,7 +1031,7 @@ static void
 print_header (const char *str, const struct argp *argp,
               struct pentry_state *pest)
 {
-  const char *tstr = dgettext (argp->argp_domain, str);
+  const char *tstr = str ? dgettext (argp->argp_domain, str) : NULL;
   const char *fstr = filter_doc (tstr, ARGP_KEY_HELP_HEADER, argp, pest->state);
 
   if (fstr)
@@ -1422,8 +1422,10 @@ argp_args_usage (const struct argp *argp, const struct argp_state *state,
   char *our_level = *levels;
   int multiple = 0;
   const struct argp_child *child = argp->children;
-  const char *tdoc = dgettext (argp->argp_domain, argp->args_doc), *nl = 0;
+  const char *tdoc =
+    argp->args_doc ? dgettext (argp->argp_domain, argp->args_doc) : NULL;
   const char *fdoc = filter_doc (tdoc, ARGP_KEY_HELP_ARGS_DOC, argp, state);
+  const char *nl = NULL;
 
   if (fdoc)
     {
@@ -1487,7 +1489,7 @@ argp_doc (const struct argp *argp, const struct argp_state *state,
   void *input = 0;
   int anything = 0;
   size_t inp_text_limit = 0;
-  const char *doc = dgettext (argp->argp_domain, argp->doc);
+  const char *doc = argp->doc ? dgettext (argp->argp_domain, argp->doc) : NULL;
   const struct argp_child *child = argp->children;
 
   if (doc)
@@ -1564,7 +1566,7 @@ argp_doc (const struct argp *argp, const struct argp_state *state,
 }
 
 /* Output a usage message for ARGP to STREAM.  If called from
-   argp_state_help, STATE is the relevent parsing state.  FLAGS are from the
+   argp_state_help, STATE is the relevant parsing state.  FLAGS are from the
    set ARGP_HELP_*.  NAME is what to use wherever a 'program name' is
    needed. */
 static void

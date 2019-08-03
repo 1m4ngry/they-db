@@ -26,6 +26,8 @@
 #ifndef DB_STORAGE_H
 #define DB_STORAGE_H
 
+#include "gl_list.h"
+
 /* These definitions give an inherent precedence to each particular type
    of manual page:
    
@@ -52,7 +54,6 @@
 #include "mydbm.h"
 
 struct mandata {
-	struct mandata *next;		/* ptr to next structure, if any */
 	char *addr;			/* ptr to memory containing the fields */
 
 	char *name;			/* Name of page, if != key */
@@ -71,15 +72,19 @@ struct mandata {
 	struct timespec mtime;		/* mod time for file */
 }; 
 
+struct name_ext {
+	const char *name;
+	const char *ext;
+};
+
 /* used by the world */
-extern struct mandata *dblookup_all (MYDBM_FILE dbf, const char *page,
-				     const char *section, int match_case);
+extern gl_list_t dblookup_all (MYDBM_FILE dbf, const char *page,
+			       const char *section, bool match_case);
 extern struct mandata *dblookup_exact (MYDBM_FILE dbf, const char *page,
-				       const char *section, int match_case);
-extern struct mandata *dblookup_pattern (MYDBM_FILE dbf, const char *page,
-					 const char *section, int match_case,
-					 int pattern_regex,
-					 int try_descriptions);
+				       const char *section, bool match_case);
+extern gl_list_t dblookup_pattern (MYDBM_FILE dbf, const char *page,
+				   const char *section, bool match_case,
+				   bool pattern_regex, bool try_descriptions);
 extern int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base);
 extern int dbdelete (MYDBM_FILE dbf, const char *name, struct mandata *in);
 extern void dbprintf (const struct mandata *info);
@@ -97,7 +102,8 @@ extern datum make_multi_key (const char *page, const char *ext);
 #define infoalloc() XZALLOC (struct mandata)
 
 extern char *name_to_key (const char *name);
-extern int list_extensions (char *data, char ***names, char ***ext);
+/* Returns a list of struct name_ext. */
+extern gl_list_t list_extensions (char *data);
 extern void gripe_replace_key (const char *data);
 extern const char *dash_if_unset (const char *str);
 

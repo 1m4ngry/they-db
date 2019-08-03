@@ -43,6 +43,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -86,14 +87,14 @@ static void gripe_seccomp_filter_unavailable (void)
 	       "CONFIG_SECCOMP_FILTER\n");
 }
 
-static int search_ld_preload (const char *needle)
+static bool search_ld_preload (const char *needle)
 {
 	const char *ld_preload_env;
 	static char *ld_preload_file = NULL;
 
 	ld_preload_env = getenv ("LD_PRELOAD");
 	if (ld_preload_env && strstr (ld_preload_env, needle) != NULL)
-		return 1;
+		return true;
 
 	if (!ld_preload_file) {
 		int fd;
@@ -118,9 +119,9 @@ static int search_ld_preload (const char *needle)
 	 * for you.
 	 */
 	if (strstr (ld_preload_file, needle) != NULL)
-		return 1;
+		return true;
 
-	return 0;
+	return false;
 }
 
 /* Can we load a seccomp filter into this process?
@@ -128,20 +129,20 @@ static int search_ld_preload (const char *needle)
  * This guard allows us to call sandbox_load in code paths that may
  * conditionally do so again.
  */
-static int can_load_seccomp (void)
+static bool can_load_seccomp (void)
 {
 	const char *man_disable_seccomp;
 	int seccomp_status;
 
 	if (seccomp_filter_unavailable) {
 		gripe_seccomp_filter_unavailable ();
-		return 0;
+		return false;
 	}
 
 	man_disable_seccomp = getenv ("MAN_DISABLE_SECCOMP");
 	if (man_disable_seccomp && *man_disable_seccomp) {
 		debug ("seccomp filter disabled by user request\n");
-		return 0;
+		return false;
 	}
 
 	/* Valgrind causes the child process to make some system calls we
@@ -158,13 +159,13 @@ static int can_load_seccomp (void)
 	if (search_ld_preload ("/vgpreload")) {
 		debug ("seccomp filter disabled while running under "
 		       "Valgrind\n");
-		return 0;
+		return false;
 	}
 
 	seccomp_status = prctl (PR_GET_SECCOMP);
 
 	if (seccomp_status == 0)
-		return 1;
+		return true;
 
 	if (seccomp_status == -1) {
 		if (errno == EINVAL)
@@ -177,7 +178,7 @@ static int can_load_seccomp (void)
 	else
 		debug ("unknown return value from PR_GET_SECCOMP: %d\n",
 		       seccomp_status);
-	return 0;
+	return false;
 }
 #endif /* HAVE_LIBSECCOMP */
 
@@ -264,7 +265,7 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 	 * Since I currently know of no library with suitable syscall lists,
 	 * the syscall lists here are taken from
 	 * systemd:src/shared/seccomp-util.c, last updated from commit
-	 * 67eb5b380a7b7eed82f658190bff4ca2d83e9abe (2017-11-30).
+	 * bca5a0eaccc849a669b4279e4bfcc6507083a07b (2019-08-01).
 	 */
 
 	/* systemd: SystemCallFilter=@default */
@@ -304,6 +305,7 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 	SC_ALLOW ("pause");
 	SC_ALLOW ("prlimit64");
 	SC_ALLOW ("restart_syscall");
+	SC_ALLOW ("rseq");
 	SC_ALLOW ("rt_sigreturn");
 	SC_ALLOW ("sched_yield");
 	SC_ALLOW ("set_robust_list");
@@ -572,8 +574,8 @@ man_sandbox *sandbox_init (void)
 	return sandbox;
 }
 
-static void _sandbox_load (man_sandbox *sandbox, int permissive) {
 #ifdef HAVE_LIBSECCOMP
+static void _sandbox_load (man_sandbox *sandbox, int permissive) {
 	if (can_load_seccomp ()) {
 		scmp_filter_ctx ctx;
 
@@ -603,8 +605,13 @@ static void _sandbox_load (man_sandbox *sandbox, int permissive) {
 				       "can't load seccomp filter");
 		}
 	}
-#endif /* HAVE_LIBSECCOMP */
 }
+#else /* !HAVE_LIBSECCOMP */
+static void _sandbox_load (man_sandbox *sandbox ATTRIBUTE_UNUSED,
+			   int permissive ATTRIBUTE_UNUSED)
+{
+}
+#endif /* HAVE_LIBSECCOMP */
 
 /* Enter a sandbox for processing untrusted data. */
 void sandbox_load (void *data)
@@ -630,6 +637,7 @@ void sandbox_free (void *data) {
 
 #ifdef HAVE_LIBSECCOMP
 	seccomp_release (sandbox->ctx);
+	seccomp_release (sandbox->permissive_ctx);
 #endif /* HAVE_LIBSECCOMP */
 
 	free (sandbox);

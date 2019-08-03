@@ -36,11 +36,13 @@
 #  --po-domain=man-db \
 #  --no-vc-files \
 #  argp \
+#  array-list \
 #  canonicalize \
 #  closedir \
 #  dirent \
 #  dirname \
 #  error \
+#  fcntl \
 #  flock \
 #  fnmatch-gnu \
 #  fstat \
@@ -51,9 +53,14 @@
 #  gitlog-to-changelog \
 #  glob \
 #  gnupload \
+#  hash-map \
+#  hash-pjw-bare \
+#  hash-set \
 #  idpriv-drop \
 #  idpriv-droptemp \
+#  lchown \
 #  lib-ignore \
+#  linkedhash-list \
 #  localcharset \
 #  lock \
 #  memmem \
@@ -65,6 +72,7 @@
 #  openat \
 #  opendir \
 #  progname \
+#  rbtree-list \
 #  regex \
 #  rename \
 #  setenv \
@@ -72,6 +80,8 @@
 #  signal \
 #  sigprocmask \
 #  stat-time \
+#  stdbool \
+#  strcase \
 #  strcasestr \
 #  strerror \
 #  strsep \
@@ -81,6 +91,10 @@
 #  warnings \
 #  xalloc \
 #  xgetcwd \
+#  xlist \
+#  xmap \
+#  xset \
+#  xstdopen \
 #  xstrndup \
 #  xvasprintf
 
@@ -178,6 +192,12 @@ libgnu_la_SOURCES += argp.h argp-ba.c argp-eexst.c             argp-fmtstream.c 
 
 ## end   gnulib module argp
 
+## begin gnulib module array-list
+
+libgnu_la_SOURCES += gl_array_list.h gl_array_list.c
+
+## end   gnulib module array-list
+
 ## begin gnulib module assure
 
 
@@ -234,6 +254,15 @@ EXTRA_DIST += chdir-long.c chdir-long.h
 EXTRA_libgnu_la_SOURCES += chdir-long.c
 
 ## end   gnulib module chdir-long
+
+## begin gnulib module chown
+
+
+EXTRA_DIST += chown.c fchown-stub.c
+
+EXTRA_libgnu_la_SOURCES += chown.c fchown-stub.c
+
+## end   gnulib module chown
 
 ## begin gnulib module cloexec
 
@@ -820,11 +849,29 @@ EXTRA_DIST += hash.h
 
 ## end   gnulib module hash
 
+## begin gnulib module hash-map
+
+libgnu_la_SOURCES += gl_hash_map.h gl_hash_map.c gl_anyhash1.h gl_anyhash2.h gl_anyhash_primes.h
+
+## end   gnulib module hash-map
+
 ## begin gnulib module hash-pjw
 
 libgnu_la_SOURCES += hash-pjw.h hash-pjw.c
 
 ## end   gnulib module hash-pjw
+
+## begin gnulib module hash-pjw-bare
+
+libgnu_la_SOURCES += hash-pjw-bare.h hash-pjw-bare.c
+
+## end   gnulib module hash-pjw-bare
+
+## begin gnulib module hash-set
+
+libgnu_la_SOURCES += gl_hash_set.h gl_hash_set.c gl_anyhash1.h gl_anyhash2.h gl_anyhash_primes.h
+
+## end   gnulib module hash-set
 
 ## begin gnulib module hash-triple
 
@@ -907,6 +954,15 @@ EXTRA_DIST += langinfo.in.h
 
 ## end   gnulib module langinfo
 
+## begin gnulib module lchown
+
+
+EXTRA_DIST += lchown.c
+
+EXTRA_libgnu_la_SOURCES += lchown.c
+
+## end   gnulib module lchown
+
 ## begin gnulib module libc-config
 
 
@@ -941,6 +997,18 @@ MOSTLYCLEANFILES += limits.h limits.h-t
 EXTRA_DIST += limits.in.h
 
 ## end   gnulib module limits-h
+
+## begin gnulib module linkedhash-list
+
+libgnu_la_SOURCES += gl_linkedhash_list.h gl_linkedhash_list.c gl_anyhash1.h gl_anyhash2.h gl_anyhash_primes.h gl_anylinked_list1.h gl_anylinked_list2.h
+
+## end   gnulib module linkedhash-list
+
+## begin gnulib module list
+
+libgnu_la_SOURCES += gl_list.h gl_list.c
+
+## end   gnulib module list
 
 ## begin gnulib module localcharset
 
@@ -1048,6 +1116,12 @@ libgnu_la_SOURCES += malloca.c
 EXTRA_DIST += malloca.h
 
 ## end   gnulib module malloca
+
+## begin gnulib module map
+
+libgnu_la_SOURCES += gl_map.h gl_map.c
+
+## end   gnulib module map
 
 ## begin gnulib module mbrtowc
 
@@ -1271,6 +1345,12 @@ EXTRA_libgnu_la_SOURCES += rawmemchr.c
 
 ## end   gnulib module rawmemchr
 
+## begin gnulib module rbtree-list
+
+libgnu_la_SOURCES += gl_rbtree_list.h gl_rbtree_list.c gl_anyrbtree_list1.h gl_anyrbtree_list2.h gl_anytree_list1.h gl_anytree_list2.h
+
+## end   gnulib module rbtree-list
+
 ## begin gnulib module readdir
 
 
@@ -1373,6 +1453,12 @@ EXTRA_DIST += select.c
 EXTRA_libgnu_la_SOURCES += select.c
 
 ## end   gnulib module select
+
+## begin gnulib module set
+
+libgnu_la_SOURCES += gl_set.h gl_set.c
+
+## end   gnulib module set
 
 ## begin gnulib module setenv
 
@@ -1926,6 +2012,14 @@ MOSTLYCLEANFILES += stdlib.h stdlib.h-t
 EXTRA_DIST += stdlib.in.h
 
 ## end   gnulib module stdlib
+
+## begin gnulib module stdopen
+
+libgnu_la_SOURCES += stdopen.c
+
+EXTRA_DIST += stdopen.h
+
+## end   gnulib module stdopen
 
 ## begin gnulib module strcase
 
@@ -3029,11 +3123,37 @@ EXTRA_DIST += xgetcwd.h
 
 ## end   gnulib module xgetcwd
 
+## begin gnulib module xlist
+
+libgnu_la_SOURCES += gl_xlist.h gl_xlist.c
+
+## end   gnulib module xlist
+
+## begin gnulib module xmap
+
+libgnu_la_SOURCES += gl_xmap.h gl_xmap.c
+
+## end   gnulib module xmap
+
+## begin gnulib module xset
+
+libgnu_la_SOURCES += gl_xset.h gl_xset.c
+
+## end   gnulib module xset
+
 ## begin gnulib module xsize
 
 libgnu_la_SOURCES += xsize.h xsize.c
 
 ## end   gnulib module xsize
+
+## begin gnulib module xstdopen
+
+libgnu_la_SOURCES += xstdopen.c
+
+EXTRA_DIST += xstdopen.h
+
+## end   gnulib module xstdopen
 
 ## begin gnulib module xstrndup
 

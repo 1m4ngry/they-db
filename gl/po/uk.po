@@ -3,15 +3,15 @@
 # Copyright (C) 2010 Free Software Foundation, Inc.
 #
 # Sergey Poznyakoff <gray@gnu.org>, 2010.
-# Yuri Chornoivan <yurchor@ukr.net>, 2011.
+# Yuri Chornoivan <yurchor@ukr.net>, 2011, 2019.
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
+"Project-Id-Version: gnulib 4.0.0.2567\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
-"PO-Revision-Date: 2011-08-22 09:50+0300\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
+"PO-Revision-Date: 2019-05-19 14:26+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian <translation-team-uk@lists.sourceforge.net>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.1\n"
+"X-Generator: Lokalize 19.03.70\n"
 
 #: gl/lib/argp-help.c:158
 #, c-format
@@ -48,30 +48,29 @@ msgid ""
 msgstr ""
 "Аргументи, обов'язкові для довгих ключів, є обов'язковими й для коротких."
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr "Використання:"
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr " чи: "
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr " [ПАРАМЕТР...]"
 
-#: gl/lib/argp-help.c:1668
-#, fuzzy, c-format
+#: gl/lib/argp-help.c:1670
+#, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
-msgstr ""
-"Спробуйте `%s --help' або `%s --usage' для отримання докладнішого опису.\n"
+msgstr "Віддайте команду «%s --help» або «%s --usage», щоб дізнатися більше.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr "Про помилки звітуйте на <%s>.\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Невідома системна помилка"
 
@@ -117,29 +116,29 @@ msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(ПОМИЛКА ПРОГРАМУВАННЯ) Параметр мала бути розпізнана!?"
 
 #: gl/lib/getopt.c:278
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' is ambiguous\n"
-msgstr "%s: параметр '-W %s' неоднозначний\n"
+msgstr "%s: параметр «%s%s» не є однозначним\n"
 
 #: gl/lib/getopt.c:284
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' is ambiguous; possibilities:"
-msgstr "%s: параметр «%s» є неоднозначним, можливі варіанти:"
+msgstr "%s: неоднозначний параметр «%s%s»; можливі варіанти:"
 
 #: gl/lib/getopt.c:319
-#, fuzzy, c-format
+#, c-format
 msgid "%s: unrecognized option '%s%s'\n"
-msgstr "%s: невідомий параметр '%c%s'\n"
+msgstr "%s: невідомий параметр «%s%s»\n"
 
 #: gl/lib/getopt.c:345
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' doesn't allow an argument\n"
-msgstr "%s: параметр '%c%s' не може мати аргументу\n"
+msgstr "%s: додавання аргументів до параметра «%s%s» не передбачено\n"
 
 #: gl/lib/getopt.c:360
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' requires an argument\n"
-msgstr "%s: для використання параметра «--%s» слід вказати аргумент\n"
+msgstr "%s: до параметра «%s%s» слід додати аргумент\n"
 
 #: gl/lib/getopt.c:621
 #, c-format
@@ -190,9 +189,8 @@ msgid "Invalid back reference"
 msgstr "Недійсне зворотнє посилання"
 
 #: gl/lib/regcomp.c:156
-#, fuzzy
 msgid "Unmatched [, [^, [:, [., or [="
-msgstr "Незакрита [ або [^"
+msgstr "Вираз без парних [, [^, [:, [. або [="
 
 #: gl/lib/regcomp.c:159
 msgid "Unmatched ( or \\("
@@ -238,6 +236,11 @@ msgstr "Не вказано попереднього формального ви
 msgid "memory exhausted"
 msgstr "пам'ять вичерпано"
 
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr "стандартні дескриптори файлів"
+
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "некоректний аргумент %s для %s"
 
@@ -247,8 +250,51 @@ msgstr "пам'ять вичерпано"
 #~ msgid "Valid arguments are:"
 #~ msgstr "Дозволені аргументи такі:"
 
-#~ msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
-#~ msgstr "%.*s: параметр ARGP_HELP_FMT має бути додатнім"
+#~ msgid "%u bitset_allocs, %u freed (%.2f%%).\n"
+#~ msgstr "%u bitset_allocs, %u звільнено (%.2f%%).\n"
+
+#~ msgid "%u bitset_sets, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset_sets, %u кешовано (%.2f%%)\n"
+
+#~ msgid "%u bitset_resets, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset_resets, %u кешовано (%.2f%%)\n"
+
+#~ msgid "%u bitset_tests, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset_tests, %u кешовано (%.2f%%)\n"
+
+#~ msgid "%u bitset_lists\n"
+#~ msgstr "%u bitset_lists\n"
+
+#~ msgid "count log histogram\n"
+#~ msgstr "гістограма журналу лічильників\n"
+
+#~ msgid "size log histogram\n"
+#~ msgstr "гістограма журналу розміру\n"
+
+#~ msgid "density histogram\n"
+#~ msgstr "гістограма щільності\n"
+
+#~ msgid ""
+#~ "Bitset statistics:\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Статистика наборів бітів:\n"
+#~ "\n"
+
+#~ msgid "Accumulated runs = %u\n"
+#~ msgstr "Акумульовані запуски = %u\n"
+
+#~ msgid "cannot read stats file"
+#~ msgstr "не вдалося прочитати файл статистичних даних"
+
+#~ msgid "bad stats file size\n"
+#~ msgstr "помилковий розмір файла статистичних даних\n"
+
+#~ msgid "cannot write stats file"
+#~ msgstr "не вдалося записати файл статистичних даних."
+
+#~ msgid "cannot open stats file for writing"
+#~ msgstr "не вдалося відкрити файл статистичних даних для запису"
 
 #~ msgid "program error"
 #~ msgstr "помилка програми"
@@ -278,29 +324,57 @@ msgstr "пам'ять вичерпано"
 #~ msgid "preserving permissions for %s"
 #~ msgstr "збереження прав доступу до %s"
 
-#~ msgid "error while opening \"%s\" for reading"
-#~ msgstr "помилка під час відкриття \"%s\" для читання"
+#~ msgid "error while opening %s for reading"
+#~ msgstr "помилка при відкриванні «%s» для читання"
 
-#~ msgid "cannot open backup file \"%s\" for writing"
-#~ msgstr "неможливо відкрити резервний файл \"%s\" для запису"
+#~ msgid "cannot open backup file %s for writing"
+#~ msgstr "не вдається відкрити резервний файл «%s» для запису"
 
-#~ msgid "error reading \"%s\""
-#~ msgstr "помилка читання \"%s\""
+#~ msgid "error reading %s"
+#~ msgstr "помилка читання %s"
 
-#~ msgid "error writing \"%s\""
-#~ msgstr "помилка запису \"%s\""
+#~ msgid "error writing %s"
+#~ msgstr "помилка запису %s"
 
-#~ msgid "error after reading \"%s\""
-#~ msgstr "помилка після читання \"%s\""
+#~ msgid "error after reading %s"
+#~ msgstr "помилка після читання «%s»"
 
 #~ msgid "fdopen() failed"
 #~ msgstr "помилка fdopen()"
 
-#~ msgid "C# compiler not found, try installing pnet"
-#~ msgstr "не знайдено компілятора C#, спробуйте встановити pnet"
+#~ msgid "C# compiler not found, try installing mono"
+#~ msgstr "не знайдено компілятора C#, спробуйте встановити mono"
 
-#~ msgid "C# virtual machine not found, try installing pnet"
-#~ msgstr "не знайдено віртуальної машини C#, спробуйте встановити pnet"
+#~ msgid "C# virtual machine not found, try installing mono"
+#~ msgstr "не знайдено віртуальної машини C#, спробуйте встановити mono"
+
+#~ msgid "unbalanced ["
+#~ msgstr "неврівноважена дужка ["
+
+#~ msgid "invalid character class"
+#~ msgstr "некоректний клас символів"
+
+#~ msgid "character class syntax is [[:space:]], not [:space:]"
+#~ msgstr ""
+#~ "синтаксис класу символів є таким: [[:space:]], — а не таким: [:space:]"
+
+#~ msgid "unfinished \\ escape"
+#~ msgstr "незавершене екранування \\"
+
+#~ msgid "invalid content of \\{\\}"
+#~ msgstr "некоректний вміст \\{\\}"
+
+#~ msgid "regular expression too big"
+#~ msgstr "занадто об'ємний формальний вираз"
+
+#~ msgid "unbalanced ("
+#~ msgstr "неврівноважена дужка ("
+
+#~ msgid "no syntax specified"
+#~ msgstr "не вказано синтаксису"
+
+#~ msgid "unbalanced )"
+#~ msgstr "неврівноважена дужка )"
 
 #~ msgid "%s subprocess failed"
 #~ msgstr "нащадок %s зазнав невдачі"
@@ -314,20 +388,8 @@ msgstr "пам'ять вичерпано"
 #~ msgid "directory"
 #~ msgstr "каталог"
 
-#~ msgid "block special file"
-#~ msgstr "спеціальний блоковий файл"
-
-#~ msgid "character special file"
-#~ msgstr "спеціальний символьний файл"
-
-#~ msgid "fifo"
-#~ msgstr "fifo"
-
 #~ msgid "symbolic link"
 #~ msgstr "символьне посилання"
-
-#~ msgid "socket"
-#~ msgstr "гніздо"
 
 #~ msgid "message queue"
 #~ msgstr "черга повідомлень"
@@ -340,6 +402,51 @@ msgstr "пам'ять вичерпано"
 
 #~ msgid "typed memory object"
 #~ msgstr "типізований об'єкт пам'яті"
+
+#~ msgid "block special file"
+#~ msgstr "спеціальний блоковий файл"
+
+#~ msgid "character special file"
+#~ msgstr "спеціальний символьний файл"
+
+#~ msgid "contiguous data"
+#~ msgstr "неперервні дані"
+
+#~ msgid "fifo"
+#~ msgstr "fifo"
+
+#~ msgid "door"
+#~ msgstr "двері"
+
+#~ msgid "multiplexed block special file"
+#~ msgstr "спеціальний файл ущільненого блокового пристрою"
+
+#~ msgid "multiplexed character special file"
+#~ msgstr "спеціальний файл ущільненого символьного пристрою"
+
+#~ msgid "multiplexed file"
+#~ msgstr "ущільнений файл"
+
+#~ msgid "named file"
+#~ msgstr "іменований файл"
+
+#~ msgid "network special file"
+#~ msgstr "спеціальний файл мережі"
+
+#~ msgid "migrated file with data"
+#~ msgstr "перенесений файл з даними"
+
+#~ msgid "migrated file without data"
+#~ msgstr "перенесений файл без даних"
+
+#~ msgid "port"
+#~ msgstr "порт"
+
+#~ msgid "socket"
+#~ msgstr "гніздо"
+
+#~ msgid "whiteout"
+#~ msgstr "забілювання"
 
 #~ msgid "weird file"
 #~ msgstr "дивний файл"
@@ -401,18 +508,6 @@ msgstr "пам'ять вичерпано"
 #~ msgid "Unknown error"
 #~ msgstr "Невідома помилка"
 
-#~ msgid "%s: option '--%s' doesn't allow an argument\n"
-#~ msgstr "%s: параметр '--%s' не може мати аргументу\n"
-
-#~ msgid "%s: unrecognized option '--%s'\n"
-#~ msgstr "%s: невідомий параметр '--%s'\n"
-
-#~ msgid "%s: option '-W %s' doesn't allow an argument\n"
-#~ msgstr "%s: параметр '-W %s' не може мати аргументу\n"
-
-#~ msgid "%s: option '-W %s' requires an argument\n"
-#~ msgstr "%s: для використання параметра «-W %s» слід вказати аргумент\n"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "недійсне значення аргументу source_version для compile_java_class"
 
@@ -437,6 +532,9 @@ msgstr "пам'ять вичерпано"
 
 #~ msgid "%s subprocess I/O error"
 #~ msgstr "помилка вводу-виводу нащадка %s"
+
+#~ msgid "cannot stat %s"
+#~ msgstr "не вдалося отримати статистичні дані щодо %s"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "не вдається змінити права доступу до %s"
@@ -470,9 +568,6 @@ msgstr "пам'ять вичерпано"
 
 #~ msgid "%s subprocess terminated with exit code %d"
 #~ msgstr "підпроцес %s закінчився кодом %d"
-
-#~ msgid "Franc,ois Pinard"
-#~ msgstr "Franc,ois Pinard"
 
 #~ msgid "`"
 #~ msgstr "`"
@@ -603,6 +698,18 @@ msgstr "пам'ять вичерпано"
 #~ msgid "Unknown signal %d"
 #~ msgstr "Невідомий сигнал %d"
 
+#~ msgid "Execution times (seconds)"
+#~ msgstr "Час виконання (у секундах)"
+
+#~ msgid "CPU user"
+#~ msgstr "Користувач процесора"
+
+#~ msgid "CPU system"
+#~ msgstr "Система процесора"
+
+#~ msgid "wall clock"
+#~ msgstr "настінний годинник"
+
 #~ msgid "iconv function not usable"
 #~ msgstr "функція iconv непридатна до вжитку"
 
@@ -640,20 +747,16 @@ msgstr "пам'ять вичерпано"
 #~ msgstr "©"
 
 #~ msgid ""
-#~ "\n"
-#~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-#~ "html>.\n"
+#~ "License GPLv3+: GNU GPL version 3 or later <%s>.\n"
 #~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
-#~ "\n"
 #~ msgstr ""
-#~ "\n"
-#~ "Ліцензія GPLv3+: GNU GPL версії 3 або пізнішої <http://gnu.org/licenses/"
-#~ "gpl.html>\n"
-#~ "Це вільне програмне забезпечення: ви можете змінювати та розповсюджувати "
+#~ "Умови ліцензування викладено у GPLv3+: GNU GPL версії 3 або новішій, <"
+#~ "%s>\n"
+#~ "Це вільне програмне забезпечення: ви можете вільно змінювати і поширювати "
 #~ "його.\n"
-#~ "Не надається ЖОДНИХ ГАРАНТІЙ в межах дозволених законодавством.\n"
-#~ "\n"
+#~ "Вам не надається ЖОДНИХ ГАРАНТІЙ, окрім гарантій передбачених "
+#~ "законодавством.\n"
 
 #~ msgid "Written by %s.\n"
 #~ msgstr "Автор: %s.\n"
@@ -718,12 +821,8 @@ msgstr "пам'ять вичерпано"
 #~ "%s, %s, %s, %s,\n"
 #~ "%s, %s та інші.\n"
 
-#~ msgid ""
-#~ "\n"
-#~ "Report bugs to: %s\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Про помилки звітуйте на %s\n"
+#~ msgid "Report bugs to: %s\n"
+#~ msgstr "Про помилки звітуйте на %s\n"
 
 #~ msgid "Report %s bugs to: %s\n"
 #~ msgstr "Про помилки у програмі %s звітуйте на %s\n"
@@ -731,13 +830,10 @@ msgstr "пам'ять вичерпано"
 #~ msgid "%s home page: <%s>\n"
 #~ msgstr "домашня сторінка %s: <%s>\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
-#~ msgstr "домашня сторінка %s: <http://www.gnu.org/software/%s/>\n"
-
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
+#~ msgid "General help using GNU software: <%s>\n"
 #~ msgstr ""
-#~ "Загальна допомога щодо використання ПО GNU: <http://www.gnu.org/gethelp/"
-#~ ">\n"
+#~ "Загальна довідкова інформація щодо використання програмного забезпечення "
+#~ "GNU: <%s>\n"
 
 #~ msgid "_open_osfhandle failed"
 #~ msgstr "помилка _open_osfhandle"
@@ -750,6 +846,10 @@ msgstr "пам'ять вичерпано"
 
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "підпроцес %s отримав фатальний сигнал %d"
+
+#~ msgid "failed to set file descriptor text/binary mode"
+#~ msgstr ""
+#~ "не вдалося встановити текстовий або двійковий режим для дескриптора файла"
 
 #~ msgid "stdin"
 #~ msgstr "stdin"
@@ -778,11 +878,32 @@ msgstr "пам'ять вичерпано"
 #~ msgid "cannot perform formatted output"
 #~ msgstr "неможливо здійснити форматований вивід"
 
-#~ msgid "invalid %s%s argument `%s'"
-#~ msgstr "некоректний аргумент для %s%s: `%s'"
+#~ msgid "invalid %s%s argument '%s'"
+#~ msgstr "некоректний аргумент %s%s — «%s»"
 
-#~ msgid "invalid suffix in %s%s argument `%s'"
-#~ msgstr "некоректний суфікс в аргументі для %s%s: `%s'"
+#~ msgid "invalid suffix in %s%s argument '%s'"
+#~ msgstr "некоректний суфікс в аргументі %s%s: «%s»"
 
-#~ msgid "%s%s argument `%s' too large"
-#~ msgstr "завеликий аргумент для %s%s: `%s'"
+#~ msgid "%s%s argument '%s' too large"
+#~ msgstr "%s%s, аргумент «%s» є занадто об’ємним"
+
+#~ msgid "%s home page: <https://www.gnu.org/software/%s/>\n"
+#~ msgstr "Домашня сторінка %s: <https://www.gnu.org/software/%s/>\n"
+
+#~ msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
+#~ msgstr "%.*s: параметр ARGP_HELP_FMT має бути додатнім"
+
+#~ msgid "%s: option '--%s' doesn't allow an argument\n"
+#~ msgstr "%s: параметр '--%s' не може мати аргументу\n"
+
+#~ msgid "%s: unrecognized option '--%s'\n"
+#~ msgstr "%s: невідомий параметр '--%s'\n"
+
+#~ msgid "%s: option '-W %s' doesn't allow an argument\n"
+#~ msgstr "%s: параметр '-W %s' не може мати аргументу\n"
+
+#~ msgid "%s: option '-W %s' requires an argument\n"
+#~ msgstr "%s: для використання параметра «-W %s» слід вказати аргумент\n"
+
+#~ msgid "Franc,ois Pinard"
+#~ msgstr "Franc,ois Pinard"

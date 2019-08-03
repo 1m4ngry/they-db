@@ -98,6 +98,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/m4/man-arg-db.m4 \
 	$(top_srcdir)/m4/man-arg-device.m4 \
 	$(top_srcdir)/m4/man-arg-mandirs.m4 \
+	$(top_srcdir)/m4/man-arg-manual.m4 \
 	$(top_srcdir)/m4/man-arg-override-dir.m4 \
 	$(top_srcdir)/m4/man-arg-sections.m4 \
 	$(top_srcdir)/m4/man-arg-setuid.m4 \
@@ -120,7 +121,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/btowc.m4 \
 	$(top_srcdir)/gl/m4/builtin-expect.m4 \
 	$(top_srcdir)/gl/m4/canonicalize.m4 \
-	$(top_srcdir)/gl/m4/chdir-long.m4 \
+	$(top_srcdir)/gl/m4/chdir-long.m4 $(top_srcdir)/gl/m4/chown.m4 \
 	$(top_srcdir)/gl/m4/clock_time.m4 $(top_srcdir)/gl/m4/close.m4 \
 	$(top_srcdir)/gl/m4/closedir.m4 $(top_srcdir)/gl/m4/codeset.m4 \
 	$(top_srcdir)/gl/m4/d-ino.m4 $(top_srcdir)/gl/m4/d-type.m4 \
@@ -164,7 +165,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/intmax_t.m4 \
 	$(top_srcdir)/gl/m4/inttypes_h.m4 $(top_srcdir)/gl/m4/ioctl.m4 \
 	$(top_srcdir)/gl/m4/langinfo_h.m4 \
-	$(top_srcdir)/gl/m4/largefile.m4 \
+	$(top_srcdir)/gl/m4/largefile.m4 $(top_srcdir)/gl/m4/lchown.m4 \
 	$(top_srcdir)/gl/m4/lib-ignore.m4 \
 	$(top_srcdir)/gl/m4/lib-ld.m4 $(top_srcdir)/gl/m4/lib-link.m4 \
 	$(top_srcdir)/gl/m4/lib-prefix.m4 \
@@ -1373,20 +1374,20 @@ dist_noinst_DATA = \
 	options-only.me \
 	print-options
 
-noinst_DATA = \
-	$(MANUAL).cat \
-	$(MANUAL).ps
+@BUILD_MANUAL_TRUE@noinst_DATA = \
+@BUILD_MANUAL_TRUE@	$(MANUAL).cat \
+@BUILD_MANUAL_TRUE@	$(MANUAL).ps
 
-CLEANFILES = \
-	$(noinst_DATA) \
-	$(MANUAL).dvi \
-	$(MANUAL).html \
-	$(MANUAL).pp \
-	$(MANUAL).tdvi \
-	$(MANUAL).tps \
-	version
+@BUILD_MANUAL_TRUE@CLEANFILES = \
+@BUILD_MANUAL_TRUE@	$(noinst_DATA) \
+@BUILD_MANUAL_TRUE@	$(MANUAL).dvi \
+@BUILD_MANUAL_TRUE@	$(MANUAL).html \
+@BUILD_MANUAL_TRUE@	$(MANUAL).pp \
+@BUILD_MANUAL_TRUE@	$(MANUAL).tdvi \
+@BUILD_MANUAL_TRUE@	$(MANUAL).tps \
+@BUILD_MANUAL_TRUE@	version
 
-SOELIM = soelim
+@BUILD_MANUAL_TRUE@SOELIM = soelim
 all: all-am
 
 .SUFFIXES:
@@ -1501,6 +1502,12 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@BUILD_MANUAL_FALSE@ps-local:
+@BUILD_MANUAL_FALSE@html-local:
+@BUILD_MANUAL_FALSE@dvi-local:
+@BUILD_MANUAL_FALSE@clean-local:
+@BUILD_MANUAL_FALSE@install-data-hook:
+@BUILD_MANUAL_FALSE@uninstall-hook:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -1587,55 +1594,55 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 
-version: $(top_srcdir)/configure.ac
-	echo '.ds V $(roff_version)' > $@
+@BUILD_MANUAL_TRUE@version: $(top_srcdir)/configure.ac
+@BUILD_MANUAL_TRUE@	echo '.ds V $(roff_version)' > $@
 
-$(MANUAL).pp: $(ME_FILES) version
-	$(SOELIM) -I$(srcdir) man_db.me | tbl > $@
+@BUILD_MANUAL_TRUE@$(MANUAL).pp: $(ME_FILES) version
+@BUILD_MANUAL_TRUE@	$(SOELIM) -I$(srcdir) man_db.me | tbl > $@.new && mv -f $@.new $@
 
-.pp.dvi:
-	$(TROFF) -me -Tdvi $< > $@
+@BUILD_MANUAL_TRUE@.pp.dvi:
+@BUILD_MANUAL_TRUE@	$(TROFF) -me -Tdvi $< > $@.new && mv -f $@.new $@
 
-.pp.ps:
-	$(TROFF) -me -Tps $< > $@
+@BUILD_MANUAL_TRUE@.pp.ps:
+@BUILD_MANUAL_TRUE@	$(TROFF) -me -Tps $< > $@.new && mv -f $@.new $@
 
-.pp.tdvi:
-	$(TROFF) -me -Tdvi $< | grodvi -d > $@
+@BUILD_MANUAL_TRUE@.pp.tdvi:
+@BUILD_MANUAL_TRUE@	$(TROFF) -me -Tdvi $< | grodvi -d > $@.new && mv -f $@.new $@
 
-.tdvi.tps:
-	dvips -f -t a4 $< > $@
+@BUILD_MANUAL_TRUE@.tdvi.tps:
+@BUILD_MANUAL_TRUE@	dvips -f -t a4 $< > $@.new && mv -f $@.new $@
 
-.pp.cat:
-	LC_ALL=C nroff -me $< > $@
+@BUILD_MANUAL_TRUE@.pp.cat:
+@BUILD_MANUAL_TRUE@	LC_ALL=C nroff -me $< > $@.new && mv -f $@.new $@
 
-.pp.html:
-	$(TROFF) -me -Thtml -P-I$* $< > $@
+@BUILD_MANUAL_TRUE@.pp.html:
+@BUILD_MANUAL_TRUE@	$(TROFF) -me -Thtml -P-I$* $< > $@.new && mv -f $@.new $@
 
 # Automake defines these targets already, so we need to use -local.
-dvi-local: $(MANUAL).dvi
-ps-local: $(MANUAL).ps
-html-local: $(MANUAL).html
+@BUILD_MANUAL_TRUE@dvi-local: $(MANUAL).dvi
+@BUILD_MANUAL_TRUE@ps-local: $(MANUAL).ps
+@BUILD_MANUAL_TRUE@html-local: $(MANUAL).html
 
 # These are all ours.
-cat: $(MANUAL).cat
-tps: $(MANUAL).tps
+@BUILD_MANUAL_TRUE@cat: $(MANUAL).cat
+@BUILD_MANUAL_TRUE@tps: $(MANUAL).tps
 
-clean-local:
-	-rm -f $(MANUAL)-*.png
+@BUILD_MANUAL_TRUE@clean-local:
+@BUILD_MANUAL_TRUE@	-rm -f $(MANUAL)-*.png
 
-install-data-hook:
-	test -z "$(docdir)" || $(MKDIR_P) "$(DESTDIR)$(docdir)"
-	@if test -f $(MANUAL).cat; then \
-		echo " $(INSTALL_DATA) $(MANUAL).cat '$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).txt'"; \
-		$(INSTALL_DATA) $(MANUAL).cat "$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).txt" || exit $$?; \
-	fi
-	@if test -f $(MANUAL).ps; then \
-		echo " $(INSTALL_DATA) $(MANUAL).ps '$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).ps'"; \
-		$(INSTALL_DATA) $(MANUAL).ps "$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).ps" || exit $$?; \
-	fi
+@BUILD_MANUAL_TRUE@install-data-hook:
+@BUILD_MANUAL_TRUE@	test -z "$(docdir)" || $(MKDIR_P) "$(DESTDIR)$(docdir)"
+@BUILD_MANUAL_TRUE@	@if test -f $(MANUAL).cat; then \
+@BUILD_MANUAL_TRUE@		echo " $(INSTALL_DATA) $(MANUAL).cat '$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).txt'"; \
+@BUILD_MANUAL_TRUE@		$(INSTALL_DATA) $(MANUAL).cat "$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).txt" || exit $$?; \
+@BUILD_MANUAL_TRUE@	fi
+@BUILD_MANUAL_TRUE@	@if test -f $(MANUAL).ps; then \
+@BUILD_MANUAL_TRUE@		echo " $(INSTALL_DATA) $(MANUAL).ps '$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).ps'"; \
+@BUILD_MANUAL_TRUE@		$(INSTALL_DATA) $(MANUAL).ps "$(DESTDIR)$(docdir)/$(MANUAL_INSTALL).ps" || exit $$?; \
+@BUILD_MANUAL_TRUE@	fi
 
-uninstall-hook:
-	rm -rf "$(DESTDIR)$(docdir)"
+@BUILD_MANUAL_TRUE@uninstall-hook:
+@BUILD_MANUAL_TRUE@	rm -rf "$(DESTDIR)$(docdir)"
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
