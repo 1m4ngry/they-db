@@ -1,9 +1,9 @@
-man-db (2.8.6-1) UNRELEASED; urgency=medium
+man-db (2.8.6-1) unstable; urgency=medium
 
   * New upstream release.
   * Use debhelper-compat instead of debian/compat.
 
- -- Colin Watson <cjwatson@debian.org>  Sat, 03 Aug 2019 12:15:59 +0100
+ -- Colin Watson <cjwatson@debian.org>  Sat, 03 Aug 2019 12:31:40 +0100
 
 man-db (2.8.5-2) unstable; urgency=medium
 
