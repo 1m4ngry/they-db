@@ -50,11 +50,13 @@
 #  --po-domain=man-db \
 #  --no-vc-files \
 #  argp \
+#  array-list \
 #  canonicalize \
 #  closedir \
 #  dirent \
 #  dirname \
 #  error \
+#  fcntl \
 #  flock \
 #  fnmatch-gnu \
 #  fstat \
@@ -65,9 +67,14 @@
 #  gitlog-to-changelog \
 #  glob \
 #  gnupload \
+#  hash-map \
+#  hash-pjw-bare \
+#  hash-set \
 #  idpriv-drop \
 #  idpriv-droptemp \
+#  lchown \
 #  lib-ignore \
+#  linkedhash-list \
 #  localcharset \
 #  lock \
 #  memmem \
@@ -79,6 +86,7 @@
 #  openat \
 #  opendir \
 #  progname \
+#  rbtree-list \
 #  regex \
 #  rename \
 #  setenv \
@@ -86,6 +94,8 @@
 #  signal \
 #  sigprocmask \
 #  stat-time \
+#  stdbool \
+#  strcase \
 #  strcasestr \
 #  strerror \
 #  strsep \
@@ -95,6 +105,10 @@
 #  warnings \
 #  xalloc \
 #  xgetcwd \
+#  xlist \
+#  xmap \
+#  xset \
+#  xstdopen \
 #  xstrndup \
 #  xvasprintf
 
@@ -184,6 +198,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/m4/man-arg-db.m4 \
 	$(top_srcdir)/m4/man-arg-device.m4 \
 	$(top_srcdir)/m4/man-arg-mandirs.m4 \
+	$(top_srcdir)/m4/man-arg-manual.m4 \
 	$(top_srcdir)/m4/man-arg-override-dir.m4 \
 	$(top_srcdir)/m4/man-arg-sections.m4 \
 	$(top_srcdir)/m4/man-arg-setuid.m4 \
@@ -206,7 +221,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/btowc.m4 \
 	$(top_srcdir)/gl/m4/builtin-expect.m4 \
 	$(top_srcdir)/gl/m4/canonicalize.m4 \
-	$(top_srcdir)/gl/m4/chdir-long.m4 \
+	$(top_srcdir)/gl/m4/chdir-long.m4 $(top_srcdir)/gl/m4/chown.m4 \
 	$(top_srcdir)/gl/m4/clock_time.m4 $(top_srcdir)/gl/m4/close.m4 \
 	$(top_srcdir)/gl/m4/closedir.m4 $(top_srcdir)/gl/m4/codeset.m4 \
 	$(top_srcdir)/gl/m4/d-ino.m4 $(top_srcdir)/gl/m4/d-type.m4 \
@@ -250,7 +265,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/intmax_t.m4 \
 	$(top_srcdir)/gl/m4/inttypes_h.m4 $(top_srcdir)/gl/m4/ioctl.m4 \
 	$(top_srcdir)/gl/m4/langinfo_h.m4 \
-	$(top_srcdir)/gl/m4/largefile.m4 \
+	$(top_srcdir)/gl/m4/largefile.m4 $(top_srcdir)/gl/m4/lchown.m4 \
 	$(top_srcdir)/gl/m4/lib-ignore.m4 \
 	$(top_srcdir)/gl/m4/lib-ld.m4 $(top_srcdir)/gl/m4/lib-link.m4 \
 	$(top_srcdir)/gl/m4/lib-prefix.m4 \
@@ -357,22 +372,26 @@ am__DEPENDENCIES_1 =
 am__dirstamp = $(am__leading_dot)dirstamp
 am_libgnu_la_OBJECTS = areadlink-with-size.lo argp-ba.lo argp-eexst.lo \
 	argp-fmtstream.lo argp-fs-xinl.lo argp-help.lo argp-parse.lo \
-	argp-pin.lo argp-pv.lo argp-pvh.lo argp-xinl.lo bitrotate.lo \
-	canonicalize.lo cloexec.lo dirname.lo basename.lo \
-	dirname-lgpl.lo basename-lgpl.lo stripslash.lo exitfail.lo \
-	fd-hook.lo fd-safer-flag.lo dup-safer-flag.lo file-set.lo \
-	filenamecat-lgpl.lo getprogname.lo gettime.lo hard-locale.lo \
-	hash.lo hash-pjw.lo hash-triple.lo idpriv-drop.lo \
-	idpriv-droptemp.lo localcharset.lo glthread/lock.lo malloca.lo \
-	nonblocking.lo openat-die.lo progname.lo same.lo save-cwd.lo \
-	malloc/scratch_buffer_grow.lo \
+	argp-pin.lo argp-pv.lo argp-pvh.lo argp-xinl.lo \
+	gl_array_list.lo bitrotate.lo canonicalize.lo cloexec.lo \
+	dirname.lo basename.lo dirname-lgpl.lo basename-lgpl.lo \
+	stripslash.lo exitfail.lo fd-hook.lo fd-safer-flag.lo \
+	dup-safer-flag.lo file-set.lo filenamecat-lgpl.lo \
+	getprogname.lo gettime.lo hard-locale.lo hash.lo \
+	gl_hash_map.lo hash-pjw.lo hash-pjw-bare.lo gl_hash_set.lo \
+	hash-triple.lo idpriv-drop.lo idpriv-droptemp.lo \
+	gl_linkedhash_list.lo gl_list.lo localcharset.lo \
+	glthread/lock.lo malloca.lo gl_map.lo nonblocking.lo \
+	openat-die.lo progname.lo gl_rbtree_list.lo same.lo \
+	save-cwd.lo malloc/scratch_buffer_grow.lo \
 	malloc/scratch_buffer_grow_preserve.lo \
-	malloc/scratch_buffer_set_array_size.lo sig-handler.lo \
-	sockets.lo stat-time.lo strnlen1.lo sys_socket.lo tempname.lo \
-	glthread/threadlib.lo timespec.lo unistd.lo dup-safer.lo \
-	fd-safer.lo pipe-safer.lo utimens.lo wctype-h.lo xmalloc.lo \
-	xalloc-die.lo xgetcwd.lo xsize.lo xstrndup.lo xvasprintf.lo \
-	xasprintf.lo
+	malloc/scratch_buffer_set_array_size.lo gl_set.lo \
+	sig-handler.lo sockets.lo stat-time.lo stdopen.lo strnlen1.lo \
+	sys_socket.lo tempname.lo glthread/threadlib.lo timespec.lo \
+	unistd.lo dup-safer.lo fd-safer.lo pipe-safer.lo utimens.lo \
+	wctype-h.lo xmalloc.lo xalloc-die.lo xgetcwd.lo gl_xlist.lo \
+	gl_xmap.lo gl_xset.lo xsize.lo xstdopen.lo xstrndup.lo \
+	xvasprintf.lo xasprintf.lo
 libgnu_la_OBJECTS = $(am_libgnu_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -407,31 +426,38 @@ am__depfiles_remade = ./$(DEPDIR)/alloca.Plo \
 	./$(DEPDIR)/basename-lgpl.Plo ./$(DEPDIR)/basename.Plo \
 	./$(DEPDIR)/bitrotate.Plo ./$(DEPDIR)/btowc.Plo \
 	./$(DEPDIR)/canonicalize-lgpl.Plo ./$(DEPDIR)/canonicalize.Plo \
-	./$(DEPDIR)/chdir-long.Plo ./$(DEPDIR)/cloexec.Plo \
-	./$(DEPDIR)/close.Plo ./$(DEPDIR)/closedir.Plo \
-	./$(DEPDIR)/dirfd.Plo ./$(DEPDIR)/dirname-lgpl.Plo \
-	./$(DEPDIR)/dirname.Plo ./$(DEPDIR)/dup-safer-flag.Plo \
-	./$(DEPDIR)/dup-safer.Plo ./$(DEPDIR)/dup.Plo \
-	./$(DEPDIR)/dup2.Plo ./$(DEPDIR)/error.Plo \
+	./$(DEPDIR)/chdir-long.Plo ./$(DEPDIR)/chown.Plo \
+	./$(DEPDIR)/cloexec.Plo ./$(DEPDIR)/close.Plo \
+	./$(DEPDIR)/closedir.Plo ./$(DEPDIR)/dirfd.Plo \
+	./$(DEPDIR)/dirname-lgpl.Plo ./$(DEPDIR)/dirname.Plo \
+	./$(DEPDIR)/dup-safer-flag.Plo ./$(DEPDIR)/dup-safer.Plo \
+	./$(DEPDIR)/dup.Plo ./$(DEPDIR)/dup2.Plo ./$(DEPDIR)/error.Plo \
 	./$(DEPDIR)/exitfail.Plo ./$(DEPDIR)/fchdir.Plo \
-	./$(DEPDIR)/fcntl.Plo ./$(DEPDIR)/fd-hook.Plo \
-	./$(DEPDIR)/fd-safer-flag.Plo ./$(DEPDIR)/fd-safer.Plo \
-	./$(DEPDIR)/fdopendir.Plo ./$(DEPDIR)/file-set.Plo \
-	./$(DEPDIR)/filenamecat-lgpl.Plo ./$(DEPDIR)/float.Plo \
-	./$(DEPDIR)/flock.Plo ./$(DEPDIR)/fnmatch.Plo \
-	./$(DEPDIR)/fnmatch_loop.Plo ./$(DEPDIR)/fstat.Plo \
-	./$(DEPDIR)/fstatat.Plo ./$(DEPDIR)/futimens.Plo \
-	./$(DEPDIR)/getcwd-lgpl.Plo ./$(DEPDIR)/getcwd.Plo \
-	./$(DEPDIR)/getdelim.Plo ./$(DEPDIR)/getdtablesize.Plo \
-	./$(DEPDIR)/getline.Plo ./$(DEPDIR)/getlogin_r.Plo \
-	./$(DEPDIR)/getopt.Plo ./$(DEPDIR)/getopt1.Plo \
-	./$(DEPDIR)/getprogname.Plo ./$(DEPDIR)/gettime.Plo \
-	./$(DEPDIR)/gettimeofday.Plo ./$(DEPDIR)/glob.Plo \
+	./$(DEPDIR)/fchown-stub.Plo ./$(DEPDIR)/fcntl.Plo \
+	./$(DEPDIR)/fd-hook.Plo ./$(DEPDIR)/fd-safer-flag.Plo \
+	./$(DEPDIR)/fd-safer.Plo ./$(DEPDIR)/fdopendir.Plo \
+	./$(DEPDIR)/file-set.Plo ./$(DEPDIR)/filenamecat-lgpl.Plo \
+	./$(DEPDIR)/float.Plo ./$(DEPDIR)/flock.Plo \
+	./$(DEPDIR)/fnmatch.Plo ./$(DEPDIR)/fnmatch_loop.Plo \
+	./$(DEPDIR)/fstat.Plo ./$(DEPDIR)/fstatat.Plo \
+	./$(DEPDIR)/futimens.Plo ./$(DEPDIR)/getcwd-lgpl.Plo \
+	./$(DEPDIR)/getcwd.Plo ./$(DEPDIR)/getdelim.Plo \
+	./$(DEPDIR)/getdtablesize.Plo ./$(DEPDIR)/getline.Plo \
+	./$(DEPDIR)/getlogin_r.Plo ./$(DEPDIR)/getopt.Plo \
+	./$(DEPDIR)/getopt1.Plo ./$(DEPDIR)/getprogname.Plo \
+	./$(DEPDIR)/gettime.Plo ./$(DEPDIR)/gettimeofday.Plo \
+	./$(DEPDIR)/gl_array_list.Plo ./$(DEPDIR)/gl_hash_map.Plo \
+	./$(DEPDIR)/gl_hash_set.Plo ./$(DEPDIR)/gl_linkedhash_list.Plo \
+	./$(DEPDIR)/gl_list.Plo ./$(DEPDIR)/gl_map.Plo \
+	./$(DEPDIR)/gl_rbtree_list.Plo ./$(DEPDIR)/gl_set.Plo \
+	./$(DEPDIR)/gl_xlist.Plo ./$(DEPDIR)/gl_xmap.Plo \
+	./$(DEPDIR)/gl_xset.Plo ./$(DEPDIR)/glob.Plo \
 	./$(DEPDIR)/glob_pattern_p.Plo ./$(DEPDIR)/globfree.Plo \
-	./$(DEPDIR)/hard-locale.Plo ./$(DEPDIR)/hash-pjw.Plo \
-	./$(DEPDIR)/hash-triple.Plo ./$(DEPDIR)/hash.Plo \
-	./$(DEPDIR)/idpriv-drop.Plo ./$(DEPDIR)/idpriv-droptemp.Plo \
-	./$(DEPDIR)/ioctl.Plo ./$(DEPDIR)/itold.Plo \
+	./$(DEPDIR)/hard-locale.Plo ./$(DEPDIR)/hash-pjw-bare.Plo \
+	./$(DEPDIR)/hash-pjw.Plo ./$(DEPDIR)/hash-triple.Plo \
+	./$(DEPDIR)/hash.Plo ./$(DEPDIR)/idpriv-drop.Plo \
+	./$(DEPDIR)/idpriv-droptemp.Plo ./$(DEPDIR)/ioctl.Plo \
+	./$(DEPDIR)/itold.Plo ./$(DEPDIR)/lchown.Plo \
 	./$(DEPDIR)/localcharset.Plo ./$(DEPDIR)/localeconv.Plo \
 	./$(DEPDIR)/localtime-buffer.Plo ./$(DEPDIR)/lstat.Plo \
 	./$(DEPDIR)/malloc.Plo ./$(DEPDIR)/malloca.Plo \
@@ -461,21 +487,22 @@ am__depfiles_remade = ./$(DEPDIR)/alloca.Plo \
 	./$(DEPDIR)/sockets.Plo ./$(DEPDIR)/stat-time.Plo \
 	./$(DEPDIR)/stat-w32.Plo ./$(DEPDIR)/stat.Plo \
 	./$(DEPDIR)/stdio-read.Plo ./$(DEPDIR)/stdio-write.Plo \
-	./$(DEPDIR)/strcasecmp.Plo ./$(DEPDIR)/strcasestr.Plo \
-	./$(DEPDIR)/strchrnul.Plo ./$(DEPDIR)/strdup.Plo \
-	./$(DEPDIR)/strerror-override.Plo ./$(DEPDIR)/strerror.Plo \
-	./$(DEPDIR)/stripslash.Plo ./$(DEPDIR)/strncasecmp.Plo \
-	./$(DEPDIR)/strndup.Plo ./$(DEPDIR)/strnlen.Plo \
-	./$(DEPDIR)/strnlen1.Plo ./$(DEPDIR)/strsep.Plo \
-	./$(DEPDIR)/sys_socket.Plo ./$(DEPDIR)/tempname.Plo \
-	./$(DEPDIR)/timespec.Plo ./$(DEPDIR)/unistd.Plo \
-	./$(DEPDIR)/unsetenv.Plo ./$(DEPDIR)/utime.Plo \
-	./$(DEPDIR)/utimens.Plo ./$(DEPDIR)/vasnprintf.Plo \
-	./$(DEPDIR)/vasprintf.Plo ./$(DEPDIR)/vsnprintf.Plo \
-	./$(DEPDIR)/wcrtomb.Plo ./$(DEPDIR)/wctype-h.Plo \
-	./$(DEPDIR)/xalloc-die.Plo ./$(DEPDIR)/xasprintf.Plo \
-	./$(DEPDIR)/xgetcwd.Plo ./$(DEPDIR)/xmalloc.Plo \
-	./$(DEPDIR)/xsize.Plo ./$(DEPDIR)/xstrndup.Plo \
+	./$(DEPDIR)/stdopen.Plo ./$(DEPDIR)/strcasecmp.Plo \
+	./$(DEPDIR)/strcasestr.Plo ./$(DEPDIR)/strchrnul.Plo \
+	./$(DEPDIR)/strdup.Plo ./$(DEPDIR)/strerror-override.Plo \
+	./$(DEPDIR)/strerror.Plo ./$(DEPDIR)/stripslash.Plo \
+	./$(DEPDIR)/strncasecmp.Plo ./$(DEPDIR)/strndup.Plo \
+	./$(DEPDIR)/strnlen.Plo ./$(DEPDIR)/strnlen1.Plo \
+	./$(DEPDIR)/strsep.Plo ./$(DEPDIR)/sys_socket.Plo \
+	./$(DEPDIR)/tempname.Plo ./$(DEPDIR)/timespec.Plo \
+	./$(DEPDIR)/unistd.Plo ./$(DEPDIR)/unsetenv.Plo \
+	./$(DEPDIR)/utime.Plo ./$(DEPDIR)/utimens.Plo \
+	./$(DEPDIR)/vasnprintf.Plo ./$(DEPDIR)/vasprintf.Plo \
+	./$(DEPDIR)/vsnprintf.Plo ./$(DEPDIR)/wcrtomb.Plo \
+	./$(DEPDIR)/wctype-h.Plo ./$(DEPDIR)/xalloc-die.Plo \
+	./$(DEPDIR)/xasprintf.Plo ./$(DEPDIR)/xgetcwd.Plo \
+	./$(DEPDIR)/xmalloc.Plo ./$(DEPDIR)/xsize.Plo \
+	./$(DEPDIR)/xstdopen.Plo ./$(DEPDIR)/xstrndup.Plo \
 	./$(DEPDIR)/xvasprintf.Plo glthread/$(DEPDIR)/lock.Plo \
 	glthread/$(DEPDIR)/threadlib.Plo \
 	malloc/$(DEPDIR)/scratch_buffer_grow.Plo \
@@ -1644,25 +1671,25 @@ noinst_LIBRARIES =
 noinst_LTLIBRARIES = libgnu.la
 EXTRA_DIST = alloca.c alloca.in.h areadlink.h assure.h openat-priv.h \
 	openat-proc.c btowc.c canonicalize.h canonicalize-lgpl.c \
-	chdir-long.c chdir-long.h cloexec.h close.c closedir.c \
-	dirent-private.h dirent.in.h dirfd.c stripslash.c dirname.h \
-	dosname.h dup.c dup2.c errno.in.h error.c error.h exitfail.h \
-	fchdir.c fcntl.c fcntl.in.h fd-hook.h fdopendir.c file-set.h \
-	filename.h filenamecat.h flexmember.h float.c float.in.h \
-	itold.c flock.c fnmatch.c fnmatch_loop.c fnmatch.in.h fstat.c \
-	stat-w32.c stat-w32.h at-func.c fstatat.c futimens.c getcwd.c \
-	getcwd-lgpl.c getdelim.c getdtablesize.c getline.c \
-	getlogin_r.c getopt-cdefs.in.h getopt-core.h getopt-ext.h \
-	getopt-pfx-core.h getopt-pfx-ext.h getopt.c getopt.in.h \
-	getopt1.c getopt_int.h gettimeofday.c \
-	$(top_srcdir)/build-aux/gitlog-to-changelog glob.c \
-	glob_internal.h glob_pattern_p.c globfree.c glob-libc.h \
+	chdir-long.c chdir-long.h chown.c fchown-stub.c cloexec.h \
+	close.c closedir.c dirent-private.h dirent.in.h dirfd.c \
+	stripslash.c dirname.h dosname.h dup.c dup2.c errno.in.h \
+	error.c error.h exitfail.h fchdir.c fcntl.c fcntl.in.h \
+	fd-hook.h fdopendir.c file-set.h filename.h filenamecat.h \
+	flexmember.h float.c float.in.h itold.c flock.c fnmatch.c \
+	fnmatch_loop.c fnmatch.in.h fstat.c stat-w32.c stat-w32.h \
+	at-func.c fstatat.c futimens.c getcwd.c getcwd-lgpl.c \
+	getdelim.c getdtablesize.c getline.c getlogin_r.c \
+	getopt-cdefs.in.h getopt-core.h getopt-ext.h getopt-pfx-core.h \
+	getopt-pfx-ext.h getopt.c getopt.in.h getopt1.c getopt_int.h \
+	gettimeofday.c $(top_srcdir)/build-aux/gitlog-to-changelog \
+	glob.c glob_internal.h glob_pattern_p.c globfree.c glob-libc.h \
 	glob.in.h $(top_srcdir)/build-aux/gnupload hard-locale.h \
 	hash.h hash-triple.h $(top_srcdir)/build-aux/config.rpath \
 	idpriv.h idpriv.h intprops.h ioctl.c w32sock.h langinfo.in.h \
-	cdefs.h libc-config.h limits.in.h localcharset.h locale.in.h \
-	localeconv.c localtime-buffer.c localtime-buffer.h lstat.c \
-	malloc.c malloc.c malloca.h mbrtowc.c mbsinit.c \
+	lchown.c cdefs.h libc-config.h limits.in.h localcharset.h \
+	locale.in.h localeconv.c localtime-buffer.c localtime-buffer.h \
+	lstat.c malloc.c malloc.c malloca.h mbrtowc.c mbsinit.c \
 	mbsrtowcs-impl.h mbsrtowcs-state.c mbsrtowcs.c mbtowc-impl.h \
 	mbtowc.c memchr.c memchr.valgrind memmem.c str-two-way.h \
 	mempcpy.c memrchr.c mkdir.c mkdtemp.c mkstemp.c msvc-inval.c \
@@ -1678,7 +1705,7 @@ EXTRA_DIST = alloca.c alloca.in.h areadlink.h assure.h openat-priv.h \
 	sleep.c _Noreturn.h arg-nonnull.h c++defs.h warn-on-use.h \
 	w32sock.h stat-w32.c stat-w32.h stat.c stat-time.h \
 	stdalign.in.h stdarg.in.h stdbool.in.h stddef.in.h stdint.in.h \
-	stdio.in.h stdlib.in.h strcasecmp.c strncasecmp.c \
+	stdio.in.h stdlib.in.h stdopen.h strcasecmp.c strncasecmp.c \
 	str-two-way.h strcasestr.c strchrnul.c strchrnul.valgrind \
 	strdup.c streq.h strerror.c strerror-override.c \
 	strerror-override.h string.in.h strings.in.h strndup.c \
@@ -1691,7 +1718,7 @@ EXTRA_DIST = alloca.c alloca.in.h areadlink.h assure.h openat-priv.h \
 	printf-args.h printf-parse.c printf-parse.h vasnprintf.c \
 	vasnprintf.h asprintf.c vasprintf.c verify.h vsnprintf.c \
 	wchar.in.h wcrtomb.c wctype.in.h xalloc.h xalloc-oversized.h \
-	xgetcwd.h xalloc.h
+	xgetcwd.h xstdopen.h xalloc.h
 BUILT_SOURCES = $(ALLOCA_H) dirent.h $(ERRNO_H) fcntl.h $(FLOAT_H) \
 	$(FNMATCH_H) $(GETOPT_H) $(GETOPT_CDEFS_H) $(GLOB_H) \
 	langinfo.h $(LIMITS_H) locale.h signal.h $(STDALIGN_H) \
@@ -1725,47 +1752,57 @@ AM_CFLAGS =
 libgnu_la_SOURCES = areadlink-with-size.c argp.h argp-ba.c \
 	argp-eexst.c argp-fmtstream.c argp-fmtstream.h argp-fs-xinl.c \
 	argp-help.c argp-namefrob.h argp-parse.c argp-pin.c argp-pv.c \
-	argp-pvh.c argp-xinl.c bitrotate.h bitrotate.c canonicalize.c \
-	cloexec.c dirname.c basename.c dirname-lgpl.c basename-lgpl.c \
-	stripslash.c exitfail.c fd-hook.c fd-safer-flag.c \
-	dup-safer-flag.c file-set.c filenamecat-lgpl.c getprogname.h \
-	getprogname.c gettext.h gettime.c hard-locale.c hash.c \
-	hash-pjw.h hash-pjw.c hash-triple.c idpriv-drop.c \
-	idpriv-droptemp.c localcharset.c glthread/lock.h \
-	glthread/lock.c malloca.c minmax.h nonblocking.c openat-die.c \
-	progname.h progname.c same.c save-cwd.c \
+	argp-pvh.c argp-xinl.c gl_array_list.h gl_array_list.c \
+	bitrotate.h bitrotate.c canonicalize.c cloexec.c dirname.c \
+	basename.c dirname-lgpl.c basename-lgpl.c stripslash.c \
+	exitfail.c fd-hook.c fd-safer-flag.c dup-safer-flag.c \
+	file-set.c filenamecat-lgpl.c getprogname.h getprogname.c \
+	gettext.h gettime.c hard-locale.c hash.c gl_hash_map.h \
+	gl_hash_map.c gl_anyhash1.h gl_anyhash2.h gl_anyhash_primes.h \
+	hash-pjw.h hash-pjw.c hash-pjw-bare.h hash-pjw-bare.c \
+	gl_hash_set.h gl_hash_set.c gl_anyhash1.h gl_anyhash2.h \
+	gl_anyhash_primes.h hash-triple.c idpriv-drop.c \
+	idpriv-droptemp.c gl_linkedhash_list.h gl_linkedhash_list.c \
+	gl_anyhash1.h gl_anyhash2.h gl_anyhash_primes.h \
+	gl_anylinked_list1.h gl_anylinked_list2.h gl_list.h gl_list.c \
+	localcharset.c glthread/lock.h glthread/lock.c malloca.c \
+	gl_map.h gl_map.c minmax.h nonblocking.c openat-die.c \
+	progname.h progname.c gl_rbtree_list.h gl_rbtree_list.c \
+	gl_anyrbtree_list1.h gl_anyrbtree_list2.h gl_anytree_list1.h \
+	gl_anytree_list2.h same.c save-cwd.c \
 	malloc/scratch_buffer_grow.c \
 	malloc/scratch_buffer_grow_preserve.c \
-	malloc/scratch_buffer_set_array_size.c sig-handler.c \
-	size_max.h sockets.h sockets.c stat-time.c strnlen1.h \
-	strnlen1.c sys_socket.c tempname.c glthread/threadlib.c \
-	timespec.c unistd.c dup-safer.c fd-safer.c pipe-safer.c \
-	utimens.c wctype-h.c xmalloc.c xalloc-die.c xgetcwd.c xsize.h \
-	xsize.c xstrndup.h xstrndup.c xvasprintf.h xvasprintf.c \
-	xasprintf.c
+	malloc/scratch_buffer_set_array_size.c gl_set.h gl_set.c \
+	sig-handler.c size_max.h sockets.h sockets.c stat-time.c \
+	stdopen.c strnlen1.h strnlen1.c sys_socket.c tempname.c \
+	glthread/threadlib.c timespec.c unistd.c dup-safer.c \
+	fd-safer.c pipe-safer.c utimens.c wctype-h.c xmalloc.c \
+	xalloc-die.c xgetcwd.c gl_xlist.h gl_xlist.c gl_xmap.h \
+	gl_xmap.c gl_xset.h gl_xset.c xsize.h xsize.c xstdopen.c \
+	xstrndup.h xstrndup.c xvasprintf.h xvasprintf.c xasprintf.c
 libgnu_la_LIBADD = $(gl_LTLIBOBJS) @LTALLOCA@
 libgnu_la_DEPENDENCIES = $(gl_LTLIBOBJS) @LTALLOCA@
 EXTRA_libgnu_la_SOURCES = alloca.c openat-proc.c btowc.c \
-	canonicalize-lgpl.c chdir-long.c close.c closedir.c dirfd.c \
-	stripslash.c dup.c dup2.c error.c fchdir.c fcntl.c fdopendir.c \
-	float.c itold.c flock.c fnmatch.c fnmatch_loop.c fstat.c \
-	stat-w32.c at-func.c fstatat.c futimens.c getcwd.c \
-	getcwd-lgpl.c getdelim.c getdtablesize.c getline.c \
-	getlogin_r.c getopt.c getopt1.c gettimeofday.c glob.c \
-	glob_pattern_p.c globfree.c ioctl.c localeconv.c \
-	localtime-buffer.c lstat.c malloc.c malloc.c mbrtowc.c \
-	mbsinit.c mbsrtowcs-state.c mbsrtowcs.c mbtowc.c memchr.c \
-	memmem.c mempcpy.c memrchr.c mkdir.c mkdtemp.c mkstemp.c \
-	msvc-inval.c msvc-nothrow.c nanosleep.c nl_langinfo.c \
-	stdio-read.c stdio-write.c open.c openat.c opendir.c raise.c \
-	rawmemchr.c readdir.c readlink.c realloc.c regcomp.c regex.c \
-	regex_internal.c regexec.c rename.c rewinddir.c rmdir.c \
-	select.c setenv.c sigaction.c sigprocmask.c sleep.c stat-w32.c \
-	stat.c strcasecmp.c strncasecmp.c strcasestr.c strchrnul.c \
-	strdup.c strerror.c strerror-override.c strndup.c strnlen.c \
-	strsep.c unsetenv.c utime.c asnprintf.c printf-args.c \
-	printf-parse.c vasnprintf.c asprintf.c vasprintf.c vsnprintf.c \
-	wcrtomb.c
+	canonicalize-lgpl.c chdir-long.c chown.c fchown-stub.c close.c \
+	closedir.c dirfd.c stripslash.c dup.c dup2.c error.c fchdir.c \
+	fcntl.c fdopendir.c float.c itold.c flock.c fnmatch.c \
+	fnmatch_loop.c fstat.c stat-w32.c at-func.c fstatat.c \
+	futimens.c getcwd.c getcwd-lgpl.c getdelim.c getdtablesize.c \
+	getline.c getlogin_r.c getopt.c getopt1.c gettimeofday.c \
+	glob.c glob_pattern_p.c globfree.c ioctl.c lchown.c \
+	localeconv.c localtime-buffer.c lstat.c malloc.c malloc.c \
+	mbrtowc.c mbsinit.c mbsrtowcs-state.c mbsrtowcs.c mbtowc.c \
+	memchr.c memmem.c mempcpy.c memrchr.c mkdir.c mkdtemp.c \
+	mkstemp.c msvc-inval.c msvc-nothrow.c nanosleep.c \
+	nl_langinfo.c stdio-read.c stdio-write.c open.c openat.c \
+	opendir.c raise.c rawmemchr.c readdir.c readlink.c realloc.c \
+	regcomp.c regex.c regex_internal.c regexec.c rename.c \
+	rewinddir.c rmdir.c select.c setenv.c sigaction.c \
+	sigprocmask.c sleep.c stat-w32.c stat.c strcasecmp.c \
+	strncasecmp.c strcasestr.c strchrnul.c strdup.c strerror.c \
+	strerror-override.c strndup.c strnlen.c strsep.c unsetenv.c \
+	utime.c asnprintf.c printf-args.c printf-parse.c vasnprintf.c \
+	asprintf.c vasprintf.c vsnprintf.c wcrtomb.c
 libgnu_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(LIBSOCKET) \
 	$(LIB_CLOCK_GETTIME) $(LIB_GETLOGIN) $(LIB_NANOSLEEP) \
 	$(LIB_SELECT) $(LTLIBINTL) $(LTLIBTHREAD)
@@ -1900,6 +1937,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/canonicalize-lgpl.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/canonicalize.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chdir-long.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chown.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cloexec.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/close.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/closedir.Plo@am__quote@ # am--include-marker
@@ -1913,6 +1951,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/error.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exitfail.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fchdir.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fchown-stub.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fcntl.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fd-hook.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fd-safer-flag.Plo@am__quote@ # am--include-marker
@@ -1938,10 +1977,22 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/getprogname.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gettime.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gettimeofday.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_array_list.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_hash_map.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_hash_set.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_linkedhash_list.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_list.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_map.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_rbtree_list.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_set.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_xlist.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_xmap.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gl_xset.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glob.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glob_pattern_p.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/globfree.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hard-locale.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash-pjw-bare.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash-pjw.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash-triple.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hash.Plo@am__quote@ # am--include-marker
@@ -1949,6 +2000,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/idpriv-droptemp.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ioctl.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/itold.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lchown.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localcharset.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localeconv.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/localtime-buffer.Plo@am__quote@ # am--include-marker
@@ -2007,6 +2059,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stat.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stdio-read.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stdio-write.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stdopen.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strcasecmp.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strcasestr.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/strchrnul.Plo@am__quote@ # am--include-marker
@@ -2036,6 +2089,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgetcwd.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xmalloc.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xsize.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xstdopen.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xstrndup.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xvasprintf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@glthread/$(DEPDIR)/lock.Plo@am__quote@ # am--include-marker
@@ -2313,6 +2367,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/canonicalize-lgpl.Plo
 	-rm -f ./$(DEPDIR)/canonicalize.Plo
 	-rm -f ./$(DEPDIR)/chdir-long.Plo
+	-rm -f ./$(DEPDIR)/chown.Plo
 	-rm -f ./$(DEPDIR)/cloexec.Plo
 	-rm -f ./$(DEPDIR)/close.Plo
 	-rm -f ./$(DEPDIR)/closedir.Plo
@@ -2326,6 +2381,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/error.Plo
 	-rm -f ./$(DEPDIR)/exitfail.Plo
 	-rm -f ./$(DEPDIR)/fchdir.Plo
+	-rm -f ./$(DEPDIR)/fchown-stub.Plo
 	-rm -f ./$(DEPDIR)/fcntl.Plo
 	-rm -f ./$(DEPDIR)/fd-hook.Plo
 	-rm -f ./$(DEPDIR)/fd-safer-flag.Plo
@@ -2351,10 +2407,22 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/getprogname.Plo
 	-rm -f ./$(DEPDIR)/gettime.Plo
 	-rm -f ./$(DEPDIR)/gettimeofday.Plo
+	-rm -f ./$(DEPDIR)/gl_array_list.Plo
+	-rm -f ./$(DEPDIR)/gl_hash_map.Plo
+	-rm -f ./$(DEPDIR)/gl_hash_set.Plo
+	-rm -f ./$(DEPDIR)/gl_linkedhash_list.Plo
+	-rm -f ./$(DEPDIR)/gl_list.Plo
+	-rm -f ./$(DEPDIR)/gl_map.Plo
+	-rm -f ./$(DEPDIR)/gl_rbtree_list.Plo
+	-rm -f ./$(DEPDIR)/gl_set.Plo
+	-rm -f ./$(DEPDIR)/gl_xlist.Plo
+	-rm -f ./$(DEPDIR)/gl_xmap.Plo
+	-rm -f ./$(DEPDIR)/gl_xset.Plo
 	-rm -f ./$(DEPDIR)/glob.Plo
 	-rm -f ./$(DEPDIR)/glob_pattern_p.Plo
 	-rm -f ./$(DEPDIR)/globfree.Plo
 	-rm -f ./$(DEPDIR)/hard-locale.Plo
+	-rm -f ./$(DEPDIR)/hash-pjw-bare.Plo
 	-rm -f ./$(DEPDIR)/hash-pjw.Plo
 	-rm -f ./$(DEPDIR)/hash-triple.Plo
 	-rm -f ./$(DEPDIR)/hash.Plo
@@ -2362,6 +2430,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/idpriv-droptemp.Plo
 	-rm -f ./$(DEPDIR)/ioctl.Plo
 	-rm -f ./$(DEPDIR)/itold.Plo
+	-rm -f ./$(DEPDIR)/lchown.Plo
 	-rm -f ./$(DEPDIR)/localcharset.Plo
 	-rm -f ./$(DEPDIR)/localeconv.Plo
 	-rm -f ./$(DEPDIR)/localtime-buffer.Plo
@@ -2420,6 +2489,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/stat.Plo
 	-rm -f ./$(DEPDIR)/stdio-read.Plo
 	-rm -f ./$(DEPDIR)/stdio-write.Plo
+	-rm -f ./$(DEPDIR)/stdopen.Plo
 	-rm -f ./$(DEPDIR)/strcasecmp.Plo
 	-rm -f ./$(DEPDIR)/strcasestr.Plo
 	-rm -f ./$(DEPDIR)/strchrnul.Plo
@@ -2449,6 +2519,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/xgetcwd.Plo
 	-rm -f ./$(DEPDIR)/xmalloc.Plo
 	-rm -f ./$(DEPDIR)/xsize.Plo
+	-rm -f ./$(DEPDIR)/xstdopen.Plo
 	-rm -f ./$(DEPDIR)/xstrndup.Plo
 	-rm -f ./$(DEPDIR)/xvasprintf.Plo
 	-rm -f glthread/$(DEPDIR)/lock.Plo
@@ -2523,6 +2594,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/canonicalize-lgpl.Plo
 	-rm -f ./$(DEPDIR)/canonicalize.Plo
 	-rm -f ./$(DEPDIR)/chdir-long.Plo
+	-rm -f ./$(DEPDIR)/chown.Plo
 	-rm -f ./$(DEPDIR)/cloexec.Plo
 	-rm -f ./$(DEPDIR)/close.Plo
 	-rm -f ./$(DEPDIR)/closedir.Plo
@@ -2536,6 +2608,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/error.Plo
 	-rm -f ./$(DEPDIR)/exitfail.Plo
 	-rm -f ./$(DEPDIR)/fchdir.Plo
+	-rm -f ./$(DEPDIR)/fchown-stub.Plo
 	-rm -f ./$(DEPDIR)/fcntl.Plo
 	-rm -f ./$(DEPDIR)/fd-hook.Plo
 	-rm -f ./$(DEPDIR)/fd-safer-flag.Plo
@@ -2561,10 +2634,22 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/getprogname.Plo
 	-rm -f ./$(DEPDIR)/gettime.Plo
 	-rm -f ./$(DEPDIR)/gettimeofday.Plo
+	-rm -f ./$(DEPDIR)/gl_array_list.Plo
+	-rm -f ./$(DEPDIR)/gl_hash_map.Plo
+	-rm -f ./$(DEPDIR)/gl_hash_set.Plo
+	-rm -f ./$(DEPDIR)/gl_linkedhash_list.Plo
+	-rm -f ./$(DEPDIR)/gl_list.Plo
+	-rm -f ./$(DEPDIR)/gl_map.Plo
+	-rm -f ./$(DEPDIR)/gl_rbtree_list.Plo
+	-rm -f ./$(DEPDIR)/gl_set.Plo
+	-rm -f ./$(DEPDIR)/gl_xlist.Plo
+	-rm -f ./$(DEPDIR)/gl_xmap.Plo
+	-rm -f ./$(DEPDIR)/gl_xset.Plo
 	-rm -f ./$(DEPDIR)/glob.Plo
 	-rm -f ./$(DEPDIR)/glob_pattern_p.Plo
 	-rm -f ./$(DEPDIR)/globfree.Plo
 	-rm -f ./$(DEPDIR)/hard-locale.Plo
+	-rm -f ./$(DEPDIR)/hash-pjw-bare.Plo
 	-rm -f ./$(DEPDIR)/hash-pjw.Plo
 	-rm -f ./$(DEPDIR)/hash-triple.Plo
 	-rm -f ./$(DEPDIR)/hash.Plo
@@ -2572,6 +2657,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/idpriv-droptemp.Plo
 	-rm -f ./$(DEPDIR)/ioctl.Plo
 	-rm -f ./$(DEPDIR)/itold.Plo
+	-rm -f ./$(DEPDIR)/lchown.Plo
 	-rm -f ./$(DEPDIR)/localcharset.Plo
 	-rm -f ./$(DEPDIR)/localeconv.Plo
 	-rm -f ./$(DEPDIR)/localtime-buffer.Plo
@@ -2630,6 +2716,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/stat.Plo
 	-rm -f ./$(DEPDIR)/stdio-read.Plo
 	-rm -f ./$(DEPDIR)/stdio-write.Plo
+	-rm -f ./$(DEPDIR)/stdopen.Plo
 	-rm -f ./$(DEPDIR)/strcasecmp.Plo
 	-rm -f ./$(DEPDIR)/strcasestr.Plo
 	-rm -f ./$(DEPDIR)/strchrnul.Plo
@@ -2659,6 +2746,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/xgetcwd.Plo
 	-rm -f ./$(DEPDIR)/xmalloc.Plo
 	-rm -f ./$(DEPDIR)/xsize.Plo
+	-rm -f ./$(DEPDIR)/xstdopen.Plo
 	-rm -f ./$(DEPDIR)/xstrndup.Plo
 	-rm -f ./$(DEPDIR)/xvasprintf.Plo
 	-rm -f glthread/$(DEPDIR)/lock.Plo

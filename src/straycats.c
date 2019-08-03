@@ -28,6 +28,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -40,6 +41,8 @@
 
 #include "canonicalize.h"
 #include "dirname.h"
+#include "gl_array_list.h"
+#include "gl_xlist.h"
 
 #include "gettext.h"
 #define _(String) gettext (String)
@@ -47,6 +50,7 @@
 #include "manconfig.h"
 
 #include "error.h"
+#include "glcontainers.h"
 #include "pipeline.h"
 #include "decompress.h"
 #include "encodings.h"
@@ -70,8 +74,8 @@ static int check_for_stray (MYDBM_FILE dbf)
 {
 	DIR *cdir;
 	struct dirent *catlist;
-	char **names;
-	size_t names_len, names_max, i;
+	gl_list_t names;
+	const char *name;
 	size_t lenman, lencat;
 	int strays = 0;
 
@@ -81,30 +85,24 @@ static int check_for_stray (MYDBM_FILE dbf)
 		return 0;
 	}
 
-	names_len = 0;
-	names_max = 1024;
-	names = XNMALLOC (names_max, char *);
+	names = new_string_list (GL_ARRAY_LIST, false);
 
 	while ((catlist = readdir (cdir)) != NULL) {
 		if (*catlist->d_name == '.' && 
 		    strlen (catlist->d_name) < (size_t) 3)
 			continue;
-		if (names_len >= names_max) {
-			names_max *= 2;
-			names = xnrealloc (names, names_max, sizeof (char *));
-		}
-		names[names_len++] = xstrdup (catlist->d_name);
+		gl_list_add_last (names, xstrdup (catlist->d_name));
 	}
 	closedir (cdir);
 
-	order_files (catdir, names, names_len);
+	order_files (catdir, &names);
 
 	mandir = appendstr (mandir, "/", (void *) 0);
 	catdir = appendstr (catdir, "/", (void *) 0);
 	lenman = strlen (mandir);
 	lencat = strlen (catdir);
 
-	for (i = 0; i < names_len; ++i) {
+	GL_LIST_FOREACH_START (names, name) {
 		struct mandata info;
 		char *ext, *section;
 		short found;
@@ -116,8 +114,8 @@ static int check_for_stray (MYDBM_FILE dbf)
 		memset (&info, 0, sizeof (struct mandata));
 
 		*(mandir + lenman) = *(catdir + lencat) = '\0';
-		mandir = appendstr (mandir, names[i], (void *) 0);
-		catdir = appendstr (catdir, names[i], (void *) 0);
+		mandir = appendstr (mandir, name, (void *) 0);
+		catdir = appendstr (catdir, name, (void *) 0);
 
 		ext = strrchr (mandir, '.');
 		if (!ext) {
@@ -126,7 +124,7 @@ static int check_for_stray (MYDBM_FILE dbf)
 				       _("warning: %s: "
 					 "ignoring bogus filename"),
 				       catdir);
-			goto next_name;
+			continue;
 
 #if defined(COMP_SRC) || defined(COMP_CAT)
 
@@ -197,13 +195,9 @@ static int check_for_stray (MYDBM_FILE dbf)
 			   further */
 			mandir_base = base_name (mandir);
 			exists = dblookup_exact (dbf, mandir_base, info.ext,
-						 1);
-#ifndef FAVOUR_STRAYCATS
-			if (exists && exists->id != WHATIS_CAT)
-#else /* FAVOUR_STRAYCATS */
-			if (exists && exists->id != WHATIS_CAT &&
-			    exists->id != WHATIS_MAN)
-#endif /* !FAVOUR_STRAYCATS */
+						 true);
+			if (exists &&
+			    compare_ids (STRAY_CAT, exists->id, 0) >= 0)
 				goto next_exists;
 			debug ("%s(%s) is not in the db.\n",
 			       mandir_base, info.ext);
@@ -270,17 +264,14 @@ static int check_for_stray (MYDBM_FILE dbf)
 				if (find_name_decompressed (decomp,
 							    catdir_base,
 							    &lg)) {
-					struct page_description *descs;
+					gl_list_t descs;
 					strays++;
 					descs = parse_descriptions
 						(mandir_base, lg.whatis);
-					if (descs) {
-						store_descriptions
-							(dbf, descs, &info,
-							 NULL, mandir_base,
-							 NULL);
-						free_descriptions (descs);
-					}
+					store_descriptions (dbf, descs, &info,
+							    NULL, mandir_base,
+							    NULL);
+					gl_list_free (descs);
 				} else if (quiet < 2)
 					error (0, 0, _("warning: %s: whatis parse for %s(%s) failed"),
 					       catdir, mandir_base, info.sec);
@@ -295,10 +286,8 @@ next_exists:
 		}
 next_section:
 		free (section);
-next_name:
-		free (names[i]);
-	}
-	free (names);
+	} GL_LIST_FOREACH_END (names);
+	gl_list_free (names);
 	return strays;
 }
 

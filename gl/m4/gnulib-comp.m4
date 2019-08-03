@@ -48,6 +48,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module alloca-opt:
   # Code from module areadlink-with-size:
   # Code from module argp:
+  # Code from module array-list:
   # Code from module assure:
   # Code from module at-internal:
   # Code from module bitrotate:
@@ -58,6 +59,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module canonicalize-lgpl:
   # Code from module chdir:
   # Code from module chdir-long:
+  # Code from module chown:
   # Code from module clock-time:
   # Code from module cloexec:
   # Code from module close:
@@ -114,7 +116,10 @@ AC_DEFUN([gl_EARLY],
   # Code from module gnupload:
   # Code from module hard-locale:
   # Code from module hash:
+  # Code from module hash-map:
   # Code from module hash-pjw:
+  # Code from module hash-pjw-bare:
+  # Code from module hash-set:
   # Code from module hash-triple:
   # Code from module havelib:
   # Code from module idpriv-drop:
@@ -125,9 +130,12 @@ AC_DEFUN([gl_EARLY],
   # Code from module langinfo:
   # Code from module largefile:
   AC_REQUIRE([AC_SYS_LARGEFILE])
+  # Code from module lchown:
   # Code from module lib-ignore:
   # Code from module libc-config:
   # Code from module limits-h:
+  # Code from module linkedhash-list:
+  # Code from module list:
   # Code from module localcharset:
   # Code from module locale:
   # Code from module localeconv:
@@ -137,6 +145,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module malloc-gnu:
   # Code from module malloc-posix:
   # Code from module malloca:
+  # Code from module map:
   # Code from module mbrtowc:
   # Code from module mbsinit:
   # Code from module mbsrtowcs:
@@ -166,6 +175,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module progname:
   # Code from module raise:
   # Code from module rawmemchr:
+  # Code from module rbtree-list:
   # Code from module readdir:
   # Code from module readlink:
   # Code from module realloc-posix:
@@ -178,6 +188,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module save-cwd:
   # Code from module scratch_buffer:
   # Code from module select:
+  # Code from module set:
   # Code from module setenv:
   # Code from module sigaction:
   # Code from module signal:
@@ -206,6 +217,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module stdint:
   # Code from module stdio:
   # Code from module stdlib:
+  # Code from module stdopen:
   # Code from module strcase:
   # Code from module strcasestr:
   # Code from module strcasestr-simple:
@@ -252,7 +264,11 @@ AC_DEFUN([gl_EARLY],
   # Code from module xalloc-die:
   # Code from module xalloc-oversized:
   # Code from module xgetcwd:
+  # Code from module xlist:
+  # Code from module xmap:
+  # Code from module xset:
   # Code from module xsize:
+  # Code from module xstdopen:
   # Code from module xstrndup:
   # Code from module xvasprintf:
 ])
@@ -305,6 +321,14 @@ AC_SUBST([LTALLOCA])
     AC_LIBOBJ([chdir-long])
     gl_PREREQ_CHDIR_LONG
   fi
+  gl_FUNC_CHOWN
+  if test $HAVE_CHOWN = 0 || test $REPLACE_CHOWN = 1; then
+    AC_LIBOBJ([chown])
+  fi
+  if test $REPLACE_CHOWN = 1 && test $ac_cv_func_fchown = no; then
+    AC_LIBOBJ([fchown-stub])
+  fi
+  gl_UNISTD_MODULE_INDICATOR([chown])
   gl_CLOCK_TIME
   gl_MODULE_INDICATOR_FOR_TESTS([cloexec])
   gl_FUNC_CLOSE
@@ -498,6 +522,11 @@ AC_SUBST([LTALLOCA])
   gl_SYS_IOCTL_MODULE_INDICATOR([ioctl])
   gl_LANGINFO_H
   AC_REQUIRE([gl_LARGEFILE])
+  gl_FUNC_LCHOWN
+  if test $HAVE_LCHOWN = 0 || test $REPLACE_LCHOWN = 1; then
+    AC_LIBOBJ([lchown])
+  fi
+  gl_UNISTD_MODULE_INDICATOR([lchown])
   gl_IGNORE_UNUSED_LIBRARIES
   gl___INLINE
   gl_LIMITS_H
@@ -1055,6 +1084,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/cdefs.h
   lib/chdir-long.c
   lib/chdir-long.h
+  lib/chown.c
   lib/cloexec.c
   lib/cloexec.h
   lib/close.c
@@ -1076,6 +1106,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/exitfail.c
   lib/exitfail.h
   lib/fchdir.c
+  lib/fchown-stub.c
   lib/fcntl.c
   lib/fcntl.in.h
   lib/fd-hook.c
@@ -1119,6 +1150,37 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/gettext.h
   lib/gettime.c
   lib/gettimeofday.c
+  lib/gl_anyhash1.h
+  lib/gl_anyhash2.h
+  lib/gl_anyhash_primes.h
+  lib/gl_anylinked_list1.h
+  lib/gl_anylinked_list2.h
+  lib/gl_anyrbtree_list1.h
+  lib/gl_anyrbtree_list2.h
+  lib/gl_anytree_list1.h
+  lib/gl_anytree_list2.h
+  lib/gl_array_list.c
+  lib/gl_array_list.h
+  lib/gl_hash_map.c
+  lib/gl_hash_map.h
+  lib/gl_hash_set.c
+  lib/gl_hash_set.h
+  lib/gl_linkedhash_list.c
+  lib/gl_linkedhash_list.h
+  lib/gl_list.c
+  lib/gl_list.h
+  lib/gl_map.c
+  lib/gl_map.h
+  lib/gl_rbtree_list.c
+  lib/gl_rbtree_list.h
+  lib/gl_set.c
+  lib/gl_set.h
+  lib/gl_xlist.c
+  lib/gl_xlist.h
+  lib/gl_xmap.c
+  lib/gl_xmap.h
+  lib/gl_xset.c
+  lib/gl_xset.h
   lib/glob-libc.h
   lib/glob.c
   lib/glob.in.h
@@ -1130,6 +1192,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/glthread/threadlib.c
   lib/hard-locale.c
   lib/hard-locale.h
+  lib/hash-pjw-bare.c
+  lib/hash-pjw-bare.h
   lib/hash-pjw.c
   lib/hash-pjw.h
   lib/hash-triple.c
@@ -1143,6 +1207,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/ioctl.c
   lib/itold.c
   lib/langinfo.in.h
+  lib/lchown.c
   lib/libc-config.h
   lib/limits.in.h
   lib/localcharset.c
@@ -1244,6 +1309,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/stdio-write.c
   lib/stdio.in.h
   lib/stdlib.in.h
+  lib/stdopen.c
+  lib/stdopen.h
   lib/str-two-way.h
   lib/strcasecmp.c
   lib/strcasestr.c
@@ -1307,6 +1374,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/xmalloc.c
   lib/xsize.c
   lib/xsize.h
+  lib/xstdopen.c
+  lib/xstdopen.h
   lib/xstrndup.c
   lib/xstrndup.h
   lib/xvasprintf.c
@@ -1321,6 +1390,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/builtin-expect.m4
   m4/canonicalize.m4
   m4/chdir-long.m4
+  m4/chown.m4
   m4/clock_time.m4
   m4/close.m4
   m4/closedir.m4
@@ -1379,6 +1449,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/ioctl.m4
   m4/langinfo_h.m4
   m4/largefile.m4
+  m4/lchown.m4
   m4/lib-ignore.m4
   m4/lib-ld.m4
   m4/lib-link.m4

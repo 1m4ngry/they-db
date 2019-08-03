@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: textutils 2.0.14\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2001-06-08 22:10 +02:00\n"
 "Last-Translator: Stanislav Meduna <stano@trillian.eunet.sk>\n"
 "Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
@@ -42,25 +42,25 @@ msgid ""
 "optional for any corresponding short options."
 msgstr ""
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr ""
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr ""
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 #, fuzzy
 msgid " [OPTION...]"
 msgstr "Pou¾itie: %s [PREPÍNAÈ] [SÚBOR]...\n"
 
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Viac informácií získate príkazom `%s --help'.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
@@ -69,7 +69,7 @@ msgstr ""
 "anglicky), pripomienky k prekladu zasielajte na adresu <sk@li.org> "
 "(slovensky)."
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Neznáma systémová chyba"
 
@@ -244,6 +244,11 @@ msgstr "chyba pri vyhµadávaní pomocou regulárneho výrazu"
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "vyèerpaná pamä»"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #, fuzzy
 #~ msgid "invalid argument %s for %s"

@@ -1,19 +1,19 @@
 # Swedish messages for gnulib.
-# Copyright © 1997, 2002, 2003, 2004, 2005, 2007, 2009, 2010, 2011 Free Software Foundation, Inc.
+# Copyright © 1997, 2002, 2003, 2004, 2005, 2007, 2009, 2010, 2011, 2019 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gnulib package.
 # Peter Antman <peter.antman@abc.se>, 1997.
 # Thomas Olsson <cid95tho@lustudat.student.lu.se>, 1997.
 # Daniel Resare <daniel@resare.com>, 1999, 2000.
-# Göran Uddeborg <goeran@uddeborg.se>, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2009, 2010, 2011.
+# Göran Uddeborg <goeran@uddeborg.se>, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2007, 2009, 2010, 2011, 2019.
 #
-# $Revision: 1.10 $
+# $Revision: 1.14 $
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnulib 3.0.0.6062.a6b16\n"
+"Project-Id-Version: gnulib 4.0.0.2567\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
-"PO-Revision-Date: 2011-08-22 19:16+0200\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
+"PO-Revision-Date: 2019-05-21 10:41+0200\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -51,31 +51,31 @@ msgstr ""
 "Obligatoriska eller valfria argument till långa flaggor är obligatoriska "
 "eller valfria även för motsvarande korta flaggor."
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr "Användning:"
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr "   eller:  "
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 msgid " [OPTION...]"
 msgstr " [FLAGGA...]"
 
-#: gl/lib/argp-help.c:1668
-#, fuzzy, c-format
+#: gl/lib/argp-help.c:1670
+#, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Försök med ”%s --help” eller ”%s --usage” för mer information.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "Rapportera fel till %s.\n"
 "Skicka synpunkter på översättningen till <tp-sv@listor.tp-sv.se>.\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Okänt systemfel"
 
@@ -121,29 +121,29 @@ msgid "(PROGRAM ERROR) Option should have been recognized!?"
 msgstr "(PROGRAMFEL) Flaggan borde ha känts igen!?"
 
 #: gl/lib/getopt.c:278
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' is ambiguous\n"
-msgstr "%s: flaggan \"-W %s\" är tvetydig\n"
+msgstr "%s: flaggan ”%s%s” är tvetydig\n"
 
 #: gl/lib/getopt.c:284
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' is ambiguous; possibilities:"
-msgstr "%s: flaggan ”%s” är tvetydig: möjligheter:"
+msgstr "%s: flaggan ”%s%s” är tvetydig: möjligheter:"
 
 #: gl/lib/getopt.c:319
-#, fuzzy, c-format
+#, c-format
 msgid "%s: unrecognized option '%s%s'\n"
-msgstr "%s: okänd flagga \"%c%s\"\n"
+msgstr "%s: okänd flagga ”%s%s”\n"
 
 #: gl/lib/getopt.c:345
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' doesn't allow an argument\n"
-msgstr "%s: flaggan ”%c%s” tar inget argument\n"
+msgstr "%s: flaggan ”%s%s” tar inget argument\n"
 
 #: gl/lib/getopt.c:360
-#, fuzzy, c-format
+#, c-format
 msgid "%s: option '%s%s' requires an argument\n"
-msgstr "%s: flaggan ”--%s” kräver ett argument\n"
+msgstr "%s: flaggan ”%s%s” kräver ett argument\n"
 
 #: gl/lib/getopt.c:621
 #, c-format
@@ -194,9 +194,8 @@ msgid "Invalid back reference"
 msgstr "Ogiltig bakåtreferens"
 
 #: gl/lib/regcomp.c:156
-#, fuzzy
 msgid "Unmatched [, [^, [:, [., or [="
-msgstr "Ensam [ eller [^"
+msgstr "Ensam [, [^, [:, [. eller [="
 
 #: gl/lib/regcomp.c:159
 msgid "Unmatched ( or \\("
@@ -242,6 +241,11 @@ msgstr "Inget föregående reguljärt uttryck"
 msgid "memory exhausted"
 msgstr "minnet slut"
 
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr "standard filbeskrivare"
+
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "felaktigt argument %s till %s"
 
@@ -251,8 +255,51 @@ msgstr "minnet slut"
 #~ msgid "Valid arguments are:"
 #~ msgstr "Giltiga argument är:"
 
-#~ msgid "%.*s: ARGP_HELP_FMT parameter must be positive"
-#~ msgstr "%.*s: ARGP_HELP_FMT parametern måste vara positiv"
+#~ msgid "%u bitset_allocs, %u freed (%.2f%%).\n"
+#~ msgstr "%u bitset-allokeringar, %u friade (%.2f%%).\n"
+
+#~ msgid "%u bitset_sets, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset-mängder, %u cachade (%.2f%%)\n"
+
+#~ msgid "%u bitset_resets, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset-återställningar, %u cachade (%.2f%%)\n"
+
+#~ msgid "%u bitset_tests, %u cached (%.2f%%)\n"
+#~ msgstr "%u bitset-tester, %u cachade (%.2f%%)\n"
+
+#~ msgid "%u bitset_lists\n"
+#~ msgstr "%u bitset-listor\n"
+
+#~ msgid "count log histogram\n"
+#~ msgstr "antalsloggshistogram\n"
+
+#~ msgid "size log histogram\n"
+#~ msgstr "storleksloggshistogram\n"
+
+#~ msgid "density histogram\n"
+#~ msgstr "densitetshistogram\n"
+
+#~ msgid ""
+#~ "Bitset statistics:\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Bitset-statistik:\n"
+#~ "\n"
+
+#~ msgid "Accumulated runs = %u\n"
+#~ msgstr "Ackumulerade körningar = %u\n"
+
+#~ msgid "cannot read stats file"
+#~ msgstr "kan inte läsa statistikfilen"
+
+#~ msgid "bad stats file size\n"
+#~ msgstr "felaktig storlek på statistikfil\n"
+
+#~ msgid "cannot write stats file"
+#~ msgstr "kan inte skriva statistikfilen"
+
+#~ msgid "cannot open stats file for writing"
+#~ msgstr "kan inte öppna statistikfilen för skrivning"
 
 #~ msgid "program error"
 #~ msgstr "programfel"
@@ -281,29 +328,56 @@ msgstr "minnet slut"
 #~ msgid "preserving permissions for %s"
 #~ msgstr "bevarar rättigheter på %s"
 
-#~ msgid "error while opening \"%s\" for reading"
-#~ msgstr "fel när ”%s” öppnades för läsning"
+#~ msgid "error while opening %s for reading"
+#~ msgstr "fel när %s öppnades för läsning"
 
-#~ msgid "cannot open backup file \"%s\" for writing"
-#~ msgstr "det går inte att öppna säkerthetskopiefil ”%s” för skrivning"
+#~ msgid "cannot open backup file %s for writing"
+#~ msgstr "det går inte att öppna säkerthetskopiefil %s för skrivning"
 
-#~ msgid "error reading \"%s\""
-#~ msgstr "fel vid läsning av ”%s”"
+#~ msgid "error reading %s"
+#~ msgstr "fel vid läsning av %s"
 
-#~ msgid "error writing \"%s\""
-#~ msgstr "fel vid skrivning av ”%s”"
+#~ msgid "error writing %s"
+#~ msgstr "fel vid skrivning av %s"
 
-#~ msgid "error after reading \"%s\""
-#~ msgstr "fel efter läsning av ”%s”"
+#~ msgid "error after reading %s"
+#~ msgstr "fel efter läsning av %s"
 
 #~ msgid "fdopen() failed"
 #~ msgstr "fdopen() misslyckades"
 
-#~ msgid "C# compiler not found, try installing pnet"
-#~ msgstr "C#-kompilator hittades inte, försök installera pnet"
+#~ msgid "C# compiler not found, try installing mono"
+#~ msgstr "C#-kompilator hittades inte, försök installera mono"
 
-#~ msgid "C# virtual machine not found, try installing pnet"
-#~ msgstr "virtuell C#-maskinen hittades inte, försök installera pnet"
+#~ msgid "C# virtual machine not found, try installing mono"
+#~ msgstr "virtuell C#-maskinen hittades inte, försök installera mono"
+
+#~ msgid "unbalanced ["
+#~ msgstr "obalanserad ["
+
+#~ msgid "invalid character class"
+#~ msgstr "ogiltig teckenklass"
+
+#~ msgid "character class syntax is [[:space:]], not [:space:]"
+#~ msgstr "teckenklassyntaxen är [[:space:]], inte [:space:]"
+
+#~ msgid "unfinished \\ escape"
+#~ msgstr "oavslutad \\-sekvens"
+
+#~ msgid "invalid content of \\{\\}"
+#~ msgstr "ogiltigt innehåll i \\{\\}"
+
+#~ msgid "regular expression too big"
+#~ msgstr "för stort reguljärt uttryck"
+
+#~ msgid "unbalanced ("
+#~ msgstr "obalanserad ("
+
+#~ msgid "no syntax specified"
+#~ msgstr "ingen syntax angiven"
+
+#~ msgid "unbalanced )"
+#~ msgstr "obalanserad )"
 
 #~ msgid "%s subprocess failed"
 #~ msgstr "%s-underprocess misslyckades"
@@ -317,20 +391,8 @@ msgstr "minnet slut"
 #~ msgid "directory"
 #~ msgstr "katalog"
 
-#~ msgid "block special file"
-#~ msgstr "blockspecialfil"
-
-#~ msgid "character special file"
-#~ msgstr "teckenspecialfil"
-
-#~ msgid "fifo"
-#~ msgstr "fifo"
-
 #~ msgid "symbolic link"
 #~ msgstr "symbolisk länk"
-
-#~ msgid "socket"
-#~ msgstr "uttag (socket)"
 
 #~ msgid "message queue"
 #~ msgstr "meddelandekö"
@@ -343,6 +405,51 @@ msgstr "minnet slut"
 
 #~ msgid "typed memory object"
 #~ msgstr "objekt av typat minne"
+
+#~ msgid "block special file"
+#~ msgstr "blockspecialfil"
+
+#~ msgid "character special file"
+#~ msgstr "teckenspecialfil"
+
+#~ msgid "contiguous data"
+#~ msgstr "sammanhängande data"
+
+#~ msgid "fifo"
+#~ msgstr "fifo"
+
+#~ msgid "door"
+#~ msgstr "dörr"
+
+#~ msgid "multiplexed block special file"
+#~ msgstr "multiplexad blockspecialfil"
+
+#~ msgid "multiplexed character special file"
+#~ msgstr "multiplexad teckenspecialfil"
+
+#~ msgid "multiplexed file"
+#~ msgstr "multiplexad fil"
+
+#~ msgid "named file"
+#~ msgstr "namngiven fil"
+
+#~ msgid "network special file"
+#~ msgstr "nätverksspecialfil"
+
+#~ msgid "migrated file with data"
+#~ msgstr "migrerad fil med data"
+
+#~ msgid "migrated file without data"
+#~ msgstr "migrerad fil utan data"
+
+#~ msgid "port"
+#~ msgstr "port"
+
+#~ msgid "socket"
+#~ msgstr "uttag (socket)"
+
+#~ msgid "whiteout"
+#~ msgstr "övertäckningsfil"
 
 #~ msgid "weird file"
 #~ msgstr "konstig fil"
@@ -404,18 +511,6 @@ msgstr "minnet slut"
 #~ msgid "Unknown error"
 #~ msgstr "Okänt fel"
 
-#~ msgid "%s: option '--%s' doesn't allow an argument\n"
-#~ msgstr "%s: flaggan ”--%s” tar inget argument\n"
-
-#~ msgid "%s: unrecognized option '--%s'\n"
-#~ msgstr "%s: okänd flagga \"--%s\"\n"
-
-#~ msgid "%s: option '-W %s' doesn't allow an argument\n"
-#~ msgstr "%s: flaggan \"-W %s\" tar inget argument\n"
-
-#~ msgid "%s: option '-W %s' requires an argument\n"
-#~ msgstr "%s: flaggan ”-W %s” kräver ett argument\n"
-
 #~ msgid "invalid source_version argument to compile_java_class"
 #~ msgstr "ogiltigt source_version-argument till compile_java_class"
 
@@ -438,6 +533,9 @@ msgstr "minnet slut"
 
 #~ msgid "%s subprocess I/O error"
 #~ msgstr "%s-underprocess I/O-fel"
+
+#~ msgid "cannot stat %s"
+#~ msgstr "kan inte ta status på %s"
 
 #~ msgid "cannot change permissions of %s"
 #~ msgstr "kan inte ändra rättigheter på %s"
@@ -472,9 +570,6 @@ msgstr "minnet slut"
 
 #~ msgid "%s subprocess terminated with exit code %d"
 #~ msgstr "%s-underprocess avslutad med slutstatus %d"
-
-#~ msgid "Franc,ois Pinard"
-#~ msgstr "François Pinard"
 
 #~ msgid "`"
 #~ msgstr "”"
@@ -605,6 +700,18 @@ msgstr "minnet slut"
 #~ msgid "Unknown signal %d"
 #~ msgstr "Okänd signal %d"
 
+#~ msgid "Execution times (seconds)"
+#~ msgstr "Körtider (sekunder)"
+
+#~ msgid "CPU user"
+#~ msgstr "CPU användare"
+
+#~ msgid "CPU system"
+#~ msgstr "CPU system"
+
+#~ msgid "wall clock"
+#~ msgstr "väggklocka"
+
 #~ msgid "iconv function not usable"
 #~ msgstr "iconv-funktion inte användbar"
 
@@ -642,20 +749,14 @@ msgstr "minnet slut"
 #~ msgstr "©"
 
 #~ msgid ""
-#~ "\n"
-#~ "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl."
-#~ "html>.\n"
+#~ "License GPLv3+: GNU GPL version 3 or later <%s>.\n"
 #~ "This is free software: you are free to change and redistribute it.\n"
 #~ "There is NO WARRANTY, to the extent permitted by law.\n"
-#~ "\n"
 #~ msgstr ""
-#~ "\n"
-#~ "Licens GPLv3+: GNU GPL version 3 eller senare <http://gnu.org/licenses/"
-#~ "gpl.html>.\n"
+#~ "Licens GPLv3+: GNU GPL version 3 eller senare <%s>.\n"
 #~ "Detta är fri programvara: du får lov att ändra och vidaredistribuera "
 #~ "den.\n"
 #~ "Det finns INGEN GARANTI, så långt lagen tillåter.\n"
-#~ "\n"
 
 #~ msgid "Written by %s.\n"
 #~ msgstr "Skrivet av %s.\n"
@@ -721,11 +822,8 @@ msgstr "minnet slut"
 #~ "%s, %s, %s, %s,\n"
 #~ "%s, %s med flera.\n"
 
-#~ msgid ""
-#~ "\n"
-#~ "Report bugs to: %s\n"
+#~ msgid "Report bugs to: %s\n"
 #~ msgstr ""
-#~ "\n"
 #~ "Rapportera fel till: %s\n"
 #~ "Skicka synpunkter på översättningen till: tp-sv@listor.tp-sv.se\n"
 
@@ -735,12 +833,8 @@ msgstr "minnet slut"
 #~ msgid "%s home page: <%s>\n"
 #~ msgstr "%s hemsida: <%s>\n"
 
-#~ msgid "%s home page: <http://www.gnu.org/software/%s/>\n"
-#~ msgstr "%s hemsida: <http://www.gnu.org/software/%s/>\n"
-
-#~ msgid "General help using GNU software: <http://www.gnu.org/gethelp/>\n"
-#~ msgstr ""
-#~ "Allmän hjälp med att använda GNU-program: <http://www.gnu.org/gethelp/>\n"
+#~ msgid "General help using GNU software: <%s>\n"
+#~ msgstr "Allmän hjälp med att använda GNU-program: <%s>\n"
 
 #~ msgid "_open_osfhandle failed"
 #~ msgstr "_open_osfhandle misslyckades"
@@ -753,6 +847,9 @@ msgstr "minnet slut"
 
 #~ msgid "%s subprocess got fatal signal %d"
 #~ msgstr "%s-underprocess fick ödesdiger signal %d"
+
+#~ msgid "failed to set file descriptor text/binary mode"
+#~ msgstr "misslyckades att filbeskrivaren i text-/binärt läge"
 
 #~ msgid "stdin"
 #~ msgstr "standard in"
@@ -781,11 +878,11 @@ msgstr "minnet slut"
 #~ msgid "cannot perform formatted output"
 #~ msgstr "kan inte utföra formaterad utmatning"
 
-#~ msgid "invalid %s%s argument `%s'"
-#~ msgstr "felaktigt %s%s-argument \"%s\""
+#~ msgid "invalid %s%s argument '%s'"
+#~ msgstr "felaktigt %s%s-argument ”%s”"
 
-#~ msgid "invalid suffix in %s%s argument `%s'"
-#~ msgstr "felaktigt suffix i %s%s-argument \"%s\""
+#~ msgid "invalid suffix in %s%s argument '%s'"
+#~ msgstr "felaktigt suffix i %s%s-argument ”%s”"
 
-#~ msgid "%s%s argument `%s' too large"
-#~ msgstr "%s%s argument \"%s\" är för stort"
+#~ msgid "%s%s argument '%s' too large"
+#~ msgstr "%s%s-argumentet ”%s” är för stort"

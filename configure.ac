@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.8.5], [cjwatson@debian.org])
+AC_INIT([man-db], [2.8.6], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -16,7 +16,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2019-01-05
+date=2019-08-03
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -43,6 +43,7 @@ MAN_ARG_OVERRIDE_DIR
 MAN_ARG_SYSTEMDTMPFILESDIR
 MAN_ARG_SYSTEMDSYSTEMUNITDIR
 MAN_ARG_MANDIRS
+MAN_ARG_MANUAL
 
 # Check $PATH for the following programs and append suitable options.
 AC_PROG_CC
@@ -58,6 +59,13 @@ case $host_os in
 		dnl resource usage.  To avoid it, compile for POSIX
 		dnl environment:
 		CFLAGS="$CFLAGS -YPOSIX"
+		;;
+	*darwin*)
+		dnl libman intentionally has an undefined "sandbox" symbol
+		dnl which is supplied by each application.  The Darwin
+		dnl linker refuses to do this by default, and needs some
+		dnl help.
+		CFLAGS="$CFLAGS -Wl,-flat_namespace,-undefined,suppress"
 		;;
 esac
 if test "$GCC" = yes
@@ -339,8 +347,8 @@ then
 	AC_MSG_ERROR([flex is required when building from revision control])
 fi
 gl_INIT
-AC_CHECK_HEADERS([fcntl.h sys/file.h linux/fiemap.h])
-AC_CHECK_FUNCS([lchown posix_fadvise])
+AC_CHECK_HEADERS([sys/file.h linux/fiemap.h])
+AC_CHECK_FUNCS([posix_fadvise])
 
 # Internationalization support.
 AM_GNU_GETTEXT([external])

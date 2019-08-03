@@ -25,10 +25,12 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "argp.h"
+#include "gl_list.h"
 #include "progname.h"
 
 #include "gettext.h"
@@ -38,15 +40,16 @@
 #include "manconfig.h"
 
 #include "error.h"
+#include "glcontainers.h"
 #include "globbing.h"
 #include "sandbox.h"
 
 man_sandbox *sandbox;  /* unused, but needed by libman */
 
 extern const char *extension;
-static int match_case = 0;
-static int regex_opt = 0;
-static int wildcard = 0;
+static bool match_case = false;
+static bool regex_opt = false;
+static bool wildcard = false;
 static char **remaining_args;
 
 const char *argp_program_version = "globbing " PACKAGE_VERSION;
@@ -70,22 +73,22 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 {
 	switch (key) {
 		case 'd':
-			debug_level = 1;
+			debug_level = true;
 			return 0;
 		case 'e':
 			extension = arg;
 			return 0;
 		case 'i':
-			match_case = 0;
+			match_case = false;
 			return 0;
 		case 'I':
-			match_case = 1;
+			match_case = true;
 			return 0;
 		case 'r':
-			regex_opt = 1;
+			regex_opt = true;
 			return 0;
 		case 'w':
-			wildcard = 1;
+			wildcard = true;
 			return 0;
 		case 'h':
 			argp_state_help (state, state->out_stream,
@@ -115,16 +118,18 @@ int main (int argc, char **argv)
 		exit (FAIL);
 
 	for (i = 0; i <= 1; i++) {
-		char **files;
+		gl_list_t files;
+		const char *file;
 
 		files = look_for_file (remaining_args[0], remaining_args[1],
 				       remaining_args[2], i,
 				       (match_case ? LFF_MATCHCASE : 0) |
 				       (regex_opt ? LFF_REGEX : 0) |
 				       (wildcard ? LFF_WILDCARD : 0));
-		if (files)
-			while (*files)
-				printf ("%s\n", *files++);
+		GL_LIST_FOREACH_START (files, file)
+			printf ("%s\n", file);
+		GL_LIST_FOREACH_END (files);
+		gl_list_free (files);
 	}
 	return 0;
 }

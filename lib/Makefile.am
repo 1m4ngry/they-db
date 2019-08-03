@@ -41,12 +41,10 @@ libman_la_SOURCES = \
 	decompress.h \
 	encodings.c \
 	encodings.h \
-	hashtable.c \
-	hashtable.h \
+	glcontainers.c \
+	glcontainers.h \
 	linelength.c \
 	linelength.h \
-	lower.c \
-	lower.h \
 	orderfiles.c \
 	orderfiles.h \
 	pathsearch.c \
@@ -59,8 +57,6 @@ libman_la_SOURCES = \
 	util.c \
 	wordfnmatch.c \
 	wordfnmatch.h \
-	xchown.c \
-	xchown.h \
 	xregcomp.c \
 	xregcomp.h
 

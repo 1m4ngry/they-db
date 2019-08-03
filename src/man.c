@@ -40,6 +40,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -48,18 +49,8 @@
 #include <errno.h>
 #include <termios.h>
 #include <unistd.h>
-
-#ifndef R_OK
-#  define R_OK		4
-#  define X_OK		1
-#endif /* !R_OK */
-
 #include <limits.h>
-
-#if HAVE_FCNTL_H
-#  include <fcntl.h>
-#endif
-
+#include <fcntl.h>
 #include <ctype.h>
 #include <signal.h>
 #include <time.h>
@@ -68,13 +59,19 @@
 
 #include "argp.h"
 #include "dirname.h"
+#include "gl_array_list.h"
+#include "gl_hash_map.h"
+#include "gl_list.h"
+#include "gl_xlist.h"
+#include "gl_xmap.h"
 #include "minmax.h"
 #include "progname.h"
 #include "regex.h"
 #include "stat-time.h"
 #include "utimens.h"
-#include "xvasprintf.h"
 #include "xgetcwd.h"
+#include "xvasprintf.h"
+#include "xstdopen.h"
 
 #include "gettext.h"
 #include <locale.h>
@@ -85,7 +82,7 @@
 
 #include "error.h"
 #include "cleanup.h"
-#include "hashtable.h"
+#include "glcontainers.h"
 #include "pipeline.h"
 #include "pathsearch.h"
 #include "linelength.h"
@@ -137,7 +134,7 @@ char *lang;
 #define TFMT_PROG "mandb_tfmt"
 #undef ALT_EXT_FORMAT	/* allow external formatters located in cat hierarchy */
 
-static int global_manpath = -1;	/* global or user manual page hierarchy? */
+static bool global_manpath;	/* global or user manual page hierarchy? */
 static int skip;		/* page exists but has been skipped */
 
 #if defined _AIX || defined __sgi
@@ -175,27 +172,20 @@ enum opts {
 	OPT_MAX
 };
 
-struct string_llist;
-struct string_llist {
-	const char *name;
-	struct string_llist *next;
-};
-
-
-static char *manpathlist[MAXDIRS];
+static gl_list_t manpathlist;
 
 /* globals */
 int quiet = 1;
 char *database = NULL;
 extern const char *extension; /* for globbing.c */
 extern char *user_config_file;	/* defined in manp.c */
-extern int disable_cache;
+extern bool disable_cache;
 extern int min_cat_width, max_cat_width, cat_width;
 man_sandbox *sandbox;
 
 /* locals */
 static const char *alt_system_name;
-static const char **section_list;		
+static gl_list_t section_list;		
 static const char *section;
 static char *colon_sep_section_list;
 static const char *preprocessors;
@@ -207,33 +197,33 @@ static char *less;
 static const char *std_sections[] = STD_SECTIONS;
 static char *manp;
 static const char *external;
-static struct hashtable *db_hash = NULL;
+static gl_map_t db_map = NULL;
 
-static int troff;
+static bool troff;
 static const char *roff_device = NULL;
 static const char *want_encoding = NULL;
 #ifdef NROFF_WARNINGS
 static const char default_roff_warnings[] = "mac";
-static struct string_llist *roff_warnings = NULL;
+static gl_list_t roff_warnings;
 #endif /* NROFF_WARNINGS */
-static int global_apropos;
-static int print_where, print_where_cat;
-static int catman;
-static int local_man_file;
-static int findall;
-static int update;
-static int match_case;
-static int regex_opt;
-static int wildcard;
-static int names_only;
+static bool global_apropos;
+static bool print_where, print_where_cat;
+static bool catman;
+static bool local_man_file;
+static bool findall;
+static bool update;
+static bool match_case;
+static bool regex_opt;
+static bool wildcard;
+static bool names_only;
 static int ult_flags = SO_LINK | SOFT_LINK | HARD_LINK;
 static const char *recode = NULL;
-static int no_hyphenation;
-static int no_justification;
-static int subpages = 1;
+static bool no_hyphenation;
+static bool no_justification;
+static bool subpages = true;
 
-static int ascii;		/* insert tr in the output pipe */
-static int save_cat; 		/* security breach? Can we save the cat? */
+static bool ascii;		/* insert tr in the output pipe */
+static bool save_cat; 		/* security breach? Can we save the cat? */
 
 static int first_arg;
 
@@ -248,9 +238,9 @@ static struct timespec man_modtime;	/* modtime of man page, for
 					 * commit_tmp_cat() */
 
 # ifdef TROFF_IS_GROFF
-static int ditroff;
+static bool ditroff;
 static const char *gxditview;
-static int htmlout;
+static bool htmlout;
 static const char *html_pager;
 # endif /* TROFF_IS_GROFF */
 
@@ -352,7 +342,7 @@ static void init_html_pager (void)
 
 static error_t parse_opt (int key, char *arg, struct argp_state *state)
 {
-	static int apropos, whatis; /* retain values between calls */
+	static bool apropos, whatis; /* retain values between calls */
 
 	/* Please keep these keys in the same order as in options above. */
 	switch (key) {
@@ -360,7 +350,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			user_config_file = arg;
 			return 0;
 		case 'd':
-			debug_level = 1;
+			debug_level = true;
 			return 0;
 		case 'D':
 			/* discard all preset options */
@@ -369,11 +359,11 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 				print_where = print_where_cat =
 				ascii = match_case =
 				regex_opt = wildcard = names_only =
-				no_hyphenation = no_justification = 0;
+				no_hyphenation = no_justification = false;
 #ifdef TROFF_IS_GROFF
-			ditroff = 0;
+			ditroff = false;
 			gxditview = NULL;
-			htmlout = 0;
+			htmlout = false;
 			init_html_pager ();
 #endif
 			roff_device = want_encoding = extension = pager =
@@ -390,13 +380,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 				const char *warning;
 
 				for (warning = strtok (s, ","); warning;
-				     warning = strtok (NULL, ",")) {
-					struct string_llist *new;
-					new = xmalloc (sizeof *new);
-					new->name = xstrdup (warning);
-					new->next = roff_warnings;
-					roff_warnings = new;
-				}
+				     warning = strtok (NULL, ","))
+					gl_list_add_last (roff_warnings,
+							  xstrdup (warning));
 
 				free (s);
 			}
@@ -405,26 +391,26 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 
 		case 'f':
 			external = WHATIS;
-			whatis = 1;
+			whatis = true;
 			return 0;
 		case 'k':
 			external = APROPOS;
-			apropos = 1;
+			apropos = true;
 			return 0;
 		case 'K':
-			global_apropos = 1;
+			global_apropos = true;
 			return 0;
 		case 'w':
-			print_where = 1;
+			print_where = true;
 			return 0;
 		case 'W':
-			print_where_cat = 1;
+			print_where_cat = true;
 			return 0;
 		case 'l':
-			local_man_file = 1;
+			local_man_file = true;
 			return 0;
 		case 'c':
-			catman = 1;
+			catman = true;
 			return 0;
 		case 'R':
 			recode = arg;
@@ -449,30 +435,30 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			extension = arg;
 			return 0;
 		case 'i':
-			match_case = 0;
+			match_case = false;
 			return 0;
 		case 'I':
-			match_case = 1;
+			match_case = true;
 			return 0;
 		case OPT_REGEX:
-			regex_opt = 1;
-			findall = 1;
+			regex_opt = true;
+			findall = true;
 			return 0;
 		case OPT_WILDCARD:
-			wildcard = 1;
-			findall = 1;
+			wildcard = true;
+			findall = true;
 			return 0;
 		case OPT_NAMES:
-			names_only = 1;
+			names_only = true;
 			return 0;
 		case 'a':
-			findall = 1;
+			findall = true;
 			return 0;
 		case 'u':
-			update = 1;
+			update = true;
 			return 0;
 		case OPT_NO_SUBPAGES:
-			subpages = 0;
+			subpages = false;
 			return 0;
 
 		case 'P':
@@ -482,7 +468,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			prompt_string = arg;
 			return 0;
 		case '7':
-			ascii = 1;
+			ascii = true;
 			return 0;
 		case 'E':
 			want_encoding = arg;
@@ -490,17 +476,17 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 				roff_device = want_encoding;
 			return 0;
 		case OPT_NO_HYPHENATION:
-			no_hyphenation = 1;
+			no_hyphenation = true;
 			return 0;
 		case OPT_NO_JUSTIFICATION:
-			no_justification = 1;
+			no_justification = true;
 			return 0;
 		case 'p':
 			preprocessors = arg;
 			return 0;
 #ifdef HAS_TROFF
 		case 't':
-			troff = 1;
+			troff = true;
 			return 0;
 		case 'T':
 			/* Traditional nroff knows -T; troff does not (gets
@@ -508,27 +494,27 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			 * does -T imply -t?
 			 */
 			roff_device = (arg ? arg : "ps");
-			troff = 1;
+			troff = true;
 			return 0;
 		case 'H':
 # ifdef TROFF_IS_GROFF
 			if (arg)
 				html_pager = arg;
-			htmlout = 1;
-			troff = 1;
+			htmlout = true;
+			troff = true;
 			roff_device = "html";
 # endif /* TROFF_IS_GROFF */
 			return 0;
 		case 'X':
 # ifdef TROFF_IS_GROFF
-			troff = 1;
+			troff = true;
 			gxditview = (arg ? arg : "75");
 # endif /* TROFF_IS_GROFF */
 			return 0;
 		case 'Z':
 # ifdef TROFF_IS_GROFF
-			ditroff = 1;
-			troff = 1;
+			ditroff = true;
+			troff = true;
 # endif /* TROFF_IS_GROFF */
 			return 0;
 #endif /* HAS_TROFF */
@@ -539,8 +525,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			break;
 		case ARGP_KEY_SUCCESS:
 			/* check for incompatible options */
-			if (troff + whatis + apropos + catman +
-			    (print_where || print_where_cat) > 1) {
+			if ((int) troff + (int) whatis + (int) apropos +
+			    (int) catman +
+			    (int) (print_where || print_where_cat) > 1) {
 				char *badopts = xasprintf
 					("%s%s%s%s%s%s",
 					 troff ? "-[tTZH] " : "",
@@ -553,7 +540,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 					    _("%s: incompatible options"),
 					    badopts);
 			}
-			if (regex_opt + wildcard > 1) {
+			if ((int) regex_opt + (int) wildcard > 1) {
 				char *badopts = xasprintf
 					("%s%s",
 					 regex_opt ? "--regex " : "",
@@ -618,48 +605,6 @@ static void gripe_no_name (const char *sect)
 	exit (FAIL);
 }
 
-/* In case we're set-id, double-check that our standard file descriptors are
- * open in a standard way.  See:
- *
- *   http://austingroupbugs.net/view.php?id=173
- */
-static void check_standard_fds (void)
-{
-	int flags, mode;
-
-	/* We can't even write an error message in this case, so check it
-	 * first.
-	 */
-	flags = fcntl (2, F_GETFL);
-	if (flags < 0)
-		exit (FATAL);
-	mode = flags & O_ACCMODE;
-	if (mode != O_WRONLY && mode != O_RDWR)
-		exit (FATAL);
-
-	flags = fcntl (0, F_GETFL);
-	if (flags < 0) {
-		fprintf (stderr, "stdin not open!\n");
-		exit (FATAL);
-	}
-	mode = flags & O_ACCMODE;
-	if (mode != O_RDONLY && mode != O_RDWR) {
-		fprintf (stderr, "stdin not open for reading!\n");
-		exit (FATAL);
-	}
-
-	flags = fcntl (1, F_GETFL);
-	if (flags < 0) {
-		fprintf (stderr, "stdout not open!\n");
-		exit (FATAL);
-	}
-	mode = flags & O_ACCMODE;
-	if (mode != O_WRONLY && mode != O_RDWR) {
-		fprintf (stderr, "stdout not open for writing!\n");
-		exit (FATAL);
-	}
-}
-
 static struct termios tms;
 static int tms_set = 0;
 static pid_t tms_pid = 0;
@@ -716,7 +661,7 @@ static void heirloom_line_length (void *data)
 }
 #endif /* HEIRLOOM_NROFF */
 
-static pipecmd *add_roff_line_length (pipecmd *cmd, int *save_cat_p)
+static pipecmd *add_roff_line_length (pipecmd *cmd, bool *save_cat_p)
 {
 	int length;
 	pipecmd *ret = NULL;
@@ -733,7 +678,7 @@ static pipecmd *add_roff_line_length (pipecmd *cmd, int *save_cat_p)
 			debug ("Terminal width %d not within cat page range "
 			       "[%d, %d]\n",
 			       line_length, min_cat_width, max_cat_width);
-			*save_cat_p = 0;
+			*save_cat_p = false;
 		}
 	}
 
@@ -976,17 +921,17 @@ static char *locale_manpath (const char *manpath)
  */
 static const char *is_section (const char *name)
 {
-	const char **vs;
+	const char *vs;
 
-	for (vs = section_list; *vs; vs++) {
-		if (STREQ (*vs, name))
+	GL_LIST_FOREACH_START (section_list, vs) {
+		if (STREQ (vs, name))
 			return name;
 		/* allow e.g. 3perl but disallow 8139too and libfoo */
-		if (strlen (*vs) == 1 && CTYPE (isdigit, **vs) &&
+		if (strlen (vs) == 1 && CTYPE (isdigit, *vs) &&
 		    strlen (name) > 1 && !CTYPE (isdigit, name[1]) &&
-		    STRNEQ (*vs, name, 1))
+		    STRNEQ (vs, name, 1))
 			return name;
-	}
+	} GL_LIST_FOREACH_END (section_list);
 	return NULL;
 }
 
@@ -1067,27 +1012,27 @@ static char *get_preprocessors (pipeline *decomp, const char *dbfilters,
 	if (dbfilters && (dbfilters[0] != '-') && !preprocessors) {
 		pp_string = xstrdup (dbfilters);
 		pp_source = "database";
-		save_cat = 1;
+		save_cat = true;
 	} else if (preprocessors) {
 		pp_string = xstrdup (preprocessors);
 		pp_source = "command line";
-		save_cat = 0;
+		save_cat = false;
 	} else if ((pp_string = get_preprocessors_from_file (decomp,
 							     prefixes))) {
 		pp_source = "file";
-		save_cat = 1;
+		save_cat = true;
 	} else if ((env = getenv ("MANROFFSEQ"))) {
 		pp_string = xstrdup (env);
 		pp_source = "environment";
-		save_cat = 0;
+		save_cat = false;
 	} else if (!dbfilters) {
 		pp_string = xstrdup (DEFAULT_MANROFFSEQ);
 		pp_source = "default";
-		save_cat = 1;
+		save_cat = true;
 	} else {
 		pp_string = xstrdup ("");
 		pp_source = "no filters";
-		save_cat = 1;
+		save_cat = true;
 	}
 
 	debug ("pre-processors `%s' from %s\n", pp_string, pp_source);
@@ -1311,7 +1256,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 
 		do {
 #ifdef NROFF_WARNINGS
-			struct string_llist *cur;
+			const char *warning;
 #endif /* NROFF_WARNINGS */
 			int wants_dev = 0; /* filter wants a dev argument */
 			int wants_post = 0; /* postprocessor arguments */
@@ -1359,7 +1304,7 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 				if (troff) {
 					cmd = pipecmd_new_argstr
 						(get_def ("troff", TROFF));
-					save_cat = 0;
+					save_cat = false;
 				} else
 					cmd = pipecmd_new_argstr
 						(get_def ("nroff", NROFF));
@@ -1379,9 +1324,9 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 #endif /* TROFF_IS_GROFF || HEIRLOOM_NROFF */
 
 #ifdef NROFF_WARNINGS
-				for (cur = roff_warnings; cur;
-				     cur = cur->next)
-					pipecmd_argf (cmd, "-w%s", cur->name);
+				GL_LIST_FOREACH_START (roff_warnings, warning)
+					pipecmd_argf (cmd, "-w%s", warning);
+				GL_LIST_FOREACH_END (roff_warnings);
 #endif /* NROFF_WARNINGS */
 
 #ifdef HEIRLOOM_NROFF
@@ -1478,7 +1423,7 @@ static pipeline *make_browser (const char *pattern, const char *file)
 	pipeline *p;
 	pipecmd *cmd;
 	char *browser = xmalloc (1);
-	int found_percent_s = 0;
+	bool found_percent_s = false;
 	char *percent;
 	char *esc_file;
 
@@ -1502,7 +1447,7 @@ static pipeline *make_browser (const char *pattern, const char *file)
 				browser = appendstr (browser, esc_file,
 						     (void *) 0);
 				free (esc_file);
-				found_percent_s = 1;
+				found_percent_s = true;
 				break;
 			default:
 				len = strlen (browser); /* cannot be NULL */
@@ -2204,7 +2149,7 @@ static int display (const char *dir, const char *man_file,
 	int prefixes = 0;
 	pipeline *format_cmd;	/* command to format man_file to stdout */
 	char *formatted_encoding = NULL;
-	int display_to_stdout;
+	bool display_to_stdout;
 	pipeline *decomp = NULL;
 	int decomp_errno = 0;
 
@@ -2308,10 +2253,10 @@ static int display (const char *dir, const char *man_file,
 	display_to_stdout = troff;
 #ifdef TROFF_IS_GROFF
 	if (htmlout)
-		display_to_stdout = 0;
+		display_to_stdout = false;
 #endif
 	if (recode)
-		display_to_stdout = 1;
+		display_to_stdout = true;
 
 	if (display_to_stdout) {
 		/* If we're reading stdin via '-l -', man_file is "". See
@@ -2367,7 +2312,7 @@ static int display (const char *dir, const char *man_file,
 		    || local_man_file
 		    || recode
 		    || disable_cache)
-			save_cat = 0;
+			save_cat = false;
 
 		if (!man_file) {
 			/* Stray cat. */
@@ -2375,7 +2320,7 @@ static int display (const char *dir, const char *man_file,
 			format = 0;
 		} else if (!cat_file) {
 			assert (man_file);
-			save_cat = 0;
+			save_cat = false;
 			format = 1;
 		} else if (format && save_cat) {
 			char *cat_dir;
@@ -2419,7 +2364,7 @@ static int display (const char *dir, const char *man_file,
 				(format ? man_file : cat_file, R_OK);
 
 		debug ("format: %d, save_cat: %d, found: %d\n",
-		       format, save_cat, found);
+		       format, (int) save_cat, found);
 
 		if (!found) {
 			pipeline_free (format_cmd);
@@ -2692,25 +2637,25 @@ static int get_ult_flags (char from_db, char id)
 }
 
 /* Is this candidate substantially a duplicate of a previous one?
- * Returns non-zero if so, otherwise zero.
+ * Returns true if so, otherwise false.
  */
-static int duplicate_candidates (struct candidate *left,
-				 struct candidate *right)
+static bool duplicate_candidates (struct candidate *left,
+				  struct candidate *right)
 {
 	const char *slash1, *slash2;
 	struct locale_bits bits1, bits2;
-	int ret;
+	bool ret;
 
 	if (left->ult && right->ult && STREQ (left->ult, right->ult))
-		return 1; /* same ultimate source file */
+		return true; /* same ultimate source file */
 
 	if (!STREQ (left->source->name, right->source->name) ||
 	    !STREQ (left->source->sec, right->source->sec) ||
 	    !STREQ (left->source->ext, right->source->ext))
-		return 0; /* different name/section/extension */
+		return false; /* different name/section/extension */
 
 	if (STREQ (left->path, right->path))
-		return 1; /* same path */
+		return true; /* same path */
 
 	/* Figure out if we've had a sufficiently similar candidate for this
 	 * language already.
@@ -2720,7 +2665,7 @@ static int duplicate_candidates (struct candidate *left,
 	if (!slash1 || !slash2 ||
 	    !STRNEQ (left->path, right->path,
 		     MAX (slash1 - left->path, slash2 - right->path)))
-		return 0; /* different path base */
+		return false; /* different path base */
 
 	unpack_locale_bits (++slash1, &bits1);
 	unpack_locale_bits (++slash2, &bits2);
@@ -2728,12 +2673,12 @@ static int duplicate_candidates (struct candidate *left,
 	if (!STREQ (bits1.language, bits2.language) ||
 	    !STREQ (bits1.territory, bits2.territory) ||
 	    !STREQ (bits1.modifier, bits2.modifier))
-		ret = 0; /* different language/territory/modifier */
+		ret = false; /* different language/territory/modifier */
 	else
 		/* Everything seems to be the same; we can find nothing to
 		 * choose between them.
 		 */
-		ret = 1;
+		ret = true;
 
 	free_locale_bits (&bits1);
 	free_locale_bits (&bits2);
@@ -2744,7 +2689,6 @@ static int compare_candidates (const struct candidate *left,
 			       const struct candidate *right)
 {
 	const struct mandata *lsource = left->source, *rsource = right->source;
-	int sec_left = 0, sec_right = 0;
 	int cmp;
 	const char *slash1, *slash2;
 
@@ -2771,7 +2715,7 @@ static int compare_candidates (const struct candidate *left,
 	 * moved out of order with respect to their parent sections.
 	 */
 	if (strcmp (lsource->ext, rsource->ext)) {
-		const char **sp;
+		size_t index_left, index_right;
 
 		/* If the user asked for an explicit section, sort exact
 		 * matches first.
@@ -2787,24 +2731,30 @@ static int compare_candidates (const struct candidate *left,
 		}
 
 		/* Find out whether lsource->ext is ahead of rsource->ext in
-		 * section_list.
+		 * section_list.  Sections missing from section_list are
+		 * sorted to the end.
 		 */
-		for (sp = section_list; *sp; ++sp) {
-			if (!*(*sp + 1)) {
-				/* No extension */
-				if (!sec_left  && **sp == *(lsource->ext))
-					sec_left  = sp - section_list + 1;
-				if (!sec_right && **sp == *(rsource->ext))
-					sec_right = sp - section_list + 1;
-			} else if (STREQ (*sp, lsource->ext)) {
-				sec_left  = sp - section_list + 1;
-			} else if (STREQ (*sp, rsource->ext)) {
-				sec_right = sp - section_list + 1;
-			}
-			/* Keep looking for a more specific match */
+		index_left = gl_list_indexof (section_list, lsource->ext);
+		if (index_left == (size_t) -1 && strlen (lsource->ext) > 1) {
+			char *sec_left = xstrndup (lsource->ext, 1);
+			index_left = gl_list_indexof (section_list, sec_left);
+			free (sec_left);
+			if (index_left == (size_t) -1)
+				index_left = gl_list_size (section_list);
 		}
-		if (sec_left != sec_right)
-			return sec_left - sec_right;
+		index_right = gl_list_indexof (section_list, rsource->ext);
+		if (index_right == (size_t) -1 && strlen (rsource->ext) > 1) {
+			char *sec_right = xstrndup (rsource->ext, 1);
+			index_right = gl_list_indexof (section_list,
+						       sec_right);
+			free (sec_right);
+			if (index_right == (size_t) -1)
+				index_right = gl_list_size (section_list);
+		}
+		if (index_left < index_right)
+			return -1;
+		else if (index_left > index_right)
+			return 1;
 
 		cmp = strcmp (lsource->sec, rsource->sec);
 		if (cmp)
@@ -3086,8 +3036,8 @@ static int try_section (const char *path, const char *sec, const char *name,
 			struct candidate **cand_head)
 {
 	int found = 0;
-	char **names = NULL, **np;
-	size_t names_len = 0;
+	gl_list_t names = NULL;
+	const char *found_name;
 	char cat = 0;
 	int lff_opts = (match_case ? LFF_MATCHCASE : 0) |
 		       (regex_opt ? LFF_REGEX : 0) |
@@ -3101,7 +3051,7 @@ static int try_section (const char *path, const char *sec, const char *name,
   	 */
 
 	names = look_for_file (path, sec, name, 0, lff_opts);
-	if (!names)
+	if (!gl_list_size (names))
 		/*
     		 * No files match.  
     		 * See if there's a preformatted page around that
@@ -3113,18 +3063,17 @@ static int try_section (const char *path, const char *sec, const char *name,
 			return 1;
 
 		if (!troff && !want_encoding && !recode) {
+			gl_list_free (names);
 			names = look_for_file (path, sec, name, 1, lff_opts);
 			cat = 1;
 		}
 	}
 
-	for (np = names; np && *np; np++)
-		++names_len;
-	order_files (path, names, names_len);
+	order_files (path, &names);
 
-	for (np = names; np && *np; np++) {
+	GL_LIST_FOREACH_START (names, found_name) {
 		struct mandata *info = infoalloc ();
-		char *info_buffer = filename_info (*np, info, name);
+		char *info_buffer = filename_info (found_name, info, name);
 		const char *ult;
 		int f;
 
@@ -3138,16 +3087,16 @@ static int try_section (const char *path, const char *sec, const char *name,
 		 * must be either ULT_MAN or SO_MAN. ult_src() can tell us
 		 * which.
 		 */
-		ult = ult_src (*np, path, NULL, ult_flags, NULL);
+		ult = ult_src (found_name, path, NULL, ult_flags, NULL);
 		if (!ult) {
 			/* already warned */
-			debug ("try_section(): bad link %s\n", *np);
+			debug ("try_section(): bad link %s\n", found_name);
 			free (info_buffer);
 			info->addr = NULL;
 			free_mandata_struct (info);
 			continue;
 		}
-		if (STREQ (ult, *np))
+		if (STREQ (ult, found_name))
 			info->id = ULT_MAN;
 		else
 			info->id = SO_MAN;
@@ -3164,8 +3113,9 @@ static int try_section (const char *path, const char *sec, const char *name,
 			free_mandata_struct (info);
 		}
 		/* Don't free info and info_buffer here. */
-	}
+	} GL_LIST_FOREACH_END (names);
 
+	gl_list_free (names);
 	return found;
 }
 
@@ -3355,11 +3305,6 @@ static int display_database_check (struct candidate *candp)
 	return exists;
 }
 
-static void db_hashtable_free (void *defn)
-{
-	free_mandata_struct (defn);
-}
-
 #ifdef MAN_DB_UPDATES
 static int maybe_update_file (const char *manpath, const char *name,
 			      struct mandata *info)
@@ -3418,16 +3363,26 @@ static int maybe_update_file (const char *manpath, const char *name,
 #define TRY_DATABASE_UPDATED      -3
 #endif /* MAN_DB_UPDATES */
 
+static void db_map_value_free (const void *value)
+{
+	/* The value may be NULL to indicate that opening the database at
+	 * this location already failed.
+	 */
+	if (value)
+		gl_list_free ((gl_list_t) value);
+}
+
 /* Look for a page in the database. If db not accessible, return -1,
    otherwise return number of pages found. */
 static int try_db (const char *manpath, const char *sec, const char *name,
 		   struct candidate **cand_head)
 {
-	struct mandata *loc, *data;
+	gl_list_t matches;
+	struct mandata *loc;
 	char *catpath;
 	int found = 0;
 #ifdef MAN_DB_UPDATES
-	int found_stale = 0;
+	bool found_stale = false;
 #endif /* MAN_DB_UPDATES */
 
 	/* find out where our db for this manpath should be */
@@ -3440,13 +3395,11 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 	} else
 		database = mkdbname (manpath);
 
-	if (!db_hash)
-		db_hash = hashtable_create (&db_hashtable_free);
+	if (!db_map)
+		db_map = new_string_map (GL_HASH_MAP, db_map_value_free);
 
-	/* Have we looked here already? */
-	data = hashtable_lookup (db_hash, manpath, strlen (manpath));
-
-	if (!data) {
+	/* If we haven't looked here already, do so now. */
+	if (!gl_map_search (db_map, manpath, (const void **) &matches)) {
 		MYDBM_FILE dbf;
 
 		dbf = MYDBM_RDOPEN (database);
@@ -3460,14 +3413,13 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 			/* if section is set, only return those that match,
 			   otherwise NULL retrieves all available */
 			if (regex_opt || wildcard)
-				data = dblookup_pattern
+				matches = dblookup_pattern
 					(dbf, name, section, match_case,
 					 regex_opt, !names_only);
 			else
-				data = dblookup_all (dbf, name, section,
-						     match_case);
-			hashtable_install (db_hash, manpath, strlen (manpath),
-					   data);
+				matches = dblookup_all (dbf, name, section,
+							match_case);
+			gl_map_put (db_map, xstrdup (manpath), matches);
 			MYDBM_CLOSE (dbf);
 			dbf = NULL;
 #ifdef MAN_DB_CREATES
@@ -3475,60 +3427,50 @@ static int try_db (const char *manpath, const char *sec, const char *name,
 			/* create one */
 			debug ("Failed to open %s O_RDONLY\n", database);
 			if (run_mandb (1, manpath, NULL)) {
-				data = infoalloc ();
-				data->next = NULL;
-				data->addr = NULL;
-				hashtable_install (db_hash,
-						   manpath, strlen (manpath),
-						   data);
+				gl_map_put (db_map, xstrdup (manpath), NULL);
 				return TRY_DATABASE_OPEN_FAILED;
 			}
 			return TRY_DATABASE_CREATED;
 #endif /* MAN_DB_CREATES */
 		} else {
 			debug ("Failed to open %s O_RDONLY\n", database);
-			data = infoalloc ();
-			data->next = (struct mandata *) NULL;
-			data->addr = NULL;
-			hashtable_install (db_hash, manpath, strlen (manpath),
-					   data);
+			gl_map_put (db_map, xstrdup (manpath), NULL);
 			return TRY_DATABASE_OPEN_FAILED;
 		}
+		assert (matches != NULL);
 	}
 
-	/* if we already know that there is nothing here, get on with it */
-	if (!data)
-		return 0;
-
-	/* We already tried (and failed) to open this db before */
-	if (!data->addr)
+	/* We already tried (and failed) to open this db before. */
+	if (!matches)
 		return TRY_DATABASE_OPEN_FAILED;
 
 #ifdef MAN_DB_UPDATES
 	/* Check that all the entries found are up to date. If not, the
 	 * caller should try again.
 	 */
-	for (loc = data; loc; loc = loc->next)
+	GL_LIST_FOREACH_START (matches, loc)
 		if (STREQ (sec, loc->sec) &&
 		    (!extension || STREQ (extension, loc->ext)
 				|| STREQ (extension, loc->ext + strlen (sec))))
 			if (maybe_update_file (manpath, name, loc))
-				found_stale = 1;
+				found_stale = true;
+	GL_LIST_FOREACH_END (matches);
 
 	if (found_stale) {
-		hashtable_remove (db_hash, manpath, strlen (manpath));
+		gl_map_remove (db_map, manpath);
 		return TRY_DATABASE_UPDATED;
 	}
 #endif /* MAN_DB_UPDATES */
 
 	/* cycle through the mandata structures (there's usually only 
 	   1 or 2) and see what we have w.r.t. the current section */
-	for (loc = data; loc; loc = loc->next)
+	GL_LIST_FOREACH_START (matches, loc)
 		if (STREQ (sec, loc->sec) &&
 		    (!extension || STREQ (extension, loc->ext)
 				|| STREQ (extension, loc->ext + strlen (sec))))
 			found += add_candidate (cand_head, CANDIDATE_DATABASE,
 						0, name, manpath, NULL, loc);
+	GL_LIST_FOREACH_END (matches);
 
 	return found;
 }
@@ -3673,8 +3615,8 @@ static int do_global_apropos_section (const char *path, const char *sec,
 				      const char *name)
 {
 	int found = 0;
-	char **names, **np;
-	size_t names_len = 0;
+	gl_list_t names;
+	const char *found_name;
 	regex_t search;
 
 	global_manpath = is_global_mandir (path);
@@ -3684,6 +3626,7 @@ static int do_global_apropos_section (const char *path, const char *sec,
 	debug ("searching in %s, section %s\n", path, sec);
 
 	names = look_for_file (path, sec, "*", 0, LFF_WILDCARD);
+
 	if (regex_opt)
 		xregcomp (&search, name,
 			  REG_EXTENDED | REG_NOSUB |
@@ -3691,33 +3634,31 @@ static int do_global_apropos_section (const char *path, const char *sec,
 	else
 		memset (&search, 0, sizeof search);
 
-	for (np = names; np && *np; ++np)
-		++names_len;
-	order_files (path, names, names_len);
+	order_files (path, &names);
 
-	for (np = names; np && *np; ++np) {
+	GL_LIST_FOREACH_START (names, found_name) {
 		struct mandata *info;
 		char *info_buffer;
 		char *title = NULL;
 		const char *man_file;
 		char *cat_file = NULL;
 
-		if (!grep (*np, name, &search))
+		if (!grep (found_name, name, &search))
 			continue;
 
 		info = infoalloc ();
-		info_buffer = filename_info (*np, info, NULL);
+		info_buffer = filename_info (found_name, info, NULL);
 		if (!info_buffer)
 			goto next;
 		info->addr = info_buffer;
 
 		title = xasprintf ("%s(%s)", strchr (info_buffer, '\0') + 1,
 				   info->ext);
-		man_file = ult_src (*np, path, NULL, ult_flags, NULL);
+		man_file = ult_src (found_name, path, NULL, ult_flags, NULL);
 		if (!man_file)
 			goto next;
 		lang = lang_dir (man_file);
-		cat_file = find_cat_file (path, *np, man_file);
+		cat_file = find_cat_file (path, found_name, man_file);
 		if (display (path, man_file, cat_file, title, NULL))
 			found = 1;
 		free (lang);
@@ -3727,7 +3668,9 @@ next:
 		free (cat_file);
 		free (title);
 		free_mandata_struct (info);
-	}
+	} GL_LIST_FOREACH_END (names);
+
+	gl_list_free (names);
 
 	if (regex_opt)
 		regfree (&search);
@@ -3740,23 +3683,26 @@ next:
 
 static int do_global_apropos (const char *name, int *found)
 {
-	const char **my_section_list;
-	const char **sp;
-	char **mp;
+	gl_list_t my_section_list;
+	const char *sec;
 
 	if (section) {
-		my_section_list = XNMALLOC (2, const char *);
-		my_section_list[0] = section;
-		my_section_list[1] = NULL;
+		my_section_list = gl_list_create_empty (GL_ARRAY_LIST, NULL,
+							NULL, NULL, false);
+		gl_list_add_last (my_section_list, section);
 	} else
 		my_section_list = section_list;
 
-	for (sp = my_section_list; *sp; sp++)
-		for (mp = manpathlist; *mp; mp++)
-			*found += do_global_apropos_section (*mp, *sp, name);
+	GL_LIST_FOREACH_START (my_section_list, sec) {
+		char *mp;
+
+		GL_LIST_FOREACH_START (manpathlist, mp)
+			*found += do_global_apropos_section (mp, sec, name);
+		GL_LIST_FOREACH_END (manpathlist);
+	} GL_LIST_FOREACH_END (my_section_list);
 
 	if (section)
-		free (my_section_list);
+		gl_list_free (my_section_list);
 
 	return *found ? OK : NOT_FOUND;
 }
@@ -3768,10 +3714,10 @@ static int man (const char *name, int *found);
 static int local_man_loop (const char *argv)
 {
 	int exit_status = OK;
-	int local_mf = local_man_file;
+	bool local_mf = local_man_file;
 
 	drop_effective_privs ();
-	local_man_file = 1;
+	local_man_file = true;
 	if (strcmp (argv, "-") == 0)
 		display (NULL, "", NULL, "(stdin)", NULL);
 	else {
@@ -3806,7 +3752,7 @@ static int local_man_loop (const char *argv)
 			if (directory_on_path (argv_dir)) {
 				char *argv_base = base_name (argv);
 				char *new_manp, *nm;
-				char **old_manpathlist, **mp;
+				gl_list_t old_manpathlist;
 
 				debug ("recalculating manpath for executable "
 				       "in %s\n", argv_dir);
@@ -3821,18 +3767,13 @@ static int local_man_loop (const char *argv)
 				free (new_manp);
 				new_manp = nm;
 
-				old_manpathlist = XNMALLOC (MAXDIRS, char *);
-				memcpy (old_manpathlist, manpathlist,
-					MAXDIRS * sizeof (*manpathlist));
-				create_pathlist (new_manp, manpathlist);
+				old_manpathlist = manpathlist;
+				manpathlist = create_pathlist (new_manp);
 
 				man (argv_base, &found);
 
-				for (mp = manpathlist; *mp; ++mp)
-					free (*mp);
-				memcpy (manpathlist, old_manpathlist,
-					MAXDIRS * sizeof (*manpathlist));
-				free (old_manpathlist);
+				free_pathlist (manpathlist);
+				manpathlist = old_manpathlist;
 executable_out:
 				free (new_manp);
 				free (argv_base);
@@ -3901,10 +3842,12 @@ static void locate_page_in_manpath (const char *page_section,
 				    struct candidate **candidates,
 				    int *found)
 {
-	char **mp;
+	char *mp;
 
-	for (mp = manpathlist; *mp; mp++)
-		*found += locate_page (*mp, page_section, page_name, candidates);
+	GL_LIST_FOREACH_START (manpathlist, mp)
+		*found += locate_page (mp, page_section, page_name,
+				       candidates);
+	GL_LIST_FOREACH_END (manpathlist);
 }
 
 /*
@@ -3939,11 +3882,11 @@ static int man (const char *name, int *found)
 	if (section)
 		locate_page_in_manpath (section, name, &candidates, found);
 	else {
-		const char **sp;
+		const char *sec;
 
-		for (sp = section_list; *sp; sp++) {
-			locate_page_in_manpath (*sp, name, &candidates, found);
-		}
+		GL_LIST_FOREACH_START (section_list, sec)
+			locate_page_in_manpath (sec, name, &candidates, found);
+		GL_LIST_FOREACH_END (section_list);
 	}
 
 	split_page_name (name, &page_name, &page_section);
@@ -3969,20 +3912,20 @@ static int man (const char *name, int *found)
 }
 
 
-static const char **get_section_list (void)
+static gl_list_t get_section_list (void)
 {
-	int i = 0;
-	const char **config_sections;
-	const char **sections = NULL;
+	gl_list_t config_sections, sections;
 	const char *sec;
 
 	/* Section list from configuration file, or STD_SECTIONS if it's
 	 * empty.
 	 */
 	config_sections = get_sections ();
-	if (!*config_sections) {
-		free (config_sections);
-		config_sections = std_sections;
+	if (!gl_list_size (config_sections)) {
+		int i;
+		for (i = 0; std_sections[i]; ++i)
+			gl_list_add_last (config_sections,
+					  xstrdup (std_sections[i]));
 	}
 
 	if (colon_sep_section_list == NULL)
@@ -3994,17 +3937,16 @@ static const char **get_section_list (void)
 	 * man's -s option takes a comma-separated list, so we accept that
 	 * too for compatibility.
 	 */
+	sections = new_string_list (GL_ARRAY_LIST, true);
 	for (sec = strtok (colon_sep_section_list, ":,"); sec; 
-	     sec = strtok (NULL, ":,")) {
-		sections = xnrealloc (sections, i + 2, sizeof *sections);
- 		sections[i++] = sec;
- 	}
+	     sec = strtok (NULL, ":,"))
+		gl_list_add_last (sections, xstrdup (sec));
 
-	if (i > 0) {
-		sections[i] = NULL;
+	if (gl_list_size (sections)) {
+		gl_list_free (config_sections);
 		return sections;
 	} else {
-		free (sections);
+		gl_list_free (sections);
 		return config_sections;
 	}
 }
@@ -4086,8 +4028,6 @@ int main (int argc, char *argv[])
 
 	set_program_name (argv[0]);
 
-	check_standard_fds ();
-
 	init_debug ();
 	pipeline_install_post_fork (pop_all_cleanups);
 	sandbox = sandbox_init ();
@@ -4103,6 +4043,8 @@ int main (int argc, char *argv[])
 		multiple_locale = getenv ("LANGUAGE");
 	internal_locale = xstrdup (internal_locale ? internal_locale : "C");
 
+	xstdopen ();
+
 /* export argv, it might be needed when invoking the vendor supplied browser */
 #if defined _AIX || defined __sgi
 	global_argv = argv;
@@ -4113,6 +4055,10 @@ int main (int argc, char *argv[])
 	if (!html_pager)
 		init_html_pager ();
 #endif /* TROFF_IS_GROFF */
+
+#ifdef NROFF_WARNINGS
+	roff_warnings = new_string_list (GL_ARRAY_LIST, true);
+#endif /* NROFF_WARNINGS */
 
 	/* First of all, find out if $MANOPT is set. If so, put it in 
 	   *argv[] format for argp to play with. */
@@ -4226,7 +4172,7 @@ int main (int argc, char *argv[])
 
 	debug ("manpath search path (with duplicates) = %s\n", manp);
 
-	create_pathlist (manp, manpathlist);
+	manpathlist = create_pathlist (manp);
 
 	/* man issued with `-l' option */
 	if (local_man_file) {
@@ -4288,14 +4234,14 @@ int main (int argc, char *argv[])
 		if (global_apropos)
 			status = do_global_apropos (nextarg, &found);
 		else {
-			int found_subpage = 0;
+			bool found_subpage = false;
 			if (subpages && first_arg < argc) {
 				char *subname = xasprintf (
 					"%s-%s", nextarg, argv[first_arg]);
 				status = man (subname, &found);
 				free (subname);
 				if (status == OK) {
-					found_subpage = 1;
+					found_subpage = true;
 					++first_arg;
 				}
 			}
@@ -4305,7 +4251,7 @@ int main (int argc, char *argv[])
 				status = man (subname, &found);
 				free (subname);
 				if (status == OK) {
-					found_subpage = 1;
+					found_subpage = true;
 					++first_arg;
 				}
 			}
@@ -4314,15 +4260,17 @@ int main (int argc, char *argv[])
 		}
 
 		/* clean out the cache of database lookups for each man page */
-		hashtable_free (db_hash);
-		db_hash = NULL;
+		if (db_map) {
+			gl_map_free (db_map);
+			db_map = NULL;
+		}
 
 		if (section && maybe_section) {
 			if (status != OK && !catman) {
 				/* Maybe the section wasn't a section after
 				 * all? e.g. 'man 9wm fvwm'.
 				 */
-				int found_subpage = 0;
+				bool found_subpage = false;
 				debug ("\nRetrying section %s as name\n",
 				       section);
 				tmp = section;
@@ -4333,14 +4281,16 @@ int main (int argc, char *argv[])
 					status = man (subname, &found);
 					free (subname);
 					if (status == OK) {
-						found_subpage = 1;
+						found_subpage = true;
 						++first_arg;
 					}
 				}
 				if (!found_subpage)
 					status = man (tmp, &found);
-				hashtable_free (db_hash);
-				db_hash = NULL;
+				if (db_map) {
+					gl_map_free (db_map);
+					db_map = NULL;
+				}
 				/* ... but don't gripe about it if it doesn't
 				 * work!
 				 */
@@ -4385,13 +4335,17 @@ int main (int argc, char *argv[])
 
 		chkr_garbage_detector ();
 	}
-	hashtable_free (db_hash);
-	db_hash = NULL;
+	if (db_map) {
+		gl_map_free (db_map);
+		db_map = NULL;
+	}
 
 	drop_effective_privs ();
 
 	free (database);
+	gl_list_free (section_list);
 	free_pathlist (manpathlist);
 	free (internal_locale);
+	sandbox_free (sandbox);
 	exit (exit_status);
 }

@@ -59,6 +59,8 @@
 #define PIPE	so_pipe[so_stack_ptr]
 
 #include "dirname.h"
+#include "gl_linkedhash_list.h"
+#include "gl_xlist.h"
 #include "xgetcwd.h"
 #include "xvasprintf.h"
 
@@ -69,6 +71,7 @@
 #include "manconfig.h"
 
 #include "error.h"
+#include "glcontainers.h"
 #include "pipeline.h"
 #include "decompress.h"
 
@@ -88,12 +91,12 @@ static int so_line[MAX_SO_DEPTH];
 static pipeline *so_pipe[MAX_SO_DEPTH];
 static int so_stack_ptr;
 static int no_newline;
-static char * const *so_manpathlist;
+static gl_list_t so_manpathlist;
 static const char *so_parent_path;
 
 struct zsoelim_stdin_data {
 	char *path;
-	char * const *manpathlist;
+	gl_list_t manpathlist;
 };
 
 /* The flex documentation says that yyin is only used by YY_INPUT, so we
@@ -286,7 +289,6 @@ W	[ \t]
 		PIPE = NULL;
 		free (NAME);
 		NAME = NULL;
-		so_manpathlist = NULL;
 
 		if (no_newline)
 			putchar ('\n');
@@ -320,7 +322,7 @@ static void zap_quotes (void)
 #endif
 
 /* initialise the stack and call the parser */
-void zsoelim_parse_file (char * const *manpathlist, const char *parent_path)
+void zsoelim_parse_file (gl_list_t manpathlist, const char *parent_path)
 {
 #ifdef PP_COOKIE
 	const char *line;
@@ -377,11 +379,10 @@ static pipeline *try_compressed (char **filename)
 
 /* This routine is used to open the specified file or uncompress a compressed
    version and open that instead */
-int zsoelim_open_file (const char *filename, char * const *manpathlist,
+int zsoelim_open_file (const char *filename, gl_list_t manpathlist,
 		       const char *parent_path)
 {
 	pipeline *decomp;
-	char * const *mp;
 
 	if (parent_path)
 		debug ("opening %s (parent path: %s)\n",
@@ -394,6 +395,7 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 		NAME = xstrdup (filename);
 	} else {
 		char *compfile;
+		const char *mp;
 
 		/* If there is no parent path, try opening directly first. */
 		if (!parent_path) {
@@ -407,7 +409,7 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 				free (compfile);
 		}
 
-		if (manpathlist && strchr (filename, '/')) {
+		if (strchr (filename, '/')) {
 			/* File name with a directory part.  Try looking it
 			 * up within each manpath entry.
 			 */
@@ -424,11 +426,11 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 				free (compfile);
 			}
 
-			for (mp = manpathlist; *mp; ++mp) {
-				if (parent_path && STREQ (*mp, parent_path))
+			GL_LIST_FOREACH_START (manpathlist, mp) {
+				if (parent_path && STREQ (mp, parent_path))
 					continue;
 
-				compfile = xasprintf ("%s/%s.", *mp, filename);
+				compfile = xasprintf ("%s/%s.", mp, filename);
 
 				decomp = try_compressed (&compfile);
 				if (decomp) {
@@ -437,14 +439,14 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 				}
 
 				free (compfile);
-			}
-		} else if (manpathlist) {
+			} GL_LIST_FOREACH_END (manpathlist);
+		} else {
 			/* File name with no directory part.  Try searching
 			 * the manpath.
 			 */
 			char *name, *sec, *dot;
-			char **names;
-			char **np;
+			gl_list_t names;
+			const char *found_name;
 
 			name = xstrdup (filename);
 			dot = strchr (name, '.');
@@ -461,29 +463,34 @@ int zsoelim_open_file (const char *filename, char * const *manpathlist,
 			if (parent_path) {
 				names = look_for_file (parent_path, sec, name,
 						       0, LFF_MATCHCASE);
-				for (np = names; np && *np; ++np) {
-					decomp = decompress_open (*np);
+				GL_LIST_FOREACH_START (names, found_name) {
+					decomp = decompress_open (found_name);
 					if (decomp) {
-						NAME = xstrdup (*np);
+						NAME = xstrdup (found_name);
+						gl_list_free (names);
 						goto out;
 					}
-				}
+				} GL_LIST_FOREACH_END (names);
+				gl_list_free (names);
 			}
 
-			for (mp = manpathlist; *mp; ++mp) {
-				if (parent_path && STREQ (*mp, parent_path))
+			GL_LIST_FOREACH_START (manpathlist, mp) {
+				if (parent_path && STREQ (mp, parent_path))
 					continue;
 
-				names = look_for_file (*mp, sec, name,
+				names = look_for_file (mp, sec, name,
 						       0, LFF_MATCHCASE);
-				for (np = names; np && *np; ++np) {
-					decomp = decompress_open (*np);
+				GL_LIST_FOREACH_START (names, found_name) {
+					decomp = decompress_open (found_name);
 					if (decomp) {
-						NAME = xstrdup (*np);
+						NAME = xstrdup (found_name);
+						gl_list_free (names);
+						free (name);
 						goto out;
 					}
-				}
-			}
+				} GL_LIST_FOREACH_END (names);
+				gl_list_free (names);
+			} GL_LIST_FOREACH_END (manpathlist);
 
 			free (name);
 		}
@@ -520,13 +527,17 @@ out:
 void zsoelim_stdin (void *data)
 {
 	struct zsoelim_stdin_data *zsoelim_data = data;
+	gl_list_t empty;
 
-	zsoelim_open_file ("-", NULL, zsoelim_data->path);
+	empty = gl_list_create_empty (GL_LINKEDHASH_LIST, NULL, NULL, NULL,
+				      true);
+	zsoelim_open_file ("-", empty, zsoelim_data->path);
+	gl_list_free (empty);
 	zsoelim_parse_file (zsoelim_data->manpathlist, zsoelim_data->path);
 }
 
 struct zsoelim_stdin_data *zsoelim_stdin_data_new (const char *path,
-						   char * const *manpathlist)
+						   gl_list_t manpathlist)
 {
 	struct zsoelim_stdin_data *data = XMALLOC (struct zsoelim_stdin_data);
 

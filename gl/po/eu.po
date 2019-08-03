@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: coreutils-5.2.1\n"
 "Report-Msgid-Bugs-To: bug-gnulib@gnu.org\n"
-"POT-Creation-Date: 2019-01-05 11:52+0000\n"
+"POT-Creation-Date: 2019-08-03 11:23+0100\n"
 "PO-Revision-Date: 2005-01-04 20:27+0100\n"
 "Last-Translator: Mikel Olasagasti <hey_neken@mundurat.net>\n"
 "Language-Team: Basque <translation-team-eu@lists.sourceforge.net>\n"
@@ -48,32 +48,32 @@ msgstr ""
 "Beharrezkoak diren argumentuak aukera luzeetan, beharrezkoak dira aukera "
 "txikietan ere.\n"
 
-#: gl/lib/argp-help.c:1625
+#: gl/lib/argp-help.c:1627
 msgid "Usage:"
 msgstr ""
 
-#: gl/lib/argp-help.c:1629
+#: gl/lib/argp-help.c:1631
 msgid "  or: "
 msgstr ""
 
-#: gl/lib/argp-help.c:1641
+#: gl/lib/argp-help.c:1643
 #, fuzzy
 msgid " [OPTION...]"
 msgstr "Erabilera: %s [AUKERA]...\n"
 
-#: gl/lib/argp-help.c:1668
+#: gl/lib/argp-help.c:1670
 #, fuzzy, c-format
 msgid "Try '%s --help' or '%s --usage' for more information.\n"
 msgstr "Saiatu `%s --help' erabiltzen informazio gehiagorako.\n"
 
-#: gl/lib/argp-help.c:1696
+#: gl/lib/argp-help.c:1698
 #, fuzzy, c-format
 msgid "Report bugs to %s.\n"
 msgstr ""
 "\n"
 "Programa-erroreen berri emateko idatzi hona: <%s>.\n"
 
-#: gl/lib/argp-help.c:1896 gl/lib/error.c:195
+#: gl/lib/argp-help.c:1898 gl/lib/error.c:195
 msgid "Unknown system error"
 msgstr "Sistema-errore ezezaguna"
 
@@ -248,6 +248,11 @@ msgstr "in bilatu"
 #: gl/lib/xalloc-die.c:34
 msgid "memory exhausted"
 msgstr "memoria agortuta"
+
+#: gl/lib/xstdopen.c:34
+#, c-format
+msgid "standard file descriptors"
+msgstr ""
 
 #~ msgid "invalid argument %s for %s"
 #~ msgstr "%s baliogabeko argumentua da %s-(r)entzat"

@@ -26,6 +26,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <errno.h>
 #include <ctype.h>
@@ -33,7 +34,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "error.h"
 #include "fnmatch.h"
+#include "gl_array_list.h"
+#include "gl_xlist.h"
 #include "regex.h"
 #include "xvasprintf.h"
 
@@ -42,8 +46,7 @@
 
 #include "manconfig.h"
 
-#include "error.h"
-#include "lower.h"
+#include "glcontainers.h"
 #include "wordfnmatch.h"
 #include "xregcomp.h"
 
@@ -145,19 +148,12 @@ void free_mandata_elements (struct mandata *pinfo)
 	free (pinfo->name);			/* free the real name */
 }
 
-/* Go through the linked list of structures, free()ing the 'content' and the
- * structs themselves.
- */
+/* Free a mandata structure and its elements. */
 void free_mandata_struct (struct mandata *pinfo)
 {
-	while (pinfo) {
-		struct mandata *next;
-
-		next = pinfo->next;
+	if (pinfo)
 		free_mandata_elements (pinfo);
-		free (pinfo);			/* free the structure */
-		pinfo = next;
-	}
+	free (pinfo);
 }
 
 /* Get the key that should be used for a given name. The caller is
@@ -165,7 +161,13 @@ void free_mandata_struct (struct mandata *pinfo)
  */
 char *name_to_key (const char *name)
 {
-	return lower (name);
+	char *low, *p;
+
+	p = low = xmalloc (strlen (name) + 1);
+	while (*name)
+		*p++ = CTYPE (tolower, *name++);
+	*p = *name;
+	return low;
 }
 
 /* return char ptr array to the data's fields */
@@ -218,39 +220,43 @@ void split_content (char *cont_ptr, struct mandata *pinfo)
 	pinfo->whatis = *(data);
 
 	pinfo->addr = cont_ptr;
-	pinfo->next = (struct mandata *) NULL;
+}
+
+static bool name_ext_equals (const void *elt1, const void *elt2)
+{
+	const struct name_ext *ref1 = elt1, *ref2 = elt2;
+	return STREQ (ref1->name, ref2->name) && STREQ (ref1->ext, ref2->ext);
 }
 
 /* Extract all of the names/extensions associated with this key. Each case
  * variant of a name will be returned separately.
  *
- * names and ext should be pointers to valid memory which will be filled in
- * with the address of the allocated arrays of names and extensions. The
- * caller is expected to free these arrays.
+ * This returns a newly-allocated list of struct name_ext, which the caller
+ * is expected to free.
  */
-int list_extensions (char *data, char ***names, char ***ext)
+gl_list_t list_extensions (char *data)
 {
-	int count = 0;
-	int bound = 4;	/* most multi keys will have fewer than this */
+	gl_list_t list = gl_list_create_empty (GL_ARRAY_LIST, name_ext_equals,
+					       NULL, plain_free, true);
+	char *name;
 
-	*names = xnmalloc (bound, sizeof **names);
-	*ext   = xnmalloc (bound, sizeof **ext);
-	while (((*names)[count] = strsep (&data, "\t")) != NULL) {
-		(*ext)[count] = strsep (&data, "\t");
-		if ((*ext)[count])
-			++count;
-		else
+	while ((name = strsep (&data, "\t")) != NULL) {
+		char *ext;
+		struct name_ext *name_ext;
+
+		ext = strsep (&data, "\t");
+		if (!ext)
 			break;
 
-		if (count >= bound) {
-			bound *= 2;
-			*names = xnrealloc (*names, bound, sizeof **names);
-			*ext   = xnrealloc (*ext,   bound, sizeof **ext);
-		}
+		name_ext = XMALLOC (struct name_ext);
+		/* Don't copy these; they will point into the given string. */
+		name_ext->name = name;
+		name_ext->ext = ext;
+		gl_list_add_last (list, name_ext);
 	}
 
-	debug ("found %d names/extensions\n", count);
-	return count;
+	debug ("found %zd names/extensions\n", gl_list_size (list));
+	return list;
 }
 
 /* These should be bitwise-ored together. */
@@ -261,15 +267,21 @@ int list_extensions (char *data, char ***names, char ***ext)
 /*
  There are three possibilities on lookup:
 
- 1) No data exists, lookup will fail, returned structure will be NULL.
- 2) One data item exists. Item is returned as first in set of structures.
- 3) Many items exist. They are all returned, in a multiple structure set.
+ 1) No data exists, lookup will fail, zero-length list will be returned.
+ 2) One data item exists. Item is returned as first in list of structures.
+ 3) Many items exist. They are all returned, in a multiple structure list.
  */
-static struct mandata *dblookup (MYDBM_FILE dbf, const char *page,
-				 const char *section, int flags)
+static gl_list_t dblookup (MYDBM_FILE dbf, const char *page,
+			   const char *section, int flags)
 {
+	gl_list_t infos;
 	struct mandata *info = NULL;
 	datum key, cont;
+
+	infos = gl_list_create_empty (GL_ARRAY_LIST, NULL, NULL,
+				      (gl_listelement_dispose_fn)
+				      free_mandata_struct,
+				      true);
 
 	memset (&key, 0, sizeof key);
 	memset (&cont, 0, sizeof cont);
@@ -278,41 +290,44 @@ static struct mandata *dblookup (MYDBM_FILE dbf, const char *page,
 	cont = MYDBM_FETCH (dbf, key);
 	MYDBM_FREE_DPTR (key);
 
-	if (MYDBM_DPTR (cont) == NULL) {	/* No entries at all */
-		return info;			/* indicate no entries */
-	} else if (*MYDBM_DPTR (cont) != '\t') {	/* Just one entry */
+	if (MYDBM_DPTR (cont) == NULL)		/* No entries at all */
+		;
+	else if (*MYDBM_DPTR (cont) != '\t') {	/* Just one entry */
+		bool matches = false;
+
 		info = infoalloc ();
 		split_content (MYDBM_DPTR (cont), info);
 		if (!info->name)
 			info->name = xstrdup (page);
 		if (!(flags & MATCH_CASE) || STREQ (info->name, page)) {
 			if (section == NULL)
-				return info;
-			if (flags & EXACT) {
+				matches = true;
+			else if (flags & EXACT) {
 				if (STREQ (section, info->ext))
-					return info;
+					matches = true;
 			} else {
 				if (STRNEQ (section, info->ext,
 					    strlen (section)))
-					return info;
+					matches = true;
 			}
 		}
-		free_mandata_struct (info);
-		return NULL;
-	} else {				/* multiple entries */
-		char **names, **ext;
-		struct mandata *ret = NULL;
-		int refs, i;
+		if (matches)
+			gl_list_add_last (infos, info);
+		else
+			free_mandata_struct (info);
+	} else {				/* Multiple entries */
+		gl_list_t refs;
+		struct name_ext *ref;
 
 		/* Extract all of the case-variant-names/extensions
 		 * associated with this key.
 		 */
 
-		refs = list_extensions (MYDBM_DPTR (cont) + 1, &names, &ext);
+		refs = list_extensions (MYDBM_DPTR (cont) + 1);
 
 		/* Make the multi keys and look them up */
 
-		for (i = 0; i < refs; ++i) {
+		GL_LIST_FOREACH_START (refs, ref) {
 			datum multi_cont;
 
 			memset (&multi_cont, 0, sizeof multi_cont);
@@ -321,22 +336,22 @@ static struct mandata *dblookup (MYDBM_FILE dbf, const char *page,
 			 * suitable.
 			 */
 
-			if ((flags & MATCH_CASE) && !STREQ (names[i], page))
+			if ((flags & MATCH_CASE) && !STREQ (ref->name, page))
 				continue;
 
 			if (section != NULL) {
 				if (flags & EXACT) {
-					if (!STREQ (section, ext[i]))
+					if (!STREQ (section, ref->ext))
 						continue;
 				} else {
-					if (!STRNEQ (section, ext[i],
+					if (!STRNEQ (section, ref->ext,
 						     strlen (section)))
 						continue;
 				}
 			}
 
 			/* So the key is suitable ... */
-			key = make_multi_key (names[i], ext[i]);
+			key = make_multi_key (ref->name, ref->ext);
 			debug ("multi key lookup (%s)\n", MYDBM_DPTR (key));
 			multi_cont = MYDBM_FETCH (dbf, key);
 			if (MYDBM_DPTR (multi_cont) == NULL) {
@@ -346,45 +361,57 @@ static struct mandata *dblookup (MYDBM_FILE dbf, const char *page,
 			}
 			MYDBM_FREE_DPTR (key);
 
-			/* allocate info struct, fill it in and
-			   point info to the next in the list */
-			if (!ret)
-				ret = info = infoalloc ();
-			else
-				info = info->next = infoalloc ();
+			/* Allocate info struct and add it to the list. */
+			info = infoalloc ();
 			split_content (MYDBM_DPTR (multi_cont), info);
 			if (!info->name)
-				info->name = xstrdup (names[i]);
-		}
+				info->name = xstrdup (ref->name);
+			gl_list_add_last (infos, info);
+		} GL_LIST_FOREACH_END (refs);
 
-		free (names);
-		free (ext);
+		gl_list_free (refs);
 		MYDBM_FREE_DPTR (cont);
-		return ret;
 	}
+
+	return infos;
 }
 
-struct mandata *dblookup_all (MYDBM_FILE dbf, const char *page,
-			      const char *section, int match_case)
+gl_list_t dblookup_all (MYDBM_FILE dbf, const char *page,
+			const char *section, bool match_case)
 {
 	return dblookup (dbf, page, section,
 			 ALL | (match_case ? MATCH_CASE : 0));
 }
 
 struct mandata *dblookup_exact (MYDBM_FILE dbf, const char *page,
-				const char *section, int match_case)
+				const char *section, bool match_case)
 {
-	return dblookup (dbf, page, section,
-			 EXACT | (match_case ? MATCH_CASE : 0));
+	gl_list_t infos = dblookup (dbf, page, section,
+				    EXACT | (match_case ? MATCH_CASE : 0));
+	struct mandata *info = NULL;
+
+	if (gl_list_size (infos)) {
+		/* Return the first item and free the rest of the list. */
+		info = (struct mandata *) gl_list_get_at (infos, 0);
+		gl_list_set_at (infos, 0, NULL);	/* steal memory */
+	}
+	gl_list_free (infos);
+	return info;
 }
 
-struct mandata *dblookup_pattern (MYDBM_FILE dbf, const char *pattern,
-				  const char *section, int match_case,
-				  int pattern_regex, int try_descriptions)
+gl_list_t dblookup_pattern (MYDBM_FILE dbf, const char *pattern,
+			    const char *section, bool match_case,
+			    bool pattern_regex, bool try_descriptions)
 {
-	struct mandata *ret = NULL, *tail = NULL;
+	gl_list_t infos;
+	struct mandata *tail = NULL;
 	datum key, cont;
 	regex_t preg;
+
+	infos = gl_list_create_empty (GL_ARRAY_LIST, NULL, NULL,
+				      (gl_listelement_dispose_fn)
+				      free_mandata_struct,
+				      true);
 
 	if (pattern_regex)
 		xregcomp (&preg, pattern,
@@ -405,7 +432,7 @@ struct mandata *dblookup_pattern (MYDBM_FILE dbf, const char *pattern,
 #endif /* !BTREE */
 		struct mandata info;
 		char *tab;
-		int got_match;
+		bool got_match;
 
 		memset (&info, 0, sizeof (info));
 
@@ -460,13 +487,11 @@ struct mandata *dblookup_pattern (MYDBM_FILE dbf, const char *pattern,
 		if (!got_match)
 			goto nextpage_tab;
 
-		if (!ret)
-			ret = tail = infoalloc ();
-		else
-			tail = tail->next = infoalloc ();
+		tail = infoalloc ();
 		memcpy (tail, &info, sizeof (info));
 		info.name = NULL; /* steal memory */
 		MYDBM_SET_DPTR (cont, NULL); /* == info.addr */
+		gl_list_add_last (infos, tail);
 
 nextpage_tab:
 		if (tab)
@@ -489,5 +514,5 @@ nextpage:
 	if (pattern_regex)
 		regfree (&preg);
 
-	return ret;
+	return infos;
 }

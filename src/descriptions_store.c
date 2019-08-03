@@ -24,6 +24,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -31,9 +32,12 @@
 #include "gettext.h"
 #define _(String) gettext (String)
 
+#include "error.h"
+#include "gl_list.h"
+
 #include "manconfig.h"
 
-#include "error.h"
+#include "glcontainers.h"
 
 #include "db_storage.h"
 
@@ -60,39 +64,38 @@ static int is_prefix (const char *path, const char *dir)
 /* Take a list of descriptions returned by parse_descriptions() and store
  * it into the database.
  */
-void store_descriptions (MYDBM_FILE dbf, const struct page_description *head,
-			 struct mandata *info,
-			 const char *path, const char *base,
-			 struct ult_trace *trace)
+void store_descriptions (MYDBM_FILE dbf, gl_list_t descs, struct mandata *info,
+			 const char *path, const char *base, gl_list_t trace)
 {
 	const struct page_description *desc;
 	char save_id = info->id;
-	size_t i;
+	const char *trace_name;
 
-	if (trace) {
-		for (i = 0; i < trace->len; ++i)
-			debug ("trace->names[%zu] = '%s'\n",
-			       i, trace->names[i]);
+	if (gl_list_size (descs) && trace) {
+		GL_LIST_FOREACH_START (trace, trace_name)
+			debug ("trace: '%s'\n", trace_name);
+		GL_LIST_FOREACH_END (trace);
 	}
 
-	for (desc = head; desc; desc = desc->next) {
+	GL_LIST_FOREACH_START (descs, desc) {
 		/* Either it's the real thing or merely a reference. Get the
 		 * id and pointer right in either case.
 		 */
-		int found_real_page = 0;
-		int found_external = 0;
+		bool found_real_page = false;
+		bool found_external = false;
 
 		if (STREQ (base, desc->name)) {
 			info->id = save_id;
 			info->pointer = NULL;
 			info->whatis = desc->whatis;
-			found_real_page = 1;
+			found_real_page = true;
 		} else if (trace) {
-			for (i = 0; i < trace->len; ++i) {
+			size_t i = 0;
+			GL_LIST_FOREACH_START (trace, trace_name) {
 				struct mandata trace_info;
 				char *buf;
 
-				buf = filename_info (trace->names[i],
+				buf = filename_info (trace_name,
 						     &trace_info, "");
 				if (trace_info.name &&
 				    STREQ (trace_info.name, desc->name)) {
@@ -101,24 +104,25 @@ void store_descriptions (MYDBM_FILE dbf, const struct page_description *head,
 						 * hierarchy; skip this
 						 * description.
 						 */
-						found_external = 1;
+						found_external = true;
 						free (trace_info.name);
 						free (buf);
 						break;
 					}
-					if (i == trace->len - 1 &&
+					if (i == gl_list_size (trace) - 1 &&
 					    save_id == SO_MAN)
 						info->id = ULT_MAN;
 					else
 						info->id = save_id;
 					info->pointer = NULL;
 					info->whatis = desc->whatis;
-					found_real_page = 1;
+					found_real_page = true;
 				}
 
 				free (trace_info.name);
 				free (buf);
-			}
+				++i;
+			} GL_LIST_FOREACH_END (trace);
 		}
 
 		if (found_external) {
@@ -144,5 +148,5 @@ void store_descriptions (MYDBM_FILE dbf, const struct page_description *head,
 			gripe_bad_store (base, info->ext);
 			break;
 		}
-	}
+	} GL_LIST_FOREACH_END (descs);
 }

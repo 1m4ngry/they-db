@@ -39,6 +39,8 @@ dist_noinst_DATA = \
 	$(ME_FILES) \
 	options-only.me \
 	print-options
+
+if BUILD_MANUAL
 noinst_DATA = \
 	$(MANUAL).cat \
 	$(MANUAL).ps
@@ -58,25 +60,25 @@ version: $(top_srcdir)/configure.ac
 	echo '.ds V $(roff_version)' > $@
 
 $(MANUAL).pp: $(ME_FILES) version
-	$(SOELIM) -I$(srcdir) man_db.me | tbl > $@
+	$(SOELIM) -I$(srcdir) man_db.me | tbl > $@.new && mv -f $@.new $@
 
 .pp.dvi:
-	$(TROFF) -me -Tdvi $< > $@
+	$(TROFF) -me -Tdvi $< > $@.new && mv -f $@.new $@
 
 .pp.ps:
-	$(TROFF) -me -Tps $< > $@
+	$(TROFF) -me -Tps $< > $@.new && mv -f $@.new $@
 
 .pp.tdvi:
-	$(TROFF) -me -Tdvi $< | grodvi -d > $@
+	$(TROFF) -me -Tdvi $< | grodvi -d > $@.new && mv -f $@.new $@
 
 .tdvi.tps:
-	dvips -f -t a4 $< > $@
+	dvips -f -t a4 $< > $@.new && mv -f $@.new $@
 
 .pp.cat:
-	LC_ALL=C nroff -me $< > $@
+	LC_ALL=C nroff -me $< > $@.new && mv -f $@.new $@
 
 .pp.html:
-	$(TROFF) -me -Thtml -P-I$* $< > $@
+	$(TROFF) -me -Thtml -P-I$* $< > $@.new && mv -f $@.new $@
 
 # Automake defines these targets already, so we need to use -local.
 dvi-local: $(MANUAL).dvi
@@ -103,3 +105,4 @@ install-data-hook:
 
 uninstall-hook:
 	rm -rf "$(DESTDIR)$(docdir)"
+endif

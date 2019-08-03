@@ -34,6 +34,7 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -56,6 +57,9 @@
 
 #include "argp.h"
 #include "dirname.h"
+#include "gl_hash_set.h"
+#include "gl_list.h"
+#include "gl_xset.h"
 #include "fnmatch.h"
 #include "progname.h"
 #include "xvasprintf.h"
@@ -64,11 +68,10 @@
 
 #include "cleanup.h"
 #include "error.h"
+#include "glcontainers.h"
 #include "pipeline.h"
 #include "pathsearch.h"
 #include "linelength.h"
-#include "hashtable.h"
-#include "lower.h"
 #include "wordfnmatch.h"
 #include "xregcomp.h"
 #include "encodings.h"
@@ -79,13 +82,13 @@
 
 #include "manp.h"
 
-static char *manpathlist[MAXDIRS];
+static gl_list_t manpathlist;
 
 extern char *user_config_file;
 static char **keywords;
 static int num_keywords;
 
-int am_apropos;
+bool am_apropos;
 char *database;
 int quiet = 1;
 man_sandbox *sandbox;
@@ -95,14 +98,14 @@ iconv_t conv_to_locale;
 #endif /* HAVE_ICONV */
 
 static regex_t *preg;  
-static int regex_opt;
-static int exact;
+static bool regex_opt;
+static bool exact;
 
-static int wildcard;
+static bool wildcard;
 
-static int require_all;
+static bool require_all;
 
-static int long_output;
+static bool long_output;
 
 static char **sections;
 
@@ -111,7 +114,7 @@ static const char *alt_systems = "";
 static const char *locale = NULL;
 static char *multiple_locale = NULL, *internal_locale;
 
-static struct hashtable *display_seen = NULL;
+static gl_set_t display_seen = NULL;
 
 const char *argp_program_version; /* initialised in main */
 const char *argp_program_bug_address = PACKAGE_BUGREPORT;
@@ -167,33 +170,33 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 {
 	switch (key) {
 		case 'd':
-			debug_level = 1;
+			debug_level = true;
 			return 0;
 		case 'v':
 			quiet = 0;
 			return 0;
 		case 'r':
-			regex_opt = 1;
+			regex_opt = true;
 			return 0;
 		case 'e':
 			/* Only makes sense for apropos, but has
 			 * historically been accepted by whatis anyway.
 			 */
-			regex_opt = 0;
-			exact = 1;
+			regex_opt = false;
+			exact = true;
 			return 0;
 		case 'w':
-			regex_opt = 0;
-			wildcard = 1;
+			regex_opt = false;
+			wildcard = true;
 			return 0;
 		case 'a':
 			if (am_apropos)
-				require_all = 1;
+				require_all = true;
 			else
 				argp_usage (state);
 			return 0;
 		case 'l':
-			long_output = 1;
+			long_output = true;
 			return 0;
 		case 's':
 			sections = split_sections (arg);
@@ -212,11 +215,11 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			return 0;
 		case 'f':
 			/* helpful override if program name detection fails */
-			am_apropos = 0;
+			am_apropos = false;
 			return 0;
 		case 'k':
 			/* helpful override if program name detection fails */
-			am_apropos = 1;
+			am_apropos = true;
 			return 0;
 		case 'h':
 			argp_state_help (state, state->out_stream,
@@ -233,7 +236,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 			exit (FAIL);
 		case ARGP_KEY_SUCCESS:
 			if (am_apropos && !exact && !wildcard)
-				regex_opt = 1;
+				regex_opt = true;
 			return 0;
 	}
 	return ARGP_ERR_UNKNOWN;
@@ -321,7 +324,7 @@ static char *simple_convert (iconv_t conv, char *string)
  * legacy mechanism.
  */
 static void use_grep (const char * const *pages, int num_pages, char *manpath,
-		      int *found)
+		      bool *found)
 {
 	char *whatis_file = xasprintf ("%s/whatis", manpath);
 
@@ -361,7 +364,7 @@ static void use_grep (const char * const *pages, int num_pages, char *manpath,
 			grep_pl = pipeline_new_commands (grep_cmd, (void *) 0);
 
 			if (pipeline_run (grep_pl) == 0)
-				found[i] = 1;
+				found[i] = true;
 
 			free (anchored_page);
 		}
@@ -387,7 +390,7 @@ static struct mandata *resolve_pointers (MYDBM_FILE dbf, struct mandata *info,
 	 * arbitrary: it's just there to avoid an infinite loop.
 	 */
 	newpage = info->pointer;
-	info = dblookup_exact (dbf, newpage, info->ext, 1);
+	info = dblookup_exact (dbf, newpage, info->ext, true);
 	for (rounds = 0; rounds < 10; rounds++) {
 		struct mandata *newinfo;
 
@@ -400,7 +403,7 @@ static struct mandata *resolve_pointers (MYDBM_FILE dbf, struct mandata *info,
 		     STREQ (info->pointer, newpage)))
 			return info;
 
-		newinfo = dblookup_exact (dbf, info->pointer, info->ext, 1);
+		newinfo = dblookup_exact (dbf, info->pointer, info->ext, true);
 		free_mandata_struct (info);
 		info = newinfo;
 	}
@@ -451,9 +454,9 @@ static void display (MYDBM_FILE dbf, struct mandata *info, const char *page)
 		page_name = page;
 
 	key = xasprintf ("%s (%s)", page_name, newinfo->ext);
-	if (hashtable_lookup_structure (display_seen, key, strlen (key)))
+	if (gl_set_search (display_seen, key))
 		goto out;
-	hashtable_install (display_seen, key, strlen (key), NULL);
+	gl_set_add (display_seen, xstrdup (key));
 
 	line_len = get_line_length ();
 
@@ -499,56 +502,45 @@ out:
 static int do_whatis_section (MYDBM_FILE dbf,
 			      const char *page, const char *section)
 {
+	gl_list_t infos;
 	struct mandata *info;
 	int count = 0;
 
-	info = dblookup_all (dbf, page, section, 0);
-	while (info) {
-		struct mandata *pinfo;
-			
+	infos = dblookup_all (dbf, page, section, false);
+	GL_LIST_FOREACH_START (infos, info) {
 		display (dbf, info, page);
 		count++;
-		pinfo = info->next;	/* go on to next structure */
-		free_mandata_elements (info);
-	 	free (info);
-		info = pinfo;
-	}
+	} GL_LIST_FOREACH_END (infos);
+	gl_list_free (infos);
 	return count;
 }
 
-static int suitable_manpath (const char *manpath, const char *page_dir)
+static bool suitable_manpath (const char *manpath, const char *page_dir)
 {
 	char *page_manp, *pm;
-	char *page_manpathlist[MAXDIRS], **mp;
-	int ret;
+	gl_list_t page_manpathlist;
+	bool ret;
 
 	page_manp = get_manpath_from_path (page_dir, 0);
 	if (!page_manp || !*page_manp) {
 		free (page_manp);
-		return 0;
+		return false;
 	}
 	pm = locale_manpath (page_manp);
 	free (page_manp);
 	page_manp = pm;
-	create_pathlist (page_manp, page_manpathlist);
+	page_manpathlist = create_pathlist (page_manp);
 
-	ret = 0;
-	for (mp = page_manpathlist; *mp; ++mp) {
-		if (STREQ (*mp, manpath)) {
-			ret = 1;
-			break;
-		}
-	}
+	ret = gl_list_search (page_manpathlist, manpath) ? true : false;
 
-	for (mp = page_manpathlist; *mp; ++mp)
-		free (*mp);
+	free_pathlist (page_manpathlist);
 	free (page_manp);
 	return ret;
 }
 
 static void do_whatis (MYDBM_FILE dbf,
 		       const char * const *pages, int num_pages,
-		       const char *manpath, int *found)
+		       const char *manpath, bool *found)
 {
 	int i;
 
@@ -586,39 +578,39 @@ static void do_whatis (MYDBM_FILE dbf,
 
 			for (section = sections; *section; ++section) {
 				if (do_whatis_section (dbf, page, *section))
-					found[i] = 1;
+					found[i] = true;
 			}
 		} else {
 			if (do_whatis_section (dbf, page, NULL))
-				found[i] = 1;
+				found[i] = true;
 		}
 
 		free (page);
 	}
 }
 
-static int any_set (int num_pages, int *found_here)
+static bool any_set (int num_pages, bool *found_here)
 {
 	int i;
 
 	for (i = 0; i < num_pages; ++i)
 		if (found_here[i])
-			return 1;
-	return 0;
+			return true;
+	return false;
 }
 
-static int all_set (int num_pages, int *found_here)
+static bool all_set (int num_pages, bool *found_here)
 {
 	int i;
 
 	for (i = 0; i < num_pages; ++i)
 		if (!found_here[i])
-			return 0;
-	return 1;
+			return false;
+	return true;
 }
 
 static void parse_name (const char * const *pages, int num_pages,
-			const char *dbname, int *found, int *found_here)
+			const char *dbname, bool *found, bool *found_here)
 { 
 	int i;
 
@@ -626,57 +618,50 @@ static void parse_name (const char * const *pages, int num_pages,
 		for (i = 0; i < num_pages; ++i) {
 			if (regexec (&preg[i], dbname, 0,
 				     (regmatch_t *) 0, 0) == 0)
-				found[i] = found_here[i] = 1;
+				found[i] = found_here[i] = true;
 		}
 		return;
 	}
 
 	if (am_apropos && !wildcard) {
-		char *lowdbname = lower (dbname);
-
 		for (i = 0; i < num_pages; ++i) {
-			if (STREQ (lowdbname, pages[i]))
-				found[i] = found_here[i] = 1;
+			if (strcasecmp (dbname, pages[i]) == 0)
+				found[i] = found_here[i] = true;
 		}
-		free (lowdbname);
 		return;
 	}
 
 	for (i = 0; i < num_pages; ++i) {
-		if (fnmatch (pages[i], dbname, 0) == 0)
-			found[i] = found_here[i] = 1;
+		if (fnmatch (pages[i], dbname, FNM_CASEFOLD) == 0)
+			found[i] = found_here[i] = true;
 	}
 }
 
-/* return 1 on word match */
-static int match (const char *lowpage, const char *whatis)
+/* return true on word match */
+static bool match (const char *page, const char *whatis)
 {
-	char *lowwhatis = lower (whatis);
-	size_t len = strlen (lowpage);
-	char *p, *begin;
+	size_t len = strlen (page);
+	const char *begin;
+	char *p;
 
-	begin = lowwhatis;
+	begin = whatis;
 	
 	/* check for string match, then see if it is a _word_ */
-	while (lowwhatis && (p = strstr (lowwhatis, lowpage))) {
+	while (whatis && (p = strcasestr (whatis, page))) {
 		char *left = p - 1; 
 		char *right = p + len;
 
-		if ((p == begin || (!CTYPE (islower, *left) && *left != '_')) &&
-		    (!*right || (!CTYPE (islower, *right) && *right != '_'))) {
-		    	free (begin);
-		    	return 1;
-		}
-		lowwhatis = p + 1;
+		if ((p == begin || (!CTYPE (isalpha, *left) && *left != '_')) &&
+		    (!*right || (!CTYPE (isalpha, *right) && *right != '_')))
+		    	return true;
+		whatis = p + 1;
 	}
 
-	free (begin);
-	return 0;
+	return false;
 }
 
-static void parse_whatis (const char * const *pages, char * const *lowpages,
-			  int num_pages, const char *whatis,
-			  int *found, int *found_here)
+static void parse_whatis (const char * const *pages, int num_pages,
+			  const char *whatis, bool *found, bool *found_here)
 { 
 	int i;
 
@@ -684,7 +669,7 @@ static void parse_whatis (const char * const *pages, char * const *lowpages,
 		for (i = 0; i < num_pages; ++i) {
 			if (regexec (&preg[i], whatis, 0,
 				     (regmatch_t *) 0, 0) == 0)
-				found[i] = found_here[i] = 1;
+				found[i] = found_here[i] = true;
 		}
 		return;
 	}
@@ -693,18 +678,18 @@ static void parse_whatis (const char * const *pages, char * const *lowpages,
 		for (i = 0; i < num_pages; ++i) {
 			if (exact) {
 				if (fnmatch (pages[i], whatis, 0) == 0)
-					found[i] = found_here[i] = 1;
+					found[i] = found_here[i] = true;
 			} else {
 				if (word_fnmatch (pages[i], whatis))
-					found[i] = found_here[i] = 1;
+					found[i] = found_here[i] = true;
 			}
 		}
 		return;
 	}
 
 	for (i = 0; i < num_pages; ++i) {
-		if (match (lowpages[i], whatis))
-			found[i] = found_here[i] = 1;
+		if (match (pages[i], whatis))
+			found[i] = found_here[i] = true;
 	}
 }
 
@@ -715,25 +700,18 @@ static void parse_whatis (const char * const *pages, char * const *lowpages,
 
 /* scan for the page, print any matches */
 static void do_apropos (MYDBM_FILE dbf,
-			const char * const *pages, int num_pages, int *found)
+			const char * const *pages, int num_pages, bool *found)
 {
 	datum key, cont;
-	char **lowpages;
-	int *found_here;
-	int (*combine) (int, int *);
-	int i;
+	bool *found_here;
+	bool (*combine) (int, bool *);
 #ifndef BTREE
 	datum nextkey;
 #else /* BTREE */
 	int end;
 #endif /* !BTREE */
 
-	lowpages = XNMALLOC (num_pages, char *);
-	for (i = 0; i < num_pages; ++i) {
-		lowpages[i] = lower (pages[i]);
-		debug ("lower(%s) = \"%s\"\n", pages[i], lowpages[i]);
-	}
-	found_here = XNMALLOC (num_pages, int);
+	found_here = XNMALLOC (num_pages, bool);
 	combine = require_all ? all_set : any_set;
 
 #ifndef BTREE
@@ -797,19 +775,17 @@ static void do_apropos (MYDBM_FILE dbf,
 			 *tab = '\0';
 
 		memset (found_here, 0, num_pages * sizeof (*found_here));
+		parse_name (pages, num_pages,
+			    MYDBM_DPTR (key), found, found_here);
 		if (am_apropos) {
 			char *whatis;
 
-			parse_name ((const char **) lowpages, num_pages,
-				    MYDBM_DPTR (key), found, found_here);
 			whatis = info.whatis ? xstrdup (info.whatis) : NULL;
 			if (!combine (num_pages, found_here) && whatis)
-				parse_whatis (pages, lowpages, num_pages,
+				parse_whatis (pages, num_pages,
 					      whatis, found, found_here);
 			free (whatis);
-		} else
-			parse_name (pages, num_pages,
-				    MYDBM_DPTR (key), found, found_here);
+		}
 		if (combine (num_pages, found_here))
 			display (dbf, &info, MYDBM_DPTR (key));
 
@@ -831,31 +807,28 @@ nextpage:
 	}
 
 	free (found_here);
-
-	for (i = 0; i < num_pages; ++i)
-		free (lowpages[i]);
-	free (lowpages);
 }
 
 /* loop through the man paths, searching for a match */
-static int search (const char * const *pages, int num_pages)
+static bool search (const char * const *pages, int num_pages)
 {
-	int *found = XCALLOC (num_pages, int);
-	char *catpath, **mp;
-	int any_found, i;
+	bool *found = XCALLOC (num_pages, bool);
+	char *catpath, *mp;
+	bool any_found;
+	int i;
 
-	for (mp = manpathlist; *mp; mp++) {
+	GL_LIST_FOREACH_START (manpathlist, mp) {
 		MYDBM_FILE dbf;
 
-		catpath = get_catpath (*mp, SYSTEM_CAT | USER_CAT);
+		catpath = get_catpath (mp, SYSTEM_CAT | USER_CAT);
 		
 		if (catpath) {
 			database = mkdbname (catpath);
 			free (catpath);
 		} else
-			database = mkdbname (*mp);
+			database = mkdbname (mp);
 
-		debug ("path=%s\n", *mp);
+		debug ("path=%s\n", mp);
 
 		dbf = MYDBM_RDOPEN (database);
 		if (dbf && dbver_rd (dbf)) {
@@ -863,7 +836,7 @@ static int search (const char * const *pages, int num_pages)
 			dbf = NULL;
 		}
 		if (!dbf) {
-			use_grep (pages, num_pages, *mp, found);
+			use_grep (pages, num_pages, mp, found);
 			continue;
 		}
 
@@ -873,19 +846,19 @@ static int search (const char * const *pages, int num_pages)
 			if (regex_opt || wildcard)
 				do_apropos (dbf, pages, num_pages, found);
 			else
-				do_whatis (dbf, pages, num_pages, *mp, found);
+				do_whatis (dbf, pages, num_pages, mp, found);
 		}
 		free (database);
 		database = NULL;
 		MYDBM_CLOSE (dbf);
-	}
+	} GL_LIST_FOREACH_END (manpathlist);
 
 	chkr_garbage_detector ();
 
-	any_found = 0;
+	any_found = false;
 	for (i = 0; i < num_pages; ++i) {
 		if (found[i])
-			any_found = 1;
+			any_found = true;
 		else
 			fprintf (stderr, _("%s: nothing appropriate.\n"),
 				 pages[i]);
@@ -906,11 +879,11 @@ int main (int argc, char *argv[])
 	set_program_name (argv[0]);
 	program_base_name = base_name (program_name);
 	if (STREQ (program_base_name, APROPOS_NAME)) {
-		am_apropos = 1;
+		am_apropos = true;
 		argp_program_version = "apropos " PACKAGE_VERSION;
 	} else {
 		struct argp_option *optionp;
-		am_apropos = 0;
+		am_apropos = false;
 		argp_program_version = "whatis " PACKAGE_VERSION;
 		for (optionp = (struct argp_option *) whatis_argp.options;
 		     optionp->name || optionp->key || optionp->arg ||
@@ -969,9 +942,9 @@ int main (int argc, char *argv[])
 	else
 		free (get_manpath (NULL));
 
-	create_pathlist (manp, manpathlist);
+	manpathlist = create_pathlist (manp);
 
-	display_seen = hashtable_create (&null_hashtable_free);
+	display_seen = new_string_set (GL_HASH_SET);
 
 #ifdef HAVE_ICONV
 	locale_charset = xasprintf ("%s//IGNORE", get_locale_charset ());
@@ -1001,9 +974,10 @@ int main (int argc, char *argv[])
 	if (conv_to_locale != (iconv_t) -1)
 		iconv_close (conv_to_locale);
 #endif /* HAVE_ICONV */
-	hashtable_free (display_seen);
+	gl_set_free (display_seen);
 	free_pathlist (manpathlist);
 	free (manp);
 	free (internal_locale);
+	sandbox_free (sandbox);
 	exit (status);
 }

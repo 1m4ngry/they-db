@@ -46,6 +46,7 @@
 #include "canonicalize.h"
 #include "dirname.h"
 #include "error.h"
+#include "gl_xlist.h"
 #include "xvasprintf.h"
 
 #include "gettext.h"
@@ -205,41 +206,22 @@ static char *find_include (const char *name, const char *path,
 	} else {
 		/* Try globbing - the file suffix might be missing. */
 		char *temp_file_asterisk = xasprintf ("%s*", temp_file);
-		char **candidate_files = expand_path (temp_file_asterisk);
-		int i;
+		gl_list_t candidate_files = expand_path (temp_file_asterisk);
 
 		free (temp_file_asterisk);
-		if (CAN_ACCESS (candidate_files[0], F_OK)) {
-			free (ret);
-			ret = canonicalize_file_name (candidate_files[0]);
+		if (gl_list_size (candidate_files)) {
+			const char *candidate_file = gl_list_get_at
+				(candidate_files, 0);
+			if (CAN_ACCESS (candidate_file, F_OK)) {
+				free (ret);
+				ret = canonicalize_file_name (candidate_file);
+			}
 		}
-		for (i = 0; candidate_files[i]; i++)
-			free (candidate_files[i]);
-		free (candidate_files);
+		gl_list_free (candidate_files);
 	}
 	free (temp_file);
 
 	return ret;
-}
-
-static void ult_trace (struct ult_trace *trace, const char *s)
-{
-	if (!trace)
-		return;
-	if (trace->len >= trace->max) {
-		trace->max *= 2;
-		trace->names = xnrealloc (trace->names, trace->max,
-					  sizeof (char *));
-	}
-	trace->names[trace->len++] = xstrdup (s);
-}
-
-void free_ult_trace (struct ult_trace *trace)
-{
-	size_t i;
-	for (i = 0; i < trace->len; ++i)
-		free (trace->names[i]);
-	free (trace->names);
 }
 
 /*
@@ -251,21 +233,15 @@ void free_ult_trace (struct ult_trace *trace)
  * flags is a combination of SO_LINK | SOFT_LINK | HARD_LINK
  */
 const char *ult_src (const char *name, const char *path,
-		     struct stat *buf, int flags, struct ult_trace *trace)
+		     struct stat *buf, int flags, gl_list_t trace)
 {
 	static char *base;		/* must be static */
 	static short recurse; 		/* must be static */
 
 	/* initialise the function */
 
-	if (trace) {
-		if (!trace->names) {
-			trace->len = 0;
-			trace->max = 16;
-			trace->names = XNMALLOC (trace->max, char *);
-		}
-		ult_trace (trace, name);
-	}
+	if (trace)
+		gl_list_add_last (trace, name);
 
 	/* as ult_softlink() & ult_hardlink() do all of their respective
 	 * resolving in one call, only need to sort them out once
@@ -400,6 +376,6 @@ const char *ult_src (const char *name, const char *path,
 
 	/* We have the ultimate source */
 	if (trace)
-		ult_trace (trace, base);
+		gl_list_add_last (trace, base);
 	return base;
 }
