@@ -1502,10 +1502,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@BUILD_MANUAL_FALSE@ps-local:
+@BUILD_MANUAL_FALSE@clean-local:
 @BUILD_MANUAL_FALSE@html-local:
 @BUILD_MANUAL_FALSE@dvi-local:
-@BUILD_MANUAL_FALSE@clean-local:
+@BUILD_MANUAL_FALSE@ps-local:
 @BUILD_MANUAL_FALSE@install-data-hook:
 @BUILD_MANUAL_FALSE@uninstall-hook:
 clean: clean-am

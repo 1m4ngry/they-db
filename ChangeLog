@@ -1,3 +1,15 @@
+2019-08-05  Colin Watson  <cjwatson@debian.org>
+
+	* Version: 2.8.6.1.
+
+2019-08-04  Colin Watson  <cjwatson@debian.org>
+
+	Fix missing memory copies in ult_src
+
+	Fixes Debian bug #933802.
+
+	* src/ult_src.c (ult_src): Copy strings before adding them to trace.
+
 2019-08-03  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.8.6.

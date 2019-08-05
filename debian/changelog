@@ -1,3 +1,11 @@
+man-db (2.8.6.1-1) UNRELEASED; urgency=medium
+
+  * New upstream release:
+    - Fix missing memory copies in ult_src that caused segfaults in mandb
+      (closes: #933802, LP: #1838871).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 05 Aug 2019 10:34:00 +0100
+
 man-db (2.8.6-1) unstable; urgency=medium
 
   * New upstream release.
