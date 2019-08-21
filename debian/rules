@@ -17,7 +17,7 @@ export DEB_LDFLAGS_MAINT_APPEND := -Wl,--enable-new-dtags
 override_dh_auto_configure:
 	dh_auto_configure -- \
 	            --libdir=\$${prefix}/lib --libexecdir=\$${libdir} \
-	            --enable-setuid --enable-undoc='man 7 undocumented' \
+	            --enable-setuid \
 	            --with-device=latin1 --enable-mb-groff \
 	            --with-config-file=/etc/manpath.config \
 	            --with-browser=www-browser --with-pager=pager \
