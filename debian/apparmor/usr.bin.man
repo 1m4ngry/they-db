@@ -95,6 +95,9 @@ profile man_filter {
   # do is feed data to the invoking man process.
   /** r,
 
+  # Allow writing cat pages.
+  /var/cache/man/** w,
+
   signal peer=/usr/bin/man,
   # @{profile_name} doesn't seem to work here.
   signal peer=/usr/bin/man//&man_filter,
