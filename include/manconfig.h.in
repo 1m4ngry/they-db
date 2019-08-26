@@ -254,27 +254,6 @@
 #  define ATTRIBUTE_FORMAT_PRINTF(a,b)
 #endif
 
-/* Does this compiler support marking variables as unused? */
-#if GNUC_PREREQ(2,4)
-#  define ATTRIBUTE_UNUSED __attribute__ ((__unused__))
-#else
-#  define ATTRIBUTE_UNUSED
-#endif
-
-/* Does this compiler support marking functions as non-returning? */
-#if GNUC_PREREQ(2,5)
-#  define ATTRIBUTE_NORETURN __attribute__ ((__noreturn__))
-#else
-#  define ATTRIBUTE_NORETURN
-#endif
-
-/* Does this compiler support malloc return checking? */
-#if GNUC_PREREQ(2,96)
-#  define ATTRIBUTE_MALLOC __attribute__ ((__malloc__))
-#else
-#  define ATTRIBUTE_MALLOC
-#endif
-
 /* Does this compiler support unused result checking? */
 #if GNUC_PREREQ(3,4)
 #  define ATTRIBUTE_WARN_UNUSED_RESULT __attribute__ ((__warn_unused_result__))
@@ -299,9 +278,9 @@ extern void __chkr_garbage_detector (void);
 
 /* GNU gettext needs to know when the locale changes. This macro tells it. */
 #ifdef ENABLE_NLS
+extern int _nl_msg_cat_cntr;
 #  define locale_changed() \
 	do { \
-		extern int _nl_msg_cat_cntr; \
 		++_nl_msg_cat_cntr; \
 	} while (0)
 #else /* !ENABLE_NLS */
@@ -351,7 +330,7 @@ extern struct compression *comp_info (const char *filename, int want_stem);
 extern struct compression *comp_file (const char *filename);
 
 /* straycats.c */
-extern int straycats (const char *manpath);
+extern int straycats (const char *database, const char *manpath);
 
 /* lexgrog.l */
 struct lexgrog;

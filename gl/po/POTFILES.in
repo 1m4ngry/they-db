@@ -338,6 +338,15 @@ gl/lib/wchar.in.h
 gl/lib/wcrtomb.c
 gl/lib/wctype-h.c
 gl/lib/wctype.in.h
+gl/lib/windows-initguard.h
+gl/lib/windows-mutex.c
+gl/lib/windows-mutex.h
+gl/lib/windows-once.c
+gl/lib/windows-once.h
+gl/lib/windows-recmutex.c
+gl/lib/windows-recmutex.h
+gl/lib/windows-rwlock.c
+gl/lib/windows-rwlock.h
 gl/lib/xalloc-die.c
 gl/lib/xalloc-oversized.h
 gl/lib/xalloc.h

@@ -86,12 +86,10 @@
 #undef FCNTL_DUPFD_BUGGY
 
 /* Define to nothing if C supports flexible array members, and to 1 if it does
-   not. That way, with a declaration like 'struct s { int n; double
+   not. That way, with a declaration like 'struct s { int n; short
    d[FLEXIBLE_ARRAY_MEMBER]; };', the struct hack can be used with pre-C99
-   compilers. When computing the size of such an object, don't use 'sizeof
-   (struct s)' as it overestimates the size. Use 'offsetof (struct s, d)'
-   instead. Don't use 'offsetof (struct s, d[0])', as this doesn't work with
-   MSVC and with C++ compilers. */
+   compilers. Use 'FLEXSIZEOF (struct s, d, N * sizeof (short))' to calculate
+   the size in bytes of such a struct containing an N-element array. */
 #undef FLEXIBLE_ARRAY_MEMBER
 
 /* Define to 1 if mkdir mistakenly creates a directory given with a trailing
@@ -165,6 +163,9 @@
 /* Define to a C preprocessor expression that evaluates to 1 or 0, depending
    whether the gnulib module nonblocking shall be considered present. */
 #undef GNULIB_NONBLOCKING
+
+/* Define to 1 to disable use of VLAs. */
+#undef GNULIB_NO_VLA
 
 /* Define to a C preprocessor expression that evaluates to 1 or 0, depending
    whether the gnulib module openat shall be considered present. */
@@ -895,6 +896,9 @@
 /* Define to 1 if <wchar.h> declares mbstate_t. */
 #undef HAVE_MBSTATE_T
 
+/* Define to 1 if you have the `mbtowc' function. */
+#undef HAVE_MBTOWC
+
 /* Define to 1 if you have the `memmem' function. */
 #undef HAVE_MEMMEM
 
@@ -1199,6 +1203,9 @@
 
 /* Define if you have tbl. */
 #undef HAVE_TBL
+
+/* Define to 1 if you have the <threads.h> header file. */
+#undef HAVE_THREADS_H
 
 /* Define to 1 if you have the `towlower' function. */
 #undef HAVE_TOWLOWER
@@ -1511,20 +1518,6 @@
    weak. */
 #undef USE_POSIX_THREADS_WEAK
 
-/* Define if the GNU Pth multithreading library can be used. */
-#undef USE_PTH_THREADS
-
-/* Define if references to the GNU Pth multithreading library should be made
-   weak. */
-#undef USE_PTH_THREADS_WEAK
-
-/* Define if the old Solaris multithreading library can be used. */
-#undef USE_SOLARIS_THREADS
-
-/* Define if references to the old Solaris multithreading library should be
-   made weak. */
-#undef USE_SOLARIS_THREADS_WEAK
-
 /* Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE
 # undef _ALL_SOURCE
@@ -1654,10 +1647,13 @@
 
 /* The _Noreturn keyword of C11.  */
 #ifndef _Noreturn
-# if 201103 <= (defined __cplusplus ? __cplusplus : 0)
+# if (defined __cplusplus \
+      && ((201103 <= __cplusplus && !(__GNUC__ == 4 && __GNUC_MINOR__ == 7)) \
+          || (defined _MSC_VER && 1900 <= _MSC_VER)))
 #  define _Noreturn [[noreturn]]
-# elif (201112 <= (defined __STDC_VERSION__ ? __STDC_VERSION__ : 0) \
-        || 4 < __GNUC__ + (7 <= __GNUC_MINOR__))
+# elif ((!defined __cplusplus || defined __clang__) \
+        && (201112 <= (defined __STDC_VERSION__ ? __STDC_VERSION__ : 0)  \
+            || 4 < __GNUC__ + (7 <= __GNUC_MINOR__)))
    /* _Noreturn works as-is.  */
 # elif 2 < __GNUC__ + (8 <= __GNUC_MINOR__) || 0x5110 <= __SUNPRO_C
 #  define _Noreturn __attribute__ ((__noreturn__))
@@ -1699,6 +1695,33 @@
 
 /* Define to 1 if the system <stdint.h> predates C++11. */
 #undef __STDC_LIMIT_MACROS
+
+/* The _GL_ASYNC_SAFE marker should be attached to functions that are
+   signal handlers (for signals other than SIGABRT, SIGPIPE) or can be
+   invoked from such signal handlers.  Such functions have some restrictions:
+     * All functions that it calls should be marked _GL_ASYNC_SAFE as well,
+       or should be listed as async-signal-safe in POSIX
+       <http://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html#tag_15_04>
+       section 2.4.3.  Note that malloc(), sprintf(), and fwrite(), in
+       particular, are NOT async-signal-safe.
+     * All memory locations (variables and struct fields) that these functions
+       access must be marked 'volatile'.  This holds for both read and write
+       accesses.  Otherwise the compiler might optimize away stores to and
+       reads from such locations that occur in the program, depending on its
+       data flow analysis.  For example, when the program contains a loop
+       that is intended to inspect a variable set from within a signal handler
+           while (!signal_occurred)
+             ;
+       the compiler is allowed to transform this into an endless loop if the
+       variable 'signal_occurred' is not declared 'volatile'.
+   Additionally, recall that:
+     * A signal handler should not modify errno (except if it is a handler
+       for a fatal signal and ends by raising the same signal again, thus
+       provoking the termination of the process).  If it invokes a function
+       that may clobber errno, it needs to save and restore the value of
+       errno.  */
+#define _GL_ASYNC_SAFE
+
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const

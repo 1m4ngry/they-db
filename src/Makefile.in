@@ -188,6 +188,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/ltversion.m4 \
 	$(top_srcdir)/gl/m4/lt~obsolete.m4 \
 	$(top_srcdir)/gl/m4/malloc.m4 $(top_srcdir)/gl/m4/malloca.m4 \
+	$(top_srcdir)/gl/m4/manywarnings.m4 \
 	$(top_srcdir)/gl/m4/mbrtowc.m4 $(top_srcdir)/gl/m4/mbsinit.m4 \
 	$(top_srcdir)/gl/m4/mbsrtowcs.m4 \
 	$(top_srcdir)/gl/m4/mbstate_t.m4 $(top_srcdir)/gl/m4/mbtowc.m4 \
@@ -291,45 +292,47 @@ catman_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_2)
 am_globbing_OBJECTS = globbing.$(OBJEXT) globbing_test.$(OBJEXT)
 globbing_OBJECTS = $(am_globbing_OBJECTS)
 globbing_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_lexgrog_OBJECTS = compression.$(OBJEXT) descriptions.$(OBJEXT) \
-	filenames.$(OBJEXT) globbing.$(OBJEXT) lexgrog.$(OBJEXT) \
-	lexgrog_test.$(OBJEXT) manconv.$(OBJEXT) \
+am_lexgrog_OBJECTS = compression.$(OBJEXT) decompress.$(OBJEXT) \
+	descriptions.$(OBJEXT) filenames.$(OBJEXT) globbing.$(OBJEXT) \
+	lexgrog.$(OBJEXT) lexgrog_test.$(OBJEXT) manconv.$(OBJEXT) \
 	manconv_client.$(OBJEXT) ult_src.$(OBJEXT)
 lexgrog_OBJECTS = $(am_lexgrog_OBJECTS)
 lexgrog_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
-am_man_OBJECTS = compression.$(OBJEXT) filenames.$(OBJEXT) \
-	globbing.$(OBJEXT) man.$(OBJEXT) manconv.$(OBJEXT) \
-	manconv_client.$(OBJEXT) manp.$(OBJEXT) ult_src.$(OBJEXT) \
-	zsoelim.$(OBJEXT)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+am_man_OBJECTS = compression.$(OBJEXT) decompress.$(OBJEXT) \
+	filenames.$(OBJEXT) globbing.$(OBJEXT) man.$(OBJEXT) \
+	manconv.$(OBJEXT) manconv_client.$(OBJEXT) manp.$(OBJEXT) \
+	ult_src.$(OBJEXT) zsoelim.$(OBJEXT)
 man_OBJECTS = $(am_man_OBJECTS)
 man_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
-am_manconv_OBJECTS = manconv.$(OBJEXT) manconv_main.$(OBJEXT)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+am_manconv_OBJECTS = decompress.$(OBJEXT) manconv.$(OBJEXT) \
+	manconv_main.$(OBJEXT)
 manconv_OBJECTS = $(am_manconv_OBJECTS)
 manconv_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
 am_mandb_OBJECTS = check_mandirs.$(OBJEXT) compression.$(OBJEXT) \
-	descriptions.$(OBJEXT) descriptions_store.$(OBJEXT) \
-	filenames.$(OBJEXT) globbing.$(OBJEXT) lexgrog.$(OBJEXT) \
-	manconv.$(OBJEXT) manconv_client.$(OBJEXT) mandb.$(OBJEXT) \
-	manp.$(OBJEXT) straycats.$(OBJEXT) ult_src.$(OBJEXT)
+	decompress.$(OBJEXT) descriptions.$(OBJEXT) \
+	descriptions_store.$(OBJEXT) filenames.$(OBJEXT) \
+	globbing.$(OBJEXT) lexgrog.$(OBJEXT) manconv.$(OBJEXT) \
+	manconv_client.$(OBJEXT) mandb.$(OBJEXT) manp.$(OBJEXT) \
+	straycats.$(OBJEXT) ult_src.$(OBJEXT)
 mandb_OBJECTS = $(am_mandb_OBJECTS)
 mandb_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_2) \
-	$(am__DEPENDENCIES_2)
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
 am_manpath_OBJECTS = globbing.$(OBJEXT) manp.$(OBJEXT) \
 	manpath.$(OBJEXT)
 manpath_OBJECTS = $(am_manpath_OBJECTS)
 manpath_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_whatis_OBJECTS = globbing.$(OBJEXT) manconv.$(OBJEXT) \
-	manp.$(OBJEXT) whatis.$(OBJEXT)
+am_whatis_OBJECTS = globbing.$(OBJEXT) manp.$(OBJEXT) whatis.$(OBJEXT)
 whatis_OBJECTS = $(am_whatis_OBJECTS)
 whatis_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_2)
-am_zsoelim_OBJECTS = globbing.$(OBJEXT) manp.$(OBJEXT) \
-	zsoelim.$(OBJEXT) zsoelim_main.$(OBJEXT)
+am_zsoelim_OBJECTS = decompress.$(OBJEXT) globbing.$(OBJEXT) \
+	manp.$(OBJEXT) zsoelim.$(OBJEXT) zsoelim_main.$(OBJEXT)
 zsoelim_OBJECTS = $(am_zsoelim_OBJECTS)
-zsoelim_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2)
+zsoelim_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_2)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -347,16 +350,16 @@ depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/accessdb.Po ./$(DEPDIR)/catman.Po \
 	./$(DEPDIR)/check_mandirs.Po ./$(DEPDIR)/compression.Po \
-	./$(DEPDIR)/descriptions.Po ./$(DEPDIR)/descriptions_store.Po \
-	./$(DEPDIR)/filenames.Po ./$(DEPDIR)/globbing.Po \
-	./$(DEPDIR)/globbing_test.Po ./$(DEPDIR)/lexgrog.Po \
-	./$(DEPDIR)/lexgrog_test.Po ./$(DEPDIR)/man.Po \
-	./$(DEPDIR)/manconv.Po ./$(DEPDIR)/manconv_client.Po \
-	./$(DEPDIR)/manconv_main.Po ./$(DEPDIR)/mandb.Po \
-	./$(DEPDIR)/manp.Po ./$(DEPDIR)/manpath.Po \
-	./$(DEPDIR)/straycats.Po ./$(DEPDIR)/ult_src.Po \
-	./$(DEPDIR)/whatis.Po ./$(DEPDIR)/zsoelim.Po \
-	./$(DEPDIR)/zsoelim_main.Po
+	./$(DEPDIR)/decompress.Po ./$(DEPDIR)/descriptions.Po \
+	./$(DEPDIR)/descriptions_store.Po ./$(DEPDIR)/filenames.Po \
+	./$(DEPDIR)/globbing.Po ./$(DEPDIR)/globbing_test.Po \
+	./$(DEPDIR)/lexgrog.Po ./$(DEPDIR)/lexgrog_test.Po \
+	./$(DEPDIR)/man.Po ./$(DEPDIR)/manconv.Po \
+	./$(DEPDIR)/manconv_client.Po ./$(DEPDIR)/manconv_main.Po \
+	./$(DEPDIR)/mandb.Po ./$(DEPDIR)/manp.Po \
+	./$(DEPDIR)/manpath.Po ./$(DEPDIR)/straycats.Po \
+	./$(DEPDIR)/ult_src.Po ./$(DEPDIR)/whatis.Po \
+	./$(DEPDIR)/zsoelim.Po ./$(DEPDIR)/zsoelim_main.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -531,6 +534,7 @@ GNULIB_CHOWN = @GNULIB_CHOWN@
 GNULIB_CLOSE = @GNULIB_CLOSE@
 GNULIB_CLOSEDIR = @GNULIB_CLOSEDIR@
 GNULIB_CONNECT = @GNULIB_CONNECT@
+GNULIB_COPY_FILE_RANGE = @GNULIB_COPY_FILE_RANGE@
 GNULIB_CTIME = @GNULIB_CTIME@
 GNULIB_DIRFD = @GNULIB_DIRFD@
 GNULIB_DPRINTF = @GNULIB_DPRINTF@
@@ -738,6 +742,7 @@ GNULIB_STRSIGNAL = @GNULIB_STRSIGNAL@
 GNULIB_STRSTR = @GNULIB_STRSTR@
 GNULIB_STRTOD = @GNULIB_STRTOD@
 GNULIB_STRTOK_R = @GNULIB_STRTOK_R@
+GNULIB_STRTOLD = @GNULIB_STRTOLD@
 GNULIB_STRTOLL = @GNULIB_STRTOLL@
 GNULIB_STRTOULL = @GNULIB_STRTOULL@
 GNULIB_STRVERSCMP = @GNULIB_STRVERSCMP@
@@ -812,6 +817,7 @@ GNULIB_WRITE = @GNULIB_WRITE@
 GNULIB__EXIT = @GNULIB__EXIT@
 GREP = @GREP@
 HAVE_ACCEPT4 = @HAVE_ACCEPT4@
+HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_ALPHASORT = @HAVE_ALPHASORT@
 HAVE_ATOLL = @HAVE_ATOLL@
 HAVE_BTOWC = @HAVE_BTOWC@
@@ -819,6 +825,7 @@ HAVE_C99_STDINT_H = @HAVE_C99_STDINT_H@
 HAVE_CANONICALIZE_FILE_NAME = @HAVE_CANONICALIZE_FILE_NAME@
 HAVE_CHOWN = @HAVE_CHOWN@
 HAVE_CLOSEDIR = @HAVE_CLOSEDIR@
+HAVE_COPY_FILE_RANGE = @HAVE_COPY_FILE_RANGE@
 HAVE_CRTDEFS_H = @HAVE_CRTDEFS_H@
 HAVE_DECL_DIRFD = @HAVE_DECL_DIRFD@
 HAVE_DECL_ENVIRON = @HAVE_DECL_ENVIRON@
@@ -900,6 +907,7 @@ HAVE_GLOB_H = @HAVE_GLOB_H@
 HAVE_GLOB_PATTERN_P = @HAVE_GLOB_PATTERN_P@
 HAVE_GRANTPT = @HAVE_GRANTPT@
 HAVE_GROUP_MEMBER = @HAVE_GROUP_MEMBER@
+HAVE_INITSTATE = @HAVE_INITSTATE@
 HAVE_INTTYPES_H = @HAVE_INTTYPES_H@
 HAVE_ISWBLANK = @HAVE_ISWBLANK@
 HAVE_ISWCNTRL = @HAVE_ISWCNTRL@
@@ -922,6 +930,7 @@ HAVE_MBSINIT = @HAVE_MBSINIT@
 HAVE_MBSLEN = @HAVE_MBSLEN@
 HAVE_MBSNRTOWCS = @HAVE_MBSNRTOWCS@
 HAVE_MBSRTOWCS = @HAVE_MBSRTOWCS@
+HAVE_MBTOWC = @HAVE_MBTOWC@
 HAVE_MEMCHR = @HAVE_MEMCHR@
 HAVE_MEMPCPY = @HAVE_MEMPCPY@
 HAVE_MKDIRAT = @HAVE_MKDIRAT@
@@ -972,6 +981,7 @@ HAVE_SCANDIR = @HAVE_SCANDIR@
 HAVE_SECURE_GETENV = @HAVE_SECURE_GETENV@
 HAVE_SETENV = @HAVE_SETENV@
 HAVE_SETHOSTNAME = @HAVE_SETHOSTNAME@
+HAVE_SETSTATE = @HAVE_SETSTATE@
 HAVE_SIGACTION = @HAVE_SIGACTION@
 HAVE_SIGHANDLER_T = @HAVE_SIGHANDLER_T@
 HAVE_SIGINFO_T = @HAVE_SIGINFO_T@
@@ -991,6 +1001,7 @@ HAVE_STRPBRK = @HAVE_STRPBRK@
 HAVE_STRPTIME = @HAVE_STRPTIME@
 HAVE_STRSEP = @HAVE_STRSEP@
 HAVE_STRTOD = @HAVE_STRTOD@
+HAVE_STRTOLD = @HAVE_STRTOLD@
 HAVE_STRTOLL = @HAVE_STRTOLL@
 HAVE_STRTOULL = @HAVE_STRTOULL@
 HAVE_STRUCT_RANDOM_DATA = @HAVE_STRUCT_RANDOM_DATA@
@@ -1091,8 +1102,6 @@ LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBMULTITHREAD = @LIBMULTITHREAD@
 LIBOBJS = @LIBOBJS@
-LIBPTH = @LIBPTH@
-LIBPTH_PREFIX = @LIBPTH_PREFIX@
 LIBS = @LIBS@
 LIBSOCKET = @LIBSOCKET@
 LIBTHREAD = @LIBTHREAD@
@@ -1115,7 +1124,6 @@ LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
 LTLIBOBJS = @LTLIBOBJS@
-LTLIBPTH = @LTLIBPTH@
 LTLIBTHREAD = @LTLIBTHREAD@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
@@ -1261,6 +1269,7 @@ REPLACE_GETTIMEOFDAY = @REPLACE_GETTIMEOFDAY@
 REPLACE_GLOB = @REPLACE_GLOB@
 REPLACE_GLOB_PATTERN_P = @REPLACE_GLOB_PATTERN_P@
 REPLACE_GMTIME = @REPLACE_GMTIME@
+REPLACE_INITSTATE = @REPLACE_INITSTATE@
 REPLACE_IOCTL = @REPLACE_IOCTL@
 REPLACE_ISATTY = @REPLACE_ISATTY@
 REPLACE_ISWBLANK = @REPLACE_ISWBLANK@
@@ -1309,6 +1318,7 @@ REPLACE_PUTENV = @REPLACE_PUTENV@
 REPLACE_PWRITE = @REPLACE_PWRITE@
 REPLACE_QSORT_R = @REPLACE_QSORT_R@
 REPLACE_RAISE = @REPLACE_RAISE@
+REPLACE_RANDOM = @REPLACE_RANDOM@
 REPLACE_RANDOM_R = @REPLACE_RANDOM_R@
 REPLACE_READ = @REPLACE_READ@
 REPLACE_READLINK = @REPLACE_READLINK@
@@ -1322,6 +1332,7 @@ REPLACE_RMDIR = @REPLACE_RMDIR@
 REPLACE_SELECT = @REPLACE_SELECT@
 REPLACE_SETENV = @REPLACE_SETENV@
 REPLACE_SETLOCALE = @REPLACE_SETLOCALE@
+REPLACE_SETSTATE = @REPLACE_SETSTATE@
 REPLACE_SLEEP = @REPLACE_SLEEP@
 REPLACE_SNPRINTF = @REPLACE_SNPRINTF@
 REPLACE_SPRINTF = @REPLACE_SPRINTF@
@@ -1342,6 +1353,7 @@ REPLACE_STRSIGNAL = @REPLACE_STRSIGNAL@
 REPLACE_STRSTR = @REPLACE_STRSTR@
 REPLACE_STRTOD = @REPLACE_STRTOD@
 REPLACE_STRTOK_R = @REPLACE_STRTOK_R@
+REPLACE_STRTOLD = @REPLACE_STRTOLD@
 REPLACE_STRUCT_LCONV = @REPLACE_STRUCT_LCONV@
 REPLACE_STRUCT_TIMEVAL = @REPLACE_STRUCT_TIMEVAL@
 REPLACE_SYMLINK = @REPLACE_SYMLINK@
@@ -1559,13 +1571,13 @@ LIBMANDB = $(top_builddir)/libdb/libmandb.la $(LIBMAN) $(DBLIBS)
 accessdb_LDADD = $(LIBMANDB)
 catman_LDADD = $(LIBMANDB) $(libpipeline_LIBS)
 globbing_LDADD = $(LIBMAN)
-lexgrog_LDADD = $(LIBMAN) $(libpipeline_LIBS) $(LTLIBICONV)
-man_LDADD = $(LIBMANDB) $(libpipeline_LIBS) $(LTLIBICONV)
-manconv_LDADD = $(LIBMAN) $(libpipeline_LIBS) $(LTLIBICONV)
-mandb_LDADD = $(LIBMANDB) $(libpipeline_LIBS) $(LTLIBICONV)
+lexgrog_LDADD = $(LIBMAN) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
+man_LDADD = $(LIBMANDB) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
+manconv_LDADD = $(LIBMAN) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
+mandb_LDADD = $(LIBMANDB) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
 manpath_LDADD = $(LIBMAN)
 whatis_LDADD = $(LIBMANDB) $(libpipeline_LIBS) $(LTLIBICONV)
-zsoelim_LDADD = $(LIBMAN) $(libpipeline_LIBS)
+zsoelim_LDADD = $(LIBMAN) $(LIBCOMPRESS) $(libpipeline_LIBS)
 accessdb_SOURCES = \
 	accessdb.c
 
@@ -1583,6 +1595,8 @@ globbing_SOURCES = \
 
 lexgrog_SOURCES = \
 	compression.c \
+	decompress.c \
+	decompress.h \
 	descriptions.c \
 	descriptions.h \
 	filenames.c \
@@ -1600,6 +1614,8 @@ lexgrog_SOURCES = \
 
 man_SOURCES = \
 	compression.c \
+	decompress.c \
+	decompress.h \
 	filenames.c \
 	filenames.h \
 	globbing.c \
@@ -1617,6 +1633,8 @@ man_SOURCES = \
 	zsoelim.l
 
 manconv_SOURCES = \
+	decompress.c \
+	decompress.h \
 	manconv.c \
 	manconv.h \
 	manconv_main.c
@@ -1625,6 +1643,8 @@ mandb_SOURCES = \
 	check_mandirs.c \
 	check_mandirs.h \
 	compression.c \
+	decompress.c \
+	decompress.h \
 	descriptions.c \
 	descriptions.h \
 	descriptions_store.c \
@@ -1654,13 +1674,13 @@ manpath_SOURCES = \
 whatis_SOURCES = \
 	globbing.c \
 	globbing.h \
-	manconv.c \
-	manconv.h \
 	manp.c \
 	manp.h \
 	whatis.c
 
 zsoelim_SOURCES = \
+	decompress.c \
+	decompress.h \
 	globbing.c \
 	globbing.h \
 	manp.c \
@@ -1903,6 +1923,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/catman.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_mandirs.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compression.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/decompress.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/descriptions.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/descriptions_store.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/filenames.Po@am__quote@ # am--include-marker
@@ -2167,6 +2188,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/catman.Po
 	-rm -f ./$(DEPDIR)/check_mandirs.Po
 	-rm -f ./$(DEPDIR)/compression.Po
+	-rm -f ./$(DEPDIR)/decompress.Po
 	-rm -f ./$(DEPDIR)/descriptions.Po
 	-rm -f ./$(DEPDIR)/descriptions_store.Po
 	-rm -f ./$(DEPDIR)/filenames.Po
@@ -2238,6 +2260,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/catman.Po
 	-rm -f ./$(DEPDIR)/check_mandirs.Po
 	-rm -f ./$(DEPDIR)/compression.Po
+	-rm -f ./$(DEPDIR)/decompress.Po
 	-rm -f ./$(DEPDIR)/descriptions.Po
 	-rm -f ./$(DEPDIR)/descriptions_store.Po
 	-rm -f ./$(DEPDIR)/filenames.Po

@@ -33,9 +33,6 @@
 #include "timespec.h"
 #include "xvasprintf.h"
 
-#include "gettext.h"
-#define _(String) gettext (String)
-
 #include "manconfig.h"
 
 #include "error.h"
@@ -52,7 +49,7 @@
  * If promote_links is true, consider SO_MAN equivalent to ULT_MAN. This is
  * appropriate when sorting candidate pages for display.
  */
-int compare_ids (char a, char b, int promote_links)
+int _GL_ATTRIBUTE_CONST compare_ids (char a, char b, int promote_links)
 {
 #ifdef FAVOUR_STRAYCATS
 	if (a == WHATIS_MAN && b == STRAY_CAT)
@@ -94,13 +91,13 @@ static int replace_if_necessary (MYDBM_FILE dbf,
 	    timespec_cmp (newdata->mtime, olddata->mtime) > 0) {
 		debug ("replace_if_necessary(): newer mtime; replacing\n");
 		if (MYDBM_REPLACE (dbf, newkey, newcont))
-			gripe_replace_key (MYDBM_DPTR (newkey));
+			gripe_replace_key (dbf, MYDBM_DPTR (newkey));
 		return 0;
 	}
 
 	if (compare_ids (newdata->id, olddata->id, 0) < 0) {
 		if (MYDBM_REPLACE (dbf, newkey, newcont))
-			gripe_replace_key (MYDBM_DPTR (newkey));
+			gripe_replace_key (dbf, MYDBM_DPTR (newkey));
 		return 0;
 	}
 
@@ -221,7 +218,7 @@ int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 			in->name = xstrdup (base);
 		oldcont = make_content (in);
 		if (MYDBM_REPLACE (dbf, oldkey, oldcont))
-			gripe_replace_key (MYDBM_DPTR (oldkey));
+			gripe_replace_key (dbf, MYDBM_DPTR (oldkey));
 		MYDBM_FREE_DPTR (oldcont);
 		free (in->name);
 		in->name = NULL;
@@ -243,7 +240,7 @@ int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 
 			MYDBM_FREE_DPTR (oldcont);
 			cont = MYDBM_FETCH (dbf, newkey);
-			split_content (MYDBM_DPTR (cont), &info);
+			split_content (dbf, MYDBM_DPTR (cont), &info);
 			ret = replace_if_necessary (dbf, in, &info,
 						    newkey, newcont);
 			/* MYDBM_FREE_DPTR (cont); */
@@ -270,7 +267,7 @@ int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 		/* Try to replace the old simple data with the new stuff */
 
 		if (MYDBM_REPLACE (dbf, oldkey, newcont))
-			gripe_replace_key (MYDBM_DPTR (oldkey));
+			gripe_replace_key (dbf, MYDBM_DPTR (oldkey));
 
 		MYDBM_FREE_DPTR (newcont);
 	} else { 				/* situation (3) */
@@ -285,7 +282,7 @@ int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 
 		/* Extract the old singular reference */
 
-		split_content (MYDBM_DPTR (oldcont), &old);
+		split_content (dbf, MYDBM_DPTR (oldcont), &old);
 
 		/* Create multi keys for both old
 		   and new items, create new content */
@@ -336,7 +333,7 @@ int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 		 * certainly better.
 		 */
 		if (MYDBM_REPLACE (dbf, lastkey, lastcont))
-			gripe_replace_key (MYDBM_DPTR (lastkey));
+			gripe_replace_key (dbf, MYDBM_DPTR (lastkey));
 
 		MYDBM_FREE_DPTR (lastkey);
 		MYDBM_FREE_DPTR (lastcont);
@@ -345,7 +342,7 @@ int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 		newcont = make_content (in);
 
 		if (MYDBM_REPLACE (dbf, newkey, newcont))
-			gripe_replace_key (MYDBM_DPTR (newkey));
+			gripe_replace_key (dbf, MYDBM_DPTR (newkey));
 
 		MYDBM_FREE_DPTR (newkey);
 		MYDBM_FREE_DPTR (newcont);
@@ -356,7 +353,7 @@ int dbstore (MYDBM_FILE dbf, struct mandata *in, const char *base)
 			"\t%s\t%s\t%s\t%s", old_name, old.ext, base, in->ext));
 
 		if (MYDBM_REPLACE (dbf, oldkey, newcont))
-			gripe_replace_key (MYDBM_DPTR (oldkey));
+			gripe_replace_key (dbf, MYDBM_DPTR (oldkey));
 
 		/* MYDBM_FREE_DPTR (oldcont); */
 		free_mandata_elements (&old);

@@ -554,8 +554,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 	return ARGP_ERR_UNKNOWN;
 }
 
-static char *help_filter (int key, const char *text,
-			  void *input ATTRIBUTE_UNUSED)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+static char *help_filter (int key, const char *text, void *input _GL_UNUSED)
 {
 #ifdef HAS_TROFF
 # ifdef TROFF_IS_GROFF
@@ -584,6 +585,7 @@ static char *help_filter (int key, const char *text,
 			return (char *) text;
 	}
 }
+#pragma GCC diagnostic pop
 
 static struct argp argp = { options, parse_opt, args_doc, 0, 0, help_filter };
 
@@ -1529,7 +1531,7 @@ static void add_output_iconv (pipeline *p,
 /* Pipeline command to squeeze multiple blank lines into one.
  *
  */
-static void squeeze_blank_lines (void *data ATTRIBUTE_UNUSED)
+static void squeeze_blank_lines (void *data _GL_UNUSED)
 {
 	char *line = NULL;
 	size_t len = 0;
@@ -2040,7 +2042,7 @@ static void display_catman (const char *cat_file, pipeline *decomp,
 	free (tmpcat);
 }
 
-static void disable_hyphenation (void *data ATTRIBUTE_UNUSED)
+static void disable_hyphenation (void *data _GL_UNUSED)
 {
 	fputs (".nh\n"
 	       ".de hy\n"
@@ -2048,7 +2050,7 @@ static void disable_hyphenation (void *data ATTRIBUTE_UNUSED)
 	       ".lf 1\n", stdout);
 }
 
-static void disable_justification (void *data ATTRIBUTE_UNUSED)
+static void disable_justification (void *data _GL_UNUSED)
 {
 	fputs (".na\n"
 	       ".de ad\n"
@@ -2311,7 +2313,9 @@ static int display (const char *dir, const char *man_file,
 #endif
 		    || local_man_file
 		    || recode
-		    || disable_cache)
+		    || disable_cache
+		    || no_hyphenation
+		    || no_justification)
 			save_cat = false;
 
 		if (!man_file) {
@@ -2468,8 +2472,7 @@ static int display (const char *dir, const char *man_file,
 	return found;
 }
 
-static void gripe_converting_name (const char *name) ATTRIBUTE_NORETURN;
-static void gripe_converting_name (const char *name)
+static _Noreturn void gripe_converting_name (const char *name)
 {
 	error (FATAL, 0, _("Can't convert %s to cat name"), name);
 	abort (); /* error should have exited; help compilers prove noreturn */
@@ -4082,7 +4085,8 @@ int main (int argc, char *argv[])
 
 	get_term (); /* stores terminal settings */
 #ifdef MAN_OWNER
-	debug ("real user = %d; effective user = %d\n", ruid, euid);
+	debug ("real user = %lu; effective user = %lu\n",
+	       (unsigned long) ruid, (unsigned long) euid);
 #endif /* MAN_OWNER */
 
 	/* close this locale and reinitialise if a new locale was 

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.8.6.1], [cjwatson@debian.org])
+AC_INIT([man-db], [2.8.7], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -16,7 +16,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2019-08-05
+date=2019-08-26
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -60,25 +60,21 @@ case $host_os in
 		dnl environment:
 		CFLAGS="$CFLAGS -YPOSIX"
 		;;
-	*darwin*)
-		dnl libman intentionally has an undefined "sandbox" symbol
-		dnl which is supplied by each application.  The Darwin
-		dnl linker refuses to do this by default, and needs some
-		dnl help.
-		CFLAGS="$CFLAGS -Wl,-flat_namespace,-undefined,suppress"
-		;;
 esac
-if test "$GCC" = yes
-then
-	gl_WARN_ADD([-W])
-	gl_WARN_ADD([-Wpointer-arith])
-	gl_WARN_ADD([-Wwrite-strings])
-	gl_WARN_ADD([-Wstrict-prototypes])
-	gl_WARN_ADD([-Wshadow])
-	gl_WARN_ADD([-Wformat-security])
-	gl_WARN_ADD([-Wredundant-decls])
-	gl_WARN_ADD([-Wno-missing-field-initializers])
-fi
+
+# Enable all reasonable GCC warnings.
+gl_MANYWARN_ALL_GCC([warnings])
+nw=
+nw="$nw -Wsystem-headers"
+nw="$nw -Wmissing-field-initializers"
+gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
+for w in $warnings; do
+	gl_WARN_ADD([$w])
+done
+gl_WARN_ADD([-Wno-missing-field-initializers])
+# Disable use of VLAs by Gnulib to avoid tripping over -Wvla.
+AC_DEFINE([GNULIB_NO_VLA], [1], [Define to 1 to disable use of VLAs.])
+
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AM_PROG_AR

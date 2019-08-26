@@ -34,7 +34,6 @@
 #include "progname.h"
 
 #include "gettext.h"
-#define _(String) gettext (String)
 #define N_(String) gettext_noop (String)
 
 #include "manconfig.h"
@@ -42,9 +41,6 @@
 #include "error.h"
 #include "glcontainers.h"
 #include "globbing.h"
-#include "sandbox.h"
-
-man_sandbox *sandbox;  /* unused, but needed by libman */
 
 extern const char *extension;
 static bool match_case = false;

@@ -232,7 +232,7 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 		;
 
 	debug ("initialising seccomp filter (permissive: %d)\n", permissive);
-	ctx = seccomp_init (SCMP_ACT_TRAP);
+	ctx = seccomp_init (SCMP_ACT_ERRNO (EPERM));
 	if (!ctx)
 		error (FATAL, errno, "can't initialise seccomp filter");
 
@@ -484,12 +484,11 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 	SC_ALLOW ("sync_file_range");
 	SC_ALLOW ("syncfs");
 
-	/* Extra syscalls not in any of systemd's sets. */
-	SC_ALLOW ("arm_fadvise64_64");
-	SC_ALLOW ("arm_sync_file_range");
+	/* systemd: SystemCallFilter=@system-service (subset) */
 	SC_ALLOW ("brk");
 	SC_ALLOW ("fadvise64");
 	SC_ALLOW ("fadvise64_64");
+	SC_ALLOW ("getrandom");
 	if (permissive)
 		SC_ALLOW ("ioctl");
 	else {
@@ -500,9 +499,13 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 	SC_ALLOW ("mprotect");
 	SC_ALLOW ("mremap");
 	SC_ALLOW ("sched_getaffinity");
-	SC_ALLOW ("sync_file_range2");
 	SC_ALLOW ("sysinfo");
 	SC_ALLOW ("uname");
+
+	/* Extra syscalls not in any of systemd's sets. */
+	SC_ALLOW ("arm_fadvise64_64");
+	SC_ALLOW ("arm_sync_file_range");
+	SC_ALLOW ("sync_file_range2");
 
 	/* Allow killing processes and threads.  This is unfortunate but
 	 * unavoidable: groff uses kill to explicitly pass on SIGPIPE to its
@@ -535,6 +538,7 @@ static scmp_filter_ctx make_seccomp_filter (int permissive)
 	    search_ld_preload ("libsnoopy.so")) {
 		SC_ALLOW ("connect");
 		SC_ALLOW ("recvmsg");
+		SC_ALLOW ("sendmsg");
 		SC_ALLOW ("sendto");
 		SC_ALLOW ("setsockopt");
 		SC_ALLOW_ARG_1 ("socket", SCMP_A0 (SCMP_CMP_EQ, AF_UNIX));
@@ -607,8 +611,8 @@ static void _sandbox_load (man_sandbox *sandbox, int permissive) {
 	}
 }
 #else /* !HAVE_LIBSECCOMP */
-static void _sandbox_load (man_sandbox *sandbox ATTRIBUTE_UNUSED,
-			   int permissive ATTRIBUTE_UNUSED)
+static void _sandbox_load (man_sandbox *sandbox _GL_UNUSED,
+			   int permissive _GL_UNUSED)
 {
 }
 #endif /* HAVE_LIBSECCOMP */

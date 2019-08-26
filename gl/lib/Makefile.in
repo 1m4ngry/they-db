@@ -77,6 +77,7 @@
 #  linkedhash-list \
 #  localcharset \
 #  lock \
+#  manywarnings \
 #  memmem \
 #  minmax \
 #  mkdtemp \
@@ -283,6 +284,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/ltversion.m4 \
 	$(top_srcdir)/gl/m4/lt~obsolete.m4 \
 	$(top_srcdir)/gl/m4/malloc.m4 $(top_srcdir)/gl/m4/malloca.m4 \
+	$(top_srcdir)/gl/m4/manywarnings.m4 \
 	$(top_srcdir)/gl/m4/mbrtowc.m4 $(top_srcdir)/gl/m4/mbsinit.m4 \
 	$(top_srcdir)/gl/m4/mbsrtowcs.m4 \
 	$(top_srcdir)/gl/m4/mbstate_t.m4 $(top_srcdir)/gl/m4/mbtowc.m4 \
@@ -499,7 +501,9 @@ am__depfiles_remade = ./$(DEPDIR)/alloca.Plo \
 	./$(DEPDIR)/utime.Plo ./$(DEPDIR)/utimens.Plo \
 	./$(DEPDIR)/vasnprintf.Plo ./$(DEPDIR)/vasprintf.Plo \
 	./$(DEPDIR)/vsnprintf.Plo ./$(DEPDIR)/wcrtomb.Plo \
-	./$(DEPDIR)/wctype-h.Plo ./$(DEPDIR)/xalloc-die.Plo \
+	./$(DEPDIR)/wctype-h.Plo ./$(DEPDIR)/windows-mutex.Plo \
+	./$(DEPDIR)/windows-once.Plo ./$(DEPDIR)/windows-recmutex.Plo \
+	./$(DEPDIR)/windows-rwlock.Plo ./$(DEPDIR)/xalloc-die.Plo \
 	./$(DEPDIR)/xasprintf.Plo ./$(DEPDIR)/xgetcwd.Plo \
 	./$(DEPDIR)/xmalloc.Plo ./$(DEPDIR)/xsize.Plo \
 	./$(DEPDIR)/xstdopen.Plo ./$(DEPDIR)/xstrndup.Plo \
@@ -665,6 +669,7 @@ GNULIB_CHOWN = @GNULIB_CHOWN@
 GNULIB_CLOSE = @GNULIB_CLOSE@
 GNULIB_CLOSEDIR = @GNULIB_CLOSEDIR@
 GNULIB_CONNECT = @GNULIB_CONNECT@
+GNULIB_COPY_FILE_RANGE = @GNULIB_COPY_FILE_RANGE@
 GNULIB_CTIME = @GNULIB_CTIME@
 GNULIB_DIRFD = @GNULIB_DIRFD@
 GNULIB_DPRINTF = @GNULIB_DPRINTF@
@@ -872,6 +877,7 @@ GNULIB_STRSIGNAL = @GNULIB_STRSIGNAL@
 GNULIB_STRSTR = @GNULIB_STRSTR@
 GNULIB_STRTOD = @GNULIB_STRTOD@
 GNULIB_STRTOK_R = @GNULIB_STRTOK_R@
+GNULIB_STRTOLD = @GNULIB_STRTOLD@
 GNULIB_STRTOLL = @GNULIB_STRTOLL@
 GNULIB_STRTOULL = @GNULIB_STRTOULL@
 GNULIB_STRVERSCMP = @GNULIB_STRVERSCMP@
@@ -946,6 +952,7 @@ GNULIB_WRITE = @GNULIB_WRITE@
 GNULIB__EXIT = @GNULIB__EXIT@
 GREP = @GREP@
 HAVE_ACCEPT4 = @HAVE_ACCEPT4@
+HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_ALPHASORT = @HAVE_ALPHASORT@
 HAVE_ATOLL = @HAVE_ATOLL@
 HAVE_BTOWC = @HAVE_BTOWC@
@@ -953,6 +960,7 @@ HAVE_C99_STDINT_H = @HAVE_C99_STDINT_H@
 HAVE_CANONICALIZE_FILE_NAME = @HAVE_CANONICALIZE_FILE_NAME@
 HAVE_CHOWN = @HAVE_CHOWN@
 HAVE_CLOSEDIR = @HAVE_CLOSEDIR@
+HAVE_COPY_FILE_RANGE = @HAVE_COPY_FILE_RANGE@
 HAVE_CRTDEFS_H = @HAVE_CRTDEFS_H@
 HAVE_DECL_DIRFD = @HAVE_DECL_DIRFD@
 HAVE_DECL_ENVIRON = @HAVE_DECL_ENVIRON@
@@ -1034,6 +1042,7 @@ HAVE_GLOB_H = @HAVE_GLOB_H@
 HAVE_GLOB_PATTERN_P = @HAVE_GLOB_PATTERN_P@
 HAVE_GRANTPT = @HAVE_GRANTPT@
 HAVE_GROUP_MEMBER = @HAVE_GROUP_MEMBER@
+HAVE_INITSTATE = @HAVE_INITSTATE@
 HAVE_INTTYPES_H = @HAVE_INTTYPES_H@
 HAVE_ISWBLANK = @HAVE_ISWBLANK@
 HAVE_ISWCNTRL = @HAVE_ISWCNTRL@
@@ -1056,6 +1065,7 @@ HAVE_MBSINIT = @HAVE_MBSINIT@
 HAVE_MBSLEN = @HAVE_MBSLEN@
 HAVE_MBSNRTOWCS = @HAVE_MBSNRTOWCS@
 HAVE_MBSRTOWCS = @HAVE_MBSRTOWCS@
+HAVE_MBTOWC = @HAVE_MBTOWC@
 HAVE_MEMCHR = @HAVE_MEMCHR@
 HAVE_MEMPCPY = @HAVE_MEMPCPY@
 HAVE_MKDIRAT = @HAVE_MKDIRAT@
@@ -1106,6 +1116,7 @@ HAVE_SCANDIR = @HAVE_SCANDIR@
 HAVE_SECURE_GETENV = @HAVE_SECURE_GETENV@
 HAVE_SETENV = @HAVE_SETENV@
 HAVE_SETHOSTNAME = @HAVE_SETHOSTNAME@
+HAVE_SETSTATE = @HAVE_SETSTATE@
 HAVE_SIGACTION = @HAVE_SIGACTION@
 HAVE_SIGHANDLER_T = @HAVE_SIGHANDLER_T@
 HAVE_SIGINFO_T = @HAVE_SIGINFO_T@
@@ -1125,6 +1136,7 @@ HAVE_STRPBRK = @HAVE_STRPBRK@
 HAVE_STRPTIME = @HAVE_STRPTIME@
 HAVE_STRSEP = @HAVE_STRSEP@
 HAVE_STRTOD = @HAVE_STRTOD@
+HAVE_STRTOLD = @HAVE_STRTOLD@
 HAVE_STRTOLL = @HAVE_STRTOLL@
 HAVE_STRTOULL = @HAVE_STRTOULL@
 HAVE_STRUCT_RANDOM_DATA = @HAVE_STRUCT_RANDOM_DATA@
@@ -1225,8 +1237,6 @@ LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBMULTITHREAD = @LIBMULTITHREAD@
 LIBOBJS = @LIBOBJS@
-LIBPTH = @LIBPTH@
-LIBPTH_PREFIX = @LIBPTH_PREFIX@
 LIBS = @LIBS@
 LIBSOCKET = @LIBSOCKET@
 LIBTHREAD = @LIBTHREAD@
@@ -1249,7 +1259,6 @@ LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
 LTLIBOBJS = @LTLIBOBJS@
-LTLIBPTH = @LTLIBPTH@
 LTLIBTHREAD = @LTLIBTHREAD@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
@@ -1395,6 +1404,7 @@ REPLACE_GETTIMEOFDAY = @REPLACE_GETTIMEOFDAY@
 REPLACE_GLOB = @REPLACE_GLOB@
 REPLACE_GLOB_PATTERN_P = @REPLACE_GLOB_PATTERN_P@
 REPLACE_GMTIME = @REPLACE_GMTIME@
+REPLACE_INITSTATE = @REPLACE_INITSTATE@
 REPLACE_IOCTL = @REPLACE_IOCTL@
 REPLACE_ISATTY = @REPLACE_ISATTY@
 REPLACE_ISWBLANK = @REPLACE_ISWBLANK@
@@ -1443,6 +1453,7 @@ REPLACE_PUTENV = @REPLACE_PUTENV@
 REPLACE_PWRITE = @REPLACE_PWRITE@
 REPLACE_QSORT_R = @REPLACE_QSORT_R@
 REPLACE_RAISE = @REPLACE_RAISE@
+REPLACE_RANDOM = @REPLACE_RANDOM@
 REPLACE_RANDOM_R = @REPLACE_RANDOM_R@
 REPLACE_READ = @REPLACE_READ@
 REPLACE_READLINK = @REPLACE_READLINK@
@@ -1456,6 +1467,7 @@ REPLACE_RMDIR = @REPLACE_RMDIR@
 REPLACE_SELECT = @REPLACE_SELECT@
 REPLACE_SETENV = @REPLACE_SETENV@
 REPLACE_SETLOCALE = @REPLACE_SETLOCALE@
+REPLACE_SETSTATE = @REPLACE_SETSTATE@
 REPLACE_SLEEP = @REPLACE_SLEEP@
 REPLACE_SNPRINTF = @REPLACE_SNPRINTF@
 REPLACE_SPRINTF = @REPLACE_SPRINTF@
@@ -1476,6 +1488,7 @@ REPLACE_STRSIGNAL = @REPLACE_STRSIGNAL@
 REPLACE_STRSTR = @REPLACE_STRSTR@
 REPLACE_STRTOD = @REPLACE_STRTOD@
 REPLACE_STRTOK_R = @REPLACE_STRTOK_R@
+REPLACE_STRTOLD = @REPLACE_STRTOLD@
 REPLACE_STRUCT_LCONV = @REPLACE_STRUCT_LCONV@
 REPLACE_STRUCT_TIMEVAL = @REPLACE_STRUCT_TIMEVAL@
 REPLACE_SYMLINK = @REPLACE_SYMLINK@
@@ -1717,8 +1730,11 @@ EXTRA_DIST = alloca.c alloca.in.h areadlink.h assure.h openat-priv.h \
 	utime.in.h utimens.h asnprintf.c float+.h printf-args.c \
 	printf-args.h printf-parse.c printf-parse.h vasnprintf.c \
 	vasnprintf.h asprintf.c vasprintf.c verify.h vsnprintf.c \
-	wchar.in.h wcrtomb.c wctype.in.h xalloc.h xalloc-oversized.h \
-	xgetcwd.h xstdopen.h xalloc.h
+	wchar.in.h wcrtomb.c wctype.in.h windows-initguard.h \
+	windows-mutex.c windows-mutex.h windows-once.c windows-once.h \
+	windows-initguard.h windows-recmutex.c windows-recmutex.h \
+	windows-initguard.h windows-rwlock.c windows-rwlock.h xalloc.h \
+	xalloc-oversized.h xgetcwd.h xstdopen.h xalloc.h
 BUILT_SOURCES = $(ALLOCA_H) dirent.h $(ERRNO_H) fcntl.h $(FLOAT_H) \
 	$(FNMATCH_H) $(GETOPT_H) $(GETOPT_CDEFS_H) $(GLOB_H) \
 	langinfo.h $(LIMITS_H) locale.h signal.h $(STDALIGN_H) \
@@ -1802,7 +1818,8 @@ EXTRA_libgnu_la_SOURCES = alloca.c openat-proc.c btowc.c \
 	strncasecmp.c strcasestr.c strchrnul.c strdup.c strerror.c \
 	strerror-override.c strndup.c strnlen.c strsep.c unsetenv.c \
 	utime.c asnprintf.c printf-args.c printf-parse.c vasnprintf.c \
-	asprintf.c vasprintf.c vsnprintf.c wcrtomb.c
+	asprintf.c vasprintf.c vsnprintf.c wcrtomb.c windows-mutex.c \
+	windows-once.c windows-recmutex.c windows-rwlock.c
 libgnu_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(LIBSOCKET) \
 	$(LIB_CLOCK_GETTIME) $(LIB_GETLOGIN) $(LIB_NANOSLEEP) \
 	$(LIB_SELECT) $(LTLIBINTL) $(LTLIBTHREAD)
@@ -2084,6 +2101,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vsnprintf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wcrtomb.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wctype-h.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/windows-mutex.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/windows-once.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/windows-recmutex.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/windows-rwlock.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xalloc-die.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xasprintf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xgetcwd.Plo@am__quote@ # am--include-marker
@@ -2514,6 +2535,10 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/vsnprintf.Plo
 	-rm -f ./$(DEPDIR)/wcrtomb.Plo
 	-rm -f ./$(DEPDIR)/wctype-h.Plo
+	-rm -f ./$(DEPDIR)/windows-mutex.Plo
+	-rm -f ./$(DEPDIR)/windows-once.Plo
+	-rm -f ./$(DEPDIR)/windows-recmutex.Plo
+	-rm -f ./$(DEPDIR)/windows-rwlock.Plo
 	-rm -f ./$(DEPDIR)/xalloc-die.Plo
 	-rm -f ./$(DEPDIR)/xasprintf.Plo
 	-rm -f ./$(DEPDIR)/xgetcwd.Plo
@@ -2741,6 +2766,10 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/vsnprintf.Plo
 	-rm -f ./$(DEPDIR)/wcrtomb.Plo
 	-rm -f ./$(DEPDIR)/wctype-h.Plo
+	-rm -f ./$(DEPDIR)/windows-mutex.Plo
+	-rm -f ./$(DEPDIR)/windows-once.Plo
+	-rm -f ./$(DEPDIR)/windows-recmutex.Plo
+	-rm -f ./$(DEPDIR)/windows-rwlock.Plo
 	-rm -f ./$(DEPDIR)/xalloc-die.Plo
 	-rm -f ./$(DEPDIR)/xasprintf.Plo
 	-rm -f ./$(DEPDIR)/xgetcwd.Plo
@@ -2798,7 +2827,7 @@ uninstall-am:
 @GL_GENERATE_ALLOCA_H_TRUE@alloca.h: alloca.in.h $(top_builddir)/config.status
 @GL_GENERATE_ALLOCA_H_TRUE@	$(AM_V_GEN)rm -f $@-t $@ && \
 @GL_GENERATE_ALLOCA_H_TRUE@	{ echo '/* DO NOT EDIT! GENERATED AUTOMATICALLY! */'; \
-@GL_GENERATE_ALLOCA_H_TRUE@	  cat $(srcdir)/alloca.in.h; \
+@GL_GENERATE_ALLOCA_H_TRUE@	  sed -e 's|@''HAVE_ALLOCA_H''@|$(HAVE_ALLOCA_H)|g' < $(srcdir)/alloca.in.h; \
 @GL_GENERATE_ALLOCA_H_TRUE@	} > $@-t && \
 @GL_GENERATE_ALLOCA_H_TRUE@	mv -f $@-t $@
 @GL_GENERATE_ALLOCA_H_FALSE@alloca.h: $(top_builddir)/config.status
@@ -3338,6 +3367,7 @@ stdlib.h: stdlib.in.h $(top_builddir)/config.status $(CXXDEFS_H) \
 	      -e 's/@''GNULIB_SECURE_GETENV''@/$(GNULIB_SECURE_GETENV)/g' \
 	      -e 's/@''GNULIB_SETENV''@/$(GNULIB_SETENV)/g' \
 	      -e 's/@''GNULIB_STRTOD''@/$(GNULIB_STRTOD)/g' \
+	      -e 's/@''GNULIB_STRTOLD''@/$(GNULIB_STRTOLD)/g' \
 	      -e 's/@''GNULIB_STRTOLL''@/$(GNULIB_STRTOLL)/g' \
 	      -e 's/@''GNULIB_STRTOULL''@/$(GNULIB_STRTOULL)/g' \
 	      -e 's/@''GNULIB_SYSTEM_POSIX''@/$(GNULIB_SYSTEM_POSIX)/g' \
@@ -3351,7 +3381,9 @@ stdlib.h: stdlib.in.h $(top_builddir)/config.status $(CXXDEFS_H) \
 	      -e 's|@''HAVE_DECL_GETLOADAVG''@|$(HAVE_DECL_GETLOADAVG)|g' \
 	      -e 's|@''HAVE_GETSUBOPT''@|$(HAVE_GETSUBOPT)|g' \
 	      -e 's|@''HAVE_GRANTPT''@|$(HAVE_GRANTPT)|g' \
+	      -e 's|@''HAVE_INITSTATE''@|$(HAVE_INITSTATE)|g' \
 	      -e 's|@''HAVE_DECL_INITSTATE''@|$(HAVE_DECL_INITSTATE)|g' \
+	      -e 's|@''HAVE_MBTOWC''@|$(HAVE_MBTOWC)|g' \
 	      -e 's|@''HAVE_MKDTEMP''@|$(HAVE_MKDTEMP)|g' \
 	      -e 's|@''HAVE_MKOSTEMP''@|$(HAVE_MKOSTEMP)|g' \
 	      -e 's|@''HAVE_MKOSTEMPS''@|$(HAVE_MKOSTEMPS)|g' \
@@ -3369,8 +3401,10 @@ stdlib.h: stdlib.in.h $(top_builddir)/config.status $(CXXDEFS_H) \
 	      -e 's|@''HAVE_RPMATCH''@|$(HAVE_RPMATCH)|g' \
 	      -e 's|@''HAVE_SECURE_GETENV''@|$(HAVE_SECURE_GETENV)|g' \
 	      -e 's|@''HAVE_DECL_SETENV''@|$(HAVE_DECL_SETENV)|g' \
+	      -e 's|@''HAVE_SETSTATE''@|$(HAVE_SETSTATE)|g' \
 	      -e 's|@''HAVE_DECL_SETSTATE''@|$(HAVE_DECL_SETSTATE)|g' \
 	      -e 's|@''HAVE_STRTOD''@|$(HAVE_STRTOD)|g' \
+	      -e 's|@''HAVE_STRTOLD''@|$(HAVE_STRTOLD)|g' \
 	      -e 's|@''HAVE_STRTOLL''@|$(HAVE_STRTOLL)|g' \
 	      -e 's|@''HAVE_STRTOULL''@|$(HAVE_STRTOULL)|g' \
 	      -e 's|@''HAVE_STRUCT_RANDOM_DATA''@|$(HAVE_STRUCT_RANDOM_DATA)|g' \
@@ -3379,6 +3413,7 @@ stdlib.h: stdlib.in.h $(top_builddir)/config.status $(CXXDEFS_H) \
 	      -e 's|@''HAVE_DECL_UNSETENV''@|$(HAVE_DECL_UNSETENV)|g' \
 	      -e 's|@''REPLACE_CALLOC''@|$(REPLACE_CALLOC)|g' \
 	      -e 's|@''REPLACE_CANONICALIZE_FILE_NAME''@|$(REPLACE_CANONICALIZE_FILE_NAME)|g' \
+	      -e 's|@''REPLACE_INITSTATE''@|$(REPLACE_INITSTATE)|g' \
 	      -e 's|@''REPLACE_MALLOC''@|$(REPLACE_MALLOC)|g' \
 	      -e 's|@''REPLACE_MBTOWC''@|$(REPLACE_MBTOWC)|g' \
 	      -e 's|@''REPLACE_MKSTEMP''@|$(REPLACE_MKSTEMP)|g' \
@@ -3386,11 +3421,14 @@ stdlib.h: stdlib.in.h $(top_builddir)/config.status $(CXXDEFS_H) \
 	      -e 's|@''REPLACE_PTSNAME_R''@|$(REPLACE_PTSNAME_R)|g' \
 	      -e 's|@''REPLACE_PUTENV''@|$(REPLACE_PUTENV)|g' \
 	      -e 's|@''REPLACE_QSORT_R''@|$(REPLACE_QSORT_R)|g' \
+	      -e 's|@''REPLACE_RANDOM''@|$(REPLACE_RANDOM)|g' \
 	      -e 's|@''REPLACE_RANDOM_R''@|$(REPLACE_RANDOM_R)|g' \
 	      -e 's|@''REPLACE_REALLOC''@|$(REPLACE_REALLOC)|g' \
 	      -e 's|@''REPLACE_REALPATH''@|$(REPLACE_REALPATH)|g' \
 	      -e 's|@''REPLACE_SETENV''@|$(REPLACE_SETENV)|g' \
+	      -e 's|@''REPLACE_SETSTATE''@|$(REPLACE_SETSTATE)|g' \
 	      -e 's|@''REPLACE_STRTOD''@|$(REPLACE_STRTOD)|g' \
+	      -e 's|@''REPLACE_STRTOLD''@|$(REPLACE_STRTOLD)|g' \
 	      -e 's|@''REPLACE_UNSETENV''@|$(REPLACE_UNSETENV)|g' \
 	      -e 's|@''REPLACE_WCTOMB''@|$(REPLACE_WCTOMB)|g' \
 	      -e '/definitions of _GL_FUNCDECL_RPL/r $(CXXDEFS_H)' \
@@ -3811,6 +3849,7 @@ unistd.h: unistd.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H
 	      -e 's/@''GNULIB_CHDIR''@/$(GNULIB_CHDIR)/g' \
 	      -e 's/@''GNULIB_CHOWN''@/$(GNULIB_CHOWN)/g' \
 	      -e 's/@''GNULIB_CLOSE''@/$(GNULIB_CLOSE)/g' \
+	      -e 's/@''GNULIB_COPY_FILE_RANGE''@/$(GNULIB_COPY_FILE_RANGE)/g' \
 	      -e 's/@''GNULIB_DUP''@/$(GNULIB_DUP)/g' \
 	      -e 's/@''GNULIB_DUP2''@/$(GNULIB_DUP2)/g' \
 	      -e 's/@''GNULIB_DUP3''@/$(GNULIB_DUP3)/g' \
@@ -3861,6 +3900,7 @@ unistd.h: unistd.in.h $(top_builddir)/config.status $(CXXDEFS_H) $(ARG_NONNULL_H
 	      -e 's/@''GNULIB_WRITE''@/$(GNULIB_WRITE)/g' \
 	      < $(srcdir)/unistd.in.h | \
 	  sed -e 's|@''HAVE_CHOWN''@|$(HAVE_CHOWN)|g' \
+	      -e 's|@''HAVE_COPY_FILE_RANGE''@|$(HAVE_COPY_FILE_RANGE)|g' \
 	      -e 's|@''HAVE_DUP2''@|$(HAVE_DUP2)|g' \
 	      -e 's|@''HAVE_DUP3''@|$(HAVE_DUP3)|g' \
 	      -e 's|@''HAVE_EUIDACCESS''@|$(HAVE_EUIDACCESS)|g' \

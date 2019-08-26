@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "argp.h"
 #include "progname.h"
@@ -44,14 +45,11 @@
 #include "manconfig.h"
 
 #include "error.h"
-#include "sandbox.h"
 
 #include "mydbm.h"
 
 const char *cat_root;
-man_sandbox *sandbox;  /* unused, but needed by libman */
 
-/* for db_storage.c */
 char *database;
 
 const char *argp_program_version = "accessdb " PACKAGE_VERSION;
@@ -90,8 +88,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 	return ARGP_ERR_UNKNOWN;
 }
 
-static char *help_filter (int key, const char *text,
-			  void *input ATTRIBUTE_UNUSED)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+static char *help_filter (int key, const char *text, void *input _GL_UNUSED)
 {
 	switch (key) {
 		case ARGP_KEY_HELP_PRE_DOC:
@@ -105,6 +104,7 @@ static char *help_filter (int key, const char *text,
 			return (char *) text;
 	}
 }
+#pragma GCC diagnostic pop
 
 static struct argp argp = { options, parse_opt, args_doc, doc, 0,
 			    help_filter };
@@ -135,6 +135,7 @@ int main (int argc, char *argv[])
 	}
 	if (!dbf)
 		error (FATAL, errno, _("can't open %s for reading"), database);
+	assert (dbf);  /* help the compiler prove that later accesses are OK */
 
 	key = MYDBM_FIRSTKEY (dbf);
 

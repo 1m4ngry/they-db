@@ -145,6 +145,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module malloc-gnu:
   # Code from module malloc-posix:
   # Code from module malloca:
+  # Code from module manywarnings:
   # Code from module map:
   # Code from module mbrtowc:
   # Code from module mbsinit:
@@ -260,6 +261,10 @@ AC_DEFUN([gl_EARLY],
   # Code from module wchar:
   # Code from module wcrtomb:
   # Code from module wctype-h:
+  # Code from module windows-mutex:
+  # Code from module windows-once:
+  # Code from module windows-recmutex:
+  # Code from module windows-rwlock:
   # Code from module xalloc:
   # Code from module xalloc-die:
   # Code from module xalloc-oversized:
@@ -582,7 +587,7 @@ AC_SUBST([LTALLOCA])
   fi
   gl_WCHAR_MODULE_INDICATOR([mbsrtowcs])
   gl_FUNC_MBTOWC
-  if test $REPLACE_MBTOWC = 1; then
+  if test $HAVE_MBTOWC = 0 || test $REPLACE_MBTOWC = 1; then
     AC_LIBOBJ([mbtowc])
     gl_PREREQ_MBTOWC
   fi
@@ -868,7 +873,7 @@ AC_SUBST([LTALLOCA])
   AC_PROG_MKDIR_P
   gl_SYSEXITS
   gl_FUNC_GEN_TEMPNAME
-  gl_THREADLIB
+  AC_REQUIRE([gl_THREADLIB])
   gl_HEADER_TIME_H
   gl_TIMESPEC
   gl_UNISTD_H
@@ -903,6 +908,30 @@ AC_SUBST([LTALLOCA])
   fi
   gl_WCHAR_MODULE_INDICATOR([wcrtomb])
   gl_WCTYPE_H
+  AC_REQUIRE([AC_CANONICAL_HOST])
+  case "$host_os" in
+    mingw*)
+      AC_LIBOBJ([windows-mutex])
+      ;;
+  esac
+  AC_REQUIRE([AC_CANONICAL_HOST])
+  case "$host_os" in
+    mingw*)
+      AC_LIBOBJ([windows-once])
+      ;;
+  esac
+  AC_REQUIRE([AC_CANONICAL_HOST])
+  case "$host_os" in
+    mingw*)
+      AC_LIBOBJ([windows-recmutex])
+      ;;
+  esac
+  AC_REQUIRE([AC_CANONICAL_HOST])
+  case "$host_os" in
+    mingw*)
+      AC_LIBOBJ([windows-rwlock])
+      ;;
+  esac
   gl_XALLOC
   gl_XGETCWD
   gl_XSIZE
@@ -1365,6 +1394,15 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/wcrtomb.c
   lib/wctype-h.c
   lib/wctype.in.h
+  lib/windows-initguard.h
+  lib/windows-mutex.c
+  lib/windows-mutex.h
+  lib/windows-once.c
+  lib/windows-once.h
+  lib/windows-recmutex.c
+  lib/windows-recmutex.h
+  lib/windows-rwlock.c
+  lib/windows-rwlock.h
   lib/xalloc-die.c
   lib/xalloc-oversized.h
   lib/xalloc.h
@@ -1467,6 +1505,8 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/lstat.m4
   m4/malloc.m4
   m4/malloca.m4
+  m4/manywarnings-c++.m4
+  m4/manywarnings.m4
   m4/math_h.m4
   m4/mbrtowc.m4
   m4/mbsinit.m4

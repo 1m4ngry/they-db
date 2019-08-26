@@ -1,3 +1,41 @@
+man-db 2.8.7 (26 August 2019)
+=============================
+
+Major changes since man-db 2.8.6.1:
+
+	Fixes:
+	------
+
+	* Further workarounds for ESET File Security: allow sendmsg when it
+	  is in use.
+
+	* The seccomp sandbox now causes disallowed system calls to return
+	  EPERM rather than raising SIGSYS, in the hope of being less
+	  disruptive to preload hacks.
+
+	* Make seccomp sandbox allow getrandom, used by Hardened Malloc.
+
+	* man no longer saves cat pages if --no-hyphenation or
+	  --no-justification is used.
+
+	* Move decompression code out of libman.  This should really fix a
+	  link failure using the Darwin linker (unsuccessfully attempted in
+	  2.8.6), and possibly on other platforms too.
+
+	* Pass the database file name around in function parameters, rather
+	  than storing it in a global variable with an unresolved symbol
+	  from libmandb.  Like the previous item, this fixes a link failure
+	  using the Darwin linker, and possibly on other platforms too.
+
+	* Return database entries in sorted order when using NDBM.  (This is
+	  based on a similar fix to the GDBM backend in man-db 2.4.2.)
+
+	Improvements:
+	-------------
+
+	* Recognise Esperanto, Tamil, and Ukrainian translations of the NAME
+	  section.
+
 man-db 2.8.6.1 (5 August 2019)
 ==============================
 

@@ -52,11 +52,12 @@
 #include "manconfig.h"
 
 #include "glcontainers.h"
+#include "orderfiles.h"
 
 #if defined(HAVE_LINUX_FIEMAP_H)
 gl_map_t physical_offsets = NULL;
 
-int compare_physical_offsets (const void *a, const void *b)
+static int compare_physical_offsets (const void *a, const void *b)
 {
 	const char *left = (const char *) a;
 	const char *right = (const char *) b;
@@ -170,7 +171,7 @@ void order_files (const char *dir, gl_list_t *basenamesp)
 	close (dir_fd);
 }
 #else
-void order_files (const char *dir, gl_list_t *basenamesp)
+void order_files (const char *dir _GL_UNUSED, gl_list_t *basenamesp _GL_UNUSED)
 {
 }
 #endif
