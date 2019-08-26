@@ -184,6 +184,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/ltversion.m4 \
 	$(top_srcdir)/gl/m4/lt~obsolete.m4 \
 	$(top_srcdir)/gl/m4/malloc.m4 $(top_srcdir)/gl/m4/malloca.m4 \
+	$(top_srcdir)/gl/m4/manywarnings.m4 \
 	$(top_srcdir)/gl/m4/mbrtowc.m4 $(top_srcdir)/gl/m4/mbsinit.m4 \
 	$(top_srcdir)/gl/m4/mbsrtowcs.m4 \
 	$(top_srcdir)/gl/m4/mbstate_t.m4 $(top_srcdir)/gl/m4/mbtowc.m4 \
@@ -301,7 +302,8 @@ libmandb_la_DEPENDENCIES = ../lib/libman.la $(am__DEPENDENCIES_1)
 am_libmandb_la_OBJECTS = libmandb_la-db_btree.lo \
 	libmandb_la-db_delete.lo libmandb_la-db_gdbm.lo \
 	libmandb_la-db_lookup.lo libmandb_la-db_ndbm.lo \
-	libmandb_la-db_store.lo libmandb_la-db_ver.lo
+	libmandb_la-db_store.lo libmandb_la-db_ver.lo \
+	libmandb_la-db_xdbm.lo
 libmandb_la_OBJECTS = $(am_libmandb_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -331,7 +333,8 @@ am__depfiles_remade = ./$(DEPDIR)/libmandb_la-db_btree.Plo \
 	./$(DEPDIR)/libmandb_la-db_lookup.Plo \
 	./$(DEPDIR)/libmandb_la-db_ndbm.Plo \
 	./$(DEPDIR)/libmandb_la-db_store.Plo \
-	./$(DEPDIR)/libmandb_la-db_ver.Plo
+	./$(DEPDIR)/libmandb_la-db_ver.Plo \
+	./$(DEPDIR)/libmandb_la-db_xdbm.Plo
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -447,6 +450,7 @@ GNULIB_CHOWN = @GNULIB_CHOWN@
 GNULIB_CLOSE = @GNULIB_CLOSE@
 GNULIB_CLOSEDIR = @GNULIB_CLOSEDIR@
 GNULIB_CONNECT = @GNULIB_CONNECT@
+GNULIB_COPY_FILE_RANGE = @GNULIB_COPY_FILE_RANGE@
 GNULIB_CTIME = @GNULIB_CTIME@
 GNULIB_DIRFD = @GNULIB_DIRFD@
 GNULIB_DPRINTF = @GNULIB_DPRINTF@
@@ -654,6 +658,7 @@ GNULIB_STRSIGNAL = @GNULIB_STRSIGNAL@
 GNULIB_STRSTR = @GNULIB_STRSTR@
 GNULIB_STRTOD = @GNULIB_STRTOD@
 GNULIB_STRTOK_R = @GNULIB_STRTOK_R@
+GNULIB_STRTOLD = @GNULIB_STRTOLD@
 GNULIB_STRTOLL = @GNULIB_STRTOLL@
 GNULIB_STRTOULL = @GNULIB_STRTOULL@
 GNULIB_STRVERSCMP = @GNULIB_STRVERSCMP@
@@ -728,6 +733,7 @@ GNULIB_WRITE = @GNULIB_WRITE@
 GNULIB__EXIT = @GNULIB__EXIT@
 GREP = @GREP@
 HAVE_ACCEPT4 = @HAVE_ACCEPT4@
+HAVE_ALLOCA_H = @HAVE_ALLOCA_H@
 HAVE_ALPHASORT = @HAVE_ALPHASORT@
 HAVE_ATOLL = @HAVE_ATOLL@
 HAVE_BTOWC = @HAVE_BTOWC@
@@ -735,6 +741,7 @@ HAVE_C99_STDINT_H = @HAVE_C99_STDINT_H@
 HAVE_CANONICALIZE_FILE_NAME = @HAVE_CANONICALIZE_FILE_NAME@
 HAVE_CHOWN = @HAVE_CHOWN@
 HAVE_CLOSEDIR = @HAVE_CLOSEDIR@
+HAVE_COPY_FILE_RANGE = @HAVE_COPY_FILE_RANGE@
 HAVE_CRTDEFS_H = @HAVE_CRTDEFS_H@
 HAVE_DECL_DIRFD = @HAVE_DECL_DIRFD@
 HAVE_DECL_ENVIRON = @HAVE_DECL_ENVIRON@
@@ -816,6 +823,7 @@ HAVE_GLOB_H = @HAVE_GLOB_H@
 HAVE_GLOB_PATTERN_P = @HAVE_GLOB_PATTERN_P@
 HAVE_GRANTPT = @HAVE_GRANTPT@
 HAVE_GROUP_MEMBER = @HAVE_GROUP_MEMBER@
+HAVE_INITSTATE = @HAVE_INITSTATE@
 HAVE_INTTYPES_H = @HAVE_INTTYPES_H@
 HAVE_ISWBLANK = @HAVE_ISWBLANK@
 HAVE_ISWCNTRL = @HAVE_ISWCNTRL@
@@ -838,6 +846,7 @@ HAVE_MBSINIT = @HAVE_MBSINIT@
 HAVE_MBSLEN = @HAVE_MBSLEN@
 HAVE_MBSNRTOWCS = @HAVE_MBSNRTOWCS@
 HAVE_MBSRTOWCS = @HAVE_MBSRTOWCS@
+HAVE_MBTOWC = @HAVE_MBTOWC@
 HAVE_MEMCHR = @HAVE_MEMCHR@
 HAVE_MEMPCPY = @HAVE_MEMPCPY@
 HAVE_MKDIRAT = @HAVE_MKDIRAT@
@@ -888,6 +897,7 @@ HAVE_SCANDIR = @HAVE_SCANDIR@
 HAVE_SECURE_GETENV = @HAVE_SECURE_GETENV@
 HAVE_SETENV = @HAVE_SETENV@
 HAVE_SETHOSTNAME = @HAVE_SETHOSTNAME@
+HAVE_SETSTATE = @HAVE_SETSTATE@
 HAVE_SIGACTION = @HAVE_SIGACTION@
 HAVE_SIGHANDLER_T = @HAVE_SIGHANDLER_T@
 HAVE_SIGINFO_T = @HAVE_SIGINFO_T@
@@ -907,6 +917,7 @@ HAVE_STRPBRK = @HAVE_STRPBRK@
 HAVE_STRPTIME = @HAVE_STRPTIME@
 HAVE_STRSEP = @HAVE_STRSEP@
 HAVE_STRTOD = @HAVE_STRTOD@
+HAVE_STRTOLD = @HAVE_STRTOLD@
 HAVE_STRTOLL = @HAVE_STRTOLL@
 HAVE_STRTOULL = @HAVE_STRTOULL@
 HAVE_STRUCT_RANDOM_DATA = @HAVE_STRUCT_RANDOM_DATA@
@@ -1007,8 +1018,6 @@ LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBMULTITHREAD = @LIBMULTITHREAD@
 LIBOBJS = @LIBOBJS@
-LIBPTH = @LIBPTH@
-LIBPTH_PREFIX = @LIBPTH_PREFIX@
 LIBS = @LIBS@
 LIBSOCKET = @LIBSOCKET@
 LIBTHREAD = @LIBTHREAD@
@@ -1031,7 +1040,6 @@ LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
 LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
 LTLIBOBJS = @LTLIBOBJS@
-LTLIBPTH = @LTLIBPTH@
 LTLIBTHREAD = @LTLIBTHREAD@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
@@ -1177,6 +1185,7 @@ REPLACE_GETTIMEOFDAY = @REPLACE_GETTIMEOFDAY@
 REPLACE_GLOB = @REPLACE_GLOB@
 REPLACE_GLOB_PATTERN_P = @REPLACE_GLOB_PATTERN_P@
 REPLACE_GMTIME = @REPLACE_GMTIME@
+REPLACE_INITSTATE = @REPLACE_INITSTATE@
 REPLACE_IOCTL = @REPLACE_IOCTL@
 REPLACE_ISATTY = @REPLACE_ISATTY@
 REPLACE_ISWBLANK = @REPLACE_ISWBLANK@
@@ -1225,6 +1234,7 @@ REPLACE_PUTENV = @REPLACE_PUTENV@
 REPLACE_PWRITE = @REPLACE_PWRITE@
 REPLACE_QSORT_R = @REPLACE_QSORT_R@
 REPLACE_RAISE = @REPLACE_RAISE@
+REPLACE_RANDOM = @REPLACE_RANDOM@
 REPLACE_RANDOM_R = @REPLACE_RANDOM_R@
 REPLACE_READ = @REPLACE_READ@
 REPLACE_READLINK = @REPLACE_READLINK@
@@ -1238,6 +1248,7 @@ REPLACE_RMDIR = @REPLACE_RMDIR@
 REPLACE_SELECT = @REPLACE_SELECT@
 REPLACE_SETENV = @REPLACE_SETENV@
 REPLACE_SETLOCALE = @REPLACE_SETLOCALE@
+REPLACE_SETSTATE = @REPLACE_SETSTATE@
 REPLACE_SLEEP = @REPLACE_SLEEP@
 REPLACE_SNPRINTF = @REPLACE_SNPRINTF@
 REPLACE_SPRINTF = @REPLACE_SPRINTF@
@@ -1258,6 +1269,7 @@ REPLACE_STRSIGNAL = @REPLACE_STRSIGNAL@
 REPLACE_STRSTR = @REPLACE_STRSTR@
 REPLACE_STRTOD = @REPLACE_STRTOD@
 REPLACE_STRTOK_R = @REPLACE_STRTOK_R@
+REPLACE_STRTOLD = @REPLACE_STRTOLD@
 REPLACE_STRUCT_LCONV = @REPLACE_STRUCT_LCONV@
 REPLACE_STRUCT_TIMEVAL = @REPLACE_STRUCT_TIMEVAL@
 REPLACE_SYMLINK = @REPLACE_SYMLINK@
@@ -1464,6 +1476,8 @@ libmandb_la_SOURCES = \
 	db_storage.h \
 	db_store.c \
 	db_ver.c \
+	db_xdbm.c \
+	db_xdbm.h \
 	mydbm.h
 
 libmandb_la_LIBADD = ../lib/libman.la $(DBLIBS)
@@ -1555,6 +1569,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmandb_la-db_ndbm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmandb_la-db_store.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmandb_la-db_ver.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmandb_la-db_xdbm.Plo@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -1631,6 +1646,13 @@ libmandb_la-db_ver.lo: db_ver.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='db_ver.c' object='libmandb_la-db_ver.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmandb_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmandb_la-db_ver.lo `test -f 'db_ver.c' || echo '$(srcdir)/'`db_ver.c
+
+libmandb_la-db_xdbm.lo: db_xdbm.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmandb_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libmandb_la-db_xdbm.lo -MD -MP -MF $(DEPDIR)/libmandb_la-db_xdbm.Tpo -c -o libmandb_la-db_xdbm.lo `test -f 'db_xdbm.c' || echo '$(srcdir)/'`db_xdbm.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libmandb_la-db_xdbm.Tpo $(DEPDIR)/libmandb_la-db_xdbm.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='db_xdbm.c' object='libmandb_la-db_xdbm.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmandb_la_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libmandb_la-db_xdbm.lo `test -f 'db_xdbm.c' || echo '$(srcdir)/'`db_xdbm.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1773,6 +1795,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/libmandb_la-db_ndbm.Plo
 	-rm -f ./$(DEPDIR)/libmandb_la-db_store.Plo
 	-rm -f ./$(DEPDIR)/libmandb_la-db_ver.Plo
+	-rm -f ./$(DEPDIR)/libmandb_la-db_xdbm.Plo
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -1825,6 +1848,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/libmandb_la-db_ndbm.Plo
 	-rm -f ./$(DEPDIR)/libmandb_la-db_store.Plo
 	-rm -f ./$(DEPDIR)/libmandb_la-db_ver.Plo
+	-rm -f ./$(DEPDIR)/libmandb_la-db_xdbm.Plo
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

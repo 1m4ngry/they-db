@@ -89,7 +89,6 @@ static char **keywords;
 static int num_keywords;
 
 bool am_apropos;
-char *database;
 int quiet = 1;
 man_sandbox *sandbox;
 
@@ -242,8 +241,7 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
 	return ARGP_ERR_UNKNOWN;
 }
 
-static char *help_filter (int key, const char *text,
-			  void *input ATTRIBUTE_UNUSED)
+static char *help_filter (int key, const char *text, void *input _GL_UNUSED)
 {
 	switch (key) {
 		case ARGP_KEY_HELP_PRE_DOC:
@@ -638,7 +636,7 @@ static void parse_name (const char * const *pages, int num_pages,
 }
 
 /* return true on word match */
-static bool match (const char *page, const char *whatis)
+static bool _GL_ATTRIBUTE_PURE match (const char *page, const char *whatis)
 {
 	size_t len = strlen (page);
 	const char *begin;
@@ -719,7 +717,7 @@ static void do_apropos (MYDBM_FILE dbf,
 	while (MYDBM_DPTR (key)) {
 		cont = MYDBM_FETCH (dbf, key);
 #else /* BTREE */
-	end = btree_nextkeydata (dbf, &key, &cont);
+	end = man_btree_nextkeydata (dbf, &key, &cont);
 	while (!end) {
 #endif /* !BTREE */
 		char *tab;
@@ -738,7 +736,7 @@ static void do_apropos (MYDBM_FILE dbf,
 			error (FATAL, 0,
 			       _("Database %s corrupted; rebuild with "
 				 "mandb --create"),
-			       database);
+			       dbf->name);
 		}
 
 		if (*MYDBM_DPTR (key) == '$')
@@ -749,7 +747,7 @@ static void do_apropos (MYDBM_FILE dbf,
 
 		/* a real page */
 
-		split_content (MYDBM_DPTR (cont), &info);
+		split_content (dbf, MYDBM_DPTR (cont), &info);
 
 		/* If there are sections given, does any of them match
 		 * either the section or extension of this page?
@@ -800,7 +798,7 @@ nextpage:
 #else /* BTREE */
 		MYDBM_FREE_DPTR (cont);
 		MYDBM_FREE_DPTR (key);
-		end = btree_nextkeydata (dbf, &key, &cont);
+		end = man_btree_nextkeydata (dbf, &key, &cont);
 #endif /* !BTREE */
 		info.addr = NULL; /* == MYDBM_DPTR (cont), freed above */
 		free_mandata_elements (&info);
@@ -818,6 +816,7 @@ static bool search (const char * const *pages, int num_pages)
 	int i;
 
 	GL_LIST_FOREACH_START (manpathlist, mp) {
+		char *database;
 		MYDBM_FILE dbf;
 
 		catpath = get_catpath (mp, SYSTEM_CAT | USER_CAT);
@@ -848,9 +847,8 @@ static bool search (const char * const *pages, int num_pages)
 			else
 				do_whatis (dbf, pages, num_pages, mp, found);
 		}
-		free (database);
-		database = NULL;
 		MYDBM_CLOSE (dbf);
+		free (database);
 	} GL_LIST_FOREACH_END (manpathlist);
 
 	chkr_garbage_detector ();

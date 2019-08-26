@@ -1,3 +1,401 @@
+2019-08-26  Colin Watson  <cjwatson@debian.org>
+
+	Release man-db 2.8.7
+
+2019-08-26  Takeshi Hamasaki  <hmatrjp@users.sourceforge.jp>
+
+	Update Japanese translation
+
+	* po/ja.po: Update from Translation Project.
+	* man/THANKS: Add translator credit.
+
+2019-08-26  Colin Watson  <cjwatson@debian.org>
+
+	Order results manually for NDBM as well as GDBM
+
+	Commit 3a753221a3dddaf4870a86a4dca4771ed2cd80b3 in 2003 (!) worked
+	around the fact that GDBM's firstkey/nextkey interface doesn't return
+	ordered results.  However, at least when using GDBM's NDBM compatibility
+	interface, this may be true for NDBM too.  Extend the manual result
+	ordering code to cover both of these backends.
+
+	* libdb/db_gdbm.c (parent_keys, datum_compare, datum_equals, datum_hash,
+	datum_free, empty_datum, man_gdbm_firstkey, man_gdbm_nextkey,
+	man_gdbm_close): Move to ...
+	* libdb/db_xdbm.c (parent_keys, datum_compare, datum_equals, datum_hash,
+	datum_free, empty_datum, man_xdbm_firstkey, man_xdbm_nextkey,
+	man_xdbm_close): ... here (new file).
+	* libdb/db_xdbm.h: New file.
+	* libdb/db_gdbm.c (unsorted_firstkey, unsorted_nextkey, raw_close): New
+	functions, wrapping gdbm_firstkey, gdbm_nextkey, and gdbm_close
+	respectively.
+	(man_gdbm_firstkey, man_gdbm_nextkey, man_gdbm_close): Add GDBM-specific
+	wrappers for the generic man_xdbm_* functions.
+	* libdb/db_ndbm.c (man_ndbm_close): Move NDBM-specific code ...
+	(raw_close): ... here.
+	(unsorted_firstkey, unsorted_nextkey): New functions, wrapping
+	dbm_firstkey and dbm_nextkey respectively.
+	(man_ndbm_close, man_ndbm_firstkey, man_ndbm_nextkey): Add NDBM-specific
+	wrappers for the generic man_xdbm_* functions.
+	* libdb/mydbm.h (man_ndbm_firstkey, man_ndbm_nextkey): Add prototypes.
+	(MYDBM_FIRSTKEY) [NDBM]: Rewrite in terms of man_ndbm_firstkey.
+	(MYDBM_NEXTKEY) [NDBM]: Rewrite in terms of man_ndbm_nextkey.
+	* libdb/Makefile.am (libmandb_la_SOURCES): Add db_xdbm.c and db_xdbm.h.
+	* NEWS: Document this.
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Enable many more GCC warnings
+
+	* bootstrap.conf (gnulib_modules): Add manywarnings.
+	* configure.ac: Add gl_MANYWARN_ALL_GCC, with some refinements to
+	disable -Wsystem-headers and -Wmissing-field-initializers.  Define
+	GNULIB_NO_VLA=1 to avoid tripping over -Wvla.
+	* src/accessdb.c (help_filter): Disable -Wformat-nonliteral around this
+	function.
+	* src/man.c (help_filter): Likewise.
+	* src/check_mandirs.c (gripe_rwopen_failed, update_db_time): Factor out
+	EAGAIN || EWOULDBLOCK check to ...
+	(is_eagain): ... here, with -Wlogical-op disabled.
+	* src/lexgrog.l, src/zsoelim.l: Disable -Wsuggest-attribute=malloc,
+	-Wsuggest-attribute=pure, and -Wunused-macros.
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Pacify gcc -Wnull-dereference
+
+	* src/accessdb.c (main): Add an assertion to help the compiler prove
+	that dbf is non-NULL.  (It doesn't know that error (FATAL, ...) is
+	non-returning.)
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Add several function attributes suggested by GCC
+
+	* lib/debug.c (vdebug): Mark first argument as a printf format string.
+	* lib/encodings.c (get_page_encoding): Mark as malloc-like.
+	(is_roff_device, get_output_encoding, get_less_charset,
+	get_jless_charset): Mark as pure.
+	* lib/glcontainers.c (string_equals, string_hash): Mark as pure.
+	* lib/security.c (running_setuid): Mark as pure.
+	* lib/util.c (trim_spaces): Mark as malloc-like.
+	* libdb/db_lookup.c (dash_if_unset): Mark as const.
+	* libdb/db_store.c (compare_ids): Mark as const.
+	* src/whatis.c (match): Mark as pure.
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Fix some printf formats
+
+	* libdb/db_lookup.c (list_extensions): Format the return value of
+	gl_list_size using %zu, not %zd.
+	* src/catman.c (add_arg): Format the return values of MYDBM_DSIZE and
+	strlen using %zu, not %zd.
+	(parse_for_sec): Format ARG_MAX - arg_size using %zu, not %zd.
+	* src/man.c (main): Format ruid and euid using %lu, not %d (cast to
+	unsigned long since POSIX only says that uid_t is an integer type).
+	* src/manp.c (describe_flag): Format flag using %u, not %d.
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Remove several unused macros
+
+	* libdb/db_store.c (_): Remove.
+	* src/compression.c (_): Likewise.
+	* src/globbing_test.c (_): Likewise.
+	* src/zsoelim_main.c (_): Likewise.
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Make a couple of functions static
+
+	* lib/orderfiles.c (compare_physical_offsets): Make static.
+	* src/descriptions.c (page_description_free): Likewise.
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Move declaration of _nl_msg_cat_cntr to top level
+
+	gcc -Wnested-externs warns when it encounters this declaration within a
+	function.
+
+	* include/manconfig.h.in (locale_changed): Move _nl_msg_cat_cntr
+	declaration to the top level.
+
+2019-08-25  Colin Watson  <cjwatson@debian.org>
+
+	Add some missing includes
+
+	* lib/linelength.c: Include "linelength.h".
+	* lib/orderfiles.c: Include "orderfiles.h".
+
+2019-08-24  Colin Watson  <cjwatson@debian.org>
+
+	Simplify some GCC attribute handling
+
+	* lib/orderfiles.c (order_files) [!HAVE_LINUX_FIEMAP_H &&
+	!HAVE_POSIX_FADVISE]: Use _GL_UNUSED rather than ATTRIBUTE_UNUSED.
+	* lib/sandbox.c (_sandbox_load) [!HAVE_LIBSECCOMP]: Likewise.
+	* lib/security.c (drop_privs): Likewise.
+	* src/accessdb.c (help_filter): Likewise.
+	* src/check_mandirs.c (chown_if_possible): Likewise.
+	* src/decompress.c (decompress_zlib): Likewise.
+	* src/lexgrog_test.c (help_filter): Likewise.
+	* src/man.c (help_filter, squeeze_blank_lines, disable_hyphenation,
+	disable_justification): Likewise.
+	* src/manconv.c (manconv): Likewise.
+	* src/manp.c (free_config_file): Likewise.
+	* src/tests/fspause.c (main): Likewise.
+	* src/whatis.c (help_filter): Likewise.
+	* src/zsoelim_main.c (parse_opt): Likewise.
+	* include/manconfig.h.in (ATTRIBUTE_UNUSED): Remove in favour of the
+	shorter _GL_UNUSED.
+	(ATTRIBUTE_MALLOC): Remove; it was unused.
+
+2019-08-24  Colin Watson  <cjwatson@debian.org>
+
+	Use C11/Gnulib's _Noreturn
+
+	* lib/cleanup.c (sighandler): Declare as _Noreturn.
+	* src/man.c (gripe_converting_name): Use _Noreturn rather than
+	ATTRIBUTE_NORETURN.
+	* include/manconfig.h.in (ATTRIBUTE_NORETURN): Remove.
+
+2019-08-24  Colin Watson  <cjwatson@debian.org>
+
+	Update to Gnulib 20190821
+
+2019-08-23  Colin Watson  <cjwatson@debian.org>
+
+	Pass database file name in function parameters
+
+	Storing it in a global variable with an unresolved symbol from libmandb
+	was never very clean, and caused linking complications on some
+	platforms.
+
+	Fixes Savannah bug #56734.
+
+	* libdb/mydbm.h (database): Remove external symbol.
+	* src/accessdb.c: Remove obsolete comment.
+	* src/catman.c (database): Remove global variable.
+	(parse_for_sec): Add database parameter.  Update all callers.
+	(main): Declare database locally.
+	* src/check_mandirs.c (gripe_rwopen_failed, testmandirs, update_db_time,
+	create_db, update_db, purge_missing): Add database parameter.  Update
+	all callers.
+	* src/check_mandirs.h (create_db, update_db, purge_missing): Update
+	prototypes.
+	* src/mandb.c (database): Remove global variable.
+	(update_one_file, update_db_wrapper): Add database parameter.  Update
+	all callers.
+	(mandb, process_manpath): Declare database locally.
+	* src/straycats.c (straycats): Add database parameter.  Update all
+	callers.
+	* src/whatis.c (database): Remove global variable.
+	(search): Declare database locally.
+	* include/manconfig.h.in (straycats): Update prototype.
+	* NEWS: Document this.
+
+2019-08-23  Colin Watson  <cjwatson@debian.org>
+
+	Use MYDBM_FILE->name for error messages
+
+	We previously used the global "database" variable, but we were either
+	also passing a MYDBM_FILE around already or could easily do so, and it's
+	cleaner to get the file name from there now that it's consistently
+	available on all backends.
+
+	* libdb/db_lookup.c (gripe_corrupt_data): Add dbf parameter.  Get file
+	name from dbf->name rather than from the global database variable.
+	Update all callers.
+	(gripe_replace_key, split_data, split_content): Add dbf parameter.
+	Update all callers.
+	(dblookup_pattern): Get file name from dbf->name rather than from the
+	global database variable.
+	* libdb/db_ver.c (dbver_rd, dbver_wr): Get file name from dbfile->name
+	rather than from the global database variable.
+	* libdb/db_storage.h (split_content, gripe_corrupt_data,
+	gripe_replace_key): Update prototypes.
+	* src/check_mandirs.c (sanity_check_db): Get file name from dbf->name
+	rather than from the global database variable.
+	* src/whatis.c (do_apropos): Likewise.
+
+2019-08-23  Colin Watson  <cjwatson@debian.org>
+
+	Store database file name alongside its handle
+
+	The GDBM backend already did things this way, but it's convenient to do
+	it the same way for all backends.
+
+	Rename libmandb's various backend-specific functions to be uniformly
+	man_<backend>_<operation>.  In the cases of btree and ndbm there was
+	already no clash with the libraries they depend on, but this makes them
+	match the gdbm backend.
+
+	* libdb/db_btree.c (btree_close): Rename to ...
+	(man_btree_close): ... this.
+	(btree_flopen): Rename to ...
+	(man_btree_open): ... this.  Wrap the returned file handle in a
+	man_btree_wrapper structure that remembers the file name.
+	(btree_replace): Rename to ...
+	(man_btree_replace): ... this.
+	(btree_insert): Rename to ...
+	(man_btree_insert): ... this.
+	(btree_fetch): Rename to ...
+	(man_btree_fetch): ... this.
+	(btree_exists): Rename to ...
+	(man_btree_exists): ... this.
+	(btree_findkey): Rename to ...
+	(man_btree_findkey): ... this.
+	(btree_firstkey): Rename to ...
+	(man_btree_firstkey): ... this.
+	(btree_nextkey): Rename to ...
+	(man_btree_nextkey): ... this.
+	(btree_nextkeydata): Rename to ...
+	(man_btree_nextkeydata): ... this.
+	(btree_get_time): Rename to ...
+	(man_btree_get_time): ... this.
+	(btree_set_time): Rename to ...
+	(man_btree_set_time): ... this.
+	Update all prototypes and callers for all renames.
+	(man_btree_close, man_btree_replace, man_btree_insert, man_btree_fetch,
+	man_btree_exists, man_btree_findkey, man_btree_firstkey,
+	man_btree_nextkey, man_btree_nextkeydata, man_btree_get_time,
+	man_btree_set_time): Take man_btree_wrapper parameter rather than DB *.
+	Update all callers.
+
+	* libdb/db_ndbm.c (ndbm_flclose): Rename to ...
+	(man_ndbm_close): ... this.
+	(ndbm_flopen): Rename to ...
+	(man_ndbm_open): ... this.  Copy the given file name before passing it
+	to dbm_open, since at least GDBM's compatibility implementation declares
+	that parameter as non-const.  Wrap the returned file handle in a
+	man_ndbm_wrapper structure that remembers the file name.
+	(ndbm_get_time): Rename to ...
+	(man_ndbm_get_time): ... this.
+	(ndbm_set_time): Rename to ...
+	(man_ndbm_set_time): ... this.
+	Update all prototypes and callers for all renames.
+	(man_ndbm_close, man_ndbm_get_time, man_ndbm_set_time): Take
+	man_ndbm_wrapper parameter rather than DBM *.  Update all callers.
+
+	* libdb/mydbm.h (man_ndbm_wrapper): New structure.
+	(MYDBM_FILE) [NDBM]: Change to man_ndbm_wrapper.
+	(man_btree_wrapper): New structure.
+	(MYDBM_FILE) [BTREE]: Change to man_btree_wrapper.
+
+	* libdb/db_lookup.c (gripe_lock): Constify filename parameter.
+	* libdb/db_storage.h (gripe_lock): Update prototype.
+
+2019-08-23  Colin Watson  <cjwatson@debian.org>
+
+	Recognise eo/ta/uk translations of the NAME section
+
+	(Esperanto, Tamil, and Ukrainian.)
+
+	* src/lexgrog.l (eo_name, ta_name, uk_name): Add.
+	* NEWS: Document this.
+
+2019-08-23  Colin Watson  <cjwatson@debian.org>
+
+	Remove unused sandbox variables
+
+	We no longer need these, having moved decompression code out of libman.
+
+	* src/accessdb.c, src/catman.c, src/globbing_test.c, src/manpath.c:
+	Remove "sandbox" global variables.
+
+2019-08-22  Colin Watson  <cjwatson@debian.org>
+
+	Remove unused linkage from whatis
+
+	* src/Makefile.am (whatis_SOURCES): Remove manconv.c and manconv.h.
+
+2019-08-22  Colin Watson  <cjwatson@debian.org>
+
+	Move decompression code out of libman
+
+	Fixes Savannah bug #56734.
+
+	* configure.ac: Remove incorrect Darwin workaround.
+	* lib/decompress.c: Move to ...
+	* src/decompress.c: ... here.
+	* lib/decompress.h: Move to ...
+	* src/decompress.h: ... here.
+	* lib/Makefile.am (libman_la_SOURCES): Remove decompress.c and
+	decompress.h.
+	(libman_la_LIBADD): Remove $(LIBCOMPRESS).
+	* lib/README: Remove decompress.*.
+	* lib/encodings.c: Remove unused #include "decompress.h".
+	* src/Makefile.am (lexgrog_LDADD, man_LDADD, manconv_LDADD, mandb_LDADD,
+	zsoelim_LDADD): Add $(LIBCOMPRESS).
+	(lexgrog_SOURCES, man_SOURCES, manconv_SOURCES, mandb_SOURCES,
+	zsoelim_SOURCES): Add decompress.c and decompress.h.
+	* NEWS: Document this.
+
+2019-08-22  Colin Watson  <cjwatson@debian.org>
+
+	Squash warning in order_files stub
+
+	* lib/orderfiles.c [!HAVE_LINUX_FIEMAP_H && !HAVE_POSIX_FADVISE]: Mark
+	dir and basenamesp arguments as unused.
+
+2019-08-22  Colin Watson  <cjwatson@debian.org>
+
+	Don't save cat pages if --nh/--nj is used
+
+	Fixes Savannah bug #55731.
+
+	* src/man.c (display): Disable cat pages if --no-hyphenation or
+	--no-justification is used, in effect defining those not to be part of
+	the canonical state.
+	* NEWS: Document this.
+
+2019-08-21  Colin Watson  <cjwatson@debian.org>
+
+	sandbox: Allow getrandom, used by Hardened Malloc
+
+	Fixes Savannah bug #56767.
+
+	* lib/sandbox.c (make_seccomp_filter): Allow getrandom.
+	* NEWS: Document this.
+
+2019-08-21  Colin Watson  <cjwatson@debian.org>
+
+	NEWS: Document EPERM change
+
+	* NEWS: Document change from raising SIGSYS to returning EPERM.
+
+2019-08-21  Colin Watson  <cjwatson@debian.org>
+
+	sandbox: Reorganise using @system-service set
+
+	systemd defines a @system-service set now which covers some of the ones
+	that were previously isolated here, so reorganise to take account of
+	that.  No functional change.
+
+	* lib/sandbox.c (make_seccomp_filter): Reorganise using systemd's new
+	@system-service set.
+
+2019-08-21  Colin Watson  <cjwatson@debian.org>
+
+	sandbox: Set default action to EPERM, not TRAP
+
+	Returning EPERM rather than raising SIGSYS is no less secure, and it's
+	more likely that code injected via LD_PRELOAD will be able to recover
+	from this somehow.
+
+	* lib/sandbox.c (make_seccomp_filter): Set default action to
+	SCMP_ACT_ERRNO (EPERM), not SCMP_ACT_TRAP.
+
+2019-08-14  Colin Watson  <cjwatson@debian.org>
+
+	sandbox: Allow sendmsg in the ESET case
+
+	* lib/sandbox.c (make_seccomp_filter): If libesets_pac.so is preloaded,
+	then allow sendmsg.
+	* NEWS: Document this.
+
 2019-08-05  Colin Watson  <cjwatson@debian.org>
 
 	* Version: 2.8.6.1.

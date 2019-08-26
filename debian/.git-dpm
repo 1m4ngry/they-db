@@ -1,12 +1,12 @@
 # see git-dpm(1) from git-dpm package
-886374b96c0da5287b5a9eba5777cb2d9f0ea3d8
-886374b96c0da5287b5a9eba5777cb2d9f0ea3d8
-886374b96c0da5287b5a9eba5777cb2d9f0ea3d8
-886374b96c0da5287b5a9eba5777cb2d9f0ea3d8
-man-db_2.8.6.1.orig.tar.xz
-3dca471572e1af3f8ac90740b1721faf9f1245fc
-1829328
+4022480a2cbcd303c5fcb3547dab2896ae1915a9
+4022480a2cbcd303c5fcb3547dab2896ae1915a9
+4022480a2cbcd303c5fcb3547dab2896ae1915a9
+4022480a2cbcd303c5fcb3547dab2896ae1915a9
+man-db_2.8.7.orig.tar.xz
+dd0ca174d0effdfc203579ba4fde5a11469d0e0c
+1839012
 debianTag="debian/%V"
 patchedTag="patched/%V"
 upstreamTag="upstream/%U"
-signature:3759a411fead4fc0ba9e9447506971554bab22c4:833:man-db_2.8.6.1.orig.tar.xz.asc
+signature:b0385ce0191cc32de2a1f3638f84c189659bba73:833:man-db_2.8.7.orig.tar.xz.asc

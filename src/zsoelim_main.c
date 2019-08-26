@@ -37,7 +37,6 @@
 
 #include "gettext.h"
 #include <locale.h>
-#define _(String) gettext (String)
 #define N_(String) gettext_noop (String)
 
 #include "manconfig.h"
@@ -72,7 +71,7 @@ static struct argp_option options[] = {
 	{ 0 }
 };
 
-static error_t parse_opt (int key, char *arg ATTRIBUTE_UNUSED,
+static error_t parse_opt (int key, char *arg _GL_UNUSED,
 			  struct argp_state *state)
 {
 	switch (key) {

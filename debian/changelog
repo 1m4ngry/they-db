@@ -1,3 +1,10 @@
+man-db (2.8.7-1) UNRELEASED; urgency=medium
+
+  * New upstream release:
+    - sandbox: Set default action to EPERM, not TRAP (closes: #902257).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 26 Aug 2019 16:26:01 +0100
+
 man-db (2.8.6.1-2) unstable; urgency=medium
 
   * AppArmor: Allow man_filter to write to cat pages (closes: #926450).

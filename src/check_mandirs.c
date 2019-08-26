@@ -101,11 +101,23 @@ static void gripe_multi_extensions (const char *path, const char *sec,
 		       path, sec, name, ext);
 }
 
-static void gripe_rwopen_failed (void)
+/* Test whether an errno value is EAGAIN or (on systems where it differs)
+ * EWOULDBLOCK.  This is a separate function mainly in order to be able to
+ * control GCC diagnostics in one place.
+ */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wlogical-op"
+static inline bool is_eagain (int err)
+{
+	return err == EAGAIN || err == EWOULDBLOCK;
+}
+#pragma GCC diagnostic pop
+
+static void gripe_rwopen_failed (const char *database)
 {
 	if (errno == EACCES || errno == EROFS)
 		debug ("database %s is read-only\n", database);
-	else if (errno == EAGAIN || errno == EWOULDBLOCK)
+	else if (is_eagain (errno))
 		debug ("database %s is locked by another process\n", database);
 	else {
 #ifdef MAN_DB_UPDATES
@@ -379,7 +391,7 @@ void chown_if_possible (const char *path)
 	}
 }
 #else /* !MAN_OWNER */
-void chown_if_possible (const char *path ATTRIBUTE_UNUSED)
+void chown_if_possible (const char *path _GL_UNUSED)
 {
 }
 #endif /* MAN_OWNER */
@@ -480,7 +492,8 @@ static void fix_permissions_tree (const char *catdir)
  * any dirs of the tree that have been modified (ie added to) will then be
  * scanned for new files, which are then added to the db.
  */
-static int testmandirs (const char *path, const char *catpath,
+static int testmandirs (const char *database,
+			const char *path, const char *catpath,
 			struct timespec last, int create)
 {
 	DIR *dir;
@@ -564,7 +577,7 @@ static int testmandirs (const char *path, const char *catpath,
 			dbf = MYDBM_RWOPEN(database);
 
 		if (!dbf) {
-			gripe_rwopen_failed ();
+			gripe_rwopen_failed (database);
 			closedir (dir);
 			return 0;
 		}
@@ -590,7 +603,7 @@ static int testmandirs (const char *path, const char *catpath,
 }
 
 /* update the modification timestamp of `database' */
-static void update_db_time (void)
+static void update_db_time (const char *database)
 {
 	MYDBM_FILE dbf;
 	struct timespec now;
@@ -599,7 +612,7 @@ static void update_db_time (void)
 	/* we know that this should succeed because we just updated the db! */
 	dbf = MYDBM_RWOPEN (database);
 	if (dbf == NULL) {
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
+		if (is_eagain (errno))
 			/* Another mandb process is probably running.  With
 			 * any luck it will update the mtime ...
 			 */
@@ -623,7 +636,7 @@ static void update_db_time (void)
 }
 
 /* routine to prepare/create the db prior to calling testmandirs() */
-int create_db (const char *manpath, const char *catpath)
+int create_db (const char *database, const char *manpath, const char *catpath)
 {
 	struct timespec time_zero;
 	int amount;
@@ -632,10 +645,10 @@ int create_db (const char *manpath, const char *catpath)
 
 	time_zero.tv_sec = 0;
 	time_zero.tv_nsec = 0;
-	amount = testmandirs (manpath, catpath, time_zero, 1);
+	amount = testmandirs (database, manpath, catpath, time_zero, 1);
 
 	if (amount) {
-		update_db_time ();
+		update_db_time (database);
 		if (!quiet)
 			fputs (_("done.\n"), stderr);
 	}
@@ -658,7 +671,7 @@ static bool sanity_check_db (MYDBM_FILE dbf)
 		content = MYDBM_FETCH (dbf, key);
 		if (!MYDBM_DPTR (content)) {
 			debug ("warning: %s has a key with no content (%s); "
-			       "rebuilding\n", database, MYDBM_DPTR (key));
+			       "rebuilding\n", dbf->name, MYDBM_DPTR (key));
 			MYDBM_FREE_DPTR (key);
 			return false;
 		}
@@ -673,7 +686,7 @@ static bool sanity_check_db (MYDBM_FILE dbf)
 
 /* routine to update the db, ensure that it is consistent with the 
    filesystem */
-int update_db (const char *manpath, const char *catpath)
+int update_db (const char *database, const char *manpath, const char *catpath)
 {
 	MYDBM_FILE dbf;
 	struct timespec mtime;
@@ -693,10 +706,10 @@ int update_db (const char *manpath, const char *catpath)
 
 	debug ("update_db(): %ld.%09ld\n",
 	       (long) mtime.tv_sec, (long) mtime.tv_nsec);
-	new = testmandirs (manpath, catpath, mtime, 0);
+	new = testmandirs (database, manpath, catpath, mtime, 0);
 
 	if (new) {
-		update_db_time ();
+		update_db_time (database);
 		if (!quiet)
 			fputs (_("done.\n"), stderr);
 	}
@@ -736,7 +749,7 @@ void purge_pointers (MYDBM_FILE dbf, const char *name)
 		if (*MYDBM_DPTR (content) == '\t')
 			goto pointers_contentnext;
 
-		split_content (MYDBM_DPTR (content), &entry);
+		split_content (dbf, MYDBM_DPTR (content), &entry);
 		if (entry.id != SO_MAN && entry.id != WHATIS_MAN)
 			goto pointers_contentnext;
 
@@ -935,7 +948,8 @@ static int check_multi_key (const char *name, const char *content)
 /* Go through the database and purge references to man pages that no longer
  * exist.
  */
-int purge_missing (const char *manpath, const char *catpath,
+int purge_missing (const char *database,
+		   const char *manpath, const char *catpath,
 		   int will_run_mandb)
 {
 #ifdef NDBM
@@ -964,7 +978,7 @@ int purge_missing (const char *manpath, const char *catpath,
 
 	dbf = MYDBM_RWOPEN (database);
 	if (!dbf) {
-		gripe_rwopen_failed ();
+		gripe_rwopen_failed (database);
 		return 0;
 	}
 	if (!sanity_check_db (dbf)) {
@@ -1017,7 +1031,7 @@ int purge_missing (const char *manpath, const char *catpath,
 			continue;
 		}
 
-		split_content (MYDBM_DPTR (content), &entry);
+		split_content (dbf, MYDBM_DPTR (content), &entry);
 
 		save_debug = debug_level;
 		debug_level = false;	/* look_for_file() is quite noisy */

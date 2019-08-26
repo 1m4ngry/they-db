@@ -76,7 +76,6 @@
 #include "error.h"
 #include "glcontainers.h"
 #include "pipeline.h"
-#include "sandbox.h"
 
 #include "mydbm.h"
 #include "db_storage.h"
@@ -88,8 +87,6 @@ int quiet = 1;
 MYDBM_FILE dbf_close_post_fork;
 char *manp;
 extern char *user_config_file;
-char *database;
-man_sandbox *sandbox;  /* unused, but needed by libman */
 
 static const char **sections;
 
@@ -214,7 +211,7 @@ static size_t add_arg (pipecmd *cmd, datum key)
 		*tab = '\0';
 	pipecmd_arg (cmd, MYDBM_DPTR (key));
 	len = strlen (MYDBM_DPTR (key));
-	debug ("key: '%s' (%zu), len: %zd\n",
+	debug ("key: '%s' (%zu), len: %zu\n",
 	       MYDBM_DPTR (key), (size_t) MYDBM_DSIZE (key), len);
 	if (tab)
 		*tab = '\t';
@@ -224,7 +221,8 @@ static size_t add_arg (pipecmd *cmd, datum key)
 
 /* find all pages that are in the supplied manpath and section and that are
    ultimate source files. */
-static int parse_for_sec (const char *manpath, const char *section)
+static int parse_for_sec (const char *database,
+			  const char *manpath, const char *section)
 {
 	MYDBM_FILE dbf;
 	pipecmd *basecmd, *cmd;
@@ -284,7 +282,8 @@ static int parse_for_sec (const char *manpath, const char *section)
 			if (*MYDBM_DPTR (content) != '\t') { 
 				struct mandata entry;
 
-				split_content (MYDBM_DPTR (content), &entry);
+				split_content (dbf, MYDBM_DPTR (content),
+					       &entry);
 
 				/* Accept if the entry is an ultimate manual
 				   page and the section matches the one we're
@@ -299,7 +298,7 @@ static int parse_for_sec (const char *manpath, const char *section)
 
 					arg_size += add_arg (cmd, key) + 1;
 
-					debug ("arg space free: %zd bytes\n",
+					debug ("arg space free: %zu bytes\n",
 					       ARG_MAX - arg_size);
 
 					/* Check to see if we have enough room 
@@ -395,7 +394,7 @@ int main (int argc, char *argv[])
 	manpathlist = create_pathlist (manp); 
 
 	GL_LIST_FOREACH_START (manpathlist, mp) {
-		char *catpath;
+		char *catpath, *database;
 		size_t len;
 
 		catpath = get_catpath (mp, SYSTEM_CAT | USER_CAT);
@@ -422,12 +421,13 @@ int main (int argc, char *argv[])
 				continue;
 			if (check_access (catpath))
 				continue;
-			if (parse_for_sec (mp, *sp)) {
+			if (parse_for_sec (database, mp, *sp)) {
 				error (0, 0, _("unable to update %s"), mp);
 				break;
 			}
 		}
-			
+
+		free (database);
 		free (catpath);
 	} GL_LIST_FOREACH_END (manpathlist);
 
