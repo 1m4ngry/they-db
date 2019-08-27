@@ -39,9 +39,7 @@ override_dh_install:
 
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 override_dh_installman:
-	PATH="$(CURDIR)/$(dtmp)/usr/bin:$$PATH" \
-	LD_LIBRARY_PATH="$(CURDIR)/$(dtmp)/usr/lib/man-db:$$LD_LIBRARY_PATH" \
-		dh_installman
+	PATH="$(CURDIR)/debian/debhelper:$$PATH" dh_installman
 endif
 
 override_dh_fixperms:
