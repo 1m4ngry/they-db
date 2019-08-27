@@ -5,6 +5,7 @@ man-db (2.8.7-3) UNRELEASED; urgency=medium
     (dh_installman only uses man for recoding, which is pretty stable).
   * Update path to Gnulib files in debian/copyright.
   * Add a debian/upstream/metadata file.
+  * Re-export debian/upstream/signing-key.asc without extra signatures.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 27 Aug 2019 08:11:45 +0100
 
