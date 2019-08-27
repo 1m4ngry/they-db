@@ -1,4 +1,4 @@
-man-db (2.8.7-3) UNRELEASED; urgency=medium
+man-db (2.8.7-3) unstable; urgency=medium
 
   * Stop trying to get dh_installman to use the just-built version of man.
     There are too many reasons this can fail, and it's of marginal utility
@@ -9,7 +9,7 @@ man-db (2.8.7-3) UNRELEASED; urgency=medium
   * Override shlib-calls-exit Lintian tag for libman-*.so, since this is
     intentional and OK.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 27 Aug 2019 08:11:45 +0100
+ -- Colin Watson <cjwatson@debian.org>  Tue, 27 Aug 2019 11:39:08 +0100
 
 man-db (2.8.7-2) unstable; urgency=medium
 
