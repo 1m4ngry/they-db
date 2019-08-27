@@ -4,6 +4,7 @@ man-db (2.8.7-3) UNRELEASED; urgency=medium
     There are too many reasons this can fail, and it's of marginal utility
     (dh_installman only uses man for recoding, which is pretty stable).
   * Update path to Gnulib files in debian/copyright.
+  * Add a debian/upstream/metadata file.
 
  -- Colin Watson <cjwatson@debian.org>  Tue, 27 Aug 2019 08:11:45 +0100
 
