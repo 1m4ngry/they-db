@@ -1,3 +1,11 @@
+man-db (2.8.7-3) UNRELEASED; urgency=medium
+
+  * Stop trying to get dh_installman to use the just-built version of man.
+    There are too many reasons this can fail, and it's of marginal utility
+    (dh_installman only uses man for recoding, which is pretty stable).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 27 Aug 2019 08:11:45 +0100
+
 man-db (2.8.7-2) unstable; urgency=medium
 
   * Adjust the way we get dh_installman to use the just-built version of man

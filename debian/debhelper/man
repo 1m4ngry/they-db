@@ -1,9 +1,0 @@
-#! /bin/sh
-# Run the installed version of man; used during man-db's own invocation of
-# dh_installman, unless cross-compiling.
-
-top="${0%/*/*}/man-db"
-
-export PATH="$top/usr/bin:$PATH"
-export LD_LIBRARY_PATH="$top/usr/lib/man-db:$LD_LIBRARY_PATH"
-exec "$top/usr/bin/man" "$@"
