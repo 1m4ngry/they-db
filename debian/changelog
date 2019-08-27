@@ -1,10 +1,10 @@
-man-db (2.8.7-2) UNRELEASED; urgency=medium
+man-db (2.8.7-2) unstable; urgency=medium
 
   * Adjust the way we get dh_installman to use the just-built version of man
     to avoid needing to propagate LD_LIBRARY_PATH all the way through
     dh_installman.
 
- -- Colin Watson <cjwatson@debian.org>  Tue, 27 Aug 2019 06:22:45 +0100
+ -- Colin Watson <cjwatson@debian.org>  Tue, 27 Aug 2019 06:41:03 +0100
 
 man-db (2.8.7-1) unstable; urgency=medium
 
