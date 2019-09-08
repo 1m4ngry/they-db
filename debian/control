@@ -40,9 +40,9 @@ Replaces: man,
           manpages-zh (<< 1.5.2-1.1),
           nlsutils,
 Multi-Arch: foreign
-Description: on-line manual pager
+Description: tools for reading manual pages
  This package provides the man command, the primary way of examining the
- on-line help files (manual pages). Other utilities provided include the
+ system help files (manual pages). Other utilities provided include the
  whatis and apropos commands for searching the manual page database, the
  manpath utility for determining the manual page search path, and the
  maintenance utilities mandb, catman and zsoelim. man-db uses the groff
