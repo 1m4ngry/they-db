@@ -1,4 +1,4 @@
-man-db (2.9.0-1) UNRELEASED; urgency=medium
+man-db (2.9.0-1) unstable; urgency=medium
 
   * New upstream release:
     - Remove stray words from man(1) (closes: #939599).
@@ -15,7 +15,7 @@ man-db (2.9.0-1) UNRELEASED; urgency=medium
   * Avoid the confusing term "on-line" in the package description (closes:
     #774402).
 
- -- Colin Watson <cjwatson@debian.org>  Sun, 08 Sep 2019 12:52:10 +0100
+ -- Colin Watson <cjwatson@debian.org>  Wed, 23 Oct 2019 12:52:11 +0100
 
 man-db (2.8.7-3) unstable; urgency=medium
 
