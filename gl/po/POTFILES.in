@@ -45,6 +45,7 @@ gl/lib/asnprintf.c
 gl/lib/asprintf.c
 gl/lib/assure.h
 gl/lib/at-func.c
+gl/lib/at-func2.c
 gl/lib/basename-lgpl.c
 gl/lib/basename.c
 gl/lib/bitrotate.c
@@ -249,6 +250,9 @@ gl/lib/regex_internal.c
 gl/lib/regex_internal.h
 gl/lib/regexec.c
 gl/lib/rename.c
+gl/lib/renameat.c
+gl/lib/renameatu.c
+gl/lib/renameatu.h
 gl/lib/rewinddir.c
 gl/lib/rmdir.c
 gl/lib/same-inode.h
@@ -273,6 +277,7 @@ gl/lib/stat-time.h
 gl/lib/stat-w32.c
 gl/lib/stat-w32.h
 gl/lib/stat.c
+gl/lib/statat.c
 gl/lib/stdalign.in.h
 gl/lib/stdarg.in.h
 gl/lib/stdbool.in.h
@@ -322,6 +327,8 @@ gl/lib/unistd--.h
 gl/lib/unistd-safer.h
 gl/lib/unistd.c
 gl/lib/unistd.in.h
+gl/lib/unlink.c
+gl/lib/unlinkat.c
 gl/lib/unsetenv.c
 gl/lib/utime.c
 gl/lib/utime.in.h

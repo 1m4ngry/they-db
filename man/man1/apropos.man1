@@ -3,17 +3,17 @@
 .\" Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
 .\"
 .\" You may distribute under the terms of the GNU General Public
-.\" License as specified in the file COPYING that comes with the 
+.\" License as specified in the file COPYING that comes with the
 .\" man-db distribution.
 .\"
-.\" Sat Oct 29 13:09:31 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
-.\" 
+.\" Sat Oct 29 13:09:31 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
+.\"
 .pc
 .TH %thapropos% 1 "%date%" "%version%" "Manual pager utils"
 .SH NAME
 %apropos% \- search the manual page names and descriptions
 .SH SYNOPSIS
-.B %apropos% 
+.B %apropos%
 .RB [\| \-dalv?V  \|]
 .RB [\| \-e \||\| \-w \||\| \-r\c
 \|]
@@ -30,13 +30,13 @@
 .I keyword
 \&.\|.\|.
 .SH DESCRIPTION
-Each manual page has a short description available within it. 
+Each manual page has a short description available within it.
 .B %apropos%
 searches the descriptions for instances of
 .IR keyword .
 
 .I keyword
-is usually a regular expression, as if 
+is usually a regular expression, as if
 .RB ( \-r )
 was used, or
 may contain wildcards
@@ -45,7 +45,7 @@ or match the exact keyword
 .RB ( \-e ).
 Using these options, it may be necessary to quote the
 .I keyword
-or escape (\\) the special characters to stop the shell from interpreting
+or escape (\e) the special characters to stop the shell from interpreting
 them.
 
 The standard matching rules allow matches to be made against the page name
@@ -101,7 +101,9 @@ results from poorly-written
 .B NAME
 sections.
 .TP
-\fB\-s\fP \fIlist\fP, \fB\-\-sections\fP \fIlist\fP, \fB\-\-section\fP \fIlist\fP
+\fB\-s\fR \fIlist\/\fR, \
+\fB\-\-sections=\fIlist\/\fR, \
+\fB\-\-section=\fIlist\fR
 Search only the given manual sections.
 .I list
 is a colon- or comma-separated list of sections.
@@ -113,48 +115,36 @@ while if an entry in
 .I list
 has an extension, for example "3perl", then the list will only include
 pages in that exact part of the manual section.
-.\"
-.\" Due to the rather silly limit of 6 args per request in some `native'
-.\" *roff compilers, we have do the following to get the two-line
-.\" hanging tag on one line. .PP to begin a new paragraph, then the
-.\" tag, then .RS (start relative indent), the text, finally .RE
-.\" (end relative indent).
-.\"
-.PP
-.B \-m 
-.I system\c 
-\|[\|,.\|.\|.\|]\|,
-.BI \-\-systems= system\c 
-\|[\|,.\|.\|.\|]
-.RS
+.TP
+\fB\-m\fR \fIsystem\fR\|[\|,.\|.\|.\|]\|, \
+\fB\-\-systems=\fIsystem\fR\|[\|,.\|.\|.\|]
 If this system has access to other operating system's manual page
-descriptions, they can be searched using this option. 
+descriptions, they can be searched using this option.
 To search NewOS's manual page descriptions, use the option
 .B \-m
 .BR NewOS .
 
-The 
+The
 .I system
 specified can be a combination of comma-delimited operating system names.
-To include a search of the native operating system's 
+To include a search of the native operating system's
 .B whatis
 descriptions, include the system name
-.B man 
+.B man
 in the argument string.
 This option will override the
 .RB $ SYSTEM
 environment variable.
-.RE
 .TP
 .BI \-M\  path \fR,\ \fB\-\-manpath= path
 Specify an alternate set of colon-delimited manual page hierarchies to
 search.
-By default, 
+By default,
 .B %program%
-uses the 
+uses the
 .RB $ MANPATH
-environment variable, unless it is empty or unset, in which case it will 
-determine an appropriate manpath based on your 
+environment variable, unless it is empty or unset, in which case it will
+determine an appropriate manpath based on your
 .RB $ PATH
 environment variable.
 This option overrides the contents of
@@ -184,7 +174,7 @@ Use this user configuration file rather than the default of
 .if !'po4a'hide' .BR \-? ", " \-\-help
 Print a help message and exit.
 .TP
-.if !'po4a'hide' .BR \-\-usage
+.if !'po4a'hide' .B \-\-usage
 Print a short usage message and exit.
 .TP
 .if !'po4a'hide' .BR \-V ", " \-\-version
@@ -208,7 +198,7 @@ Nothing was found that matched the criteria specified.
 If
 .RB $ SYSTEM
 is set, it will have the same effect as if it had been specified as the
-argument to the 
+argument to the
 .B \-m
 option.
 .TP
@@ -226,33 +216,33 @@ is set, its value is used as the terminal width (see the
 option).
 If it is not set, the terminal width will be calculated using the value of
 .RB $ COLUMNS ,
-an
+and
 .BR ioctl (2)
 if available, or falling back to 80 characters if all else fails.
 .TP
 .if !'po4a'hide' .B POSIXLY_CORRECT
-If 
+If
 .RB $ POSIXLY_CORRECT
-is set, even to a null value, the default 
-.B %apropos% 
-search will be as an extended regex 
+is set, even to a null value, the default
+.B %apropos%
+search will be as an extended regex
 .RB ( \-r ).
 Nowadays, this is the default behaviour anyway.
 .SH FILES
 .TP
-.if !'po4a'hide' .I /usr/share/man/index.(bt|db|dir|pag)
+.if !'po4a'hide' .I /usr/share/man/index.(bt\^|\^db\^|\^dir\^|\^pag)
 A traditional global
 .I index
 database cache.
 .TP
-.if !'po4a'hide' .I /var/cache/man/index.(bt|db|dir|pag)
+.if !'po4a'hide' .I /var/cache/man/index.(bt\^|\^db\^|\^dir\^|\^pag)
 An FHS
 compliant global
 .I index
 database cache.
 .TP
 .if !'po4a'hide' .I /usr/share/man/\|.\|.\|.\|/whatis
-A traditional 
+A traditional
 .B whatis
 text database.
 .SH "SEE ALSO"
@@ -261,7 +251,7 @@ text database.
 .if !'po4a'hide' .BR %mandb% (8)
 .SH AUTHOR
 .nf
-.if !'po4a'hide' Wilf. (G.Wilford@ee.surrey.ac.uk).
+.if !'po4a'hide' Wilf.\& (G.Wilford@ee.surrey.ac.uk).
 .if !'po4a'hide' Fabrizio Polacco (fpolacco@debian.org).
 .if !'po4a'hide' Colin Watson (cjwatson@debian.org).
 .fi

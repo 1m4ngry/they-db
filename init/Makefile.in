@@ -208,10 +208,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/raise.m4 $(top_srcdir)/gl/m4/rawmemchr.m4 \
 	$(top_srcdir)/gl/m4/readdir.m4 $(top_srcdir)/gl/m4/readlink.m4 \
 	$(top_srcdir)/gl/m4/realloc.m4 $(top_srcdir)/gl/m4/regex.m4 \
-	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/rewinddir.m4 \
-	$(top_srcdir)/gl/m4/rmdir.m4 $(top_srcdir)/gl/m4/same.m4 \
-	$(top_srcdir)/gl/m4/save-cwd.m4 $(top_srcdir)/gl/m4/select.m4 \
-	$(top_srcdir)/gl/m4/setenv.m4 $(top_srcdir)/gl/m4/sigaction.m4 \
+	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/renameat.m4 \
+	$(top_srcdir)/gl/m4/rewinddir.m4 $(top_srcdir)/gl/m4/rmdir.m4 \
+	$(top_srcdir)/gl/m4/same.m4 $(top_srcdir)/gl/m4/save-cwd.m4 \
+	$(top_srcdir)/gl/m4/select.m4 $(top_srcdir)/gl/m4/setenv.m4 \
+	$(top_srcdir)/gl/m4/sigaction.m4 \
 	$(top_srcdir)/gl/m4/signal_h.m4 \
 	$(top_srcdir)/gl/m4/signalblocking.m4 \
 	$(top_srcdir)/gl/m4/size_max.m4 $(top_srcdir)/gl/m4/sleep.m4 \
@@ -245,7 +246,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/threadlib.m4 $(top_srcdir)/gl/m4/time_h.m4 \
 	$(top_srcdir)/gl/m4/timespec.m4 \
 	$(top_srcdir)/gl/m4/unistd-safer.m4 \
-	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/utime.m4 \
+	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/unlink.m4 \
+	$(top_srcdir)/gl/m4/unlinkat.m4 $(top_srcdir)/gl/m4/utime.m4 \
 	$(top_srcdir)/gl/m4/utime_h.m4 $(top_srcdir)/gl/m4/utimens.m4 \
 	$(top_srcdir)/gl/m4/utimes.m4 \
 	$(top_srcdir)/gl/m4/vasnprintf.m4 \
@@ -1294,6 +1296,8 @@ TRANS_MANDB = @TRANS_MANDB@
 TRANS_MANDB_UPPER = @TRANS_MANDB_UPPER@
 TRANS_MANPATH = @TRANS_MANPATH@
 TRANS_MANPATH_UPPER = @TRANS_MANPATH_UPPER@
+TRANS_MAN_RECODE = @TRANS_MAN_RECODE@
+TRANS_MAN_RECODE_UPPER = @TRANS_MAN_RECODE_UPPER@
 TRANS_MAN_UPPER = @TRANS_MAN_UPPER@
 TRANS_WHATIS = @TRANS_WHATIS@
 TRANS_WHATIS_UPPER = @TRANS_WHATIS_UPPER@
@@ -1415,6 +1419,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 tr = @tr@
 troff = @troff@
+troff_as_troff_input = @troff_as_troff_input@
 uncompress = @uncompress@
 unlzip = @unlzip@
 unlzma = @unlzma@

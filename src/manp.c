@@ -170,52 +170,22 @@ const char *get_def_user (const char *thing, const char *def)
 	return config_def ? config_def : def;
 }
 
-static const char *describe_flag (enum config_flag flag)
-{
-	switch (flag) {
-		case MANDATORY:
-			return "MANDATORY";
-		case MANPATH_MAP:
-			return "MANPATH_MAP";
-		case MANDB_MAP:
-			return "MANDB_MAP";
-		case MANDB_MAP_USER:
-			return "MANDB_MAP_USER";
-		case DEFINE:
-			return "DEFINE";
-		case DEFINE_USER:
-			return "DEFINE_USER";
-		case SECTION:
-			return "SECTION";
-		case SECTION_USER:
-			return "SECTION_USER";
-		default:
-			error (FATAL, 0, "impossible config_flag value %u",
-			       flag);
-			abort (); /* error should have exited */
-	}
-}
-
-static void print_list (void)
-{
-	const struct config_item *item;
-
-	GL_LIST_FOREACH_START (config, item)
-		debug ("`%s'\t`%s'\t`%s'\n",
-		       item->key, item->cont, describe_flag (item->flag));
-	GL_LIST_FOREACH_END (config);
-}
-
 static void add_sections (char *sections, int user)
 {
 	char *section_list = xstrdup (sections);
 	char *sect;
+	bool first = true;
 
+	debug ("  Added sections: ");
 	for (sect = strtok (section_list, " "); sect;
 	     sect = strtok (NULL, " ")) {
 		add_config (sect, "", user ? SECTION_USER : SECTION);
-		debug ("Added section `%s'.\n", sect);
+		if (!first)
+			debug (", ");
+		debug ("`%s'", sect);
+		first = false;
 	}
+	debug (".\n");
 	free (section_list);
 }
 
@@ -248,7 +218,7 @@ static void add_def (const char *thing, const char *config_def, int user)
 {
 	add_config (thing, config_def, user ? DEFINE_USER : DEFINE);
 
-	debug ("Defined `%s' as `%s'.\n", thing, config_def);
+	debug ("  Defined `%s' as `%s'.\n", thing, config_def);
 }
 
 static void add_manpath_map (const char *path, const char *mandir)
@@ -258,7 +228,7 @@ static void add_manpath_map (const char *path, const char *mandir)
 
 	add_config (path, mandir, MANPATH_MAP);
 
-	debug ("Path `%s' mapped to mandir `%s'.\n", path, mandir);
+	debug ("  Path `%s' mapped to mandir `%s'.\n", path, mandir);
 }
 
 static void add_mandb_map (const char *mandir, const char *catdir, int user)
@@ -278,7 +248,7 @@ static void add_mandb_map (const char *mandir, const char *catdir, int user)
 
 	add_config (mandir, tmpcatdir, user ? MANDB_MAP_USER : MANDB_MAP);
 
-	debug ("%s mandir `%s', catdir `%s'.\n",
+	debug ("  %s mandir `%s', catdir `%s'.\n",
 	       user ? "User" : "Global", mandir, tmpcatdir);
 
 	free (tmpcatdir);
@@ -291,7 +261,7 @@ static void add_mandatory (const char *mandir)
 
 	add_config (mandir, "", MANDATORY);
 
-	debug ("Mandatory mandir `%s'.\n", mandir);
+	debug ("  Mandatory mandir `%s'.\n", mandir);
 }
 
 /* accept (NULL or oldpath) and new path component. return new path */
@@ -863,7 +833,7 @@ void read_config_file (bool optional)
 	if (dotmanpath) {
 		config_file = fopen (dotmanpath, "r");
 		if (config_file != NULL) {
-			debug ("From the config file %s:\n\n", dotmanpath);
+			debug ("From the config file %s:\n", dotmanpath);
 			add_to_dirlist (config_file, 1);
 			fclose (config_file);
 		}
@@ -882,14 +852,12 @@ void read_config_file (bool optional)
 					 "configuration file %s"),
 				       CONFIG_FILE);
 		} else {
-			debug ("From the config file %s:\n\n", CONFIG_FILE);
+			debug ("From the config file %s:\n", CONFIG_FILE);
 
 			add_to_dirlist (config_file, 0);
 			fclose (config_file);
 		}
 	}
-
-	print_list ();
 
 	done = 1;
 }
@@ -988,7 +956,7 @@ char *get_manpath_from_path (const char *path, int mandatory)
 		if (*p == '\0' || strcmp (p, ".") == 0)
 			continue;
 
-		debug ("\npath directory %s ", p);
+		debug ("path directory %s ", p);
 
 		/* If the directory we're working on has MANPATH_MAP entries
 		 * in the config file, add them to the list.
@@ -1018,7 +986,7 @@ char *get_manpath_from_path (const char *path, int mandatory)
 	free (tmppath);
 
 	if (mandatory) {
-		debug ("\nadding mandatory man directories\n\n");
+		debug ("adding mandatory man directories\n");
 
 		GL_LIST_FOREACH_START (config, config_item) {
 			if (config_item->flag == MANDATORY) {
@@ -1063,10 +1031,8 @@ static void add_expanded_dir_to_list (gl_list_t list, const char *dir)
 {
 	int status;
 
-	if (gl_list_search (list, dir)) {
-		debug ("%s is already in the manpath\n", dir);
+	if (gl_list_search (list, dir))
 		return;
-	}
 
 	/* Not found -- add it. */
 
@@ -1077,7 +1043,7 @@ static void add_expanded_dir_to_list (gl_list_t list, const char *dir)
 	else if (status == 0)
 		gripe_not_directory (dir);
 	else if (status == 1) {
-		debug ("adding %s to manpath\n", dir);
+		debug ("  adding %s to manpath\n", dir);
 		gl_list_add_last (list, xstrdup (dir));
 	}
 }
@@ -1104,7 +1070,6 @@ static void add_dir_to_list (gl_list_t list, const char *dir)
 static void add_man_subdirs (gl_list_t list, const char *path)
 {
 	char *newpath;
-	int found = 0;
 
 	/* don't assume anything about path, especially that it ends in 
 	   "bin" or even has a '/' in it! */
@@ -1115,7 +1080,6 @@ static void add_man_subdirs (gl_list_t list, const char *path)
 		if (is_directory (newpath) == 1) {
 			insert_override_dir (list, newpath);
 			add_dir_to_list (list, newpath);
-			found = 1;
 		}
 		free (newpath);
 	}
@@ -1124,7 +1088,6 @@ static void add_man_subdirs (gl_list_t list, const char *path)
 	if (is_directory (newpath) == 1) {
 		insert_override_dir (list, newpath);
 		add_dir_to_list (list, newpath);
-		found = 1;
 	}
 	free (newpath);
 
@@ -1134,7 +1097,6 @@ static void add_man_subdirs (gl_list_t list, const char *path)
 		if (is_directory (newpath) == 1) {
 			insert_override_dir (list, newpath);
 			add_dir_to_list (list, newpath);
-			found = 1;
 		}
 		free (newpath);
 	}
@@ -1143,13 +1105,51 @@ static void add_man_subdirs (gl_list_t list, const char *path)
 	if (is_directory (newpath) == 1) {
 		insert_override_dir (list, newpath);
 		add_dir_to_list (list, newpath);
-		found = 1;
 	}
 	free (newpath);
+}
 
-	if (!found)
-		debug ("and doesn't have ../man, man, ../share/man, or "
-		       "share/man subdirectories\n");
+struct canonicalized_path {
+	char *path;
+	char *canon_path;
+};
+
+static struct canonicalized_path *canonicalized_path_new (const char *path)
+{
+	char *canon_path;
+	struct canonicalized_path *cp = NULL;
+
+	canon_path = canonicalize_file_name (path);
+	if (canon_path) {
+		cp = XMALLOC (struct canonicalized_path);
+		cp->path = xstrdup (path);
+		cp->canon_path = canon_path;	/* steal memory */
+	}
+	return cp;
+}
+
+static bool _GL_ATTRIBUTE_PURE canonicalized_path_equals (const void *elt1,
+							  const void *elt2)
+{
+	const struct canonicalized_path *cp1 = elt1, *cp2 = elt2;
+	return string_equals (cp1->canon_path, cp2->canon_path);
+}
+
+static size_t _GL_ATTRIBUTE_PURE canonicalized_path_hash (const void *elt)
+{
+	const struct canonicalized_path *cp = elt;
+	return string_hash (cp->canon_path);
+}
+
+static void canonicalized_path_free (const void *elt)
+{
+	/* gl_list declares the argument as const, but there doesn't seem to
+	 * be a good reason for this.
+	 */
+	struct canonicalized_path *cp = (struct canonicalized_path *) elt;
+	free (cp->path);
+	free (cp->canon_path);
+	free (cp);
 }
 
 static void add_dir_to_path_list (gl_list_t list, const char *p)
@@ -1167,6 +1167,7 @@ static void add_dir_to_path_list (gl_list_t list, const char *p)
 			gripe_not_directory (expanded_dir);
 		else {
 			char *path;
+			struct canonicalized_path *cp;
 
 			/* deal with relative paths */
 			if (*expanded_dir != '/') {
@@ -1179,8 +1180,13 @@ static void add_dir_to_path_list (gl_list_t list, const char *p)
 			} else
 				path = xstrdup (expanded_dir);
 
-			debug ("adding %s to manpathlist\n", path);
-			gl_list_add_last (list, path);
+			cp = canonicalized_path_new (path);
+			if (cp && !gl_list_search (list, cp)) {
+				debug ("adding %s to manpathlist\n", path);
+				gl_list_add_last (list, cp);
+			} else if (cp)
+				canonicalized_path_free (cp);
+			free (path);
 		}
 	} GL_LIST_FOREACH_END (expanded_dirs);
 	gl_list_free (expanded_dirs);
@@ -1188,81 +1194,48 @@ static void add_dir_to_path_list (gl_list_t list, const char *p)
 
 gl_list_t create_pathlist (const char *manp)
 {
-	gl_list_t list;
-	gl_list_iterator_t iter;
-	gl_list_node_t node;
+	gl_list_t canonicalized_list, list;
 	const char *p, *end;
+	const struct canonicalized_path *cp;
 
-	/* Expand the manpath into a list for easier handling. */
+	/* Expand the manpath into a list of (path, canonicalized path)
+	 * pairs for easier handling.  add_dir_to_path_list only adds items
+	 * if they do not have the same canonicalized path as an existing
+	 * item, thereby eliminating duplicates due to symlinks.
+	 */
 
-	list = new_string_list (GL_LINKEDHASH_LIST, true);
+	canonicalized_list = gl_list_create_empty
+		(GL_LINKEDHASH_LIST, canonicalized_path_equals,
+		 canonicalized_path_hash, canonicalized_path_free, false);
 	for (p = manp;; p = end + 1) {
 		end = strchr (p, ':');
 		if (end) {
 			char *element = xstrndup (p, end - p);
-			add_dir_to_path_list (list, element);
+			add_dir_to_path_list (canonicalized_list, element);
 			free (element);
 		} else {
-			add_dir_to_path_list (list, p);
+			add_dir_to_path_list (canonicalized_list, p);
 			break;
 		}
 	}
 
-	/* Eliminate duplicates due to symlinks. */
-	iter = gl_list_iterator (list);
-	while (gl_list_iterator_next (&iter, (const void **) &p, &node)) {
-		char *target;
-		gl_list_iterator_t dupcheck_iter;
-		const char *dupcheck;
-		gl_list_node_t dupcheck_node;
-
-		/* After resolving all symlinks, is the target also in the
-		 * manpath?
-		 */
-		target = canonicalize_file_name (p);
-		if (!target)
-			continue;
-		/* Only check up to the current list position, to keep item
-		 * order stable across deduplication.
-		 */
-		dupcheck_iter = gl_list_iterator (list);
-		while (gl_list_iterator_next (&dupcheck_iter,
-					      (const void **) &dupcheck,
-					      &dupcheck_node) &&
-		       dupcheck_node != node) {
-			char *dupcheck_target = canonicalize_file_name
-				(dupcheck);
-			if (!dupcheck_target)
-				continue;
-			if (!STREQ (target, dupcheck_target)) {
-				free (dupcheck_target);
-				continue;
-			}
-			free (dupcheck_target);
-			debug ("Removing duplicate manpath entry %s -> %s\n",
-			       p, dupcheck);
-			gl_list_remove_node (list, node);
-			break;
-		}
-		gl_list_iterator_free (&dupcheck_iter);
-		free (target);
-	}
-	gl_list_iterator_free (&iter);
+	list = new_string_list (GL_ARRAY_LIST, false);
+	GL_LIST_FOREACH_START (canonicalized_list, cp)
+		gl_list_add_last (list, xstrdup (cp->path));
+	GL_LIST_FOREACH_END (canonicalized_list);
 
 	if (debug_level) {
-		bool first = true;
-
 		debug ("final search path = ");
 		GL_LIST_FOREACH_START (list, p) {
-			if (first) {
+			if (!gl_list_previous_node (list, list_node))
 				debug ("%s", p);
-				first = false;
-			} else
+			else
 				debug (":%s", p);
 		} GL_LIST_FOREACH_END (list);
 		debug ("\n");
 	}
 
+	gl_list_free (canonicalized_list);
 	return list;
 }
 

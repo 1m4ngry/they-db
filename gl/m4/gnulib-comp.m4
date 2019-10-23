@@ -182,6 +182,8 @@ AC_DEFUN([gl_EARLY],
   # Code from module realloc-posix:
   # Code from module regex:
   # Code from module rename:
+  # Code from module renameat:
+  # Code from module renameatu:
   # Code from module rewinddir:
   # Code from module rmdir:
   # Code from module same:
@@ -207,6 +209,7 @@ AC_DEFUN([gl_EARLY],
   # Code from module ssize_t:
   # Code from module stat:
   # Code from module stat-time:
+  # Code from module statat:
   # Code from module std-gnu11:
   # Code from module stdalign:
   # Code from module stdarg:
@@ -249,6 +252,8 @@ AC_DEFUN([gl_EARLY],
   # Code from module timespec:
   # Code from module unistd:
   # Code from module unistd-safer:
+  # Code from module unlink:
+  # Code from module unlinkat:
   # Code from module unsetenv:
   # Code from module utime:
   # Code from module utime-h:
@@ -727,6 +732,18 @@ AC_SUBST([LTALLOCA])
     AC_LIBOBJ([rename])
   fi
   gl_STDIO_MODULE_INDICATOR([rename])
+  gl_FUNC_RENAMEAT
+  if test $HAVE_RENAMEAT = 0 || test $REPLACE_RENAMEAT = 1; then
+    AC_LIBOBJ([renameat])
+  fi
+  if test $HAVE_RENAMEAT = 0; then
+    AC_LIBOBJ([at-func2])
+  fi
+  gl_STDIO_MODULE_INDICATOR([renameat])
+  gl_FUNC_RENAMEAT
+  if test $HAVE_RENAMEAT = 0; then
+    AC_LIBOBJ([at-func2])
+  fi
   gl_FUNC_REWINDDIR
   if test $HAVE_REWINDDIR = 0; then
     AC_LIBOBJ([rewinddir])
@@ -785,6 +802,7 @@ AC_SUBST([LTALLOCA])
   gl_SYS_STAT_MODULE_INDICATOR([stat])
   gl_STAT_TIME
   gl_STAT_BIRTHTIME
+  gl_MODULE_INDICATOR([statat]) dnl for lib/openat.h
   gl_STDALIGN_H
   gl_STDARG_H
   AM_STDBOOL_H
@@ -878,6 +896,16 @@ AC_SUBST([LTALLOCA])
   gl_TIMESPEC
   gl_UNISTD_H
   gl_UNISTD_SAFER
+  gl_FUNC_UNLINK
+  if test $REPLACE_UNLINK = 1; then
+    AC_LIBOBJ([unlink])
+  fi
+  gl_UNISTD_MODULE_INDICATOR([unlink])
+  gl_FUNC_UNLINKAT
+  if test $HAVE_UNLINKAT = 0 || test $REPLACE_UNLINKAT = 1; then
+    AC_LIBOBJ([unlinkat])
+  fi
+  gl_UNISTD_MODULE_INDICATOR([unlinkat])
   gl_FUNC_UNSETENV
   if test $HAVE_UNSETENV = 0 || test $REPLACE_UNSETENV = 1; then
     AC_LIBOBJ([unsetenv])
@@ -1101,6 +1129,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/asprintf.c
   lib/assure.h
   lib/at-func.c
+  lib/at-func2.c
   lib/basename-lgpl.c
   lib/basename.c
   lib/bitrotate.c
@@ -1305,6 +1334,9 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/regex_internal.h
   lib/regexec.c
   lib/rename.c
+  lib/renameat.c
+  lib/renameatu.c
+  lib/renameatu.h
   lib/rewinddir.c
   lib/rmdir.c
   lib/same-inode.h
@@ -1329,6 +1361,7 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/stat-w32.c
   lib/stat-w32.h
   lib/stat.c
+  lib/statat.c
   lib/stdalign.in.h
   lib/stdarg.in.h
   lib/stdbool.in.h
@@ -1378,6 +1411,8 @@ AC_DEFUN([gl_FILE_LIST], [
   lib/unistd-safer.h
   lib/unistd.c
   lib/unistd.in.h
+  lib/unlink.c
+  lib/unlinkat.c
   lib/unsetenv.c
   lib/utime.c
   lib/utime.in.h
@@ -1545,6 +1580,7 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/realloc.m4
   m4/regex.m4
   m4/rename.m4
+  m4/renameat.m4
   m4/rewinddir.m4
   m4/rmdir.m4
   m4/same.m4
@@ -1597,6 +1633,8 @@ AC_DEFUN([gl_FILE_LIST], [
   m4/timespec.m4
   m4/unistd-safer.m4
   m4/unistd_h.m4
+  m4/unlink.m4
+  m4/unlinkat.m4
   m4/utime.m4
   m4/utime_h.m4
   m4/utimens.m4

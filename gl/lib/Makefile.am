@@ -76,6 +76,7 @@
 #  rbtree-list \
 #  regex \
 #  rename \
+#  renameat \
 #  setenv \
 #  sigaction \
 #  signal \
@@ -86,7 +87,9 @@
 #  strcasestr \
 #  strerror \
 #  strsep \
+#  tempname \
 #  timespec \
+#  unlinkat \
 #  unsetenv \
 #  utimens \
 #  warnings \
@@ -1397,6 +1400,25 @@ EXTRA_libgnu_la_SOURCES += rename.c
 
 ## end   gnulib module rename
 
+## begin gnulib module renameat
+
+
+EXTRA_DIST += renameat.c
+
+EXTRA_libgnu_la_SOURCES += renameat.c
+
+## end   gnulib module renameat
+
+## begin gnulib module renameatu
+
+libgnu_la_SOURCES += renameatu.c
+
+EXTRA_DIST += at-func2.c renameatu.h
+
+EXTRA_libgnu_la_SOURCES += at-func2.c
+
+## end   gnulib module renameatu
+
 ## begin gnulib module rewinddir
 
 
@@ -1618,6 +1640,12 @@ libgnu_la_SOURCES += stat-time.c
 EXTRA_DIST += stat-time.h
 
 ## end   gnulib module stat-time
+
+## begin gnulib module statat
+
+libgnu_la_SOURCES += statat.c
+
+## end   gnulib module statat
 
 ## begin gnulib module stdalign
 
@@ -2833,6 +2861,24 @@ libgnu_la_SOURCES += dup-safer.c fd-safer.c pipe-safer.c
 EXTRA_DIST += unistd--.h unistd-safer.h
 
 ## end   gnulib module unistd-safer
+
+## begin gnulib module unlink
+
+
+EXTRA_DIST += unlink.c
+
+EXTRA_libgnu_la_SOURCES += unlink.c
+
+## end   gnulib module unlink
+
+## begin gnulib module unlinkat
+
+
+EXTRA_DIST += at-func.c unlinkat.c
+
+EXTRA_libgnu_la_SOURCES += at-func.c unlinkat.c
+
+## end   gnulib module unlinkat
 
 ## begin gnulib module unsetenv
 

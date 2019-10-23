@@ -106,10 +106,10 @@ failed to parse one or more of its input files.
 .SH EXAMPLES
 .nf
   $ lexgrog man.1
-  man.1: "man \- an interface to the on-line reference manuals"
+  man.1: "man \- an interface to the system reference manuals"
   $ lexgrog \-fw man.1
-  man.1 (t): "man \- an interface to the on-line reference manuals"
-  $ lexgrog \-c whatis.cat1 
+  man.1 (t): "man \- an interface to the system reference manuals"
+  $ lexgrog \-c whatis.cat1
   whatis.cat1: "whatis \- display manual page descriptions"
   $ lexgrog broken.1
   broken.1: parse failed
@@ -210,7 +210,7 @@ The code used by
 to scan man pages was written by:
 .PP
 .nf
-.if !'po4a'hide' Wilf. (G.Wilford@ee.surrey.ac.uk).
+.if !'po4a'hide' Wilf.\& (G.Wilford@ee.surrey.ac.uk).
 .if !'po4a'hide' Fabrizio Polacco (fpolacco@debian.org).
 .if !'po4a'hide' Colin Watson (cjwatson@debian.org).
 .fi

@@ -1,5 +1,17 @@
-man-db (2.8.7-4) UNRELEASED; urgency=medium
+man-db (2.9.0-1) UNRELEASED; urgency=medium
 
+  * New upstream release:
+    - Remove stray words from man(1) (closes: #939599).
+    - man(1): Minor typographic changes (closes: #892230).
+    - apropos(1): Minor typographic changes (closes: #892421).
+    - manpath(1): Correct some typographic mistakes (closes: #927452).
+    - Remove confusing use of "on-line" (closes: #774402).
+    - Improve documentation of MANROFFOPT (closes: #914938).
+    - Suggest "man man" if run with no arguments (closes: #869798).
+    - man(1): Explain interactions between -w/-W and -a (closes: #803712).
+    - Make some debugging output less verbose (closes: #863920).
+    - man: Accept "page(section)" form on command line (closes: #677350).
+    - Add a new man-recode program (closes: #933576).
   * Avoid the confusing term "on-line" in the package description (closes:
     #774402).
 

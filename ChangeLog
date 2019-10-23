@@ -1,3 +1,651 @@
+2019-10-23  Colin Watson  <cjwatson@debian.org>
+
+	Release man-db 2.9.0
+
+2019-10-23  Antonio Ceballos Roa  <aceballos@gmail.com>
+
+	Update Spanish manual page translation
+
+	* man/po4a/po/es.po: Update from Translation Project.
+
+2019-10-18  Antonio Ceballos Roa  <aceballos@gmail.com>
+
+	Update Spanish manual page translation
+
+	* man/po4a/po/es.po: Update from Translation Project.
+
+2019-10-11  Mario Blättermann  <mario.blaettermann@gmail.com>
+
+	Update German manual page translation
+
+	* man/po4a/po/de.po: Update from Translation Project.
+
+2019-10-10  Antonio Ceballos Roa  <aceballos@gmail.com>
+
+	Update Spanish manual page translation
+
+	* man/po4a/po/es.po: Update from Translation Project.
+
+2019-10-07  Antonio Ceballos Roa  <aceballos@gmail.com>
+
+	Update Spanish manual page translation
+
+	* man/po4a/po/es.po: Update from Translation Project.
+
+2019-10-05  Antonio Ceballos Roa  <aceballos@gmail.com>
+
+	Update Spanish manual page translation
+
+	* man/po4a/po/es.po: Update from Translation Project.
+	* man/THANKS: Update translator credit.
+
+2019-10-05  Yuri Kozlov  <yuray@komyakino.ru>
+
+	Update Russian manual page translation
+
+	* man/po4a/po/ru.po: Update from Translation Project.
+
+2019-10-05  Pedro Albuquerque  <palbuquerque73@gmail.com>
+
+	Update Portuguese manual page translation
+
+	* man/po4a/po/pt.po: Update from Translation Project.
+
+2019-10-05  Pedro Albuquerque  <palbuquerque73@gmail.com>
+
+	Update Portuguese translation
+
+	* po/pt.po: Update from Translation Project.
+
+2019-10-05  Rafael Fontenelle  <rafaelff@gnome.org>
+
+	Update Brazilian Portuguese manual page translation
+
+	* man/po4a/po/pt_BR.po: Update from Translation Project.
+
+2019-10-03  Colin Watson  <cjwatson@debian.org>
+
+	Fix language/territory candidate comparison logic
+
+	When I extracted the COMPARE_LOCALE_ELEMENTS macro, I apparently left in
+	an explicit reference to territory that should have been the "elt"
+	parameter.  As a result, some cases of language and territory comparison
+	went wrong, in particular resulting in pt_BR users seeing pt pages ahead
+	of pt_BR pages.
+
+	Reported by Rafael Fontenelle.
+
+	* src/man.c (compare_candidates): Fix incorrect territory-specific
+	comparison in COMPARE_LOCALE_ELEMENTS.
+	* NEWS: Document this.
+
+2019-10-03  Stéphane Aulery  <lkppo@free.fr>
+
+	Update French translation
+
+	* po/fr.po: Update from Translation Project.
+	* man/THANKS: Add translator credit.
+
+2019-10-03  Mario Blättermann  <mario.blaettermann@gmail.com>
+
+	Update German translation
+
+	* po/de.po: Update from Translation Project.
+
+2019-10-03  Yuri Kozlov  <yuray@komyakino.ru>
+
+	Update Russian translation
+
+	* po/ru.po: Update from Translation Project.
+
+2019-10-03  Boyuan Yang  <073plan@gmail.com>
+
+	Update Simplified Chinese translation
+
+	* po/zh_CN.po: Update from Translation Project.
+
+2019-10-03  Antonio Ceballos Roa  <aceballos@gmail.com>
+
+	Update Spanish translation
+
+	* po/es.po: Update from Translation Project.
+	* man/THANKS: Add translator credit.
+
+2019-10-03  pan93412  <pan93412@gmail.com>
+
+	Update Traditional Chinese translation
+
+	* po/zh_TW.po: Update from Translation Project.
+
+2019-10-03  Rafael Fontenelle  <rafaelff@gnome.org>
+
+	Update Brazilian Portuguese translation
+
+	* po/pt_BR.po: Update from Translation Project.
+
+2019-10-01  Colin Watson  <cjwatson@debian.org>
+
+	Release man-db 2.9.0-pre1
+
+2019-09-30  Colin Watson  <cjwatson@debian.org>
+
+	Add a new man-recode program
+
+	This has an interface designed for bulk conversion, and so can be much
+	faster than running "man --recode" on each page.
+
+	Fixes Debian bug #933576.
+
+	* bootstrap.conf (gnulib_modules): Add renameat, tempname, and unlinkat.
+	* src/man-recode.c: New file.
+	* src/Makefile.am (bin_PROGRAMS): Add man-recode.
+	(man_recode_LDADD, man_recode_SOURCES): Add.
+	* src/tests/man-recode-in-place, src/tests/man-recode-suffix: New files.
+	* src/tests/Makefile.am (ALL_TESTS): Add man-recode-in-place and
+	man-recode-suffix.
+	* .gitignore: Add src/man-recode.
+	* po/POTFILES.in: Add src/man-recode.c.
+
+	* m4/man-trans-subst.m4 (MAN_TRANS_SUBST): Adjust to support program
+	names containing dashes.
+	* configure.ac: Add substitutions for man-recode.
+
+	* man/man1/man-recode.man1: New file.
+	* man/man1/man.man1 (Main modes of operation): Add a note to the
+	description of --recode suggesting man-recode instead.
+	* man/man1/manconv.man1 (SEE ALSO): Add reference to man-recode(1).
+	* man/Makefile.am (man1_MANS): Add man1/man-recode.1.
+	* man/da/Makefile.am (man1_MANS): Likewise.
+	* man/de/Makefile.am (man1_MANS): Likewise.
+	* man/es/Makefile.am (man1_MANS): Likewise.
+	* man/fr/Makefile.am (man1_MANS): Likewise.
+	* man/id/Makefile.am (man1_MANS): Likewise.
+	* man/ja/Makefile.am (man1_MANS): Likewise.
+	* man/nl/Makefile.am (man1_MANS): Likewise.
+	* man/pl/Makefile.am (man1_MANS): Likewise.
+	* man/pt/Makefile.am (man1_MANS): Likewise.
+	* man/pt_BR/Makefile.am (man1_MANS): Likewise.
+	* man/ru/Makefile.am (man1_MANS): Likewise.
+	* man/sr/Makefile.am (man1_MANS): Likewise.
+	* man/sv/Makefile.am (man1_MANS): Likewise.
+	* man/tr/Makefile.am (man1_MANS): Likewise.
+	* man/zh_CN/Makefile.am (man1_MANS): Likewise.
+	* man/po4a/po4a.cfg: Add support for man-recode.
+	* man/replace.sin.in: Substitute %man_recode% and %thman_recode%.
+
+	* NEWS: Document this.
+
+2019-09-30  Colin Watson  <cjwatson@debian.org>
+
+	manconv: Guess input encoding if necessary
+
+	* src/manconv_main.c (args_doc): Mark -f option as optional.
+	(parse_opt): Don't fail if no input encoding was specified.
+	(main): If no input encoding was specified, guess it from the file name
+	in the same way that man does.
+	* man/man1/manconv.man1 (SYNOPSIS): Mark -f option as optional.
+	(OPTIONS): Describe new default behaviour for -f.
+	* configure.ac: Disable -Winline; we don't care about gl_list_add_last
+	not always being inlined.
+	* NEWS: Document this.
+
+2019-09-30  Colin Watson  <cjwatson@debian.org>
+
+	lexgrog, zsoelim: Suppress more compiler warnings
+
+	-Wsuggest-attribute=malloc was added in GCC 8, so don't try to ignore it
+	with earlier versions.
+
+	* src/lexgrog.l: Guard '#pragma GCC diagnostic ignored
+	"-Wsuggest-attribute=malloc"' so that it is only invoked with GCC >= 8.
+	* src/zsoelim.l: Likewise.
+
+2019-09-11  Colin Watson  <cjwatson@debian.org>
+
+	apropos(1), whatis(1): Fix typo
+
+	Already fixed in man(1) by commit
+	68ef9f324832c790a7e3565f726fa1bc9a6d0178.
+
+	* man/man1/apropos.man1 (ENVIRONMENT): an -> and.
+	* man/man1/whatis.man1 (ENVIRONMENT): Likewise.
+
+2019-09-09  Colin Watson  <cjwatson@debian.org>
+
+	man: Accept "page(section)" form on command line
+
+	Suggested by Tanguy Ortolo and Paul Wise.  Fixes Debian bug #677350.
+
+	* src/man.c (split_page_name): Accept "page(section)" form as well as
+	"page.section".
+	* src/tests/man-suffixed-extension: Test the "page(section)" form.
+	* man/man1/man.man1 (SYNOPSIS): Don't mention the "page.section" form
+	here; it gets too unwieldy to try to express all the possibilities in a
+	synopsis.
+	(EXAMPLES): Document "page(section)" form.
+	(OPTIONS): Hyphenate "Non-argument options" thus.
+	* NEWS: Document this.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Make some debugging output less verbose
+
+	Also indent some sections of debugging output, which allows removing
+	some blank lines.
+
+	Fixes Debian bug #863920.
+
+	* src/catman.c (main): Remove unnecessary debugging output of manp
+	before calling create_pathlist.
+	* src/manp.c (main): Likewise.
+	* src/mandb.c (main): Likewise.
+
+	* src/man.c (main): Remove debugging output of ruid and euid, which was
+	redundant with init_security.  Remove extra newline before "using %s as
+	pager".
+	* src/manp.c (describe_flag, print_list): Remove: everything that adds
+	items to this list already emits a more human-friendly debugging
+	message.  Remove caller of print_list.
+	(add_sections): Squash debugging output onto one line, and indent it by
+	two spaces.
+	(add_def, add_manpath_map, add_mandb_map, add_mandatory): Indent
+	debugging output by two spaces.
+	(read_config_file): Remove extra newline after "From the config file
+	%s:".
+	(get_manpath_from_path): Remove extra newlines before "path directory
+	%s" and "adding mandatory man directories".
+	(add_expanded_dir_to_list): Remove noisy "%s is already in the manpath"
+	debugging output.  Indent "adding %s to manpath" by two spaces.
+	(add_man_subdirs): Remove noisy "and doesn't have ../man, man,
+	../share/man, or share/man subdirectories" debugging output.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Refactor deduplication in create_pathlist
+
+	This is more efficient, and also has the useful side-effect of reducing
+	noise in debug output.
+
+	* src/manp.c (struct canonicalized_path): New structure.
+	(canonicalized_path_new, canonicalized_path_equals,
+	canonicalized_path_hash, canonicalized_path_free): New functions.
+	(add_dir_to_path_list): Canonicalize the given path and (if it exists)
+	add both the original and canonicalized versions as a pair.
+	(create_pathlist): Simplify: rather than doing a second quadratic-time
+	pass to eliminate duplicates, we now avoid inserting them in linear time
+	as we go along.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	man(1): Explain interactions between -w/-W and -a
+
+	Reported by Bjarni Ingi Gislason.  Fixes Debian bug #803712.
+
+	* man/man1/man.man1 (Main modes of operation): Explain that the -w and
+	-W options only print a single match by default, but that -a can be used
+	to print all matches.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Suggest "man man" if run with no arguments
+
+	Fixes Debian bug #869798.
+
+	* src/man.c (gripe_no_name): Suggest running "man man".
+	* NEWS: Document this.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	* NEWS: Document recent manual page improvements.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Mention where other manual pages come from
+
+	* man/man1/man.man1 (OVERVIEW): Explain that individual manual pages
+	normally come with whatever they document.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Revamp man(1) to be a more accessible introduction
+
+	Fixes Savannah bug #53050.
+
+	* man/man1/man.man1 (SYNOPSIS): Delete details of most options, as it
+	had got much too long and indigestible.  The OPTIONS section below
+	remains, and is better-organised and easier to read.  Delete the "man
+	-c" form entirely, as it's only for internal use by catman.
+	(DESCRIPTION): Move list of default sections to ...
+	(DEFAULTS): ... here.
+	(EXAMPLES): Use a real example rather than the peculiar "alias"
+	terminology for "man -t".
+	(OVERVIEW): Various minor editorial improvements.  Remove discussion of
+	index database caches: it's mostly irrelevant to users, and is already
+	better-documented in mandb(8), apropos(1), and whatis(1).  Simplify
+	discussion of where pages are stored.  Briefly describe what cat pages
+	are.  Rewrite description of localisation support to read more fluently
+	and to take into account that most users will already have a suitable
+	locale set up.  Drop discussion of translations of this package's own
+	messages: this should be standard rather than something that we
+	explicitly need to call out here, and the term "message catalogues" was
+	opaque.
+	(DEFAULTS): Remove discussion of index database caches, as above.
+	Remove discussion of cat pages, since this is an implementation detail
+	and confused matters here too much.
+	(Finding manual pages): Tighten up language in description of
+	--sections.  Simplify description of --update, and tell readers that it
+	is normally better to run mandb(8) instead.
+	(FILES): Remove mention of index database caches from here.  While
+	man(1) does use them, they're an implementation detail and are
+	better-documented elsewhere.
+	(SEE ALSO): Remove overly-detailed cross-references to setlocale(3),
+	ascii(7), latin1(7), the man-db manual, and the FSSTND.  Add a paragraph
+	mentioning documentation in other formats, such as info(1) or HTML.
+	* man/man5/manpath.man5 (FORMAT): Remove stray quote before the FSSTND
+	keyword.
+	* man/man8/mandb.man8 (DESCRIPTION): Remove claim that index database
+	caches are usually maintained by man(1).
+
+	* man/man1/man.man1, man/man1/manpath.man1: Use the "..." style of
+	quoting rather than the `...' style.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Improve documentation of MANROFFOPT
+
+	Reported by Bjarni Ingi Gislason.  Fixes Debian bug #914938.
+
+	* man/man1/man.man1 (ENVIRONMENT): Rephrase description of MANROFFOPT to
+	make it clear that it is added to the formatter's command line, rather
+	than to man's command line.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Remove confusing use of "on-line"
+
+	Nowadays "on-line" tends to be understood as "on the internet" rather
+	than "on a screen", so avoid the term.
+
+	Reported by Dan Jacobson.  Fixes Debian bug #774402.
+
+	* docs/man-db.lsm: Say "system help files" rather than "on-line help
+	files".
+	* man/man1/man.man1 (NAME): Say "system reference manuals" rather than
+	"on-line reference manuals".
+	* manual/intro.me (Introduction): Say "information" rather than "online
+	information".
+	* manual/man_db.me: Say "manual page system" rather than "online manual
+	page system".
+
+	* man/man1/lexgrog.man1 (EXAMPLES): Update examples quoting man(1)'s
+	description.
+	* manual/db.me (Example database): Likewise.
+	* manual/intro.me (Introduction): Likewise.
+	* src/tests/man-mandatory-manpath: Update test quoting man(1)'s
+	description.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Tidy up formatting of Wilf's name
+
+	Based on similar changes elsewhere by Bjarni Ingi Gislason.
+
+	* man/man1/lexgrog.man1 (AUTHOR): Protect "." with "\&" if it is
+	followed by a space and does not mean the end of a sentence.
+	* man/man1/manpath.man1 (AUTHOR): Likewise.
+	* man/man1/whatis.man1 (AUTHOR): Likewise.
+	* man/man1/zsoelim.man1 (AUTHOR): Likewise.
+	* man/man8/accessdb.man8 (AUTHOR): Likewise.
+	* man/man8/catman.man8 (AUTHOR): Likewise.
+	* man/man8/mandb.man8 (AUTHOR): Likewise.
+
+2019-09-08  Bjarni Ingi Gislason  <bjarniig@rhi.hi.is>
+
+	manpath(1): Correct some typographic mistakes
+
+	Fixes Debian bug #927452.
+
+	* man/man1/manpath.man1 (DESCRIPTION): Use \(en for a dash where
+	appropriate.
+	(OPTIONS): Change .BR to .B if there is only one argument.
+
+2019-09-08  Bjarni Ingi Gislason  <bjarniig@rhi.hi.is>
+
+	apropos(1): Minor typographic changes
+
+	Fixes Debian bug #892421.
+
+	* man/man1/apropos.man1 (DESCRIPTION): Use "\e" to print the escape
+	character instead of "\\" (which is interpreted in copy mode).
+	(OPTIONS): Change .BR to .B if there is only one argument.
+	(FILES): Add a space around "|" to increase readability.
+	(AUTHOR): Protect "." with "\&" if it is followed by a space and does
+	not mean the end of a sentence.
+
+2019-09-08  Colin Watson  <cjwatson@debian.org>
+
+	Apply italic corrections
+
+	Partly based on suggestions from Bjarni Ingi Gislason in Debian
+	bug #892421, although I had to take a slightly different approach to
+	avoid confusing po4a.
+
+	* man/man1/apropos.man1 (OPTIONS): Apply italic corrections to
+	descriptions of --sections and --systems.  Simplify three-font handling
+	for --systems.
+	* man/man1/man.man1 (Finding manual pages): Likewise.
+	* man/man1/whatis.man1 (OPTIONS): Likewise.
+	* man/man1/manpath.man1 (OPTIONS): Apply italic corrections to
+	description of --systems, and simplify three-font handling.
+
+2019-09-07  Colin Watson  <cjwatson@debian.org>
+
+	man(1): Adjust description of section 5
+
+	* man/man1/man.man1 (DESCRIPTION): Add a comma before "e.g.".
+
+2019-09-07  Bjarni Ingi Gislason  <bjarniig@rhi.hi.is>
+
+	man(1): Minor typographic changes
+
+	Fixes Debian bug #892230.
+
+	* man/man1/man.man1 (DESCRIPTION, HISTORY): Protect "." with "\&" if it
+	is followed by a space and does not mean the end of a sentence.
+	(EXAMPLES): Use a macro to change to the italic font instead of \fI if
+	possible.  The macros have the italic corrections.
+	(EXAMPLES, Controlling formatted output, Getting help, SEE ALSO): Change
+	.BR/.IR to .B/.I if there is only one argument, or else separate the
+	second argument from the first if needed.
+	(DEFAULTS): Begin each sentence on a new line.
+	(FILES): Add a space around "|" to increase readability.
+
+2019-09-07  Colin Watson  <cjwatson@debian.org>
+
+	Make long lines in man(1) less likely
+
+	Fixes part of Debian bug #892230.
+
+	* man/man1/man.man1 (DESCRIPTION, ENVIRONMENT): Put the expansion of
+	%sections% on its own line.
+
+2019-09-07  Colin Watson  <cjwatson@debian.org>
+
+	Escape %troff% expansion correctly in manual pages
+
+	Fixes part of Debian bug #892230.
+
+	* configure.ac: Substitute troff_as_troff_input, which is the same as
+	troff but with suitable escaping so that "groff -mandoc" turns into
+	"groff \-mandoc".
+	* man/replace.sin.in (%troff%): Substitute @troff_as_troff_input@ rather
+	than @troff@.
+
+2019-09-07  Colin Watson  <cjwatson@debian.org>
+
+	Remove trailing whitespace from manual pages
+
+	* man/man1/apropos.man1, man/man1/lexgrog.man1, man/man1/man.man1,
+	man/man1/manpath.man1, man/man1/whatis.man1, man/man1/zsoelim.man1,
+	man/man5/manpath.man5, man/man8/accessdb.man8, man/man8/catman.man8,
+	man/man8/mandb.man8: Remove trailing whitespace.
+
+2019-09-07  Sebastian Rasmussen  <sebras@gmail.com>
+
+	Fix trivial typo in man manpage
+
+	Fixes Savannah bug #48663.
+
+	* man/man1/man.man1: an -> and.
+
+2019-09-07  Colin Watson  <cjwatson@debian.org>
+
+	Remove stray words from man(1)
+
+	Reported by Bjarni Ingi Gislason.  Fixes Debian bug #939599.
+
+	* man/man1/man.man1 (DEFAULTS): Remove two stray words from the
+	description of how the pager is specified.
+
+2019-09-06  Colin Watson  <cjwatson@debian.org>
+
+	Adjust encoding declarations when recoding
+
+	* lib/encodings.c (check_preprocessor_encoding): Return a modified
+	encoding declaration in *modified_line if the new to_encoding and
+	modified_line parameters are non-NULL.
+	* lib/encodings.h (check_preprocessor_encoding): Update prototype.
+	* src/man.c (make_roff_command): Pass NULL as to_encoding and
+	modified_line arguments to check_preprocessor_encoding.
+	* src/manconv.c (manconv): Output a modified encoding declaration if
+	necessary.
+	* src/tests/manconv-coding-tags: Adjust for new expected output.  Add a
+	test for the case where the coding tag matches the target encoding.
+	* src/tests/manconv-odd-combinations: Adjust for new expected output.
+	* NEWS: Document this.
+
+2019-09-05  Colin Watson  <cjwatson@debian.org>
+
+	Give test cases more meaningful names
+
+	* src/tests/lexgrog-1: Rename to ...
+	* src/tests/lexgrog-basic: ... this.
+	* src/tests/lexgrog-2: Rename to ...
+	* src/tests/lexgrog-multiple-whatis: ... this.
+	* src/tests/lexgrog-3: Rename to ...
+	* src/tests/lexgrog-backslash-dash-rhs: ... this.
+	* src/tests/man-1: Rename to ...
+	* src/tests/man-symlinks-with-matching-names: ... this.
+	* src/tests/man-10: Rename to ...
+	* src/tests/man-deleted-directory: ... this.
+	* src/tests/man-11: Rename to ...
+	* src/tests/man-suffixed-extension: ... this.
+	* src/tests/man-2: Rename to ...
+	* src/tests/man-executable-page-on-path: ... this.
+	* src/tests/man-3: Rename to ...
+	* src/tests/man-exact-section-matches: ... this.
+	* src/tests/man-4: Rename to ...
+	* src/tests/man-mandatory-manpath: ... this.
+	* src/tests/man-5: Rename to ...
+	* src/tests/man-so-links-same-section: ... this.
+	* src/tests/man-6: Rename to ...
+	* src/tests/man-missing-locales: ... this.
+	* src/tests/man-7: Rename to ...
+	* src/tests/man-invalid-db-entry: ... this.
+	* src/tests/man-8: Rename to ...
+	* src/tests/man-language-specific-requests: ... this.
+	* src/tests/man-9: Rename to ...
+	* src/tests/man-override-dir: ... this.
+	* src/tests/manconv-1: Rename to ...
+	* src/tests/manconv-coding-tags: ... this.
+	* src/tests/manconv-2: Rename to ...
+	* src/tests/manconv-odd-combinations: ... this.
+	* src/tests/manconv-3: Rename to ...
+	* src/tests/manconv-incomplete-char-at-eof: ... this.
+	* src/tests/mandb-1: Rename to ...
+	* src/tests/mandb-basic: ... this.
+	* src/tests/mandb-2: Rename to ...
+	* src/tests/mandb-regular-file-symlink-changes: ... this.
+	* src/tests/mandb-3: Rename to ...
+	* src/tests/mandb-whatis-broken-link-changes: ... this.
+	* src/tests/mandb-4: Rename to ...
+	* src/tests/mandb-symlink-beats-whatis-ref: ... this.
+	* src/tests/mandb-5: Rename to ...
+	* src/tests/mandb-empty-page: ... this.
+	* src/tests/mandb-6: Rename to ...
+	* src/tests/mandb-bogus-symlink: ... this.
+	* src/tests/mandb-7: Rename to ...
+	* src/tests/mandb-cachedir-tag: ... this.
+	* src/tests/whatis-1: Rename to ...
+	* src/tests/whatis-path-to-executable: ... this.
+	* src/tests/zsoelim-1: Rename to ...
+	* src/tests/zsoelim-so-includes: ... this.
+	* src/tests/Makefile.am (ALL_TESTS): Update.
+
+2019-09-01  Colin Watson  <cjwatson@debian.org>
+
+	Remove unnecessary PP_COOKIE conditionals
+
+	PP_COOKIE is always defined, so there's no need for #ifdefs.
+
+	* lib/encodings.c (check_preprocessor_encoding): Remove PP_COOKIE
+	conditional.
+	* src/man.c (get_preprocessors_from_file): Likewise.
+	* src/zsoelim.l (zsoelim_parse_file): Likewise.
+
+2019-09-01  Colin Watson  <cjwatson@debian.org>
+
+	Remove ability to undefine COMP_SRC
+
+	This was a minor optimisation that wasn't worth the extra code
+	complexity.
+
+	* configure.ac (COMP_SRC): Remove.
+	* include/comp_src.h.in: Remove COMP_SRC conditional.  comp_list will
+	simply contain only the terminal entry if no compressors are configured.
+	* include/manconfig.h.in: Remove COMP_SRC conditional and comment.
+	* manual/comp.me (Compressed manual pages): Remove documentation of
+	COMP_SRC; explain that support depends on the decompressors available at
+	configure time.
+	* src/compression.c: Remove COMP_SRC conditional.
+	(comp_info): Only do the HP-UX check if gunzip is available.
+	* src/filenames.c (make_filename): Remove parenthetical comment about
+	COMP_SRC.
+	(filename_info): Remove COMP_SRC conditionals.
+	* src/man.c (convert_name): Likewise.
+	* src/straycats.c (check_for_stray): Likewise.
+	* src/ult_src.c (ult_src): Likewise.
+	* NEWS: Document this.
+
+2019-08-31  Colin Watson  <cjwatson@debian.org>
+
+	Improve list iteration helper
+
+	* lib/glcontainers.h (GL_LIST_FOREACH_START): Capture the gl_list_node_t
+	in each loop iteration.
+	* src/descriptions_store.c (store_descriptions): Simplify detection of
+	the last loop iteration.
+	* src/manconv.c (manconv): Likewise.
+	* src/manconv_client.c (add_manconv): Likewise.
+	* src/manp.c (create_pathlist): Simplify manual loop iteration that can
+	now be expressed using GL_LIST_FOREACH_START/GL_LIST_FOREACH_END.
+	Simplify detection of the first loop iteration when emitting the final
+	search path as debugging information.
+
+2019-08-30  Colin Watson  <cjwatson@debian.org>
+
+	Improve data types in manconv
+
+	* src/manconv.c (try_iconv): Change "last" parameter type to bool.
+	Change types of "to_utf8" and "ignore_errors" to bool.
+	(manconv): Convert "from" to gl_list.
+	* src/manconv.h (manconv): Update prototype.
+	* src/manconv_client.h (struct manconv_codes): Convert "from" to
+	gl_list.
+	(free_manconv_codes, add_manconv): Convert "codes->from" to gl_list.
+	* src/manconv_main.c (from_code, split_codes, parse_opt, main): Convert
+	to gl_list.
+
 2019-08-26  Colin Watson  <cjwatson@debian.org>
 
 	Release man-db 2.8.7

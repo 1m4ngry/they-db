@@ -89,7 +89,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = catman$(EXEEXT) lexgrog$(EXEEXT) man$(EXEEXT) \
-	mandb$(EXEEXT) manpath$(EXEEXT) whatis$(EXEEXT)
+	man-recode$(EXEEXT) mandb$(EXEEXT) manpath$(EXEEXT) \
+	whatis$(EXEEXT)
 sbin_PROGRAMS = accessdb$(EXEEXT)
 pkglibexec_PROGRAMS = globbing$(EXEEXT) manconv$(EXEEXT) \
 	zsoelim$(EXEEXT)
@@ -214,10 +215,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/raise.m4 $(top_srcdir)/gl/m4/rawmemchr.m4 \
 	$(top_srcdir)/gl/m4/readdir.m4 $(top_srcdir)/gl/m4/readlink.m4 \
 	$(top_srcdir)/gl/m4/realloc.m4 $(top_srcdir)/gl/m4/regex.m4 \
-	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/rewinddir.m4 \
-	$(top_srcdir)/gl/m4/rmdir.m4 $(top_srcdir)/gl/m4/same.m4 \
-	$(top_srcdir)/gl/m4/save-cwd.m4 $(top_srcdir)/gl/m4/select.m4 \
-	$(top_srcdir)/gl/m4/setenv.m4 $(top_srcdir)/gl/m4/sigaction.m4 \
+	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/renameat.m4 \
+	$(top_srcdir)/gl/m4/rewinddir.m4 $(top_srcdir)/gl/m4/rmdir.m4 \
+	$(top_srcdir)/gl/m4/same.m4 $(top_srcdir)/gl/m4/save-cwd.m4 \
+	$(top_srcdir)/gl/m4/select.m4 $(top_srcdir)/gl/m4/setenv.m4 \
+	$(top_srcdir)/gl/m4/sigaction.m4 \
 	$(top_srcdir)/gl/m4/signal_h.m4 \
 	$(top_srcdir)/gl/m4/signalblocking.m4 \
 	$(top_srcdir)/gl/m4/size_max.m4 $(top_srcdir)/gl/m4/sleep.m4 \
@@ -251,7 +253,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/threadlib.m4 $(top_srcdir)/gl/m4/time_h.m4 \
 	$(top_srcdir)/gl/m4/timespec.m4 \
 	$(top_srcdir)/gl/m4/unistd-safer.m4 \
-	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/utime.m4 \
+	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/unlink.m4 \
+	$(top_srcdir)/gl/m4/unlinkat.m4 $(top_srcdir)/gl/m4/utime.m4 \
 	$(top_srcdir)/gl/m4/utime_h.m4 $(top_srcdir)/gl/m4/utimens.m4 \
 	$(top_srcdir)/gl/m4/utimes.m4 \
 	$(top_srcdir)/gl/m4/vasnprintf.m4 \
@@ -306,6 +309,12 @@ am_man_OBJECTS = compression.$(OBJEXT) decompress.$(OBJEXT) \
 man_OBJECTS = $(am_man_OBJECTS)
 man_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_2) \
 	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
+am_man_recode_OBJECTS = compression.$(OBJEXT) decompress.$(OBJEXT) \
+	man-recode.$(OBJEXT) manconv.$(OBJEXT) \
+	manconv_client.$(OBJEXT)
+man_recode_OBJECTS = $(am_man_recode_OBJECTS)
+man_recode_DEPENDENCIES = $(am__DEPENDENCIES_3) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_2) $(am__DEPENDENCIES_2)
 am_manconv_OBJECTS = decompress.$(OBJEXT) manconv.$(OBJEXT) \
 	manconv_main.$(OBJEXT)
 manconv_OBJECTS = $(am_manconv_OBJECTS)
@@ -354,12 +363,13 @@ am__depfiles_remade = ./$(DEPDIR)/accessdb.Po ./$(DEPDIR)/catman.Po \
 	./$(DEPDIR)/descriptions_store.Po ./$(DEPDIR)/filenames.Po \
 	./$(DEPDIR)/globbing.Po ./$(DEPDIR)/globbing_test.Po \
 	./$(DEPDIR)/lexgrog.Po ./$(DEPDIR)/lexgrog_test.Po \
-	./$(DEPDIR)/man.Po ./$(DEPDIR)/manconv.Po \
-	./$(DEPDIR)/manconv_client.Po ./$(DEPDIR)/manconv_main.Po \
-	./$(DEPDIR)/mandb.Po ./$(DEPDIR)/manp.Po \
-	./$(DEPDIR)/manpath.Po ./$(DEPDIR)/straycats.Po \
-	./$(DEPDIR)/ult_src.Po ./$(DEPDIR)/whatis.Po \
-	./$(DEPDIR)/zsoelim.Po ./$(DEPDIR)/zsoelim_main.Po
+	./$(DEPDIR)/man-recode.Po ./$(DEPDIR)/man.Po \
+	./$(DEPDIR)/manconv.Po ./$(DEPDIR)/manconv_client.Po \
+	./$(DEPDIR)/manconv_main.Po ./$(DEPDIR)/mandb.Po \
+	./$(DEPDIR)/manp.Po ./$(DEPDIR)/manpath.Po \
+	./$(DEPDIR)/straycats.Po ./$(DEPDIR)/ult_src.Po \
+	./$(DEPDIR)/whatis.Po ./$(DEPDIR)/zsoelim.Po \
+	./$(DEPDIR)/zsoelim_main.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -389,13 +399,13 @@ am__v_LEX_0 = @echo "  LEX     " $@;
 am__v_LEX_1 = 
 YLWRAP = $(top_srcdir)/build-aux/ylwrap
 SOURCES = $(accessdb_SOURCES) $(catman_SOURCES) $(globbing_SOURCES) \
-	$(lexgrog_SOURCES) $(man_SOURCES) $(manconv_SOURCES) \
-	$(mandb_SOURCES) $(manpath_SOURCES) $(whatis_SOURCES) \
-	$(zsoelim_SOURCES)
-DIST_SOURCES = $(accessdb_SOURCES) $(catman_SOURCES) \
-	$(globbing_SOURCES) $(lexgrog_SOURCES) $(man_SOURCES) \
+	$(lexgrog_SOURCES) $(man_SOURCES) $(man_recode_SOURCES) \
 	$(manconv_SOURCES) $(mandb_SOURCES) $(manpath_SOURCES) \
 	$(whatis_SOURCES) $(zsoelim_SOURCES)
+DIST_SOURCES = $(accessdb_SOURCES) $(catman_SOURCES) \
+	$(globbing_SOURCES) $(lexgrog_SOURCES) $(man_SOURCES) \
+	$(man_recode_SOURCES) $(manconv_SOURCES) $(mandb_SOURCES) \
+	$(manpath_SOURCES) $(whatis_SOURCES) $(zsoelim_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -1415,6 +1425,8 @@ TRANS_MANDB = @TRANS_MANDB@
 TRANS_MANDB_UPPER = @TRANS_MANDB_UPPER@
 TRANS_MANPATH = @TRANS_MANPATH@
 TRANS_MANPATH_UPPER = @TRANS_MANPATH_UPPER@
+TRANS_MAN_RECODE = @TRANS_MAN_RECODE@
+TRANS_MAN_RECODE_UPPER = @TRANS_MAN_RECODE_UPPER@
 TRANS_MAN_UPPER = @TRANS_MAN_UPPER@
 TRANS_WHATIS = @TRANS_WHATIS@
 TRANS_WHATIS_UPPER = @TRANS_WHATIS_UPPER@
@@ -1536,6 +1548,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 tr = @tr@
 troff = @troff@
+troff_as_troff_input = @troff_as_troff_input@
 uncompress = @uncompress@
 unlzip = @unlzip@
 unlzma = @unlzma@
@@ -1573,6 +1586,7 @@ catman_LDADD = $(LIBMANDB) $(libpipeline_LIBS)
 globbing_LDADD = $(LIBMAN)
 lexgrog_LDADD = $(LIBMAN) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
 man_LDADD = $(LIBMANDB) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
+man_recode_LDADD = $(LIBMANDB) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
 manconv_LDADD = $(LIBMAN) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
 mandb_LDADD = $(LIBMANDB) $(LIBCOMPRESS) $(libpipeline_LIBS) $(LTLIBICONV)
 manpath_LDADD = $(LIBMAN)
@@ -1631,6 +1645,16 @@ man_SOURCES = \
 	ult_src.h \
 	zsoelim.h \
 	zsoelim.l
+
+man_recode_SOURCES = \
+	compression.c \
+	decompress.c \
+	decompress.h \
+	man-recode.c \
+	manconv.c \
+	manconv.h \
+	manconv_client.c \
+	manconv_client.h
 
 manconv_SOURCES = \
 	decompress.c \
@@ -1893,6 +1917,10 @@ man$(EXEEXT): $(man_OBJECTS) $(man_DEPENDENCIES) $(EXTRA_man_DEPENDENCIES)
 	@rm -f man$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(man_OBJECTS) $(man_LDADD) $(LIBS)
 
+man-recode$(EXEEXT): $(man_recode_OBJECTS) $(man_recode_DEPENDENCIES) $(EXTRA_man_recode_DEPENDENCIES) 
+	@rm -f man-recode$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(man_recode_OBJECTS) $(man_recode_LDADD) $(LIBS)
+
 manconv$(EXEEXT): $(manconv_OBJECTS) $(manconv_DEPENDENCIES) $(EXTRA_manconv_DEPENDENCIES) 
 	@rm -f manconv$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(manconv_OBJECTS) $(manconv_LDADD) $(LIBS)
@@ -1931,6 +1959,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/globbing_test.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lexgrog.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lexgrog_test.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/man-recode.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/man.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manconv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/manconv_client.Po@am__quote@ # am--include-marker
@@ -2196,6 +2225,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/globbing_test.Po
 	-rm -f ./$(DEPDIR)/lexgrog.Po
 	-rm -f ./$(DEPDIR)/lexgrog_test.Po
+	-rm -f ./$(DEPDIR)/man-recode.Po
 	-rm -f ./$(DEPDIR)/man.Po
 	-rm -f ./$(DEPDIR)/manconv.Po
 	-rm -f ./$(DEPDIR)/manconv_client.Po
@@ -2268,6 +2298,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/globbing_test.Po
 	-rm -f ./$(DEPDIR)/lexgrog.Po
 	-rm -f ./$(DEPDIR)/lexgrog_test.Po
+	-rm -f ./$(DEPDIR)/man-recode.Po
 	-rm -f ./$(DEPDIR)/man.Po
 	-rm -f ./$(DEPDIR)/manconv.Po
 	-rm -f ./$(DEPDIR)/manconv_client.Po

@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 m4_pattern_forbid([^MAN_])
 
 # Initialise and check we're in the correct directory.
-AC_INIT([man-db], [2.8.7], [cjwatson@debian.org])
+AC_INIT([man-db], [2.9.0], [cjwatson@debian.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-override -Werror foreign dist-xz no-dist-gzip parallel-tests])
 AM_MAINTAINER_MODE
@@ -16,7 +16,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CANONICAL_HOST
 
 # Define below date and version information to be put into man pages etc.
-date=2019-08-26
+date=2019-10-23
 AC_SUBST([date])dnl
 roff_version=`echo AC_PACKAGE_VERSION | sed 's/-/\\-/g'`
 AC_SUBST([roff_version])dnl
@@ -67,6 +67,7 @@ gl_MANYWARN_ALL_GCC([warnings])
 nw=
 nw="$nw -Wsystem-headers"
 nw="$nw -Wmissing-field-initializers"
+nw="$nw -Winline"
 gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
 for w in $warnings; do
 	gl_WARN_ADD([$w])
@@ -197,6 +198,14 @@ then
 else
 	troff="(troff not installed)"
 fi
+dnl We want to end up with "-" written as "\-" in manual pages.  This
+dnl requires additional \-escaping corresponding to the following quote
+dnl removal steps:
+dnl   1) the following sed command
+dnl   2) the following assignment
+dnl   2) sed running on the substituted version of man/replace.sin.in
+troff_as_troff_input=`echo "$troff" | sed 's/-/\\\\\\\\-/g'`
+AC_SUBST([troff_as_troff_input])
 
 if test -n "$nroff"
 then
@@ -321,7 +330,6 @@ fi
 if test -n "$gzip" || test -n "$compress" || test -n "$bzip2" || test -n "$xz" || test -n "$lzip" || test -n "$lzma"
 then
 	AC_DEFINE([COMP_CAT], [1], [Define if you have compressors and want to support compressed cat files.])
-	AC_DEFINE([COMP_SRC], [1], [Define if you have compressors and want to support compressed manual source.])
 fi
 AC_SUBST([compressor])
 AC_SUBST([compress_ext])
@@ -456,6 +464,7 @@ MAN_TRANS_SUBST([apropos])
 MAN_TRANS_SUBST([catman])
 MAN_TRANS_SUBST([lexgrog])
 MAN_TRANS_SUBST([man])
+MAN_TRANS_SUBST([man-recode])
 MAN_TRANS_SUBST([manconv])
 MAN_TRANS_SUBST([mandb])
 MAN_TRANS_SUBST([manpath])
