@@ -90,6 +90,7 @@
 #  rbtree-list \
 #  regex \
 #  rename \
+#  renameat \
 #  setenv \
 #  sigaction \
 #  signal \
@@ -100,7 +101,9 @@
 #  strcasestr \
 #  strerror \
 #  strsep \
+#  tempname \
 #  timespec \
+#  unlinkat \
 #  unsetenv \
 #  utimens \
 #  warnings \
@@ -310,10 +313,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/raise.m4 $(top_srcdir)/gl/m4/rawmemchr.m4 \
 	$(top_srcdir)/gl/m4/readdir.m4 $(top_srcdir)/gl/m4/readlink.m4 \
 	$(top_srcdir)/gl/m4/realloc.m4 $(top_srcdir)/gl/m4/regex.m4 \
-	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/rewinddir.m4 \
-	$(top_srcdir)/gl/m4/rmdir.m4 $(top_srcdir)/gl/m4/same.m4 \
-	$(top_srcdir)/gl/m4/save-cwd.m4 $(top_srcdir)/gl/m4/select.m4 \
-	$(top_srcdir)/gl/m4/setenv.m4 $(top_srcdir)/gl/m4/sigaction.m4 \
+	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/renameat.m4 \
+	$(top_srcdir)/gl/m4/rewinddir.m4 $(top_srcdir)/gl/m4/rmdir.m4 \
+	$(top_srcdir)/gl/m4/same.m4 $(top_srcdir)/gl/m4/save-cwd.m4 \
+	$(top_srcdir)/gl/m4/select.m4 $(top_srcdir)/gl/m4/setenv.m4 \
+	$(top_srcdir)/gl/m4/sigaction.m4 \
 	$(top_srcdir)/gl/m4/signal_h.m4 \
 	$(top_srcdir)/gl/m4/signalblocking.m4 \
 	$(top_srcdir)/gl/m4/size_max.m4 $(top_srcdir)/gl/m4/sleep.m4 \
@@ -347,7 +351,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/threadlib.m4 $(top_srcdir)/gl/m4/time_h.m4 \
 	$(top_srcdir)/gl/m4/timespec.m4 \
 	$(top_srcdir)/gl/m4/unistd-safer.m4 \
-	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/utime.m4 \
+	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/unlink.m4 \
+	$(top_srcdir)/gl/m4/unlinkat.m4 $(top_srcdir)/gl/m4/utime.m4 \
 	$(top_srcdir)/gl/m4/utime_h.m4 $(top_srcdir)/gl/m4/utimens.m4 \
 	$(top_srcdir)/gl/m4/utimes.m4 \
 	$(top_srcdir)/gl/m4/vasnprintf.m4 \
@@ -384,16 +389,16 @@ am_libgnu_la_OBJECTS = areadlink-with-size.lo argp-ba.lo argp-eexst.lo \
 	hash-triple.lo idpriv-drop.lo idpriv-droptemp.lo \
 	gl_linkedhash_list.lo gl_list.lo localcharset.lo \
 	glthread/lock.lo malloca.lo gl_map.lo nonblocking.lo \
-	openat-die.lo progname.lo gl_rbtree_list.lo same.lo \
-	save-cwd.lo malloc/scratch_buffer_grow.lo \
+	openat-die.lo progname.lo gl_rbtree_list.lo renameatu.lo \
+	same.lo save-cwd.lo malloc/scratch_buffer_grow.lo \
 	malloc/scratch_buffer_grow_preserve.lo \
 	malloc/scratch_buffer_set_array_size.lo gl_set.lo \
-	sig-handler.lo sockets.lo stat-time.lo stdopen.lo strnlen1.lo \
-	sys_socket.lo tempname.lo glthread/threadlib.lo timespec.lo \
-	unistd.lo dup-safer.lo fd-safer.lo pipe-safer.lo utimens.lo \
-	wctype-h.lo xmalloc.lo xalloc-die.lo xgetcwd.lo gl_xlist.lo \
-	gl_xmap.lo gl_xset.lo xsize.lo xstdopen.lo xstrndup.lo \
-	xvasprintf.lo xasprintf.lo
+	sig-handler.lo sockets.lo stat-time.lo statat.lo stdopen.lo \
+	strnlen1.lo sys_socket.lo tempname.lo glthread/threadlib.lo \
+	timespec.lo unistd.lo dup-safer.lo fd-safer.lo pipe-safer.lo \
+	utimens.lo wctype-h.lo xmalloc.lo xalloc-die.lo xgetcwd.lo \
+	gl_xlist.lo gl_xmap.lo gl_xset.lo xsize.lo xstdopen.lo \
+	xstrndup.lo xvasprintf.lo xasprintf.lo
 libgnu_la_OBJECTS = $(am_libgnu_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -425,15 +430,16 @@ am__depfiles_remade = ./$(DEPDIR)/alloca.Plo \
 	./$(DEPDIR)/argp-pv.Plo ./$(DEPDIR)/argp-pvh.Plo \
 	./$(DEPDIR)/argp-xinl.Plo ./$(DEPDIR)/asnprintf.Plo \
 	./$(DEPDIR)/asprintf.Plo ./$(DEPDIR)/at-func.Plo \
-	./$(DEPDIR)/basename-lgpl.Plo ./$(DEPDIR)/basename.Plo \
-	./$(DEPDIR)/bitrotate.Plo ./$(DEPDIR)/btowc.Plo \
-	./$(DEPDIR)/canonicalize-lgpl.Plo ./$(DEPDIR)/canonicalize.Plo \
-	./$(DEPDIR)/chdir-long.Plo ./$(DEPDIR)/chown.Plo \
-	./$(DEPDIR)/cloexec.Plo ./$(DEPDIR)/close.Plo \
-	./$(DEPDIR)/closedir.Plo ./$(DEPDIR)/dirfd.Plo \
-	./$(DEPDIR)/dirname-lgpl.Plo ./$(DEPDIR)/dirname.Plo \
-	./$(DEPDIR)/dup-safer-flag.Plo ./$(DEPDIR)/dup-safer.Plo \
-	./$(DEPDIR)/dup.Plo ./$(DEPDIR)/dup2.Plo ./$(DEPDIR)/error.Plo \
+	./$(DEPDIR)/at-func2.Plo ./$(DEPDIR)/basename-lgpl.Plo \
+	./$(DEPDIR)/basename.Plo ./$(DEPDIR)/bitrotate.Plo \
+	./$(DEPDIR)/btowc.Plo ./$(DEPDIR)/canonicalize-lgpl.Plo \
+	./$(DEPDIR)/canonicalize.Plo ./$(DEPDIR)/chdir-long.Plo \
+	./$(DEPDIR)/chown.Plo ./$(DEPDIR)/cloexec.Plo \
+	./$(DEPDIR)/close.Plo ./$(DEPDIR)/closedir.Plo \
+	./$(DEPDIR)/dirfd.Plo ./$(DEPDIR)/dirname-lgpl.Plo \
+	./$(DEPDIR)/dirname.Plo ./$(DEPDIR)/dup-safer-flag.Plo \
+	./$(DEPDIR)/dup-safer.Plo ./$(DEPDIR)/dup.Plo \
+	./$(DEPDIR)/dup2.Plo ./$(DEPDIR)/error.Plo \
 	./$(DEPDIR)/exitfail.Plo ./$(DEPDIR)/fchdir.Plo \
 	./$(DEPDIR)/fchown-stub.Plo ./$(DEPDIR)/fcntl.Plo \
 	./$(DEPDIR)/fd-hook.Plo ./$(DEPDIR)/fd-safer-flag.Plo \
@@ -481,6 +487,7 @@ am__depfiles_remade = ./$(DEPDIR)/alloca.Plo \
 	./$(DEPDIR)/realloc.Plo ./$(DEPDIR)/regcomp.Plo \
 	./$(DEPDIR)/regex.Plo ./$(DEPDIR)/regex_internal.Plo \
 	./$(DEPDIR)/regexec.Plo ./$(DEPDIR)/rename.Plo \
+	./$(DEPDIR)/renameat.Plo ./$(DEPDIR)/renameatu.Plo \
 	./$(DEPDIR)/rewinddir.Plo ./$(DEPDIR)/rmdir.Plo \
 	./$(DEPDIR)/same.Plo ./$(DEPDIR)/save-cwd.Plo \
 	./$(DEPDIR)/select.Plo ./$(DEPDIR)/setenv.Plo \
@@ -488,21 +495,23 @@ am__depfiles_remade = ./$(DEPDIR)/alloca.Plo \
 	./$(DEPDIR)/sigprocmask.Plo ./$(DEPDIR)/sleep.Plo \
 	./$(DEPDIR)/sockets.Plo ./$(DEPDIR)/stat-time.Plo \
 	./$(DEPDIR)/stat-w32.Plo ./$(DEPDIR)/stat.Plo \
-	./$(DEPDIR)/stdio-read.Plo ./$(DEPDIR)/stdio-write.Plo \
-	./$(DEPDIR)/stdopen.Plo ./$(DEPDIR)/strcasecmp.Plo \
-	./$(DEPDIR)/strcasestr.Plo ./$(DEPDIR)/strchrnul.Plo \
-	./$(DEPDIR)/strdup.Plo ./$(DEPDIR)/strerror-override.Plo \
-	./$(DEPDIR)/strerror.Plo ./$(DEPDIR)/stripslash.Plo \
-	./$(DEPDIR)/strncasecmp.Plo ./$(DEPDIR)/strndup.Plo \
-	./$(DEPDIR)/strnlen.Plo ./$(DEPDIR)/strnlen1.Plo \
-	./$(DEPDIR)/strsep.Plo ./$(DEPDIR)/sys_socket.Plo \
-	./$(DEPDIR)/tempname.Plo ./$(DEPDIR)/timespec.Plo \
-	./$(DEPDIR)/unistd.Plo ./$(DEPDIR)/unsetenv.Plo \
-	./$(DEPDIR)/utime.Plo ./$(DEPDIR)/utimens.Plo \
-	./$(DEPDIR)/vasnprintf.Plo ./$(DEPDIR)/vasprintf.Plo \
-	./$(DEPDIR)/vsnprintf.Plo ./$(DEPDIR)/wcrtomb.Plo \
-	./$(DEPDIR)/wctype-h.Plo ./$(DEPDIR)/windows-mutex.Plo \
-	./$(DEPDIR)/windows-once.Plo ./$(DEPDIR)/windows-recmutex.Plo \
+	./$(DEPDIR)/statat.Plo ./$(DEPDIR)/stdio-read.Plo \
+	./$(DEPDIR)/stdio-write.Plo ./$(DEPDIR)/stdopen.Plo \
+	./$(DEPDIR)/strcasecmp.Plo ./$(DEPDIR)/strcasestr.Plo \
+	./$(DEPDIR)/strchrnul.Plo ./$(DEPDIR)/strdup.Plo \
+	./$(DEPDIR)/strerror-override.Plo ./$(DEPDIR)/strerror.Plo \
+	./$(DEPDIR)/stripslash.Plo ./$(DEPDIR)/strncasecmp.Plo \
+	./$(DEPDIR)/strndup.Plo ./$(DEPDIR)/strnlen.Plo \
+	./$(DEPDIR)/strnlen1.Plo ./$(DEPDIR)/strsep.Plo \
+	./$(DEPDIR)/sys_socket.Plo ./$(DEPDIR)/tempname.Plo \
+	./$(DEPDIR)/timespec.Plo ./$(DEPDIR)/unistd.Plo \
+	./$(DEPDIR)/unlink.Plo ./$(DEPDIR)/unlinkat.Plo \
+	./$(DEPDIR)/unsetenv.Plo ./$(DEPDIR)/utime.Plo \
+	./$(DEPDIR)/utimens.Plo ./$(DEPDIR)/vasnprintf.Plo \
+	./$(DEPDIR)/vasprintf.Plo ./$(DEPDIR)/vsnprintf.Plo \
+	./$(DEPDIR)/wcrtomb.Plo ./$(DEPDIR)/wctype-h.Plo \
+	./$(DEPDIR)/windows-mutex.Plo ./$(DEPDIR)/windows-once.Plo \
+	./$(DEPDIR)/windows-recmutex.Plo \
 	./$(DEPDIR)/windows-rwlock.Plo ./$(DEPDIR)/xalloc-die.Plo \
 	./$(DEPDIR)/xasprintf.Plo ./$(DEPDIR)/xgetcwd.Plo \
 	./$(DEPDIR)/xmalloc.Plo ./$(DEPDIR)/xsize.Plo \
@@ -1550,6 +1559,8 @@ TRANS_MANDB = @TRANS_MANDB@
 TRANS_MANDB_UPPER = @TRANS_MANDB_UPPER@
 TRANS_MANPATH = @TRANS_MANPATH@
 TRANS_MANPATH_UPPER = @TRANS_MANPATH_UPPER@
+TRANS_MAN_RECODE = @TRANS_MAN_RECODE@
+TRANS_MAN_RECODE_UPPER = @TRANS_MAN_RECODE_UPPER@
 TRANS_MAN_UPPER = @TRANS_MAN_UPPER@
 TRANS_WHATIS = @TRANS_WHATIS@
 TRANS_WHATIS_UPPER = @TRANS_WHATIS_UPPER@
@@ -1671,6 +1682,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 tr = @tr@
 troff = @troff@
+troff_as_troff_input = @troff_as_troff_input@
 uncompress = @uncompress@
 unlzip = @unlzip@
 unlzma = @unlzma@
@@ -1712,26 +1724,27 @@ EXTRA_DIST = alloca.c alloca.in.h areadlink.h assure.h openat-priv.h \
 	rawmemchr.c rawmemchr.valgrind dirent-private.h readdir.c \
 	readlink.c realloc.c regcomp.c regex.c regex.h \
 	regex_internal.c regex_internal.h regexec.c rename.c \
-	dirent-private.h rewinddir.c rmdir.c same.h same-inode.h \
-	save-cwd.h malloc/scratch_buffer.h scratch_buffer.h select.c \
-	setenv.c sig-handler.h sigaction.c signal.in.h sigprocmask.c \
-	sleep.c _Noreturn.h arg-nonnull.h c++defs.h warn-on-use.h \
-	w32sock.h stat-w32.c stat-w32.h stat.c stat-time.h \
-	stdalign.in.h stdarg.in.h stdbool.in.h stddef.in.h stdint.in.h \
-	stdio.in.h stdlib.in.h stdopen.h strcasecmp.c strncasecmp.c \
-	str-two-way.h strcasestr.c strchrnul.c strchrnul.valgrind \
-	strdup.c streq.h strerror.c strerror-override.c \
-	strerror-override.h string.in.h strings.in.h strndup.c \
-	strnlen.c strsep.c sys_file.in.h sys_ioctl.in.h \
-	sys_select.in.h sys_socket.in.h sys_stat.in.h sys_time.in.h \
-	sys_types.in.h sys_uio.in.h sysexits.in.h tempname.h \
-	$(top_srcdir)/build-aux/config.rpath time.in.h timespec.h \
-	unistd.in.h unistd--.h unistd-safer.h unsetenv.c utime.c \
-	utime.in.h utimens.h asnprintf.c float+.h printf-args.c \
-	printf-args.h printf-parse.c printf-parse.h vasnprintf.c \
-	vasnprintf.h asprintf.c vasprintf.c verify.h vsnprintf.c \
-	wchar.in.h wcrtomb.c wctype.in.h windows-initguard.h \
-	windows-mutex.c windows-mutex.h windows-once.c windows-once.h \
+	renameat.c at-func2.c renameatu.h dirent-private.h rewinddir.c \
+	rmdir.c same.h same-inode.h save-cwd.h malloc/scratch_buffer.h \
+	scratch_buffer.h select.c setenv.c sig-handler.h sigaction.c \
+	signal.in.h sigprocmask.c sleep.c _Noreturn.h arg-nonnull.h \
+	c++defs.h warn-on-use.h w32sock.h stat-w32.c stat-w32.h stat.c \
+	stat-time.h stdalign.in.h stdarg.in.h stdbool.in.h stddef.in.h \
+	stdint.in.h stdio.in.h stdlib.in.h stdopen.h strcasecmp.c \
+	strncasecmp.c str-two-way.h strcasestr.c strchrnul.c \
+	strchrnul.valgrind strdup.c streq.h strerror.c \
+	strerror-override.c strerror-override.h string.in.h \
+	strings.in.h strndup.c strnlen.c strsep.c sys_file.in.h \
+	sys_ioctl.in.h sys_select.in.h sys_socket.in.h sys_stat.in.h \
+	sys_time.in.h sys_types.in.h sys_uio.in.h sysexits.in.h \
+	tempname.h $(top_srcdir)/build-aux/config.rpath time.in.h \
+	timespec.h unistd.in.h unistd--.h unistd-safer.h unlink.c \
+	at-func.c unlinkat.c unsetenv.c utime.c utime.in.h utimens.h \
+	asnprintf.c float+.h printf-args.c printf-args.h \
+	printf-parse.c printf-parse.h vasnprintf.c vasnprintf.h \
+	asprintf.c vasprintf.c verify.h vsnprintf.c wchar.in.h \
+	wcrtomb.c wctype.in.h windows-initguard.h windows-mutex.c \
+	windows-mutex.h windows-once.c windows-once.h \
 	windows-initguard.h windows-recmutex.c windows-recmutex.h \
 	windows-initguard.h windows-rwlock.c windows-rwlock.h xalloc.h \
 	xalloc-oversized.h xgetcwd.h xstdopen.h xalloc.h
@@ -1785,17 +1798,18 @@ libgnu_la_SOURCES = areadlink-with-size.c argp.h argp-ba.c \
 	gl_map.h gl_map.c minmax.h nonblocking.c openat-die.c \
 	progname.h progname.c gl_rbtree_list.h gl_rbtree_list.c \
 	gl_anyrbtree_list1.h gl_anyrbtree_list2.h gl_anytree_list1.h \
-	gl_anytree_list2.h same.c save-cwd.c \
+	gl_anytree_list2.h renameatu.c same.c save-cwd.c \
 	malloc/scratch_buffer_grow.c \
 	malloc/scratch_buffer_grow_preserve.c \
 	malloc/scratch_buffer_set_array_size.c gl_set.h gl_set.c \
 	sig-handler.c size_max.h sockets.h sockets.c stat-time.c \
-	stdopen.c strnlen1.h strnlen1.c sys_socket.c tempname.c \
-	glthread/threadlib.c timespec.c unistd.c dup-safer.c \
-	fd-safer.c pipe-safer.c utimens.c wctype-h.c xmalloc.c \
-	xalloc-die.c xgetcwd.c gl_xlist.h gl_xlist.c gl_xmap.h \
-	gl_xmap.c gl_xset.h gl_xset.c xsize.h xsize.c xstdopen.c \
-	xstrndup.h xstrndup.c xvasprintf.h xvasprintf.c xasprintf.c
+	statat.c stdopen.c strnlen1.h strnlen1.c sys_socket.c \
+	tempname.c glthread/threadlib.c timespec.c unistd.c \
+	dup-safer.c fd-safer.c pipe-safer.c utimens.c wctype-h.c \
+	xmalloc.c xalloc-die.c xgetcwd.c gl_xlist.h gl_xlist.c \
+	gl_xmap.h gl_xmap.c gl_xset.h gl_xset.c xsize.h xsize.c \
+	xstdopen.c xstrndup.h xstrndup.c xvasprintf.h xvasprintf.c \
+	xasprintf.c
 libgnu_la_LIBADD = $(gl_LTLIBOBJS) @LTALLOCA@
 libgnu_la_DEPENDENCIES = $(gl_LTLIBOBJS) @LTALLOCA@
 EXTRA_libgnu_la_SOURCES = alloca.c openat-proc.c btowc.c \
@@ -1813,12 +1827,13 @@ EXTRA_libgnu_la_SOURCES = alloca.c openat-proc.c btowc.c \
 	nl_langinfo.c stdio-read.c stdio-write.c open.c openat.c \
 	opendir.c raise.c rawmemchr.c readdir.c readlink.c realloc.c \
 	regcomp.c regex.c regex_internal.c regexec.c rename.c \
-	rewinddir.c rmdir.c select.c setenv.c sigaction.c \
-	sigprocmask.c sleep.c stat-w32.c stat.c strcasecmp.c \
-	strncasecmp.c strcasestr.c strchrnul.c strdup.c strerror.c \
-	strerror-override.c strndup.c strnlen.c strsep.c unsetenv.c \
-	utime.c asnprintf.c printf-args.c printf-parse.c vasnprintf.c \
-	asprintf.c vasprintf.c vsnprintf.c wcrtomb.c windows-mutex.c \
+	renameat.c at-func2.c rewinddir.c rmdir.c select.c setenv.c \
+	sigaction.c sigprocmask.c sleep.c stat-w32.c stat.c \
+	strcasecmp.c strncasecmp.c strcasestr.c strchrnul.c strdup.c \
+	strerror.c strerror-override.c strndup.c strnlen.c strsep.c \
+	unlink.c at-func.c unlinkat.c unsetenv.c utime.c asnprintf.c \
+	printf-args.c printf-parse.c vasnprintf.c asprintf.c \
+	vasprintf.c vsnprintf.c wcrtomb.c windows-mutex.c \
 	windows-once.c windows-recmutex.c windows-rwlock.c
 libgnu_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(LIBSOCKET) \
 	$(LIB_CLOCK_GETTIME) $(LIB_GETLOGIN) $(LIB_NANOSLEEP) \
@@ -1947,6 +1962,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asnprintf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/asprintf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/at-func.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/at-func2.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basename-lgpl.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/basename.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitrotate.Plo@am__quote@ # am--include-marker
@@ -2060,6 +2076,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regex_internal.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/regexec.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rename.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/renameat.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/renameatu.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rewinddir.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rmdir.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/same.Plo@am__quote@ # am--include-marker
@@ -2074,6 +2092,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stat-time.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stat-w32.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stat.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statat.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stdio-read.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stdio-write.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stdopen.Plo@am__quote@ # am--include-marker
@@ -2093,6 +2112,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tempname.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timespec.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unistd.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unlink.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unlinkat.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unsetenv.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utime.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utimens.Plo@am__quote@ # am--include-marker
@@ -2381,6 +2402,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/asnprintf.Plo
 	-rm -f ./$(DEPDIR)/asprintf.Plo
 	-rm -f ./$(DEPDIR)/at-func.Plo
+	-rm -f ./$(DEPDIR)/at-func2.Plo
 	-rm -f ./$(DEPDIR)/basename-lgpl.Plo
 	-rm -f ./$(DEPDIR)/basename.Plo
 	-rm -f ./$(DEPDIR)/bitrotate.Plo
@@ -2494,6 +2516,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/regex_internal.Plo
 	-rm -f ./$(DEPDIR)/regexec.Plo
 	-rm -f ./$(DEPDIR)/rename.Plo
+	-rm -f ./$(DEPDIR)/renameat.Plo
+	-rm -f ./$(DEPDIR)/renameatu.Plo
 	-rm -f ./$(DEPDIR)/rewinddir.Plo
 	-rm -f ./$(DEPDIR)/rmdir.Plo
 	-rm -f ./$(DEPDIR)/same.Plo
@@ -2508,6 +2532,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/stat-time.Plo
 	-rm -f ./$(DEPDIR)/stat-w32.Plo
 	-rm -f ./$(DEPDIR)/stat.Plo
+	-rm -f ./$(DEPDIR)/statat.Plo
 	-rm -f ./$(DEPDIR)/stdio-read.Plo
 	-rm -f ./$(DEPDIR)/stdio-write.Plo
 	-rm -f ./$(DEPDIR)/stdopen.Plo
@@ -2527,6 +2552,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/tempname.Plo
 	-rm -f ./$(DEPDIR)/timespec.Plo
 	-rm -f ./$(DEPDIR)/unistd.Plo
+	-rm -f ./$(DEPDIR)/unlink.Plo
+	-rm -f ./$(DEPDIR)/unlinkat.Plo
 	-rm -f ./$(DEPDIR)/unsetenv.Plo
 	-rm -f ./$(DEPDIR)/utime.Plo
 	-rm -f ./$(DEPDIR)/utimens.Plo
@@ -2612,6 +2639,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/asnprintf.Plo
 	-rm -f ./$(DEPDIR)/asprintf.Plo
 	-rm -f ./$(DEPDIR)/at-func.Plo
+	-rm -f ./$(DEPDIR)/at-func2.Plo
 	-rm -f ./$(DEPDIR)/basename-lgpl.Plo
 	-rm -f ./$(DEPDIR)/basename.Plo
 	-rm -f ./$(DEPDIR)/bitrotate.Plo
@@ -2725,6 +2753,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/regex_internal.Plo
 	-rm -f ./$(DEPDIR)/regexec.Plo
 	-rm -f ./$(DEPDIR)/rename.Plo
+	-rm -f ./$(DEPDIR)/renameat.Plo
+	-rm -f ./$(DEPDIR)/renameatu.Plo
 	-rm -f ./$(DEPDIR)/rewinddir.Plo
 	-rm -f ./$(DEPDIR)/rmdir.Plo
 	-rm -f ./$(DEPDIR)/same.Plo
@@ -2739,6 +2769,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/stat-time.Plo
 	-rm -f ./$(DEPDIR)/stat-w32.Plo
 	-rm -f ./$(DEPDIR)/stat.Plo
+	-rm -f ./$(DEPDIR)/statat.Plo
 	-rm -f ./$(DEPDIR)/stdio-read.Plo
 	-rm -f ./$(DEPDIR)/stdio-write.Plo
 	-rm -f ./$(DEPDIR)/stdopen.Plo
@@ -2758,6 +2789,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/tempname.Plo
 	-rm -f ./$(DEPDIR)/timespec.Plo
 	-rm -f ./$(DEPDIR)/unistd.Plo
+	-rm -f ./$(DEPDIR)/unlink.Plo
+	-rm -f ./$(DEPDIR)/unlinkat.Plo
 	-rm -f ./$(DEPDIR)/unsetenv.Plo
 	-rm -f ./$(DEPDIR)/utime.Plo
 	-rm -f ./$(DEPDIR)/utimens.Plo

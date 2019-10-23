@@ -209,10 +209,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/raise.m4 $(top_srcdir)/gl/m4/rawmemchr.m4 \
 	$(top_srcdir)/gl/m4/readdir.m4 $(top_srcdir)/gl/m4/readlink.m4 \
 	$(top_srcdir)/gl/m4/realloc.m4 $(top_srcdir)/gl/m4/regex.m4 \
-	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/rewinddir.m4 \
-	$(top_srcdir)/gl/m4/rmdir.m4 $(top_srcdir)/gl/m4/same.m4 \
-	$(top_srcdir)/gl/m4/save-cwd.m4 $(top_srcdir)/gl/m4/select.m4 \
-	$(top_srcdir)/gl/m4/setenv.m4 $(top_srcdir)/gl/m4/sigaction.m4 \
+	$(top_srcdir)/gl/m4/rename.m4 $(top_srcdir)/gl/m4/renameat.m4 \
+	$(top_srcdir)/gl/m4/rewinddir.m4 $(top_srcdir)/gl/m4/rmdir.m4 \
+	$(top_srcdir)/gl/m4/same.m4 $(top_srcdir)/gl/m4/save-cwd.m4 \
+	$(top_srcdir)/gl/m4/select.m4 $(top_srcdir)/gl/m4/setenv.m4 \
+	$(top_srcdir)/gl/m4/sigaction.m4 \
 	$(top_srcdir)/gl/m4/signal_h.m4 \
 	$(top_srcdir)/gl/m4/signalblocking.m4 \
 	$(top_srcdir)/gl/m4/size_max.m4 $(top_srcdir)/gl/m4/sleep.m4 \
@@ -246,7 +247,8 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/man-arg-automatic-create.m4 \
 	$(top_srcdir)/gl/m4/threadlib.m4 $(top_srcdir)/gl/m4/time_h.m4 \
 	$(top_srcdir)/gl/m4/timespec.m4 \
 	$(top_srcdir)/gl/m4/unistd-safer.m4 \
-	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/utime.m4 \
+	$(top_srcdir)/gl/m4/unistd_h.m4 $(top_srcdir)/gl/m4/unlink.m4 \
+	$(top_srcdir)/gl/m4/unlinkat.m4 $(top_srcdir)/gl/m4/utime.m4 \
 	$(top_srcdir)/gl/m4/utime_h.m4 $(top_srcdir)/gl/m4/utimens.m4 \
 	$(top_srcdir)/gl/m4/utimes.m4 \
 	$(top_srcdir)/gl/m4/vasnprintf.m4 \
@@ -1492,6 +1494,8 @@ TRANS_MANDB = @TRANS_MANDB@
 TRANS_MANDB_UPPER = @TRANS_MANDB_UPPER@
 TRANS_MANPATH = @TRANS_MANPATH@
 TRANS_MANPATH_UPPER = @TRANS_MANPATH_UPPER@
+TRANS_MAN_RECODE = @TRANS_MAN_RECODE@
+TRANS_MAN_RECODE_UPPER = @TRANS_MAN_RECODE_UPPER@
 TRANS_MAN_UPPER = @TRANS_MAN_UPPER@
 TRANS_WHATIS = @TRANS_WHATIS@
 TRANS_WHATIS_UPPER = @TRANS_WHATIS_UPPER@
@@ -1613,6 +1617,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 tr = @tr@
 troff = @troff@
+troff_as_troff_input = @troff_as_troff_input@
 uncompress = @uncompress@
 unlzip = @unlzip@
 unlzma = @unlzma@
@@ -1628,12 +1633,35 @@ TESTS_ENVIRONMENT = PATH=$(abs_builddir)/..:$$PATH; export PATH; \
 # Each test must use the configure-detected shell, not necessarily /bin/sh.
 AM_LOG_FLAGS = $(SHELL)
 ALL_TESTS = \
-	lexgrog-1 lexgrog-2 lexgrog-3 \
-	man-1 man-2 man-3 man-4 man-5 man-6 man-7 man-8 man-9 man-10 man-11 \
-	manconv-1 manconv-2 manconv-3 \
-	mandb-1 mandb-2 mandb-3 mandb-4 mandb-5 mandb-6 mandb-7 \
-	whatis-1 \
-	zsoelim-1
+	lexgrog-backslash-dash-rhs \
+	lexgrog-basic \
+	lexgrog-multiple-whatis \
+	man-deleted-directory \
+	man-exact-section-matches \
+	man-executable-page-on-path \
+	man-invalid-db-entry \
+	man-language-specific-requests \
+	man-mandatory-manpath \
+	man-missing-locales \
+	man-override-dir \
+	man-recode-in-place \
+	man-recode-suffix \
+	man-so-links-same-section \
+	man-suffixed-extension \
+	man-symlinks-with-matching-names \
+	manconv-coding-tags \
+	manconv-guess-from-encoding \
+	manconv-incomplete-char-at-eof \
+	manconv-odd-combinations \
+	mandb-basic \
+	mandb-bogus-symlink \
+	mandb-cachedir-tag \
+	mandb-empty-page \
+	mandb-regular-file-symlink-changes \
+	mandb-symlink-beats-whatis-ref \
+	mandb-whatis-broken-link-changes \
+	whatis-path-to-executable \
+	zsoelim-so-includes
 
 @CROSS_COMPILING_FALSE@TESTS = $(ALL_TESTS)
 AM_CPPFLAGS = \
@@ -1929,184 +1957,205 @@ recheck: all $(check_PROGRAMS) $(dist_check_SCRIPTS)
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
-lexgrog-1.log: lexgrog-1
-	@p='lexgrog-1'; \
-	b='lexgrog-1'; \
+lexgrog-backslash-dash-rhs.log: lexgrog-backslash-dash-rhs
+	@p='lexgrog-backslash-dash-rhs'; \
+	b='lexgrog-backslash-dash-rhs'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-lexgrog-2.log: lexgrog-2
-	@p='lexgrog-2'; \
-	b='lexgrog-2'; \
+lexgrog-basic.log: lexgrog-basic
+	@p='lexgrog-basic'; \
+	b='lexgrog-basic'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-lexgrog-3.log: lexgrog-3
-	@p='lexgrog-3'; \
-	b='lexgrog-3'; \
+lexgrog-multiple-whatis.log: lexgrog-multiple-whatis
+	@p='lexgrog-multiple-whatis'; \
+	b='lexgrog-multiple-whatis'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-1.log: man-1
-	@p='man-1'; \
-	b='man-1'; \
+man-deleted-directory.log: man-deleted-directory
+	@p='man-deleted-directory'; \
+	b='man-deleted-directory'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-2.log: man-2
-	@p='man-2'; \
-	b='man-2'; \
+man-exact-section-matches.log: man-exact-section-matches
+	@p='man-exact-section-matches'; \
+	b='man-exact-section-matches'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-3.log: man-3
-	@p='man-3'; \
-	b='man-3'; \
+man-executable-page-on-path.log: man-executable-page-on-path
+	@p='man-executable-page-on-path'; \
+	b='man-executable-page-on-path'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-4.log: man-4
-	@p='man-4'; \
-	b='man-4'; \
+man-invalid-db-entry.log: man-invalid-db-entry
+	@p='man-invalid-db-entry'; \
+	b='man-invalid-db-entry'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-5.log: man-5
-	@p='man-5'; \
-	b='man-5'; \
+man-language-specific-requests.log: man-language-specific-requests
+	@p='man-language-specific-requests'; \
+	b='man-language-specific-requests'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-6.log: man-6
-	@p='man-6'; \
-	b='man-6'; \
+man-mandatory-manpath.log: man-mandatory-manpath
+	@p='man-mandatory-manpath'; \
+	b='man-mandatory-manpath'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-7.log: man-7
-	@p='man-7'; \
-	b='man-7'; \
+man-missing-locales.log: man-missing-locales
+	@p='man-missing-locales'; \
+	b='man-missing-locales'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-8.log: man-8
-	@p='man-8'; \
-	b='man-8'; \
+man-override-dir.log: man-override-dir
+	@p='man-override-dir'; \
+	b='man-override-dir'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-9.log: man-9
-	@p='man-9'; \
-	b='man-9'; \
+man-recode-in-place.log: man-recode-in-place
+	@p='man-recode-in-place'; \
+	b='man-recode-in-place'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-10.log: man-10
-	@p='man-10'; \
-	b='man-10'; \
+man-recode-suffix.log: man-recode-suffix
+	@p='man-recode-suffix'; \
+	b='man-recode-suffix'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-man-11.log: man-11
-	@p='man-11'; \
-	b='man-11'; \
+man-so-links-same-section.log: man-so-links-same-section
+	@p='man-so-links-same-section'; \
+	b='man-so-links-same-section'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-manconv-1.log: manconv-1
-	@p='manconv-1'; \
-	b='manconv-1'; \
+man-suffixed-extension.log: man-suffixed-extension
+	@p='man-suffixed-extension'; \
+	b='man-suffixed-extension'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-manconv-2.log: manconv-2
-	@p='manconv-2'; \
-	b='manconv-2'; \
+man-symlinks-with-matching-names.log: man-symlinks-with-matching-names
+	@p='man-symlinks-with-matching-names'; \
+	b='man-symlinks-with-matching-names'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-manconv-3.log: manconv-3
-	@p='manconv-3'; \
-	b='manconv-3'; \
+manconv-coding-tags.log: manconv-coding-tags
+	@p='manconv-coding-tags'; \
+	b='manconv-coding-tags'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mandb-1.log: mandb-1
-	@p='mandb-1'; \
-	b='mandb-1'; \
+manconv-guess-from-encoding.log: manconv-guess-from-encoding
+	@p='manconv-guess-from-encoding'; \
+	b='manconv-guess-from-encoding'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mandb-2.log: mandb-2
-	@p='mandb-2'; \
-	b='mandb-2'; \
+manconv-incomplete-char-at-eof.log: manconv-incomplete-char-at-eof
+	@p='manconv-incomplete-char-at-eof'; \
+	b='manconv-incomplete-char-at-eof'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mandb-3.log: mandb-3
-	@p='mandb-3'; \
-	b='mandb-3'; \
+manconv-odd-combinations.log: manconv-odd-combinations
+	@p='manconv-odd-combinations'; \
+	b='manconv-odd-combinations'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mandb-4.log: mandb-4
-	@p='mandb-4'; \
-	b='mandb-4'; \
+mandb-basic.log: mandb-basic
+	@p='mandb-basic'; \
+	b='mandb-basic'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mandb-5.log: mandb-5
-	@p='mandb-5'; \
-	b='mandb-5'; \
+mandb-bogus-symlink.log: mandb-bogus-symlink
+	@p='mandb-bogus-symlink'; \
+	b='mandb-bogus-symlink'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mandb-6.log: mandb-6
-	@p='mandb-6'; \
-	b='mandb-6'; \
+mandb-cachedir-tag.log: mandb-cachedir-tag
+	@p='mandb-cachedir-tag'; \
+	b='mandb-cachedir-tag'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-mandb-7.log: mandb-7
-	@p='mandb-7'; \
-	b='mandb-7'; \
+mandb-empty-page.log: mandb-empty-page
+	@p='mandb-empty-page'; \
+	b='mandb-empty-page'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-whatis-1.log: whatis-1
-	@p='whatis-1'; \
-	b='whatis-1'; \
+mandb-regular-file-symlink-changes.log: mandb-regular-file-symlink-changes
+	@p='mandb-regular-file-symlink-changes'; \
+	b='mandb-regular-file-symlink-changes'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-zsoelim-1.log: zsoelim-1
-	@p='zsoelim-1'; \
-	b='zsoelim-1'; \
+mandb-symlink-beats-whatis-ref.log: mandb-symlink-beats-whatis-ref
+	@p='mandb-symlink-beats-whatis-ref'; \
+	b='mandb-symlink-beats-whatis-ref'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+mandb-whatis-broken-link-changes.log: mandb-whatis-broken-link-changes
+	@p='mandb-whatis-broken-link-changes'; \
+	b='mandb-whatis-broken-link-changes'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+whatis-path-to-executable.log: whatis-path-to-executable
+	@p='whatis-path-to-executable'; \
+	b='whatis-path-to-executable'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
+zsoelim-so-includes.log: zsoelim-so-includes
+	@p='zsoelim-so-includes'; \
+	b='zsoelim-so-includes'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \

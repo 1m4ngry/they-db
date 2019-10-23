@@ -3,7 +3,7 @@
 .\" Man page for man
 .\"
 .\" Copyright (C) 1994, 1995, Graeme W. Wilford. (Wilf.)
-.\" Copyright (C) 2001, 2002, 2003, 2006, 2007, 2008 Colin Watson.
+.\" Copyright (C) 2001-2019 Colin Watson.
 .\"
 .\" You may distribute under the terms of the GNU General Public
 .\" License as specified in the file COPYING that comes with the
@@ -14,72 +14,25 @@
 .pc
 .TH %thman% 1 "%date%" "%version%" "Manual pager utils"
 .SH NAME
-%man% \- an interface to the on-line reference manuals
+%man% \- an interface to the system reference manuals
 .SH SYNOPSIS
 .\" The general command line
 .B %man%
-.RB [\| \-C
-.IR file \|]
-.RB [\| \-d \|]
-.RB [\| \-D \|]
-.RB [\| \-\-warnings \|\c
-.RI [\|= warnings \|]\|]
-.RB [\| \-R
-.IR encoding \|]
-.RB [\| \-L
-.IR locale \|]
-.RB [\| \-m
-.IR system \|[\|,.\|.\|.\|]\|]
-.RB [\| \-M
-.IR path \|]
-.RB [\| \-S
-.IR list \|]
-.RB [\| \-e
-.IR extension \|]
-.RB [\| \-i \||\| \-I \|]
-.RB [\| \-\-regex \||\| \-\-wildcard \|]
-.RB [\| \-\-names\-only \|]
-.RB [\| \-a \|]
-.RB [\| \-u \|]
-.RB [\| \-\-no\-subpages \|]
-.RB [\| \-P
-.IR pager \|]
-.RB [\| \-r
-.IR prompt \|]
-.RB [\| \-7 \|]
-.RB [\| \-E
-.IR encoding \|]
-.RB [\| \-\-no\-hyphenation \|]
-.RB [\| \-\-no\-justification \|]
-.RB [\| \-p
-.IR string \|]
-.RB [\| \-t \|]
-.RB [\| \-T \|\c
-.RI [\| device \|]\|]
-.RB [\| \-H \|\c
-.RI [\| browser \|]\|]
-.RB [\| \-X \|\c
-.RI [\| dpi \|]\|]
-.RB [\| \-Z \|]
+.RI [\| "man options" \|]
 .RI [\|[\| section \|]
-.IR page [.\| section \|]\ \|.\|.\|.\|]\ \.\|.\|.\&
+.IR page \ \|.\|.\|.\|]\ \.\|.\|.\&
 .\" The apropos command line
 .br
 .B %man%
 .B \-k
-.RI [\| apropos
-.IR options \|]
+.RI [\| "apropos options" \|]
 .I regexp
 \&.\|.\|.\&
 .\" The --global-apropos command line
 .br
 .B %man%
 .B \-K
-.RB [\| \-w \||\| \-W \|]
-.RB [\| \-S
-.IR list \|]
-.RB [\| \-i \||\| \-I \|]
-.RB [\| \-\-regex \|]
+.RI [\| "man options" \|]
 .RI [\| section \|]
 .IR term \ .\|.\|.\&
 .\" The whatis command line
@@ -94,59 +47,16 @@
 .br
 .B %man%
 .B \-l
-.RB [\| \-C
-.IR file \|]
-.RB [\| \-d \|]
-.RB [\| \-D \|]
-.RB [\| \-\-warnings \|\c
-.RI [\|= warnings \|]\|]
-.RB [\| \-R
-.IR encoding \|]
-.RB [\| \-L
-.IR locale \|]
-.RB [\| \-P
-.IR pager \|]
-.RB [\| \-r
-.IR prompt \|]
-.RB [\| \-7 \|]
-.RB [\| \-E
-.IR encoding \|]
-.RB [\| \-p
-.IR string \|]
-.RB [\| \-t \|]
-.RB [\| \-T \|\c
-.RI [\| device \|]\|]
-.RB [\| \-H \|\c
-.RI [\| browser \|]\|]
-.RB [\| \-X \|\c
-.RI [\| dpi \|]\|]
-.RB [\| \-Z \|]
+.RI [\| "man options" \|]
 .I file
 \&.\|.\|.\&
 .\" The --where/--where-cat command line
 .br
 .B %man%
 .BR \-w \||\| \-W
-.RB [\| \-C
-.IR file \|]
-.RB [\| \-d \|]
-.RB [\| \-D \|]
+.RI [\| "man options" \|]
 .I page
 \&.\|.\|.\&
-.\" The --catman command line
-.br
-.B %man%
-.B \-c
-.RB [\| \-C
-.IR file \|]
-.RB [\| \-d \|]
-.RB [\| \-D \|]
-.I page
-\&.\|.\|.\&
-.\" --help and --version
-.br
-.B %man%
-.RB [\| \-?V \|]
 .SH DESCRIPTION
 .B %man%
 is the system's manual pager.
@@ -167,11 +77,8 @@ to look only in that
 of the manual.
 The default action is to search in all of the available
 .IR sections
-following a pre-defined order ("%sections%" by default, unless overridden by
-the
-.B SECTION
-directive in 
-.IR %manpath_config_file% ),
+following a pre-defined order (see
+.BR DEFAULTS ),
 and to show only the first
 .I page
 found, even if
@@ -199,7 +106,7 @@ T}
 Special files (usually found in \fI/dev\/\fR)
 T}
 5@T{
-File formats and conventions eg \fI/etc/passwd\fR
+File formats and conventions, e.g.\& \fI/etc/passwd\fR
 T}
 6@T{
 Games
@@ -285,10 +192,25 @@ Display the manual page for the
 (program)
 .IR ls .
 .TP
-\fB%man% \fIman\fR.\fI7
+\fB%man%\fR \fIman\fR.\fI7\fR
 Display the manual page for macro package
 .I man
-from section \fI7\fR.
+from section
+.IR 7 .
+(This is an alternative spelling of
+"\fB%man%\fR \fI7 man\fR".)
+.TP
+\fB%man% '\fIman\fR(\fI7\fR)'
+Display the manual page for macro package
+.I man
+from section
+.IR 7 .
+(This is another alternative spelling of
+"\fB%man%\fR \fI7 man\fR".
+It may be more convenient when copying and pasting cross-references to
+manual pages.
+Note that the parentheses must normally be quoted to protect them from the
+shell.)
 .TP
 .BI %man%\ \-a \ intro
 Display, in succession, all of the available
@@ -296,10 +218,10 @@ Display, in succession, all of the available
 manual pages contained within the manual.
 It is possible to quit between successive displays or skip any of them.
 .TP
-\fB%man% \-t \fIalias \fR|\fI lpr \-Pps
-Format the manual page referenced by
-.RI ` alias ',
-usually a shell manual page, into the default
+\fB%man% \-t \fIbash \fR|\fI lpr \-Pps
+Format the manual page for
+.I bash
+into the default
 .B troff
 or
 .B groff
@@ -327,7 +249,7 @@ with no pager.
 The output could be viewed with a program such as
 .B xdvi
 or further processed into PostScript using a program such as
-.BR dvips.
+.BR dvips .
 .TP
 .BI %man%\ \-k \ printf
 Search the short descriptions and manual page names for the keyword
@@ -353,9 +275,9 @@ and other behaviours and operations detailed below.
 If set, various environment variables are interrogated to determine
 the operation of
 .BR %man% .
-It is possible to set the `catch all' variable
+It is possible to set the "catch-all" variable
 .RB $ MANOPT
-to any string in command line format with the exception that any spaces
+to any string in command line format, with the exception that any spaces
 used as part of an option's argument must be escaped (preceded by a
 backslash).
 .B %man%
@@ -368,85 +290,31 @@ To reset all of the options set in
 .RB $ MANOPT ,
 .B \-D
 can be specified as the initial command line option.
-This will allow %man% to `forget' about the options specified in
-.RB $ MANOPT
+This will allow %man% to "forget" about the options specified in
+.RB $ MANOPT ,
 although they must still have been valid.
 
-The manual pager utilities packaged as
-.B man-db
-make extensive use of
-.B index
-database caches.
-These caches contain information such as where each manual page can be
-found on the filesystem and what its
-.I whatis
-(short one line description of the man page) contains, and allow
-.B %man%
-to run faster than if it had to search the filesystem each time to find the
-appropriate manual page.
-If requested using the
-.B \-u
-option,
-.B man
-will ensure that the caches remain consistent, which can obviate the
-need to manually run software to update traditional
-.I whatis
-text databases.
+Manual pages are normally stored in
+.BR nroff (1)
+format under a directory such as
+.IR /usr/share/man .
+In some installations, there may also be preformatted
+.I cat pages
+to improve performance.
+See
+.BR manpath (5)
+for details of where these files are stored.
 
-If
-.B %man%
-cannot find a
-.B %mandb%
-initiated
-.B index
-database for a particular manual page hierarchy, it will still search for
-the requested manual pages, although file globbing will be necessary to
-search within that hierarchy.
-If
-.B %whatis%
-or
-.B %apropos%
-fails to find an
-.B index
-it will try to extract information from a traditional
-.I whatis
-database instead.
-.\"`User' manual page hierarchies will have
-.\".B index
-.\"caches created `on the fly'.
-
-These utilities support compressed source nroff files having, by default, the
-extensions of
-.BR .Z ", " .z " and " .gz .
-It is possible to deal with any compression extension, but this information
-must be known at compile time.
-Also, by default, any cat pages produced are compressed using
-.BR gzip .
-Each `global' manual page hierarchy such as
-.I /usr/share/man
-or
-.I /usr/X11R6/man
-may have any directory as its cat page hierarchy.
-Traditionally the cat pages are stored under the same hierarchy as the man
-pages, but for reasons such as those specified in the
-.BR "File Hierarchy Standard (FHS)" ,
-it may be better to store them elsewhere.
-For details on how to do this, please read
-.BR manpath (5).
-For details on why to do this, read the standard.
-
-International support is available with this package.
-Native language manual pages are accessible (if available on your system)
-via use of
-.I locale
-functions.
-To activate such support, it is necessary to set either
+This package supports manual pages in multiple languages, controlled by your
+.IR locale .
+If your system did not set this up for you automatically, then you may need
+to set
 .RB $ LC_MESSAGES ,
-.RB $ LANG
-or another system dependent environment variable to your language locale,
-usually specified in the
-.B POSIX 1003.1
-based format:
+.RB $ LANG ,
+or another system-dependent environment variable to indicate your preferred
+locale, usually specified in the
+.B POSIX
+format:
 
 .\"
 .\" Need a \c to make sure we don't get a space where we don't want one
@@ -464,52 +332,38 @@ If the desired page is available in your
 it will be displayed in lieu of the standard
 (usually American English) page.
 
-Support for international message catalogues is also featured in this
-package and can be activated in the same way, again if available.
-If you find that the manual pages and message catalogues supplied with this
-package are not available in your native language and you would like to
-supply them, please contact the maintainer who will be coordinating such
-activity.
+If you find that the translations supplied with this package are not
+available in your native language and you would like to supply them, please
+contact the maintainer who will be coordinating such activity.
+
+Individual manual pages are normally written and maintained by the
+maintainers of the program, function, or other topic that they document, and
+are not included with this package.
+If you find that a manual page is missing or inadequate, please report that
+to the maintainers of the package in question.
 
 For information regarding other features and extensions available with this
 manual pager, please read the documents supplied with the package.
 .SH DEFAULTS
-.B %man%
-will search for the desired manual pages within the
-.I index
-database caches. If the
-.B \-u
-option is given, a cache consistency check is performed to ensure the
-databases accurately reflect the filesystem.
-If this option is always given, it is not generally necessary to run
-.B %mandb%
-after the caches are initially created, unless a cache becomes corrupt.
-However, the cache consistency check can be slow on systems with many
-manual pages installed, so it is not performed by default, and system
-administrators may wish to run
-.B %mandb%
-every week or so to keep the database caches fresh.
-To forestall problems caused by outdated caches,
-.B %man%
-will fall back to file globbing if a cache lookup fails, just as it would
-if no cache was present.
+The order of sections to search may be overridden by the environment
+variable
+.RB $ MANSECT
+or by the
+.B SECTION
+directive in
+.IR %manpath_config_file% .
+By default it is as follows:
 
-Once a manual page has been located, a check is performed to find out if a
-relative preformatted `cat' file already exists and is newer than the nroff
-file.
-If it does and is, this preformatted file is (usually) decompressed and then
-displayed, via use of a pager.
-The pager can be specified in a number of ways, or else will fall back to a
-default is used (see option
+.RS
+.if !'po4a'hide' %sections%
+.RE
+
+The formatted manual page is displayed using a
+.IR pager .
+This can be specified in a number of ways, or else will fall back to a
+default (see option
 .B \-P
 for details).
-If no cat is found or is older than the nroff file, the nroff is filtered
-through various programs and is shown immediately.
-
-If a cat file can be produced (a relative cat directory exists and has
-appropriate permissions),
-.B %man%
-will compress and store the cat file in the background.
 
 The filters are deciphered by a number of means.
 Firstly, the command line option
@@ -556,7 +410,7 @@ optionally the device specified with
 as arguments.
 .\" ********************************************************************
 .SH OPTIONS
-Non argument options that are duplicated either on the command line, in
+Non-argument options that are duplicated either on the command line, in
 .RB $ MANOPT ,
 or both, are not harmful.
 For options that require an argument, each duplication will override the
@@ -627,7 +481,7 @@ positives due to things like comments in source files.
 Searching the rendered text would be much slower.
 .TP
 .if !'po4a'hide' .BR \-l ", " \-\-local\-file
-Activate `local' mode.
+Activate "local" mode.
 Format and display local manual files instead of searching through the
 system's manual collection.
 Each manual page argument will be interpreted as an nroff source file in the
@@ -643,13 +497,34 @@ option was supplied, using the name as a filename and looking for an
 exact match.
 .TP
 .if !'po4a'hide' .BR \-w ", " \-\-where ", " \-\-path ", " \-\-location
-Don't actually display the manual pages, but do print the location(s) of
-the source nroff files that would be formatted.
+Don't actually display the manual page, but do print the location of the
+source nroff file that would be formatted.
+If the
+.B \-a
+option is also used, then print the locations of all source files that match
+the search criteria.
 .TP
 .if !'po4a'hide' .BR \-W ", " \-\-where\-cat ", " \-\-location\-cat
-Don't actually display the manual pages, but do print the location(s) of
-the cat files that would be displayed.
-If \-w and \-W are both specified, print both separated by a space.
+Don't actually display the manual page, but do print the location of the
+preformatted cat file that would be displayed.
+If the
+.B \-a
+option is also used, then print the locations of all preformatted cat files
+that match the search criteria.
+.IP
+If
+.B \-w
+and
+.B \-W
+are both used, then print both source file and cat file separated by a
+space.
+If
+all of
+.BR \-w ,
+.BR \-W ,
+and
+.B \-a
+are used, then do this for each possible match.
 .TP
 .if !'po4a'hide' .BR \-c ", " \-\-catman
 This option is not for general use and should only be used by the
@@ -667,6 +542,11 @@ However, this option allows you to convert several manual pages to a single
 encoding without having to explicitly state the encoding of each, provided
 that they were already installed in a structure similar to a manual page
 hierarchy.
+.IP
+Consider using
+.BR %man_recode% (1)
+instead for converting multiple manual pages, since it has an interface
+designed for bulk conversion and so can be much faster.
 .SS "Finding manual pages"
 .TP
 .BI \-L\  locale \fR,\ \fB\-\-locale= locale
@@ -685,20 +565,9 @@ Note that it will not take effect until the search for pages actually
 begins.
 Output such as the help message will always be displayed in the initially
 determined locale.
-.\"
-.\" Due to the rather silly limit of 6 args per request in some `native'
-.\" *roff compilers, we have do the following to get the two-line
-.\" hanging tag on one line. .PP to begin a new paragraph, then the
-.\" tag, then .RS (start relative indent), the text, finally .RE
-.\" (end relative indent).
-.\"
-.PP
-.B \-m
-.I system\c
-\|[\|,.\|.\|.\|]\|,
-.BI \-\-systems= system\c
-\|[\|,.\|.\|.\|]
-.RS
+.TP
+\fB\-m\fR \fIsystem\fR\|[\|,.\|.\|.\|]\|, \
+\fB\-\-systems=\fIsystem\fR\|[\|,.\|.\|.\|]
 If this system has access to other operating system's manual pages, they can
 be accessed using this option.
 To search for a manual page from NewOS's manual page collection,
@@ -716,7 +585,6 @@ in the argument string.
 This option will override the
 .RB $ SYSTEM
 environment variable.
-.RE
 .TP
 .BI \-M\  path \fR,\ \fB\-\-manpath= path
 Specify an alternate manpath to use.
@@ -738,9 +606,13 @@ To view manual pages outside such hierarchies, see the
 .B \-l
 option.
 .TP
-.BI \-S\  list \fR,\ \fB\-s\  list \fR,\ \fB\-\-sections= list
-List is a colon- or comma-separated list of `order specific' manual sections
-to search.
+\fB\-S\fR \fIlist\/\fR, \
+\fB\-s\fR \fIlist\/\fR, \
+\fB\-\-sections=\fIlist\/\fR
+The given
+.I list
+is a colon- or comma-separated list of sections, used to determine which
+manual sections to search and in what order.
 This option overrides the
 .RB $ MANSECT
 environment variable.
@@ -761,7 +633,7 @@ the
 pages were usually all assigned to section
 .BR l .
 As this is unfortunate, it is now possible to put the pages in the correct
-section, and to assign a specific `extension' to them, in this case,
+section, and to assign a specific "extension" to them, in this case,
 .BR exit (3tcl).
 Under normal operation,
 .B %man%
@@ -834,11 +706,10 @@ to display all the manual pages with names that match the search criteria.
 .if !'po4a'hide' .BR \-u ", " \-\-update
 This option causes
 .B %man%
-to perform an `inode level' consistency check on its database caches to
-ensure that they are an accurate representation of the filesystem.
-It will only have a useful effect if
-.B %man%
-is installed with the setuid bit set.
+to update its database caches of installed manual pages.
+This is only needed in rare situations, and it is normally better to run
+.BR %mandb% (8)
+instead.
 .TP
 .if !'po4a'hide' .B \-\-no\-subpages
 By default,
@@ -913,7 +784,7 @@ where
 denotes the manual page name,
 .I sec
 denotes the section it was found under and
-.IR x
+.I x
 the current line number.
 .\"The default options are
 .\".BR \-six8 .
@@ -933,7 +804,7 @@ with a string will override this default.
 The string may contain the text
 .B $MAN_PN
 which will be expanded to the name of the current manual page and its
-section name surrounded by `(' and `)'.
+section name surrounded by "(" and ")".
 The string used to produce the default could be expressed as
 
 .B \e\ Manual\e\ page\e\ \e$MAN_PN\e\ ?ltline\e\ %lt?L/%L.:
@@ -1177,7 +1048,7 @@ It implies
 .if !'po4a'hide' .BR \-? ", " \-\-help
 Print a help message and exit.
 .TP
-.if !'po4a'hide' .BR \-\-usage
+.if !'po4a'hide' .B \-\-usage
 Print a short usage message and exit.
 .TP
 .if !'po4a'hide' .BR \-V ", " \-\-version
@@ -1207,15 +1078,16 @@ If
 is set, its value is used as the path to search for manual pages.
 .TP
 .if !'po4a'hide' .B MANROFFOPT
-The contents of
-.RB $ MANROFFOPT
-are added to the command line every time
+Every time
 .B man
 invokes the formatter
 .RB ( nroff ,
 .BR troff ,
 or
-.BR groff ).
+.BR groff ),
+it adds the contents of
+.RB $ MANROFFOPT
+to the formatter's command line.
 .TP
 .if !'po4a'hide' .B MANROFFSEQ
 If
@@ -1229,7 +1101,9 @@ If
 .RB $ MANSECT
 is set, its value is a colon-delimited list of sections and it is used to
 determine which manual sections to search and in what order.
-The default is "%sections%", unless overridden by the
+The default is
+"%sections%",
+unless overridden by the
 .B SECTION
 directive in
 .IR %manpath_config_file% .
@@ -1323,7 +1197,7 @@ be formatted.
 If it is not set, manual pages will be formatted with a line length
 appropriate to the current terminal (using the value of
 .RB $ COLUMNS ,
-an
+and
 .BR ioctl (2)
 if available, or falling back to 80 characters if neither is available).
 Cat pages will only be saved when the default formatting can be used, that
@@ -1371,17 +1245,6 @@ man-db configuration file.
 .TP
 .if !'po4a'hide' .I /usr/share/man
 A global manual page hierarchy.
-.TP
-.if !'po4a'hide' .I /usr/share/man/index.(bt|db|dir|pag)
-A traditional global
-.I index
-database cache.
-.TP
-.if !'po4a'hide' .I /var/cache/man/index.(bt|db|dir|pag)
-An FHS
-compliant global
-.I index
-database cache.
 .SH "SEE ALSO"
 .if !'po4a'hide' .BR %apropos% (1),
 .if !'po4a'hide' .BR groff (1),
@@ -1391,22 +1254,21 @@ database cache.
 .if !'po4a'hide' .BR troff (1),
 .if !'po4a'hide' .BR %whatis% (1),
 .if !'po4a'hide' .BR %zsoelim% (1),
-.if !'po4a'hide' .BR setlocale (3),
 .if !'po4a'hide' .BR manpath (5),
-.if !'po4a'hide' .BR ascii (7),
-.if !'po4a'hide' .BR latin1 (7),
 .if !'po4a'hide' .BR man (7),
 .if !'po4a'hide' .BR %catman% (8),
-.if !'po4a'hide' .BR %mandb% (8),
-the man-db package manual,
-.BR FSSTND
+.if !'po4a'hide' .BR %mandb% (8)
+.PP
+Documentation for some packages may be available in other formats, such as
+.BR info (1)
+or HTML.
 .SH HISTORY
 1990, 1991 \(en Originally written by John W.\& Eaton (jwe@che.utexas.edu).
 
 Dec 23 1992: Rik Faith (faith@cs.unc.edu) applied bug fixes
 supplied by Willem Kasdorp (wkasdo@nikhefk.nikef.nl).
 
-30th April 1994 \(en 23rd February 2000: Wilf. (G.Wilford@ee.surrey.ac.uk)
+30th April 1994 \(en 23rd February 2000: Wilf.\& (G.Wilford@ee.surrey.ac.uk)
 has been developing and maintaining this package
 with the help of a few dedicated people.
 

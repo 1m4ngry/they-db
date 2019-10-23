@@ -2,14 +2,18 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "manconfig.h"
+
 /* Flex emits several functions which might reasonably have various
  * attributes applied and many unused macros; none of these are our problem.
  */
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=malloc"
+#if GNUC_PREREQ(8,0)
+#  pragma GCC diagnostic ignored "-Wsuggest-attribute=malloc"
+#endif
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 #pragma GCC diagnostic ignored "-Wunused-macros"
 
-#line 13 "../../../src/zsoelim.c"
+#line 17 "zsoelim.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -766,9 +770,9 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "../../../src/zsoelim.l"
+#line 1 "zsoelim.l"
 
-#line 15 "../../../src/zsoelim.l"
+#line 19 "zsoelim.l"
 
 /*
  * zsoelim.l: eliminate .so includes within *roff source
@@ -832,8 +836,6 @@ char *yytext;
 #include <locale.h>
 #define _(String) gettext (String)
 
-#include "manconfig.h"
-
 #include "error.h"
 #include "glcontainers.h"
 #include "pipeline.h"
@@ -878,9 +880,9 @@ struct zsoelim_stdin_data {
 		result = YY_NULL; \
 }
 #define YY_NO_INPUT
-#line 882 "../../../src/zsoelim.c"
+#line 884 "zsoelim.c"
 
-#line 884 "../../../src/zsoelim.c"
+#line 886 "zsoelim.c"
 
 #define INITIAL 0
 #define so 1
@@ -1103,10 +1105,10 @@ YY_DECL
 		}
 
 	{
-#line 138 "../../../src/zsoelim.l"
+#line 140 "zsoelim.l"
 
 
-#line 1110 "../../../src/zsoelim.c"
+#line 1112 "zsoelim.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1154,7 +1156,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 140 "../../../src/zsoelim.l"
+#line 142 "zsoelim.l"
 {	
 			no_newline = 1;
 			ECHO;
@@ -1163,7 +1165,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 146 "../../../src/zsoelim.l"
+#line 148 "zsoelim.l"
 {	
 			no_newline = 1;
 			BEGIN (so);	/* Now we're in the .so environment */
@@ -1171,7 +1173,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 151 "../../../src/zsoelim.l"
+#line 153 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;		/* Now we're in the .lf environment */
@@ -1179,26 +1181,26 @@ YY_RULE_SETUP
 		}
 	YY_BREAK
 case 4:
-#line 158 "../../../src/zsoelim.l"
+#line 160 "zsoelim.l"
 case 5:
 /* rule 5 can match eol */
-#line 159 "../../../src/zsoelim.l"
+#line 161 "zsoelim.l"
 case 6:
 /* rule 6 can match eol */
-#line 160 "../../../src/zsoelim.l"
+#line 162 "zsoelim.l"
 case 7:
 /* rule 7 can match eol */
-#line 161 "../../../src/zsoelim.l"
+#line 163 "zsoelim.l"
 case 8:
 /* rule 8 can match eol */
-#line 162 "../../../src/zsoelim.l"
+#line 164 "zsoelim.l"
 case 9:
 /* rule 9 can match eol */
-#line 163 "../../../src/zsoelim.l"
+#line 165 "zsoelim.l"
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 163 "../../../src/zsoelim.l"
+#line 165 "zsoelim.l"
 {
 				no_newline = 1;
 				ECHO;
@@ -1207,7 +1209,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 168 "../../../src/zsoelim.l"
+#line 170 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1216,7 +1218,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 175 "../../../src/zsoelim.l"
+#line 177 "zsoelim.l"
 { 	/* file names including whitespace ?  */
 			if (so_stack_ptr == MAX_SO_DEPTH - 1) 
 				error (FATAL, 0, 
@@ -1252,7 +1254,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 207 "../../../src/zsoelim.l"
+#line 209 "zsoelim.l"
 {
 			no_newline = 0;
 			BEGIN (INITIAL);
@@ -1261,7 +1263,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 212 "../../../src/zsoelim.l"
+#line 214 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1275,7 +1277,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 223 "../../../src/zsoelim.l"
+#line 225 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1284,7 +1286,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 229 "../../../src/zsoelim.l"
+#line 231 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1293,7 +1295,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 234 "../../../src/zsoelim.l"
+#line 236 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1302,7 +1304,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 241 "../../../src/zsoelim.l"
+#line 243 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1313,7 +1315,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 249 "../../../src/zsoelim.l"
+#line 251 "zsoelim.l"
 {	/* file names including whitespace ?? */
 			no_newline = 1;
 			ECHO;
@@ -1327,7 +1329,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 260 "../../../src/zsoelim.l"
+#line 262 "zsoelim.l"
 {
 			no_newline = 1;
 			ECHO;
@@ -1336,7 +1338,7 @@ YY_RULE_SETUP
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 265 "../../../src/zsoelim.l"
+#line 267 "zsoelim.l"
 {
 			no_newline = 0;
 			putchar ('\n');
@@ -1346,7 +1348,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 272 "../../../src/zsoelim.l"
+#line 274 "zsoelim.l"
 {
 			no_newline = 1;
 			error (OK, 0,
@@ -1360,7 +1362,7 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 282 "../../../src/zsoelim.l"
+#line 284 "zsoelim.l"
 {
 			no_newline = 0;
 			error (OK, 0,
@@ -1378,7 +1380,7 @@ case YY_STATE_EOF(de):
 case YY_STATE_EOF(end_request):
 case YY_STATE_EOF(lfnumber):
 case YY_STATE_EOF(lfname):
-#line 293 "../../../src/zsoelim.l"
+#line 295 "zsoelim.l"
 {
 		pipeline_wait (PIPE);
 		pipeline_free (PIPE);
@@ -1402,10 +1404,10 @@ case YY_STATE_EOF(lfname):
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 313 "../../../src/zsoelim.l"
+#line 315 "zsoelim.l"
 ECHO;
 	YY_BREAK
-#line 1409 "../../../src/zsoelim.c"
+#line 1411 "zsoelim.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2364,7 +2366,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 313 "../../../src/zsoelim.l"
+#line 315 "zsoelim.l"
 
 
 #ifdef ACCEPT_QUOTES
@@ -2386,16 +2388,13 @@ static void zap_quotes (void)
 /* initialise the stack and call the parser */
 void zsoelim_parse_file (gl_list_t manpathlist, const char *parent_path)
 {
-#ifdef PP_COOKIE
 	const char *line;
-#endif /* PP_COOKIE */
 	int linenum = 1;
 
 	so_stack_ptr = 0;
 	so_manpathlist = manpathlist;
 	so_parent_path = parent_path;
 
-#ifdef PP_COOKIE
 	/* Skip over the first line if it's something that manconv might
 	 * need to know about.
 	 */
@@ -2406,7 +2405,6 @@ void zsoelim_parse_file (gl_list_t manpathlist, const char *parent_path)
 		pipeline_peek_skip ((pipeline *) yyin, strlen (line));
 		++linenum;
 	}
-#endif /* PP_COOKIE */
 
 	printf (".lf %d %s\n", linenum, NAME);
 	LINE = 1;

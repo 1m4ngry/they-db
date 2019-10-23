@@ -3,10 +3,14 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include "manconfig.h"
+
 /* Flex emits several functions which might reasonably have various
  * attributes applied and many unused macros; none of these are our problem.
  */
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=malloc"
+#if GNUC_PREREQ(8,0)
+#  pragma GCC diagnostic ignored "-Wsuggest-attribute=malloc"
+#endif
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
 #pragma GCC diagnostic ignored "-Wunused-macros"
 }
@@ -74,8 +78,6 @@
 #include "gettext.h"
 #include <locale.h>
 #define _(String) gettext (String)
-
-#include "manconfig.h"
 
 #include "error.h"
 #include "glcontainers.h"
@@ -331,16 +333,13 @@ static void zap_quotes (void)
 /* initialise the stack and call the parser */
 void zsoelim_parse_file (gl_list_t manpathlist, const char *parent_path)
 {
-#ifdef PP_COOKIE
 	const char *line;
-#endif /* PP_COOKIE */
 	int linenum = 1;
 
 	so_stack_ptr = 0;
 	so_manpathlist = manpathlist;
 	so_parent_path = parent_path;
 
-#ifdef PP_COOKIE
 	/* Skip over the first line if it's something that manconv might
 	 * need to know about.
 	 */
@@ -351,7 +350,6 @@ void zsoelim_parse_file (gl_list_t manpathlist, const char *parent_path)
 		pipeline_peek_skip ((pipeline *) yyin, strlen (line));
 		++linenum;
 	}
-#endif /* PP_COOKIE */
 
 	printf (".lf %d %s\n", linenum, NAME);
 	LINE = 1;

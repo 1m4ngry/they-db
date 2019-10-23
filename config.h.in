@@ -40,10 +40,6 @@
 /* Define if you have compressors and want to support compressed cat files. */
 #undef COMP_CAT
 
-/* Define if you have compressors and want to support compressed manual
-   source. */
-#undef COMP_SRC
-
 /* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
    systems. This function is required for `alloca.c' support on those systems.
    */
@@ -186,6 +182,10 @@
 /* Define to a C preprocessor expression that evaluates to 1 or 0, depending
    whether the gnulib module scanf shall be considered present. */
 #undef GNULIB_SCANF
+
+/* Define to a C preprocessor expression that evaluates to 1 or 0, depending
+   whether the gnulib module statat shall be considered present. */
+#undef GNULIB_STATAT
 
 /* Define to a C preprocessor expression that evaluates to 1 or 0, depending
    whether the gnulib module strerror shall be considered present. */
@@ -354,6 +354,9 @@
 /* Define to 1 when the gnulib module rename should be tested. */
 #undef GNULIB_TEST_RENAME
 
+/* Define to 1 when the gnulib module renameat should be tested. */
+#undef GNULIB_TEST_RENAMEAT
+
 /* Define to 1 when the gnulib module rewinddir should be tested. */
 #undef GNULIB_TEST_REWINDDIR
 
@@ -398,6 +401,12 @@
 
 /* Define to 1 when the gnulib module strsep should be tested. */
 #undef GNULIB_TEST_STRSEP
+
+/* Define to 1 when the gnulib module unlink should be tested. */
+#undef GNULIB_TEST_UNLINK
+
+/* Define to 1 when the gnulib module unlinkat should be tested. */
+#undef GNULIB_TEST_UNLINKAT
 
 /* Define to 1 when the gnulib module unsetenv should be tested. */
 #undef GNULIB_TEST_UNSETENV
@@ -852,6 +861,9 @@
 /* Define to 1 if you have the <linux/fiemap.h> header file. */
 #undef HAVE_LINUX_FIEMAP_H
 
+/* Define to 1 if you have the <linux/fs.h> header file. */
+#undef HAVE_LINUX_FS_H
+
 /* Define to 1 if you support file names longer than 14 characters. */
 #undef HAVE_LONG_FILE_NAMES
 
@@ -1001,6 +1013,12 @@
 
 /* Define if you have refer. */
 #undef HAVE_REFER
+
+/* Define to 1 if you have the `renameat' function. */
+#undef HAVE_RENAMEAT
+
+/* Define to 1 if you have the `renameat2' function. */
+#undef HAVE_RENAMEAT2
 
 /* Define to 1 if you have the `rewinddir' function. */
 #undef HAVE_REWINDDIR
@@ -1215,6 +1233,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `unlinkat' function. */
+#undef HAVE_UNLINKAT
 
 /* Define to 1 if you have the `unsetenv' function. */
 #undef HAVE_UNSETENV
@@ -1506,6 +1527,9 @@
 /* Define as the name of a command you want to suggest when a non-existent
    page is requested. */
 #undef UNDOC_COMMAND
+
+/* Define to 1 if unlink() on a parent directory may succeed */
+#undef UNLINK_PARENT_BUG
 
 /* Define to the prefix of C symbols at the assembler and linker level, either
    an underscore or empty. */

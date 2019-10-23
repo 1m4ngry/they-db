@@ -37,6 +37,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <unistd.h>
 
@@ -45,6 +46,7 @@
 #endif /* HAVE_ICONV */
 
 #include "argp.h"
+#include "gl_list.h"
 
 #include "gettext.h"
 #include <locale.h>
@@ -55,6 +57,7 @@
 #include "error.h"
 #include "pipeline.h"
 #include "encodings.h"
+#include "glcontainers.h"
 
 #include "manconv.h"
 
@@ -96,7 +99,7 @@ static off_t locate_error (const char *try_from_code,
 }
 
 static int try_iconv (pipeline *p, const char *try_from_code, const char *to,
-		      int last)
+		      bool last)
 {
 	char *try_to_code = xstrdup (to);
 	static const size_t buf_size = 65536;
@@ -106,10 +109,10 @@ static int try_iconv (pipeline *p, const char *try_from_code, const char *to,
 	static char *utf8 = NULL, *output = NULL;
 	size_t utf8left = 0;
 	iconv_t cd_utf8, cd = NULL;
-	int to_utf8 = STREQ (try_to_code, "UTF-8") ||
-		      STRNEQ (try_to_code, "UTF-8//", 7);
+	bool to_utf8 = STREQ (try_to_code, "UTF-8") ||
+		       STRNEQ (try_to_code, "UTF-8//", 7);
 	const char *utf8_target = last ? "UTF-8//IGNORE" : "UTF-8";
-	int ignore_errors = (strstr (try_to_code, "//IGNORE") != NULL);;
+	bool ignore_errors = (strstr (try_to_code, "//IGNORE") != NULL);
 	int ret = 0;
 
 	debug ("trying encoding %s -> %s\n", try_from_code, try_to_code);
@@ -314,21 +317,36 @@ static int try_iconv (pipeline *p, const char *try_from_code, const char *to,
 	return ret;
 }
 
-void manconv (pipeline *p, char * const *from, const char *to)
+void manconv (pipeline *p, gl_list_t from, const char *to)
 {
 	char *pp_encoding;
-	char * const *try_from_code;
+	const char *try_from_code;
+	char *plain_to, *modified_pp_line = NULL;
 
-	pp_encoding = check_preprocessor_encoding (p);
+	plain_to = xstrndup (to, strcspn (to, "/"));
+	pp_encoding = check_preprocessor_encoding
+		(p, plain_to, &modified_pp_line);
 	if (pp_encoding) {
+		if (modified_pp_line) {
+			size_t len = strlen (modified_pp_line);
+			pipeline_readline (p);
+			if (fwrite (modified_pp_line, 1, len, stdout) < len ||
+			    ferror (stdout))
+				error (FATAL, 0,
+				       _("can't write to standard output"));
+			free (modified_pp_line);
+		}
 		try_iconv (p, pp_encoding, to, 1);
 		free (pp_encoding);
 	} else {
-		for (try_from_code = from; *try_from_code; ++try_from_code)
-			if (try_iconv (p, *try_from_code, to,
-				       !*(try_from_code + 1)) == 0)
+		GL_LIST_FOREACH_START (from, try_from_code) {
+			bool last = !gl_list_next_node (from, from_node);
+			if (try_iconv (p, try_from_code, to, last) == 0)
 				break;
+		} GL_LIST_FOREACH_END (from);
 	}
+
+	free (plain_to);
 }
 
 #else /* !HAVE_ICONV */
@@ -336,7 +354,7 @@ void manconv (pipeline *p, char * const *from, const char *to)
 /* If we don't have iconv, there isn't much we can do; just pass everything
  * through unchanged.
  */
-void manconv (pipeline *p, char * const *from _GL_UNUSED,
+void manconv (pipeline *p, gl_list_t from _GL_UNUSED,
 	      const char *to _GL_UNUSED)
 {
 	for (;;) {

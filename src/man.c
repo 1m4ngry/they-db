@@ -603,6 +603,7 @@ static void gripe_no_name (const char *sect)
 			 sect);
 	} else
 		fputs (_("What manual page do you want?\n"), stderr);
+	fputs (_("For example, try 'man man'.\n"), stderr);
 
 	exit (FAIL);
 }
@@ -940,7 +941,6 @@ static const char *is_section (const char *name)
 /* Snarf pre-processors from file, return string or NULL on failure */
 static char *get_preprocessors_from_file (pipeline *decomp, int prefixes)
 {
-#ifdef PP_COOKIE
 	const size_t block = 4096;
 	int i;
 	char *line = NULL;
@@ -996,7 +996,6 @@ static char *get_preprocessors_from_file (pipeline *decomp, int prefixes)
 		else
 			return xstrdup (line + 4);
 	}
-#endif
 	return NULL;
 }
 
@@ -1145,7 +1144,8 @@ static pipeline *make_roff_command (const char *dir, const char *file,
 			pipeline_command (p, cmd);
 		}
 
-		page_encoding = check_preprocessor_encoding (decomp);
+		page_encoding = check_preprocessor_encoding
+			(decomp, NULL, NULL);
 		if (!page_encoding)
 			page_encoding = get_page_encoding (lang);
 		if (page_encoding && !STREQ (page_encoding, "UTF-8"))
@@ -2492,17 +2492,13 @@ static char *convert_name (const char *name, int fsstnd)
 {
 	char *to_name, *t1 = NULL;
 	char *t2 = NULL;
-#ifdef COMP_SRC
 	struct compression *comp;
-#endif /* COMP_SRC */
 	char *namestem;
 
-#ifdef COMP_SRC
 	comp = comp_info (name, 1);
 	if (comp)
 		namestem = comp->stem;
 	else
-#endif /* COMP_SRC */
 		namestem = xstrdup (name);
 
 #ifdef COMP_CAT
@@ -2817,7 +2813,7 @@ static int compare_candidates (const struct candidate *left,
 			} \
 		} \
 	} \
-	cmp = strcmp (bits1.territory, bits2.territory); \
+	cmp = strcmp (bits1.elt, bits2.elt); \
 	if (cmp) \
 		/* No help from locale; might as well sort lexically. */ \
 		goto out; \
@@ -3819,7 +3815,7 @@ executable_out:
 }
 
 /*
- * Splits a "name[.section]" into { "name", "section" }.
+ * Splits a "name[.section]" or "name(section)" into { "name", "section" }.
  * Section would be NULL if not present.
  * The caller is responsible for freeing *ret_name and *ret_section.
  * */
@@ -3827,17 +3823,30 @@ static void split_page_name (const char *page_name,
 			     char **ret_name,
 			     char **ret_section)
 {
-	char *dot;
+	char *dot, *lparen, *rparen;
 
 	dot = strrchr (page_name, '.');
-
 	if (dot && is_section (dot + 1)) {
 		*ret_name = xstrndup (page_name, dot - page_name);
 		*ret_section = xstrdup (dot + 1);
-	} else {
-		*ret_name = xstrdup (page_name);
-		*ret_section = NULL;
+		return;
 	}
+
+	lparen = strrchr (page_name, '(');
+	rparen = strrchr (page_name, ')');
+	if (lparen && rparen && rparen > lparen) {
+		char *paren_section = xstrndup
+			(lparen + 1, rparen - lparen - 1);
+		if (is_section (paren_section)) {
+			*ret_name = xstrndup (page_name, lparen - page_name);
+			*ret_section = paren_section;	/* steal memory */
+			return;
+		}
+		free (paren_section);
+	}
+
+	*ret_name = xstrdup (page_name);
+	*ret_section = NULL;
 }
 
 static void locate_page_in_manpath (const char *page_section,
@@ -4084,10 +4093,6 @@ int main (int argc, char *argv[])
 		do_extern (argc, argv);
 
 	get_term (); /* stores terminal settings */
-#ifdef MAN_OWNER
-	debug ("real user = %lu; effective user = %lu\n",
-	       (unsigned long) ruid, (unsigned long) euid);
-#endif /* MAN_OWNER */
 
 	/* close this locale and reinitialise if a new locale was 
 	   issued as an argument or in $MANOPT */
@@ -4152,7 +4157,7 @@ int main (int argc, char *argv[])
 		less = getenv ("LESS");
 	setenv ("MAN_ORIG_LESS", less ? less : "", 1);
 
-	debug ("\nusing %s as pager\n", pager);
+	debug ("using %s as pager\n", pager);
 
 	if (first_arg == argc) {
 		if (print_where) {
@@ -4173,8 +4178,6 @@ int main (int argc, char *argv[])
 		free (mp);
 	} else
 		free (get_manpath (NULL));
-
-	debug ("manpath search path (with duplicates) = %s\n", manp);
 
 	manpathlist = create_pathlist (manp);
 
